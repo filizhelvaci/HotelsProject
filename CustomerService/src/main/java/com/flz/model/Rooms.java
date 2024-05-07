@@ -1,6 +1,8 @@
 package com.flz.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.ArrayList;
 
@@ -9,7 +11,16 @@ import java.util.ArrayList;
 public class Rooms {
 
 
-    /////////////////////////////// Hem room number hem room ıd ye gerek var mı? /////////////////////////////////
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    @JoinColumn(name="ROOM_TYPE_ID")
+    private RoomType roomType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    @JoinColumn(name="REZERVATION_ID")
+    private MakeRezervation makeRezervation;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ROOM_ID")
@@ -18,8 +29,8 @@ public class Rooms {
     @Column(name="ROOM_NUMBER")
     private String roomNumber;
 
-    @Column(name="ROOM_TYPE")
-    private String roomType;
+    @Column(name="ROOM_TYPE_ID")
+    private Long roomTypeId;
 
     @Column(name="FLOOR_NUMBER")
     private String whichfloor;
@@ -50,5 +61,7 @@ public class Rooms {
 
     @Column(name="DESCRIPTION")
     private String description;
+
+    /////////////// rezervasyon yapıldığında nasıl olmalı///////////////
 
 }

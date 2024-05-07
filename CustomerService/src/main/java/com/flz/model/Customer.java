@@ -21,9 +21,9 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="CUSTOMER_ID",nullable = false)
-    private Long id;
+    private Long customerId;
 
-    private Long user_id;
+    private Long userId; // odayı tutan kişi
 
     @Embedded
     private Address address;

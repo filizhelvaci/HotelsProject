@@ -20,13 +20,13 @@ public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="POSITION_ID",nullable = false)
-    private Long id;
+    private Long positionId;
 
     @Column(name = "POSITION_NAME",nullable = false)
     private String positionName;
 
 
     ////////////////////////////////////////////////////////////////
-    private String YETKILER;
+    private String authorityClass;
     ////////////////////////////////////////////////////////////////
 }
