@@ -19,7 +19,7 @@ public class Employees  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="EMPLOYES_ID",nullable = false)
-    private Long id;
+    private Long employeesId;
 
     @Column(name="POSITION_ID",nullable = false)
     private Long position_id;
@@ -30,9 +30,9 @@ public class Employees  {
     @Embedded
     private BaseConnectionInfo connectionInfo;
 
-    @Embedded
+   /* @Embedded
     private BaseAddress address;
-    // Adres bilgisi için ayrı tablomu tutulmalı yoksa embedded mı kullanılmalı
+    // Adres bilgisi için ayrı tablomu tutulmalı yoksa embedded mı kullanılmalı */
 
     @Embedded
     private BasePerson basePerson;

@@ -1,13 +1,6 @@
 package com.flz.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name="ROOM_TYPES")
 public class RoomType {

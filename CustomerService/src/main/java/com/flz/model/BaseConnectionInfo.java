@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class ConnectionInfo {
+public class BaseConnectionInfo {
 
     @Column(name="E_MAIL")
     private String Email;

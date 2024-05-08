@@ -1,3 +1,5 @@
 rootProject.name = 'HotelsProject'
 include 'CustomerService'
+include 'WorkerService'
+include 'RoomService'
 

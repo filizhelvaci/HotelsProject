@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name="MAKE_REZERVATION")
 public class MakeRezervation {
-
+    /*
     // rezervation and rooms link
     @OneToMany(mappedBy = "makeRezervation",fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
@@ -22,21 +22,21 @@ public class MakeRezervation {
     @OneToOne(mappedBy = "maketheRezervation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
     private Users users;
-
+*/
 
     @Id
-    @GeneratedValue( generator = "generator")//(?)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//(?)
     //@GenericGenerator(name = "generator", strategy = "foreign",
     //        parameters = @Parameter(name = "property", value = "users"))
     @Column(name="REZERVATION_ID",nullable = false)
     private Long rezervationId;
 
     @Temporal(TemporalType.DATE)
-    @Column(name="RESERVATION_START_DATE",nullable = false,length = 15)
+    @Column(name="REZERVATION_START_DATE",nullable = false,length = 15)
     private Date reservationStartDate;
 
     @Temporal(TemporalType.DATE)
-    @Column(name="RESERVATION_END_DATE",nullable = false,length = 15)
+    @Column(name="REZERVATION_END_DATE",nullable = false,length = 15)
     private Date rezervationEndDate;
 
     @Column(name="REZERVATION_MAKE_DATE",length =20)

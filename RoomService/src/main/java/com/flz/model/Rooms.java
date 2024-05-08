@@ -1,10 +1,6 @@
 package com.flz.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import java.util.ArrayList;
 
 @Entity
 @Table(name="ROOMS")

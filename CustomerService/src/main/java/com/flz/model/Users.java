@@ -8,10 +8,10 @@ import jakarta.persistence.*;
 public class Users {
 
     //User and MakeRezervation link
-    @OneToOne (mappedBy = "users",
+    /*@OneToOne (mappedBy = "users",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    private MakeRezervation maketheRezervation;
+    private MakeRezervation maketheRezervation; */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,10 @@ public class Users {
     private Long userId;
 
     private BasePerson basePerson;
-    private ConnectionInfo connectionInfo;
+    private BaseConnectionInfo connectionInfo;
+
+    @Column(name="CITY",nullable = false,length = 50)
+    private String city;
 
     // rezervationMake(List<roomId>,dates,###price)
     // rezervationCancel(List<roomId>,dates,###price)

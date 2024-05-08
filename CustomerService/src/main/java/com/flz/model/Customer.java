@@ -26,10 +26,10 @@ public class Customer {
     private Long userId; // odayı tutan kişi
 
     @Embedded
-    private Address address;
+    private BasePerson basePerson;
 
     @Embedded
-    private BasePerson basePerson;
+    private BaseConnectionInfo baseConnectionInfo;
 
     @Column(name="ENTER_DATE")
     private Date enterDate;

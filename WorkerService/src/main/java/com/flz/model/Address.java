@@ -6,14 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-@MappedSuperclass
+
 @SuperBuilder // bir sınıftan nesne türetmek için
 @Data //set get metotlarını otomatik tanımlar
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Embeddable
+@Entity
+@Table(name="Address")
 public class Address {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long addressId;
+
+    @Column(name="EMPLOYEES_ID",nullable = false)
+    private Long employeesId;
 
     @Column(name="COUNTRY",nullable = false,length = 50)
     private String country;
@@ -26,6 +34,9 @@ public class Address {
 
     @Column(name="STREET",length = 50)
     private String street;
+
+    @Column(name="STREET_NUMBER",length = 5)
+    private String streetNumber;
 
 
 
