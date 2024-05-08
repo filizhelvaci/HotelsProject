@@ -21,11 +21,14 @@ public class Employees  {
     @Column(name="EMPLOYES_ID",nullable = false)
     private Long employeesId;
 
-    @Column(name="POSITION_ID",nullable = false)
+    @Column(name="POSITION_ID",nullable = false, length = 5)
     private Long position_id;
 
-    @Column(name="DEPARTMENT_ID",nullable = false)
+    @Column(name="DEPARTMENT_ID",nullable = false ,length = 10)
     private Long department_id;
+
+    @Column(name="ADDRESS_ID",nullable = false, length = 5)
+    private Long addressId;
 
     @Embedded
     private BaseConnectionInfo connectionInfo;

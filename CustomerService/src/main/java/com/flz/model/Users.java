@@ -2,6 +2,13 @@ package com.flz.model;
 
 
 import jakarta.persistence.*;
+import lombok.*;
+
+@Data//set get metotlarını otomatik tanımlar
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 
 @Entity
 @Table
