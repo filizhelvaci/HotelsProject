@@ -1,6 +1,6 @@
 package com.flz.model;
 
-public class ManegementEmployees extends SecurityEmployees{
+public class ManegementWorker extends SecurityWorker {
 
     // MakeARezervation()
     // CancelTheRezervation(RoomID,userID,EnteringDate)

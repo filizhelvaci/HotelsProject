@@ -1,6 +1,6 @@
 package com.flz.model;
 
-public class SecurityEmployees extends Employees{
+public class SecurityWorker extends Employees{
 
     //FloorEntering()
     //KitchenEntering()

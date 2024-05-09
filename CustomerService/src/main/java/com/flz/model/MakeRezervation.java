@@ -45,6 +45,9 @@ public class MakeRezervation {
     @Column(name="USER_ID")
     private Long userId;
 
+
+    //private List<Long> roomId;
+
     private boolean IsPay; // if (true) makeTheRezervation(DTO);
     private boolean IsDeposit; // if (true) makeTheRezervation(DTO)
 

@@ -1,6 +1,6 @@
 package com.flz.model;
 
-public class CleaningEmployees extends Employees{
+public class FloorWorker extends Employees{
 
 
     // RoomEntering()

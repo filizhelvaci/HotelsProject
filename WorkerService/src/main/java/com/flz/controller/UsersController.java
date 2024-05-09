@@ -1,21 +1,17 @@
 package com.flz.controller;
 
-import com.flz.service.UsersService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/hotel/users")
+@RequestMapping("/guests")
 public class UsersController {
 
-    private UsersService usersService;
+    @GetMapping("/info/{id}")
+    public String getUser(@PathVariable(name="id") Long id) {
 
-
-    //    http://localhost:8084
-    @GetMapping("/getUser")
-    public String getUser() {
-
-        return "tek user getirir";
+        return "guest id : "+ id;
     }
 }

@@ -31,11 +31,7 @@ public class Employees  {
     private Long addressId;
 
     @Embedded
-    private BaseConnectionInfo connectionInfo;
-
-   /* @Embedded
-    private BaseAddress address;
-    // Adres bilgisi için ayrı tablomu tutulmalı yoksa embedded mı kullanılmalı */
+    private BaseConnectionInfo baseConnectionInfo;
 
     @Embedded
     private BasePerson basePerson;
