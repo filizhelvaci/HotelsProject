@@ -21,4 +21,8 @@ public class GuestServicesWorkerService {
         return guestServicesWorkerRepository.findById(id).get();
     }
 
+    public Users saveUser(Users users){
+        return guestServicesWorkerRepository.save(users);
+    }
+
 }

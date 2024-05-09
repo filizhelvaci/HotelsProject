@@ -3,10 +3,7 @@ package com.flz.controller;
 import com.flz.model.Users;
 import com.flz.service.GuestServicesWorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,4 +28,11 @@ public class GuestServicesWorkerController {
 
         return guestServicesWorkerService.getByUser(id);
      }
+
+    //    http://localhost:8085/users
+    @PostMapping("/users/save")
+    public Users saveUser(@RequestBody Users users){
+
+        return guestServicesWorkerService.saveUser(users);
+    }
 }
