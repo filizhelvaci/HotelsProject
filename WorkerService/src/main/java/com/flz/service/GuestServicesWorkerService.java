@@ -13,11 +13,12 @@ public class GuestServicesWorkerService {
     @Autowired
     GuestServicesWorkerRepository guestServicesWorkerRepository;
 
-    public List<Users> getAllUsers(){
+    public List<Users> getAllUsers() {
         return guestServicesWorkerRepository.findAll();
     }
-/*
-    public Users getByUser(Long id){
-        return guestServicesWorkerRepository.findById(Long id);
-    }*/
+
+    public Users getByUser(Long id) {
+        return guestServicesWorkerRepository.findById(id).get();
+    }
+
 }

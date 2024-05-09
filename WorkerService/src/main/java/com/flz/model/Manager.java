@@ -1,4 +1,4 @@
 package com.flz.model;
 
-public class Manager extends SecurityWorker {
+public class Manager extends Employees {
 }

@@ -28,8 +28,11 @@ public class Users {
     @Embedded
     private BasePerson basePerson;
 
-    @Embedded
-    private BaseConnectionInfo baseConnectionInfo;
+    @Column(name="E_MAIL")
+    private String Email;
+
+    @Column(name="PHONE_NUMBER")
+    private String PhoneNumber;
 
     @Column(name="CITY",nullable = false,length = 50)
     private String city;
