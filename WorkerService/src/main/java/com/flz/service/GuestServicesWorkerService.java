@@ -25,4 +25,13 @@ public class GuestServicesWorkerService {
         return guestServicesWorkerRepository.save(users);
     }
 
+    public String deleteUser(Long id){
+        guestServicesWorkerRepository.deleteById(id);
+        return "user = "+id+ "deleted ";
+    }
+
+    public Users updateUsers(Users users){
+        return guestServicesWorkerRepository.save(users);
+    }
+
 }

@@ -14,39 +14,28 @@ import java.util.Date;
 @ToString
 
 @Entity
-@Table
+@Table(name="EMPLOYEES")
 public class Employees  {
+
+    @OneToOne(mappedBy = "employees", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private EmpDetail empDetail;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="EMPLOYES_ID",nullable = false)
     private Long employeesId;
 
-    @Column(name="POSITION_ID",nullable = false, length = 5)
-    private Long position_id;
+    @Column(name="NAME",nullable = false)
+    private String name;
 
-    @Column(name="DEPARTMENT_ID",nullable = false ,length = 10)
-    private Long department_id;
+    @Column(name="LASTNAME",nullable = false)
+    private String lastName;
 
-    @Column(name="ADDRESS_ID",nullable = false, length = 5)
-    private Long addressId;
+    @Column(name="INSIDE_NUMBER",nullable = false)
+    private String insideNumber;
 
-    @Embedded
-    private BaseConnectionInfo baseConnectionInfo;
-
-    @Embedded
-    private BasePerson basePerson;
-
-    @Column(name="SALARY",nullable = false)
-    private Long salary;
-
-    @Column(name="START_DATE",nullable = false)
-    private Date startDate;
-
-    @Column(name="EXIT_DATE")
-    private Date exitDate;
-
-
+    @Column(name="PHONE_NUMBER")
+    private String phoneNumber;
 
 
 }

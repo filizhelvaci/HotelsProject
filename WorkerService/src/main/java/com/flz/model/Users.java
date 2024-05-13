@@ -4,6 +4,8 @@ package com.flz.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Optional;
+
 @Data//set get metotlarını otomatik tanımlar
 @Builder
 @NoArgsConstructor
@@ -25,8 +27,20 @@ public class Users {
     @Column(name="USER_ID")
     private Long userId;
 
-    @Embedded
-    private BasePerson basePerson;
+    @Column(name="NAME",nullable = false)
+    private String name;
+
+    @Column(name="LASTNAME",nullable = false)
+    private String lastName;
+
+    @Column(name="BIRTHDATE",nullable = false)
+    private String birthDate;
+
+    @Column(name="IDENTY_NUMBER",nullable = false,unique = true)
+    private String IDnumber;
+
+    @Column(name="NATIONALITY")
+    private String nationality;
 
     @Column(name="E_MAIL")
     private String Email;
@@ -37,6 +51,9 @@ public class Users {
     @Column(name="CITY",nullable = false,length = 50)
     private String city;
 
+    public Optional<Long> getId() {
+        return Optional.ofNullable(userId);
+    }
     // rezervationMake(List<roomId>,dates,###price)
     // rezervationCancel(List<roomId>,dates,###price)
 }

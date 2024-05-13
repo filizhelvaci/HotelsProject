@@ -21,5 +21,10 @@ public class GuestServicesWorker extends Employees {
 
     private String Experiences;
 
-    private String Skills; */
+    private String Skills;
+
+    //CleaningReport(roomid,date,generalWorker_id)
+    //CleaningControl() //Eğer extra temizlik ücreti varsa 
+    //FoodServiceReport(roomid,date,)
+    */
 }
