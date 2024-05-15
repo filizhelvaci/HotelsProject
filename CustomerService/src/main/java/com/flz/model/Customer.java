@@ -2,34 +2,49 @@ package com.flz.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
+
 
 import java.util.Date;
 
-//@EqualsAndHashCode(callSuper = true)
-@SuperBuilder // bir sınıftan nesne türetmek için
-@Data//set get metotlarını otomatik tanımlar
+@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 
 
 @Entity
-@Table(name="CUSTOMERS")
+@Table
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="CUSTOMER_ID",nullable = false)
-    private Long customerId;
+    @Column(name="ID",nullable = false)
+    private Long Id;
 
+    @Column(name="USER_ID")
     private Long userId; // odayı tutan kişi
 
-    @Embedded
-    private BasePerson basePerson;
+    @Column(name="NAME",nullable = false)
+    private String name;
 
-    @Embedded
-    private BaseConnectionInfo baseConnectionInfo;
+    @Column(name="LASTNAME",nullable = false)
+    private String lastName;
+
+    @Column(name="BIRTHDATE",nullable = false)
+    private String birthDate;
+
+    @Column(name="IDENTY_NUMBER",nullable = false,unique = true)
+    private String IDnumber;
+
+    @Column(name="NATIONALITY")
+    private String nationality;
+
+    @Column(name="E_MAIL")
+    private String Email;
+
+    @Column(name="PHONE_NUMBER")
+    private String PhoneNumber;
 
     @Column(name="ENTER_DATE")
     private Date enterDate;
@@ -40,6 +55,8 @@ public class Customer {
     @Column(name="ROOM_NUMBER")
     private String roomNumber;
 
+    @Column(name="CITY",nullable = false,length = 50)
+    private String city;
 
 
 

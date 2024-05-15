@@ -52,7 +52,7 @@ public class ManagementWorkerController {
             //yanlış veri gönderildiyse yada en az bir kontrolden sonra kayıt değiştirlmeli
             //değiştirilmek istenen kayıt gösterilerek uyarı vermeli. bir onay daha alırsa değişiklik yapılmalı
             // yada update işlemi başka bir yetki ile belirlenmeli.
-            employeeInfo.setEmployeesId(id);
+            employeeInfo.setUId(id);
             employeeInfo.setName(employees.getName());
             employeeInfo.setLastName(employees.getLastName());
             employeeInfo.setPhoneNumber(employees.getPhoneNumber());

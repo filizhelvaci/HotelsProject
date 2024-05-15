@@ -1,6 +1,16 @@
 package com.flz.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 
 @Entity
 @Table(name="ROOMS")
@@ -40,8 +50,8 @@ public class Rooms {
     @Column(name="SINGLE_BED_COUNT")
     private int CountOfSingleBed;
 
-    //private ArrayList<String> roomFurnitures;
-    //private ArrayList<String> roomProperties;
+    /*@Column(name="ROOM_PROPERTIES")
+    private List<String> roomProperties;*/
 
     @Column(name="SIZE")
     private int m2;
@@ -57,6 +67,8 @@ public class Rooms {
 
     @Column(name="DESCRIPTION")
     private String description;
+
+
 
     /////////////// rezervasyon yapıldığında nasıl olmalı///////////////
 

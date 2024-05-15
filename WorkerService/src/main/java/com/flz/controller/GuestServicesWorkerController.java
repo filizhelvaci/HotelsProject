@@ -45,18 +45,18 @@ public class GuestServicesWorkerController {
         //id 0 dan büyük olmalı ve userId nin olusturduğu randevunun çıkış tarihi geçmemiş olmalı
         // Geçmişe yönelik bir veri kaybını engeller
 
-        Optional<Long> uId=guestServicesWorkerService.getByUser(id).getId();
+        //Optional<Long> uId=guestServicesWorkerService.getByUser(id).getId();
 
         // Kullanıcı adı null olan kullanıcının adını al
         //Optional<String> name2 = user2.getName();
-
+       /*
         if (uId.isPresent()) {
             System.out.println("User id: " + uId.get());
         } else {
             System.out.println("User id doesn't use.");
         }
 
-        /*
+
         // Kullanıcı adı null olmayan kullanıcının adını al ve default bir değer kullan
         String defaultName = user1.getName().orElse("Bilinmeyen");
         System.out.println("Kullanıcı adı: " + defaultName);

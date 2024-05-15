@@ -7,8 +7,8 @@ import lombok.experimental.SuperBuilder;
 import java.util.Date;
 
 //@EqualsAndHashCode(callSuper = true)
-@Builder // bir sınıftan nesne türetmek için
-@Data//set get metotlarını otomatik tanımlar
+@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -17,13 +17,10 @@ import java.util.Date;
 @Table(name="EMPLOYEES")
 public class Employees  {
 
-    @OneToOne(mappedBy = "employees", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private EmpDetail empDetail;
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="EMPLOYES_ID",nullable = false)
-    private Long employeesId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name="UID",nullable = false)
+    private Long UId;
 
     @Column(name="NAME",nullable = false)
     private String name;
@@ -36,6 +33,36 @@ public class Employees  {
 
     @Column(name="PHONE_NUMBER")
     private String phoneNumber;
+
+    @Column(name="ADDRESS_ID",nullable = false, length = 5)
+    private Long addressId;
+
+    @Column(name="E_MAIL")
+    private String Email;
+
+    @Column(name="BIRTHDATE",nullable = false)
+    private String birthDate;
+
+    @Column(name="IDENTY_NUMBER",nullable = false,unique = true)
+    private String IDnumber;
+
+    @Column(name="NATIONALITY")
+    private String nationality;
+
+    @Column(name="SALARY",nullable = false)
+    private Long salary;
+
+    @Column(name="START_DATE",nullable = false)
+    private Date startDate;
+
+    @Column(name="EXIT_DATE")
+    private Date exitDate;
+
+    @Column(name="POSITION_ID",nullable = false, length = 5)
+    private Long position_id;
+
+    @Column(name="DEPARTMENT_ID",nullable = false ,length = 10)
+    private Long department_id;
 
 
 }

@@ -16,6 +16,12 @@ import java.util.Optional;
 @Table
 public class Users {
 
+    //  ********************************************
+    // Rezervasyon yaptırmak istediğinde bu bilgileri girmek zorunda
+    // dto ile customer db kısmına user bilgileri gönderilmeli
+    // Sisteme kayıt için sadece email ve password yeterli
+    // *********************************************
+
     //User and MakeRezervation link
     /*@OneToOne (mappedBy = "users",
             fetch = FetchType.LAZY,
@@ -51,9 +57,8 @@ public class Users {
     @Column(name="CITY",nullable = false,length = 50)
     private String city;
 
-    public Optional<Long> getId() {
-        return Optional.ofNullable(userId);
-    }
+
+    //
     // rezervationMake(List<roomId>,dates,###price)
     // rezervationCancel(List<roomId>,dates,###price)
 }
