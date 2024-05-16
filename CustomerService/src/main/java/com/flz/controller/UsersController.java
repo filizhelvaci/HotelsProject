@@ -66,9 +66,6 @@ public class UsersController {
             usersInfo.setName(users.getName());
             usersInfo.setLastName(users.getLastName());
             usersInfo.setEmail(users.getEmail());
-            usersInfo.setCity(users.getCity());
-            usersInfo.setNationality(users.getNationality());
-            usersInfo.setBirthDate(users.getBirthDate());
             usersInfo.setIDnumber(users.getIDnumber());
             usersInfo.setPhoneNumber(users.getPhoneNumber());
             return usersService.updateUsers(usersInfo);

@@ -48,7 +48,7 @@ public class CustomerController {
             //yanlış veri gönderildiyse yada en az bir kontrolden sonra kayıt değiştirlmeli
             //değiştirilmek istenen kayıt gösterilerek uyarı vermeli. bir onay daha alırsa değişiklik yapılmalı
             // yada update işlemi başka bir yetki ile belirlenmeli.
-             customerInfo.setId(id);
+             customerInfo.setUId(id);
              customerInfo.setCity(customer.getCity());
              customerInfo.setBirthDate(customer.getBirthDate());
              customerInfo.setEmail(customer.getEmail());
@@ -60,7 +60,6 @@ public class CustomerController {
              customerInfo.setNationality(customer.getNationality());
              customerInfo.setPhoneNumber(customer.getPhoneNumber());
              customerInfo.setRoomNumber(customer.getRoomNumber());
-             customerInfo.setUserId(customer.getUserId());
             return customersService.updateCustomer(customerInfo);
         }
         return null;
