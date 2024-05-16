@@ -11,7 +11,6 @@ public class WorkerApp {
 
 		SpringApplication.run(WorkerApp.class, args);
 
-		Employees emp1=new Employees();
 
 
 	}

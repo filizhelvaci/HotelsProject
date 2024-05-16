@@ -1,18 +1,30 @@
 package com.flz.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import java.util.HashSet;
+import java.util.Set;
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+
 @Entity
 @Table(name="ROOM_TYPES")
 public class RoomType {
-  /*
+
     @OneToMany(mappedBy = "roomType",fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
-    private List<Rooms> rooms=new ArrayList<>(); */
+    private Set<Rooms> roomT = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ROOM_TYPE_ID")
-    private Long RoomTypeId;
+    private Long Id;
 
     @Column(name="ROOM_TYPE_NAME",nullable = false,length = 50)
     private String RoomTypeName;

@@ -2,11 +2,10 @@ package com.flz.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
-
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-//@EqualsAndHashCode(callSuper = true)
 @Builder
 @Data
 @NoArgsConstructor
@@ -17,10 +16,17 @@ import java.util.Date;
 @Table(name="EMPLOYEES")
 public class Employees  {
 
+    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable (name = "EMPLOYEES_ADDRESS",
+            joinColumns = { @JoinColumn(name = "EMPLOYEES_ID", nullable = false)  },
+            inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
+    )
+    private Set<Address> address = new HashSet<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="UID",nullable = false)
-    private Long UId;
+    @Column(name="EMPLOYEES_ID",nullable = false)
+    private Long employeesId;
 
     @Column(name="NAME",nullable = false)
     private String name;
@@ -33,9 +39,6 @@ public class Employees  {
 
     @Column(name="PHONE_NUMBER")
     private String phoneNumber;
-
-    @Column(name="ADDRESS_ID",nullable = false, length = 5)
-    private Long addressId;
 
     @Column(name="E_MAIL")
     private String Email;

@@ -2,10 +2,9 @@ package com.flz.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 @Builder
 @Data
 @NoArgsConstructor
@@ -16,7 +15,6 @@ import java.util.List;
 @Table(name="ROOMS")
 public class Rooms {
 
-    /*
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     @JoinColumn(name="ROOM_TYPE_ID")
@@ -24,40 +22,34 @@ public class Rooms {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
-    @JoinColumn(name="REZERVATION_ID")
-    private MakeRezervation makeRezervation; */
+    @JoinColumn(name="HOTEL_ID")
+    private Hotel hotel;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ROOM_ID")
-    private Long roomId;
+    private Long Id;
 
-    @Column(name="ROOM_NUMBER")
+    @Column(name="ROOM_NUMBER",length = 5)
     private String roomNumber;
 
-    @Column(name="ROOM_TYPE_ID")
-    private Long roomTypeId;
-
-    @Column(name="FLOOR_NUMBER")
+    @Column(name="FLOOR_NUMBER",length = 3)
     private String whichfloor;
 
-    @Column(name="MAX_PERSON_COUNT")
+    @Column(name="MAX_PERSON_COUNT",length = 3)
     private int countPerson;
 
-    @Column(name="DOUBLE_BED_COUNT")
+    @Column(name="DOUBLE_BED_COUNT",length = 3)
     private int CountOfDoubleBed;
 
-    @Column(name="SINGLE_BED_COUNT")
+    @Column(name="SINGLE_BED_COUNT",length = 3)
     private int CountOfSingleBed;
 
-    /*@Column(name="ROOM_PROPERTIES")
-    private List<String> roomProperties;*/
+    @Column(name="ROOM_PROPERTIES")
+    private String roomProperties;
 
-    @Column(name="SIZE")
+    @Column(name="SIZE",length = 4)
     private int m2;
-
-    @Column(name="HOTEL_ID")
-    private Long hotel_id;
 
     @Column(name="PRICE")
     private float price;
@@ -69,7 +61,5 @@ public class Rooms {
     private String description;
 
 
-
-    /////////////// rezervasyon yapıldığında nasıl olmalı///////////////
 
 }

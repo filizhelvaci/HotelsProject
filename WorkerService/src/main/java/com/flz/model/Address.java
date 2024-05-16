@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @SuperBuilder // bir sınıftan nesne türetmek için
 @Data //set get metotlarını otomatik tanımlar
@@ -13,15 +16,16 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 
 @Entity
-@Table(name="Address")
+@Table(name="ADDRESS")
 public class Address {
+
+    @ManyToMany(mappedBy = "address", fetch = FetchType.LAZY)
+    private Set<Employees> employees = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long addressId;
-
-    @Column(name="EMPLOYEES_ID",nullable = false)
-    private Long employeesId;
+    @Column(name="ADDRESS_ID")
+    private Long Id;
 
     @Column(name="COUNTRY",nullable = false,length = 50)
     private String country;
