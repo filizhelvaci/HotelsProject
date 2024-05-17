@@ -75,7 +75,7 @@ public class RoomTypeController {
     }
 
     // http://localhost:8086/roomtypes/deleteAll/
-    @DeleteMapping ("/deleteAll/{id}")
+    @DeleteMapping ("/deleteAll")
     public String deleteAllRoomType() {
 
         return roomTypeService.deleteAllRoomType();
