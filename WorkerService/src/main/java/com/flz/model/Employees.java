@@ -2,6 +2,9 @@ package com.flz.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +18,11 @@ import java.util.Set;
 @Entity
 @Table(name="EMPLOYEES")
 public class Employees  {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    @JoinColumn(name="POSITION_ID")
+    private Position position;
 
     @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable (name = "EMPLOYEES_ADDRESS",
@@ -64,8 +72,7 @@ public class Employees  {
     @Column(name="POSITION_ID",nullable = false, length = 5)
     private Long position_id;
 
-    @Column(name="DEPARTMENT_ID",nullable = false ,length = 10)
-    private Long department_id;
+
 
 
 }
