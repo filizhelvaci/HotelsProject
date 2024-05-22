@@ -20,14 +20,10 @@ import java.util.Set;
 @Table(name="HOTEL_NAME")
 public class Hotel {
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    private Set<Rooms> rooms = new HashSet<>();
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="HOTEL_ID")
-    private Long Id;
+    private Long id;
 
     @Column(name="HOTEL_NAME",nullable = false,length = 100)
     private String hotelName;
@@ -41,6 +37,31 @@ public class Hotel {
     @Column(name="HOTEL_PROPERTIES",nullable = false)
     private String hotelProperties ;
 
+    @Column(name="INSTAGRAM_ADDRESS")
+    private String instagramAddress;
+
     @Column(name="DESCRIPTION",nullable = false)
     private String Description;
+
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private Set<Rooms> rooms = new HashSet<>();
+
+    //  Hotel             Address
+    //    1                 1
+    @OneToOne(mappedBy = "customer",fetch=FetchType.LAZY,cascade = CascadeType.ALL)
+    private Address address;
+
+    //  Hotel             RoomType
+    //    m                 m
+    @ManyToMany
+    @JoinTable(name = "HOTEL_ROOM_TYPES",
+            joinColumns = @JoinColumn (name = "HOTEL_ID"),
+            inverseJoinColumns = @JoinColumn (name = "ROOM_TYPE_ID")
+    )
+    private Set<RoomType> roomTypes = new HashSet<>();
+
+
+
+
 }

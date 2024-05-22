@@ -22,7 +22,7 @@ public class Employees  {
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     @JoinColumn(name="POSITION_ID")
-    private Position position;
+    private Positions position;
 
     @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable (name = "EMPLOYEES_ADDRESS",
@@ -69,8 +69,20 @@ public class Employees  {
     @Column(name="EXIT_DATE")
     private Date exitDate;
 
-    @Column(name="POSITION_ID",nullable = false, length = 5)
-    private Long position_id;
+    /*
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long GuestServiceId;
+    private String GraduatedDepartment;
+
+    private String Experiences;
+
+    private String Skills;
+
+    //CleaningReport(roomid,date,generalWorker_id)
+    //CleaningControl() //Eğer extra temizlik ücreti varsa
+    //FoodServiceReport(roomid,date,)
+    */
 
 
 

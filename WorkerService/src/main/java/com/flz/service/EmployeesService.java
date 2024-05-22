@@ -2,37 +2,37 @@ package com.flz.service;
 
 import com.flz.model.Employees;
 import com.flz.model.Users;
-import com.flz.repository.ManegementWorkerRepository;
+import com.flz.repository.EmployeesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ManegementWorkerService {
+public class EmployeesService {
 
     @Autowired
-    ManegementWorkerRepository manegementWorkerRepository;
+    EmployeesRepository employeesRepository;
 
     public List<Employees> getAllEmployees() {
-        return manegementWorkerRepository.findAll();
+        return employeesRepository.findAll();
     }
 
     public Employees getByEmployee(Long id) {
-        return manegementWorkerRepository.findById(id).get();
+        return employeesRepository.findById(id).get();
     }
 
     public Employees saveEmployee(Employees employees){
-        return manegementWorkerRepository.save(employees);
+        return employeesRepository.save(employees);
     }
 
     public String deleteEmployee(Long id){
-        manegementWorkerRepository.deleteById(id);
-        return "employee = "+id+ " deleted ";
+        employeesRepository.deleteById(id);
+        return "employee = "+id+ "deleted ";
     }
 
     public Employees updateEmployee(Employees employees){
-        return manegementWorkerRepository.save(employees);
+        return employeesRepository.save(employees);
     }
 
 }

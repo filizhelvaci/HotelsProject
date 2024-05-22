@@ -15,40 +15,30 @@ import org.hibernate.annotations.FetchMode;
 @Table(name="ROOMS")
 public class Rooms {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    @JoinColumn(name="ROOM_TYPE_ID")
-    private RoomType roomType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    @JoinColumn(name="HOTEL_ID")
-    private Hotel hotel;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ROOM_ID")
     private Long Id;
 
-    @Column(name="ROOM_NUMBER",length = 5)
+    @Column(name="ROOM_NUMBER",nullable = false,length = 5)
     private String roomNumber;
 
-    @Column(name="FLOOR_NUMBER",length = 3)
+    @Column(name="FLOOR_NUMBER",nullable = false,length = 3)
     private String whichfloor;
 
-    @Column(name="MAX_PERSON_COUNT",length = 3)
+    @Column(name="MAX_PERSON_COUNT",nullable = false,length = 3)
     private int countPerson;
 
-    @Column(name="DOUBLE_BED_COUNT",length = 3)
+    @Column(name="DOUBLE_BED_COUNT",nullable = false,length = 3)
     private int CountOfDoubleBed;
 
-    @Column(name="SINGLE_BED_COUNT",length = 3)
+    @Column(name="SINGLE_BED_COUNT",nullable = false,length = 3)
     private int CountOfSingleBed;
 
-    @Column(name="ROOM_PROPERTIES")
+    @Column(name="ROOM_PROPERTIES",nullable = false)
     private String roomProperties;
 
-    @Column(name="SIZE",length = 4)
+    @Column(name="SIZE",length = 4,nullable = false)
     private int m2;
 
     @Column(name="PRICE")
@@ -60,6 +50,18 @@ public class Rooms {
     @Column(name="DESCRIPTION")
     private String description;
 
+    // Rooms          RoomTypes
+    //    m               1
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    @JoinColumn(name="ROOM_TYPE_ID")
+    private RoomType roomType;
 
+    // Rooms            Hotel
+    //    m               1
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    @JoinColumn(name="HOTEL_ID")
+    private Hotel hotel;
 
 }

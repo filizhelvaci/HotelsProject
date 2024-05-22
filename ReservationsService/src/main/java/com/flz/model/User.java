@@ -4,8 +4,6 @@ package com.flz.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Optional;
-
 @Data//set get metotlarını otomatik tanımlar
 @Builder
 @NoArgsConstructor
@@ -14,7 +12,7 @@ import java.util.Optional;
 
 @Entity
 @Table
-public class Users {
+public class User {
 
     //  ********************************************
     // Rezervasyon yaptırmak istediğinde bu bilgileri girmek zorunda
@@ -33,9 +31,6 @@ public class Users {
     @Column(name="USER_ID")
     private Long userId;
 
-    @Column(name="REGISTRAT_ID",columnDefinition = "web")
-    private String registrat_id;
-
     @Column(name="NAME",nullable = false,length = 30)
     private String name;
 
@@ -50,7 +45,6 @@ public class Users {
 
     @Column(name="PASSWORD",nullable = false,length = 13)
     private String Password;
-
 
     //
     // rezervationMake(List<roomId>,dates,###price)

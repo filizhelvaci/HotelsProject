@@ -17,10 +17,6 @@ import java.util.Set;
 @Table(name="ROOM_TYPES")
 public class RoomType {
 
-    @OneToMany(mappedBy = "roomType",fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    private Set<Rooms> roomT = new HashSet<>();
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ROOM_TYPE_ID")
@@ -31,4 +27,17 @@ public class RoomType {
 
     @Column(name="ROOM_COUNT",nullable = false,length = 5)
     private int RoomCount;
+
+    // RoomType           Hotel
+    //    m                 m
+    @ManyToMany(mappedBy = "roomTypes",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private Set<Hotel> hotels = new HashSet<>();
+
+    // RoomType           Rooms
+    //    m                 m
+    @OneToMany(mappedBy = "roomType",fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private Set<Rooms> roomT = new HashSet<>();
 }

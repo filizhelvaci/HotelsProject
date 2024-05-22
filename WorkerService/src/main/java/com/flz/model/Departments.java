@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.java.Log;
 
 import java.util.Date;
 
@@ -15,7 +13,7 @@ import java.util.Date;
 @Builder
 @Data
 
-public class Department {
+public class Departments {
 
     @Column(name = "DEPARTMENT_NAME",nullable = false)
     private String DepartmentName;

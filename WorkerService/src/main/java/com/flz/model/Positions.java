@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.java.Log;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -20,11 +18,28 @@ import java.util.Set;
 
 @Entity
 @Table(name="POSITIONS")
-public class Position extends Department {
+public class Positions extends Departments {
 
     @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<Employees> employees = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "position_permission",
+            joinColumns = @JoinColumn(name = "position_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    private Set<Permissions> permissions = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "position_role",
+            joinColumns = @JoinColumn(name = "position_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Roles> roles = new HashSet<>();
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

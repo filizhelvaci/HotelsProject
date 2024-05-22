@@ -10,8 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@SuperBuilder // bir sınıftan nesne türetmek için
-@Data //set get metotlarını otomatik tanımlar
+@SuperBuilder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -19,8 +19,9 @@ import java.util.Set;
 @Table(name="ADDRESS")
 public class Address {
 
-    @ManyToMany(mappedBy = "address", fetch = FetchType.LAZY)
-    private Set<Employees> employees = new HashSet<>();
+    @OneToOne
+    @JoinColumn
+    private Hotel hotel;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
