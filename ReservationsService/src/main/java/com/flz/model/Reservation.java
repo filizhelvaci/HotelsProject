@@ -1,17 +1,27 @@
 package com.flz.model;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
 
+@Entity
+@Table(name="RESERVATION")
+public class Reservation {
 
-public class reservation {
-    private String roomId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String roomId; //LİST
     private String userId;
 
     private Date startDate;
     private Date exitDate;
+    @Column(name="REZERVATION_MAKE_DATE",length =20)
+    private Date rezervationMakeDate;
+
+    private String paymentMethods;
+
     /*
 
     // rezervation and rooms link
@@ -19,10 +29,11 @@ public class reservation {
     @Fetch(FetchMode.SELECT)
     private List<Rooms> selectedRooms=new ArrayList<>();
 
-    //Rezervation and Users link (?)
+    //Rezervation and Users link (?) // USERDAN DTO GELİCEK
     @OneToOne(mappedBy = "maketheRezervation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
     private Users users;
+
 
 
     @Id
