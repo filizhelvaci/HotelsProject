@@ -3,5 +3,5 @@ include 'CustomerService'
 include 'WorkerService'
 include 'RoomService'
 include 'ReservationsService'
-
+include 'UserService'
 
