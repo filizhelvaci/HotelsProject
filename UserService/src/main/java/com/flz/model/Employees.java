@@ -2,12 +2,8 @@ package com.flz.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Builder
 @Data
@@ -18,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name="EMPLOYEES")
 public class Employees  {
-
+    /*
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     @JoinColumn(name="POSITION_ID")
@@ -30,26 +26,15 @@ public class Employees  {
             inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
     )
     private Set<Address> address = new HashSet<>();
+   */
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="EMPLOYEES_ID",nullable = false)
-    private Long employeesId;
-
-    @Column(name="NAME",nullable = false)
-    private String name;
-
-    @Column(name="LASTNAME",nullable = false)
-    private String lastName;
+    private Long Id;
 
     @Column(name="INSIDE_NUMBER",nullable = false)
     private String insideNumber;
-
-    @Column(name="PHONE_NUMBER")
-    private String phoneNumber;
-
-    @Column(name="E_MAIL")
-    private String Email;
 
     @Column(name="BIRTHDATE",nullable = false)
     private String birthDate;
@@ -69,6 +54,9 @@ public class Employees  {
     @Column(name="EXIT_DATE")
     private Date exitDate;
 
+    @Column(name="GRADUATION_STATUS")
+    private String graduationStatus;
+
     /*
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,8 +71,5 @@ public class Employees  {
     //CleaningControl() //Eğer extra temizlik ücreti varsa
     //FoodServiceReport(roomid,date,)
     */
-
-
-
 
 }

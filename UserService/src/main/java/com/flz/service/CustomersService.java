@@ -34,6 +34,9 @@ public class CustomersService {
 
 
     public Customers saveCustomer(Customers customer){
+        if(IcustomersRepository.findById(customer.getId()).isPresent())
+            return null;
+
         return IcustomersRepository.save(customer);
     }
 

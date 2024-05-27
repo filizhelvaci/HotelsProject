@@ -3,12 +3,14 @@ package com.flz.controller;
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.Users;
 import com.flz.service.UsersService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/hotel/users")
+@RequestMapping("/users")
 public class UsersController {
 
     // ****************** @AutoWired *************** //
@@ -21,24 +23,17 @@ public class UsersController {
     // *******************    ********************* //
 
 
-    //    http://localhost:8084
-    @GetMapping("/getUser")
-    public String getUser() {
-
-        return "tek user getirir";
-    }
-
-    //    http://localhost:8084/users/all
-    @GetMapping("/all")
+    //    http://localhost:8081/users/all
+    @GetMapping("/getall")
     public List<Users> getUsers(){
 
         return usersService.getAllUsers();
     }
 
 
-    //    http://localhost:8084/users/id
-    @GetMapping("/{id}")
-    public Users getUser(@PathVariable(value = "id") Long id){
+    //    http://localhost:8081/users/getone/
+    @GetMapping("/getone/{id}")
+    public ResponseEntity<Users> getUser(@PathVariable(value = "id") Long id)throws ResourceNotFoundException{
 
         return usersService.getByUser(id);
     }
@@ -50,40 +45,18 @@ public class UsersController {
         return usersService.saveUser(users);
     }
 
-    // PUT - UPDATE
-    // http://localhost:8084/users/update
+    // http://localhost:8081/users/update/
     @PutMapping ("/update/{id}")
-    public Users updateUser(@PathVariable(value="id") Long id,
+    public ResponseEntity<Users> updateUser(@PathVariable(value="id") Long id,
                             @RequestBody Users users) throws ResourceNotFoundException {
 
-        Users usersInfo= usersService.getByUser(id);
-
-        if(usersInfo != null) {
-            //yanlış veri gönderildiyse yada en az bir kontrolden sonra kayıt değiştirlmeli
-            //değiştirilmek istenen kayıt gösterilerek uyarı vermeli. bir onay daha alırsa değişiklik yapılmalı
-            // yada update işlemi başka bir yetki ile belirlenmeli.
-            usersInfo.setUserId(id);
-            usersInfo.setName(users.getName());
-            usersInfo.setLastName(users.getLastName());
-            usersInfo.setEmail(users.getEmail());
-            usersInfo.setPhoneNumber(users.getPhoneNumber());
-            return usersService.updateUsers(usersInfo);
-        }
-        return null;
-
-        /*
-        users.setUserId(id);
-        return usersService.updateUsers(users)
-
-        return studentService.updateOneStudent2(id, student);
-         */
+      return usersService.updateUsers(id, users);
     }
 
-
-    // DELETE - DELETE
-    // http://localhost:8084/user/delete/
+    // http://localhost:8081/users/delete/
     @DeleteMapping ("/delete/{id}")
-    public String deleteUser(@PathVariable (value = "id") Long id) {
+    public Map<String,Boolean> deleteUser(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
+
         return usersService.deleteUser(id);
     }
 }

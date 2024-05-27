@@ -14,8 +14,8 @@ public class EmployeesController {
     @Autowired
     EmployeesService employeesService;
 
-    //    http://localhost:8085/employees/all
-    @GetMapping("/all")
+    //    http://localhost:8081/employees/getall
+    @GetMapping("/getall")
     public List<Employees> getEmployees(){
 
         return employeesService.getAllEmployees();

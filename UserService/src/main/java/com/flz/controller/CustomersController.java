@@ -17,7 +17,7 @@ public class CustomersController {
     @Autowired
     CustomersService customersService;
 
-    //    http://localhost:8084/customers/getall
+    //    http://localhost:8081/customers/getall
     @GetMapping("/getall")
     public List<Customers> getCustomers(){
 
@@ -25,7 +25,7 @@ public class CustomersController {
     }
 
 
-    //    http://localhost:8084/customers/getone/id
+    //    http://localhost:8081/customers/getone/
     @GetMapping("/getone/{id}")
     public ResponseEntity<Customers> getCustomer(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
 
@@ -33,15 +33,14 @@ public class CustomersController {
     }
 
 
-    //    http://localhost:8084/customers/save
+    //    http://localhost:8081/customers/save
     @PostMapping("/save")
     public Customers saveCustomer(@RequestBody Customers customer){
 
         return customersService.saveCustomer(customer);
     }
 
-    // PUT - UPDATE
-    // http://localhost:8084/customers/update
+    // http://localhost:8081/customers/update/
     @PutMapping ("/update/{id}")
     public ResponseEntity<Customers> updateCustomer(@PathVariable(value="id") Long id,
                                     @RequestBody Customers customers) throws ResourceNotFoundException
@@ -52,7 +51,7 @@ public class CustomersController {
 
 
     // DELETE - DELETE
-    // http://localhost:8084/customers/delete/
+    // http://localhost:8081/customers/delete/
     @DeleteMapping ("/delete/{id}")
     public Map<String,Boolean> deleteCustomer(@PathVariable (value = "id") Long id) throws ResourceNotFoundException {
 

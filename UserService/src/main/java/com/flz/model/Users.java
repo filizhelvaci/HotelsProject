@@ -29,10 +29,7 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="USER_ID")
-    private Long userId;
-
-    @Column(name="REGISTRAT_ID",columnDefinition = "web")
-    private String registrat_id;
+    private Long Id;
 
     @Column(name="NAME",nullable = false,length = 30)
     private String name;
@@ -50,7 +47,5 @@ public class Users {
     private String Password;
 
 
-    //
-    // rezervationMake(List<roomId>,dates,###price)
-    // rezervationCancel(List<roomId>,dates,###price)
+
 }
