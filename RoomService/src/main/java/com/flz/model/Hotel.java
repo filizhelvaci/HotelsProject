@@ -49,7 +49,7 @@ public class Hotel {
 
     //  Hotel             Address
     //    1                 1
-    @OneToOne(mappedBy = "customer",fetch=FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "hotel",fetch=FetchType.LAZY,cascade = CascadeType.ALL)
     private Address address;
 
     //  Hotel             RoomType

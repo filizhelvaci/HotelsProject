@@ -1,5 +1,6 @@
 package com.flz.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,8 +19,6 @@ import java.util.Set;
 @Table(name="ADDRESS")
 public class Address {
 
-    @ManyToMany(mappedBy = "address", fetch = FetchType.LAZY)
-    private Set<Employees> employees = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,5 +40,10 @@ public class Address {
     @Column(name="STREET_NUMBER",length = 5)
     private String streetNumber;
 
+    //-----------------------------------------------------------------------------------
+    //  Address           Users
+    //     M                M
+    @ManyToMany(mappedBy = "address", fetch = FetchType.LAZY)
+    private Set<Users> users = new HashSet<>();
 
 }

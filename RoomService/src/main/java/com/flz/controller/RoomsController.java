@@ -15,13 +15,13 @@ public class RoomsController {
     @Autowired
     RoomsService roomsService;
 
-    //    http://localhost:8086/rooms/hello
+    //    http://localhost:8082/rooms/hello
     @GetMapping("/hello")
     public String hello() {
         return "Room Service'ten --Hello-- ";
     }
 
-    //    http://localhost:8086/rooms/getall
+    //    http://localhost:8082/rooms/getall
     @GetMapping("/getall")
     public List<Rooms> getRooms(){
 
@@ -29,14 +29,14 @@ public class RoomsController {
     }
 
 
-    //    http://localhost:8086/rooms/getone/id
+    //    http://localhost:8082/rooms/getone/id
     @GetMapping("/getone/{id}")
     public Rooms getRoom(@PathVariable(value = "id") Long id){
 
         return roomsService.getByRoom(id);
     }
 
-    //    http://localhost:8086/rooms/save
+    //    http://localhost:8082/rooms/save
     @PostMapping("/save")
     public Rooms saveRoom(@RequestBody Rooms rooms){
 
@@ -44,7 +44,7 @@ public class RoomsController {
     }
 
     // PUT - UPDATE
-    // http://localhost:8086/rooms/update
+    // http://localhost:8082/rooms/update
     @PutMapping ("/update/{id}")
     public Rooms updateRoom(@PathVariable(value="id") Long id,
                                    @RequestBody Rooms room) {
@@ -75,14 +75,14 @@ public class RoomsController {
 
 
     // DELETE - DELETE
-    // http://localhost:8086/rooms/delete/
+    // http://localhost:8082/rooms/delete/
     @DeleteMapping ("/delete/{id}")
     public String deleteRoom(@PathVariable (value = "id") Long id) {
 
         return roomsService.deleteRoom(id);
     }
 
-    // http://localhost:8086/rooms/deleteAll
+    // http://localhost:8082/rooms/deleteAll
     @DeleteMapping ("/deleteAll")
     public String deleteAllRoomType() {
 

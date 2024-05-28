@@ -1,12 +1,12 @@
 ##### port #####
 server:
-  port: 8081
+  port: 8085
 
 # RoomService
 ##### data postgresql #####
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=rooms   # PostgreSQL veritabanı URL'si
+    url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=users   # PostgreSQL veritabanı URL'si
     username: postgres                                    # Veritabanı kullanıcı adı
     password: 4321                                 # Veritabanı şifresi
     driver-class-name: org.postgresql.Driver             # PostgreSQL JDBC sürücüsü

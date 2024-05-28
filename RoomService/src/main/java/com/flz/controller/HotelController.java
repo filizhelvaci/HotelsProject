@@ -15,27 +15,27 @@ public class HotelController {
     @Autowired
     HotelService hotelService;
 
-    //    http://localhost:8086/hotel/hello
+    //    http://localhost:8082/hotel/hello
     @GetMapping("/hello")
     public String hello() {
         return "Room Service Hotel'den --Hello-- ";
     }
 
-    //    http://localhost:8086/hotel/getall
+    //    http://localhost:8082/hotel/getall
     @GetMapping("/getall")
     public List<Hotel> getHotel(){
 
         return hotelService.getAllHotel();
     }
 
-    //    http://localhost:8086/hotel/getone/id
+    //    http://localhost:8082/hotel/getone/id
     @GetMapping("/getone/{id}")
     public Hotel getHotel(@PathVariable(value = "id") Long id){
 
         return hotelService.getByHotel(id);
     }
 
-    //    http://localhost:8086/hotel/save
+    //    http://localhost:8082/hotel/save
     @PostMapping("/save")
     public Hotel saveHotel(@RequestBody Hotel hotel){
 
@@ -43,7 +43,7 @@ public class HotelController {
     }
 
     // PUT - UPDATE
-    // http://localhost:8086/hotel/update
+    // http://localhost:8082/hotel/update
     @PutMapping ("/update/{id}")
     public Hotel updateHotel(@PathVariable(value="id") Long id,
                                    @RequestBody Hotel hotel) {
@@ -69,7 +69,7 @@ public class HotelController {
 
 
     // DELETE - DELETE
-    // http://localhost:8086/hotel/delete/
+    // http://localhost:8082/hotel/delete/
     @DeleteMapping ("/delete/{id}")
     public String deleteHotel(@PathVariable (value = "id") Long id) {
 

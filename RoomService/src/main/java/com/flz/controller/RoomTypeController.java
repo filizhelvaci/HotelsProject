@@ -14,21 +14,21 @@ public class RoomTypeController {
     @Autowired
     RoomTypeService roomTypeService;
 
-    //    http://localhost:8086/roomtypes/hello
+    //    http://localhost:8082/roomtypes/hello
     @GetMapping("/hello")
     public String hello() {
         return "Room Service'ten --Hello-- ";
     }
 
     // GET -GETALL
-    //    http://localhost:8086/roomtypes/getall
+    //    http://localhost:8082/roomtypes/getall
     @GetMapping("/getall")
     public List<RoomType> getRoomType(){
 
         return roomTypeService.getAllRoomType();
     }
 
-    //    http://localhost:8086/roomtypes/getone/id
+    //    http://localhost:8082/roomtypes/getone/id
 
     @GetMapping("/getone/{id}")
     public RoomType getRoomType(@PathVariable(value = "id") Long id){
@@ -37,7 +37,7 @@ public class RoomTypeController {
     }
 
     // SAVE - INSERT
-    //    http://localhost:8086/roomtypes/save
+    //    http://localhost:8082/roomtypes/save
     @PostMapping("/save")
     public RoomType saveRoomType(@RequestBody RoomType roomType){
 
@@ -45,7 +45,7 @@ public class RoomTypeController {
     }
 
     // PUT - UPDATE
-    // http://localhost:8086/roomtypes/update
+    // http://localhost:8082/roomtypes/update
     @PutMapping ("/update/{id}")
     public RoomType updateRoomType(@PathVariable(value="id") Long id,
                                    @RequestBody RoomType roomType) {
@@ -67,14 +67,14 @@ public class RoomTypeController {
 
 
     // DELETE - DELETEALL
-    // http://localhost:8086/roomtypes/delete/
+    // http://localhost:8082/roomtypes/delete/
     @DeleteMapping ("/delete/{id}")
     public String deleteRoomType(@PathVariable (value = "id") Long id) {
 
         return roomTypeService.deleteRoomType(id);
     }
 
-    // http://localhost:8086/roomtypes/deleteAll/
+    // http://localhost:8082/roomtypes/deleteAll/
     @DeleteMapping ("/deleteAll")
     public String deleteAllRoomType() {
 

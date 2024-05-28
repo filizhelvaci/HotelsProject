@@ -29,8 +29,6 @@ public class Customers {
     @Column(name="NATIONALITY",length = 20)
     private String nationality;
 
-    @Column(name="CITY",nullable = false,length = 50)
-    private String city;
 
 // FIXME kimlik bilgileri girilecek
 
@@ -44,6 +42,12 @@ public class Customers {
     @Column(name="ROOM_NUMBER",length = 25)
     private String roomNumber; */
 
- // FIXME hibernate onetoone User bağlantısı
+    //-----------------------------------------------------------------------------------
+    //   Customer     User
+    //      1          1
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UID")
+    private Users user;
+
 
 }
