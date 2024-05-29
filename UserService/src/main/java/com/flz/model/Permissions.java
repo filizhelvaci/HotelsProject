@@ -21,17 +21,17 @@ public class Permissions {
     private String name;
 
 
-    //----------------------------------------------------------------
-    //  Permission     Positions
-    //     M              M
-    @ManyToMany(mappedBy = "permissions")
-    private Set<Positions> positions = new HashSet<>();
-
-
-    //----------------------------------------------------------------
-    //  Permission     Roles
-    //     M              M
-    @ManyToMany(mappedBy = "permissions")
-    private Set<Roles> roles = new HashSet<>();
+//    //----------------------------------------------------------------
+//    //  Permission     Positions
+//    //     M              M
+//    @ManyToMany(mappedBy = "permissions")
+//    private Set<Positions> positions = new HashSet<>();
+//
+//
+//    //----------------------------------------------------------------
+//    //  Permission     Roles
+//    //     M              M
+//    @ManyToMany(mappedBy = "permissions")
+//    private Set<Roles> roles = new HashSet<>();
 
 }

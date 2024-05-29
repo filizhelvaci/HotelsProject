@@ -1,11 +1,15 @@
 package com.flz.service;
 
+import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.Hotel;
 import com.flz.repository.IHotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class HotelService {
@@ -17,22 +21,33 @@ public class HotelService {
         return IhotelRepository.findAll();
     }
 
-    public Hotel getByHotel(Long id) {
-        return IhotelRepository.findById(id).get();
+    public ResponseEntity<Hotel> getByHotel(Long id)throws ResourceNotFoundException {
+        Hotel hotel=IhotelRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Hotel not found ID :"+id));
+        return ResponseEntity.ok().body(hotel);
     }
 
     public Hotel saveHotel(Hotel hotel){
+        if(IhotelRepository.findById(hotel.getId()).isPresent())
+            return null;
         return IhotelRepository.save(hotel);
     }
 
-    public String deleteHotel(Long id){
+    public Map<String,Boolean> deleteHotel(Long id)throws ResourceNotFoundException{
         // silme işleminde bi onay daha istenebilir x kişisini silmek istediğinizden emin misiniz? gibi
+        Hotel hotel=IhotelRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Hotel not found ID : "+id));
         IhotelRepository.deleteById(id);
-        return "Hotel = "+id+ "deleted ";
+        Map<String,Boolean> response=new HashMap<>();
+        response.put(id+".record Deleted",Boolean.TRUE);
+        return response;
     }
 
-    public Hotel updateHotel(Hotel hotel){
-
-        return IhotelRepository.save(hotel);
+    public ResponseEntity<Hotel> updateHotel(Long id,Hotel hotel)throws ResourceNotFoundException{
+        Hotel hotelInfo=IhotelRepository.findById(hotel.getId())
+                .orElseThrow(()->new ResourceNotFoundException("hotel not found ID: "+hotel.getId()));
+        hotelInfo.setId(id);
+        return ResponseEntity.ok(IhotelRepository.save(hotelInfo));
     }
+
 }

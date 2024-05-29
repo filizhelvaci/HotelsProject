@@ -49,19 +49,19 @@ public class Rooms {
 
     @Column(name="DESCRIPTION")
     private String description;
-
-    // Rooms          RoomTypes
-    //    m               1
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    @JoinColumn(name="ROOM_TYPE_ID")
-    private RoomType roomType;
-
-    // Rooms            Hotel
-    //    m               1
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    @JoinColumn(name="HOTEL_ID")
-    private Hotel hotel;
+//
+//    // Rooms          RoomTypes
+//    //    m               1
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    @JoinColumn(name="ROOM_TYPE_ID")
+//    private RoomType roomType;
+//
+//    // Rooms            Hotel
+//    //    m               1
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    @JoinColumn(name="HOTEL_ID")
+//    private Hotel hotel;
 
 }

@@ -39,11 +39,11 @@ public class Address {
 
     @Column(name="STREET_NUMBER",length = 5)
     private String streetNumber;
-
-    //-----------------------------------------------------------------------------------
-    //  Address           Users
-    //     M                M
-    @ManyToMany(mappedBy = "address", fetch = FetchType.LAZY)
-    private Set<Users> users = new HashSet<>();
+//
+//    //-----------------------------------------------------------------------------------
+//    //  Address           Users
+//    //     M                M
+//    @ManyToMany(mappedBy = "address", fetch = FetchType.LAZY)
+//    private Set<Users> users = new HashSet<>();
 
 }

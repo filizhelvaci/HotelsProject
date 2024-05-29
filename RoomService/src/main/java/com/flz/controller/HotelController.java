@@ -1,11 +1,15 @@
 package com.flz.controller;
 
+import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.Hotel;
+import com.flz.model.Rooms;
 import com.flz.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/hotel")
@@ -30,7 +34,7 @@ public class HotelController {
 
     //    http://localhost:8082/hotel/getone/id
     @GetMapping("/getone/{id}")
-    public Hotel getHotel(@PathVariable(value = "id") Long id){
+    public ResponseEntity<Hotel> getHotel(@PathVariable(value = "id") Long id)throws ResourceNotFoundException{
 
         return hotelService.getByHotel(id);
     }
@@ -45,33 +49,18 @@ public class HotelController {
     // PUT - UPDATE
     // http://localhost:8082/hotel/update
     @PutMapping ("/update/{id}")
-    public Hotel updateHotel(@PathVariable(value="id") Long id,
-                                   @RequestBody Hotel hotel) {
+    public ResponseEntity<Hotel> updateHotel(@PathVariable(value="id") Long id,
+                                   @RequestBody Hotel hotel)throws ResourceNotFoundException {
 
-        Hotel newHotel= hotelService.getByHotel(id);
+        return hotelService.updateHotel(id,hotel);
 
-        if(newHotel != null) {
-            //yanlış veri gönderildiyse yada en az bir kontrolden sonra kayıt değiştirlmeli
-            //değiştirilmek istenen kayıt gösterilerek uyarı vermeli. bir onay daha alırsa değişiklik yapılmalı
-            // yada update işlemi başka bir yetki ile belirlenmeli.
-            newHotel.setId(id);
-            newHotel.setHotelName(hotel.getHotelName());
-            newHotel.setHotelType(hotel.getHotelType());
-            newHotel.setRoomCount(hotel.getRoomCount());
-            newHotel.setDescription(hotel.getDescription());
-            newHotel.setRooms(hotel.getRooms());
-            //Hotel özellikleri list şeklinde nasıl olacak
-            newHotel.setHotelProperties(hotel.getHotelProperties());
-            return hotelService.updateHotel(newHotel);
-        }
-        return null;
+
     }
-
 
     // DELETE - DELETE
     // http://localhost:8082/hotel/delete/
     @DeleteMapping ("/delete/{id}")
-    public String deleteHotel(@PathVariable (value = "id") Long id) {
+    public Map<String,Boolean> deleteHotel(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
 
         return hotelService.deleteHotel(id);
     }

@@ -23,21 +23,21 @@ public class Roles {
     private String name;
 
 
-    //----------------------------------------------------------------
-    //  Roles          Permission
-    //     M               M
-    @ManyToMany
-    @JoinTable(
-            name = "role_permission",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    private Set<Permissions> permissions = new HashSet<>();
-
-
-    //----------------------------------------------------------------
-    //  Roles         Positions
-    //     M              M
-    @ManyToMany(mappedBy = "roles")
-    private Set<Positions> positions = new HashSet<>();
+//    //----------------------------------------------------------------
+//    //  Roles          Permission
+//    //     M               M
+//    @ManyToMany
+//    @JoinTable(
+//            name = "role_permission",
+//            joinColumns = @JoinColumn(name = "role_id"),
+//            inverseJoinColumns = @JoinColumn(name = "permission_id")
+//    )
+//    private Set<Permissions> permissions = new HashSet<>();
+//
+//
+//    //----------------------------------------------------------------
+//    //  Roles         Positions
+//    //     M              M
+//    @ManyToMany(mappedBy = "roles")
+//    private Set<Positions> positions = new HashSet<>();
 }

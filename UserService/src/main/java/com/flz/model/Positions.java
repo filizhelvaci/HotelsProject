@@ -33,43 +33,43 @@ public class Positions {
     private String authorityClass;
     ////////////////////////////////////////////////////////////////
 
-
-    //----------------------------------------------------------------
-    //  Positions      Employees
-    //     M              M
-    @ManyToMany(mappedBy = "positions", fetch = FetchType.LAZY)
-    private Set<Employees> employees = new HashSet<>();
-
-
-    //----------------------------------------------------------------
-    //  Positions      Permission
-    //     M              M
-    @ManyToMany
-    @JoinTable(
-            name = "position_permission",
-            joinColumns = @JoinColumn(name = "position_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    private Set<Permissions> permissions = new HashSet<>();
-
-    //----------------------------------------------------------------
-    //  Positions      Roles
-    //     M              M
-    @ManyToMany
-    @JoinTable(
-            name = "position_role",
-            joinColumns = @JoinColumn(name = "position_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Roles> roles = new HashSet<>();
-
-    //----------------------------------------------------------------
-    //  Positions      Departments
-    //     M               1
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    @JoinColumn(name = "DEPARTMENT_ID")
-    private Departments department;
-
+//
+//    //----------------------------------------------------------------
+//    //  Positions      Employees
+//    //     M              M
+//    @ManyToMany(mappedBy = "positions", fetch = FetchType.LAZY)
+//    private Set<Employees> employees = new HashSet<>();
+//
+//
+//    //----------------------------------------------------------------
+//    //  Positions      Permission
+//    //     M              M
+//    @ManyToMany
+//    @JoinTable(
+//            name = "position_permission",
+//            joinColumns = @JoinColumn(name = "position_id"),
+//            inverseJoinColumns = @JoinColumn(name = "permission_id")
+//    )
+//    private Set<Permissions> permissions = new HashSet<>();
+//
+//    //----------------------------------------------------------------
+//    //  Positions      Roles
+//    //     M              M
+//    @ManyToMany
+//    @JoinTable(
+//            name = "position_role",
+//            joinColumns = @JoinColumn(name = "position_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id")
+//    )
+//    private Set<Roles> roles = new HashSet<>();
+//
+//    //----------------------------------------------------------------
+//    //  Positions      Departments
+//    //     M               1
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    @JoinColumn(name = "DEPARTMENT_ID")
+//    private Departments department;
+//
 
 }

@@ -42,24 +42,24 @@ public class Hotel {
 
     @Column(name="DESCRIPTION",nullable = false)
     private String Description;
+//
+//    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    private Set<Rooms> rooms = new HashSet<>();
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    private Set<Rooms> rooms = new HashSet<>();
-
-    //  Hotel             Address
-    //    1                 1
-    @OneToOne(mappedBy = "hotel",fetch=FetchType.LAZY,cascade = CascadeType.ALL)
-    private Address address;
-
-    //  Hotel             RoomType
-    //    m                 m
-    @ManyToMany
-    @JoinTable(name = "HOTEL_ROOM_TYPES",
-            joinColumns = @JoinColumn (name = "HOTEL_ID"),
-            inverseJoinColumns = @JoinColumn (name = "ROOM_TYPE_ID")
-    )
-    private Set<RoomType> roomTypes = new HashSet<>();
+//    //  Hotel             Address
+//    //    1                 1
+//    @OneToOne(mappedBy = "hotel",fetch=FetchType.LAZY,cascade = CascadeType.ALL)
+//    private Address address;
+//
+//    //  Hotel             RoomType
+//    //    m                 m
+//    @ManyToMany
+//    @JoinTable(name = "HOTEL_ROOM_TYPES",
+//            joinColumns = @JoinColumn (name = "HOTEL_ID"),
+//            inverseJoinColumns = @JoinColumn (name = "ROOM_TYPE_ID")
+//    )
+//    private Set<RoomType> roomTypes = new HashSet<>();
 
 
 

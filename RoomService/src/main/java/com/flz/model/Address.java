@@ -19,10 +19,6 @@ import java.util.Set;
 @Table(name="ADDRESS")
 public class Address {
 
-//    @OneToOne
-//    @JoinColumn(name = "HOTEL_ID"))
-//    private Hotel hotel;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ADDRESS_ID")
@@ -45,6 +41,12 @@ public class Address {
 
     //FIXME onetoone hotel
     // @OneToOne
+
+    //  Address        Hotel
+    //     1             1
+//    @OneToOne
+//    @JoinColumn(name = "HOTEL_ID")
+//    private Hotel hotel;
 
 
 

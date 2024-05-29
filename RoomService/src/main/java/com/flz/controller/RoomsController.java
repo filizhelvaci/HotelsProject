@@ -1,11 +1,14 @@
 package com.flz.controller;
 
+import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.Rooms;
 import com.flz.service.RoomsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/Rooms")
@@ -21,7 +24,7 @@ public class RoomsController {
         return "Room Service'ten --Hello-- ";
     }
 
-    //    http://localhost:8082/rooms/getall
+    //    http://localhost:8082/Rooms/getall
     @GetMapping("/getall")
     public List<Rooms> getRooms(){
 
@@ -31,7 +34,7 @@ public class RoomsController {
 
     //    http://localhost:8082/rooms/getone/id
     @GetMapping("/getone/{id}")
-    public Rooms getRoom(@PathVariable(value = "id") Long id){
+    public ResponseEntity<Rooms> getRoom(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
 
         return roomsService.getByRoom(id);
     }
@@ -46,41 +49,21 @@ public class RoomsController {
     // PUT - UPDATE
     // http://localhost:8082/rooms/update
     @PutMapping ("/update/{id}")
-    public Rooms updateRoom(@PathVariable(value="id") Long id,
-                                   @RequestBody Rooms room) {
+    public ResponseEntity<Rooms> updateRoom(@PathVariable(value="id") Long id,
+                                   @RequestBody Rooms room)throws ResourceNotFoundException {
 
-        Rooms newRoom= roomsService.getByRoom(id);
-
-        if(newRoom != null) {
-            //yanlış veri gönderildiyse yada en az bir kontrolden sonra kayıt değiştirlmeli
-            //değiştirilmek istenen kayıt gösterilerek uyarı vermeli. bir onay daha alırsa değişiklik yapılmalı
-            // yada update işlemi başka bir yetki ile belirlenmeli.
-            newRoom.setId(id);
-            newRoom.setRoomNumber(room.getRoomNumber());
-            //propersties collection olmalımı???????
-            newRoom.setRoomProperties(room.getRoomProperties());
-            newRoom.setM2(room.getM2());
-            newRoom.setCountOfDoubleBed(room.getCountOfDoubleBed());
-            newRoom.setCountOfSingleBed(room.getCountOfSingleBed());
-            newRoom.setCountPerson(room.getCountPerson());
-            newRoom.setDescription(room.getDescription());
-            newRoom.setWhichfloor(room.getWhichfloor());
-            newRoom.setPrice(room.getPrice());
-            //isFull get ?
-            newRoom.setFull(room.isFull());
-            return roomsService.updateRoom(newRoom);
-        }
-        return null;
+    return roomsService.updateRoom(id,room);
     }
 
 
     // DELETE - DELETE
     // http://localhost:8082/rooms/delete/
     @DeleteMapping ("/delete/{id}")
-    public String deleteRoom(@PathVariable (value = "id") Long id) {
+    public Map<String,Boolean> deleteRoom(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
 
         return roomsService.deleteRoom(id);
     }
+
 
     // http://localhost:8082/rooms/deleteAll
     @DeleteMapping ("/deleteAll")
