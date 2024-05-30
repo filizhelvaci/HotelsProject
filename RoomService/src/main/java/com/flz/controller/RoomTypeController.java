@@ -1,11 +1,14 @@
 package com.flz.controller;
 
+import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.RoomType;
 import com.flz.service.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/roomtypes")
@@ -31,7 +34,7 @@ public class RoomTypeController {
     //    http://localhost:8082/roomtypes/getone/id
 
     @GetMapping("/getone/{id}")
-    public RoomType getRoomType(@PathVariable(value = "id") Long id){
+    public ResponseEntity<RoomType> getRoomType(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
 
         return roomTypeService.getByRoomType(id);
     }
@@ -47,29 +50,17 @@ public class RoomTypeController {
     // PUT - UPDATE
     // http://localhost:8082/roomtypes/update
     @PutMapping ("/update/{id}")
-    public RoomType updateRoomType(@PathVariable(value="id") Long id,
-                                   @RequestBody RoomType roomType) {
+    public ResponseEntity<RoomType> updateRoomType(@PathVariable(value="id") Long id,
+                                   @RequestBody RoomType roomType)throws ResourceNotFoundException {
 
-        RoomType roomType1= roomTypeService.getByRoomType(id);
-
-        if(roomType1 != null) {
-            //yanlış veri gönderildiyse yada en az bir kontrolden sonra kayıt değiştirlmeli
-            //değiştirilmek istenen kayıt gösterilerek uyarı vermeli. bir onay daha alırsa değişiklik yapılmalı
-            // yada update işlemi başka bir yetki ile belirlenmeli.
-            roomType1.setId(id);
-            roomType1.setRoomCount(roomType.getRoomCount());
-            roomType1.setRoomTypeName(roomType.getRoomTypeName());
-            roomType1.setRoomCount(roomType1.getRoomCount());
-            return roomTypeService.updateRoomType(roomType1);
-        }
-        return null;
+        return roomTypeService.updateRoomType(id,roomType);
     }
 
 
     // DELETE - DELETEALL
     // http://localhost:8082/roomtypes/delete/
     @DeleteMapping ("/delete/{id}")
-    public String deleteRoomType(@PathVariable (value = "id") Long id) {
+    public Map<String,Boolean> deleteRoomType(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
 
         return roomTypeService.deleteRoomType(id);
     }

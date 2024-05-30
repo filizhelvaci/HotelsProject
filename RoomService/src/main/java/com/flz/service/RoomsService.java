@@ -55,11 +55,11 @@ public class RoomsService {
     }
 
     public ResponseEntity<Rooms> updateRoom(Long id,Rooms room)throws ResourceNotFoundException{
-        Rooms rooms=IroomsRepository.findById(room.getId())
-                .orElseThrow(()->new ResourceNotFoundException("room not found ID : "+room.getId()));
+       IroomsRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("room not found ID : "+id));
 
-        rooms.setId(id);
-        return ResponseEntity.ok(IroomsRepository.save(rooms));
+        room.setId(id);
+        return ResponseEntity.ok(IroomsRepository.save(room));
     }
 
 }

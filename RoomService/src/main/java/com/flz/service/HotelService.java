@@ -34,7 +34,7 @@ public class HotelService {
     }
 
     public Map<String,Boolean> deleteHotel(Long id)throws ResourceNotFoundException{
-        // silme işleminde bi onay daha istenebilir x kişisini silmek istediğinizden emin misiniz? gibi
+
         Hotel hotel=IhotelRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Hotel not found ID : "+id));
         IhotelRepository.deleteById(id);
@@ -44,10 +44,10 @@ public class HotelService {
     }
 
     public ResponseEntity<Hotel> updateHotel(Long id,Hotel hotel)throws ResourceNotFoundException{
-        Hotel hotelInfo=IhotelRepository.findById(hotel.getId())
-                .orElseThrow(()->new ResourceNotFoundException("hotel not found ID: "+hotel.getId()));
-        hotelInfo.setId(id);
-        return ResponseEntity.ok(IhotelRepository.save(hotelInfo));
+       IhotelRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("hotel not found ID: "+id));
+        hotel.setId(id);
+        return ResponseEntity.ok(IhotelRepository.save(hotel));
     }
 
 }

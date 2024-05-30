@@ -46,7 +46,6 @@ public class CustomersService {
                 .orElseThrow(()-> new ResourceNotFoundException("Customer not found ID : " +id));
 
         IcustomersRepository.deleteById(id);
-
         Map<String,Boolean> response=new HashMap<>();
         response.put("Deleted "+id ,Boolean.TRUE);
 
