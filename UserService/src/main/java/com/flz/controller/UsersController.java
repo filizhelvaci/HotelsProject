@@ -23,7 +23,7 @@ public class UsersController {
     // *******************    ********************* //
 
 
-    //    http://localhost:8081/users/all
+    //    http://localhost:8083/users/all
     @GetMapping("/getall")
     public List<Users> getUsers(){
 
@@ -31,21 +31,21 @@ public class UsersController {
     }
 
 
-    //    http://localhost:8081/users/getone/
+    //    http://localhost:8083/users/getone/
     @GetMapping("/getone/{id}")
     public ResponseEntity<Users> getUser(@PathVariable(value = "id") Long id)throws ResourceNotFoundException{
 
         return usersService.getByUser(id);
     }
 
-    //    http://localhost:8084/users/save
+    //    http://localhost:8083/users/save
     @PostMapping("/save")
     public Users saveUser(@RequestBody Users users){
 
         return usersService.saveUser(users);
     }
 
-    // http://localhost:8081/users/update/
+    // http://localhost:8083/users/update/
     @PutMapping ("/update/{id}")
     public ResponseEntity<Users> updateUser(@PathVariable(value="id") Long id,
                             @RequestBody Users users) throws ResourceNotFoundException {
@@ -53,7 +53,7 @@ public class UsersController {
       return usersService.updateUsers(id, users);
     }
 
-    // http://localhost:8081/users/delete/
+    // http://localhost:8083/users/delete/
     @DeleteMapping ("/delete/{id}")
     public Map<String,Boolean> deleteUser(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
 

@@ -17,7 +17,7 @@ public class EmployeesController {
     @Autowired
     EmployeesService employeesService;
 
-    //    http://localhost:8081/employees/getall
+    //    http://localhost:8083/employees/getall
     @GetMapping("/getall")
     public List<Employees> getEmployees(){
 
@@ -25,14 +25,14 @@ public class EmployeesController {
      }
 
 
-    //    http://localhost:8081/employees/getone/
+    //    http://localhost:8083/employees/getone/
      @GetMapping("/getone/{id}")
     public ResponseEntity<Employees> getEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
 
         return employeesService.getByEmployee(id);
      }
 
-    //    http://localhost:8081/employees/save
+    //    http://localhost:8083/employees/save
     @PostMapping("/save")
     public Employees saveEmployee(@RequestBody Employees employee){
 
@@ -40,7 +40,7 @@ public class EmployeesController {
     }
 
 
-    // http://localhost:8081/employee/update/
+    // http://localhost:8083/employee/update/
     @PutMapping ("/update/{id}")
     public ResponseEntity<Employees> updateEmployee(@PathVariable(value="id") Long id,
                                  @RequestBody Employees employees)throws ResourceNotFoundException {
@@ -49,7 +49,7 @@ public class EmployeesController {
     }
 
 
-    // http://localhost:8081/employee/delete/
+    // http://localhost:8083/employee/delete/
     @DeleteMapping ("/delete/{id}")
     public Map<String,Boolean> deleteEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
 
