@@ -42,12 +42,12 @@ public class Customers {
     @Column(name="ROOM_NUMBER",length = 25)
     private String roomNumber; */
 
-//    //-----------------------------------------------------------------------------------
-//    //   Customer     User
-//    //      1          1
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "UID")
-//    private Users user;
+    //-----------------------------------------------------------------------------------
+    //   Customer     User
+    //      1          1
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UID")
+    private Users user;
 
 
 }

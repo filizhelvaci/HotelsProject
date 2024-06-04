@@ -46,32 +46,32 @@ public class Employees  {
     @Column(name="GRADUATION_STATUS")
     private String graduationStatus;
 
-//    //-----------------------------------------------------------------------------------
-//    //  Employees       Positions
-//    //     M                M
-//    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinTable (name = "EMPLOYEES_POSITIONS",
-//            joinColumns = { @JoinColumn(name = "EMPLOYEES_ID", nullable = false)  },
-//            inverseJoinColumns = { @JoinColumn(name = "POSITION_ID", nullable = false)}
-//    )
-//    private Set<Positions> positions = new HashSet<>();
+    //-----------------------------------------------------------------------------------
+    //  Employees       Positions
+    //     M                M
+    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable (name = "EMPLOYEES_POSITIONS",
+            joinColumns = { @JoinColumn(name = "EMPLOYEES_ID", nullable = false)  },
+            inverseJoinColumns = { @JoinColumn(name = "POSITION_ID", nullable = false)}
+    )
+    private Set<Positions> positions = new HashSet<>();
 
-//    //-----------------------------------------------------------------------------------
-//    //  Employees       Address
-//    //     M                M
-//    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinTable (name = "EMPLOYEES_ADDRESS",
-//            joinColumns = { @JoinColumn(name = "EMPLOYEES_ID", nullable = false)  },
-//            inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
-//    )
-//    private Set<Address> address = new HashSet<>();
+    //-----------------------------------------------------------------------------------
+    //  Employees       Address
+    //     M                M
+    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable (name = "EMPLOYEES_ADDRESS",
+            joinColumns = { @JoinColumn(name = "EMPLOYEES_ID", nullable = false)  },
+            inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
+    )
+    private Set<Address> address = new HashSet<>();
 
-//    //-----------------------------------------------------------------------------------
-//    //  Employee      User
-//    //      1          1
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "UID")
-//    private Users user;
+    //-----------------------------------------------------------------------------------
+    //  Employee      User
+    //      1          1
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UID")
+    private Users user;
 
     //-----------------------------------------------------------------------------------
     /*

@@ -31,13 +31,13 @@ public class Departments {
 
     private Date DepartmentEstablishmentDate;
 
-//
-//    //----------------------------------------------------------------
-//    //  Departments     Positions
-//    //     1               M
-//    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
-//    @Fetch(FetchMode.SELECT)
-//    private Set<Positions> positions = new HashSet<>();
+
+    //----------------------------------------------------------------
+    //  Departments     Positions
+    //     1               M
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private Set<Positions> positions = new HashSet<>();
 
 
 
