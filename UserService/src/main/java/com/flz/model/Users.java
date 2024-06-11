@@ -29,13 +29,13 @@ public class Users extends BaseEntity {
     private String lastName;
 
     @Column(name="E_MAIL",nullable = false,length = 50,unique = true)
-    private String Email;
+    private String email;
 
     @Column(name="PHONE_NUMBER",nullable = false,length = 20)
-    private String PhoneNumber;
+    private String phoneNumber;
 
     @Column(name="PASSWORD",nullable = false,length = 13)
-    private String Password;
+    private String password;
 
     //-----------------------------------------------------------------------------------
     //  Users           Address

@@ -31,20 +31,14 @@ public class Employees  {
     @Column(name="IDENTY_NUMBER",nullable = false,unique = true)
     private String IDnumber;
 
-    @Column(name="NATIONALITY")
-    private String nationality;
-
-    @Column(name="SALARY",nullable = false)
-    private Long salary;
-
-    @Column(name="START_DATE",nullable = false)
-    private Date startDate;
-
-    @Column(name="EXIT_DATE")
-    private Date exitDate;
+    @Column(name="CONTRACT_PERIOD",nullable = false)
+    private Date contractPeriod;
 
     @Column(name="GRADUATION_STATUS")
     private String graduationStatus;
+
+    @Column(name="GRADUATION_YEAR")
+    private Date graduationYear;
 
     //-----------------------------------------------------------------------------------
     //  Employees       Positions
