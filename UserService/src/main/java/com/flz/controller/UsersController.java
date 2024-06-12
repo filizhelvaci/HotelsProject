@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -27,36 +28,38 @@ public class UsersController {
     @GetMapping("/getall")
     public List<Users> getUsers(){
 
-        return usersService.getAllUsers();
+        return usersService.findAll();
     }
 
 
     //    http://localhost:8083/users/getone/
     @GetMapping("/getone/{id}")
-    public ResponseEntity<Users> getUser(@PathVariable(value = "id") Long id)throws ResourceNotFoundException{
+    public Optional<Users> getUser(@PathVariable(value = "id") Long id)throws ResourceNotFoundException{
 
-        return usersService.getByUser(id);
+        return usersService.findById(id);
     }
 
     //    http://localhost:8083/users/save
     @PostMapping("/save")
     public Users saveUser(@RequestBody Users users){
 
-        return usersService.saveUser(users);
+        return usersService.save(users);
     }
+
+
+    //FIXME update id almadan nasıl güncelleme yapacak?
 
     // http://localhost:8083/users/update/
     @PutMapping ("/update/{id}")
     public ResponseEntity<Users> updateUser(@PathVariable(value="id") Long id,
                             @RequestBody Users users) throws ResourceNotFoundException {
 
-      return usersService.updateUsers(id, users);
+      return ResponseEntity.ok(usersService.update( users));
     }
 
     // http://localhost:8083/users/delete/
     @DeleteMapping ("/delete/{id}")
-    public Map<String,Boolean> deleteUser(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
-
-        return usersService.deleteUser(id);
+    public void deleteUser(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
+       usersService.deleteById(id);
     }
 }

@@ -1,8 +1,14 @@
 package com.flz.controller;
 
+import com.flz.constant.EndPoint;
+import com.flz.dto.request.DoCustomerRegisterRequestDto;
+import com.flz.dto.request.DoEmployeeRegisterRequestDto;
+import com.flz.dto.request.DoLoginRequestDto;
+import com.flz.dto.response.DoRegisterResponseDto;
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.Employees;
 import com.flz.service.EmployeesService;
+import com.flz.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +22,28 @@ public class EmployeesController {
 
     @Autowired
     EmployeesService employeesService;
+
+    UsersService usersService;
+
+    // -----------------------------REGISTER----------------------------------------------//
+
+    //    http://localhost:8083/employees/register
+    @PostMapping(EndPoint.REGISTER)
+    public ResponseEntity<DoRegisterResponseDto> doRegister(@RequestBody DoEmployeeRegisterRequestDto dto){
+        System.out.println("DTO: " +  dto);
+        return ResponseEntity.ok(usersService.doRegisterEmployee(dto));
+    }
+
+    // ------------------------------LOGIN-------------------------------------------------//
+    //    http://localhost:8083/employees/login
+    @PostMapping(EndPoint.LOGIN)
+    public ResponseEntity<String> doLogin(@RequestBody DoLoginRequestDto dto){
+        System.out.println("DTO: " +  dto);
+        return ResponseEntity.ok(usersService.doLoginEmployee(dto));
+    }
+
+// 888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888 //
+
 
     //    http://localhost:8083/employees/getall
     @GetMapping("/getall")

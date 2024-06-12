@@ -4,6 +4,7 @@ import com.flz.dto.request.DoCustomerRegisterRequestDto;
 import com.flz.dto.request.DoEmployeeRegisterRequestDto;
 import com.flz.dto.request.DoLoginRequestDto;
 import com.flz.dto.request.DoRegisterRequestDto;
+import com.flz.dto.response.DoRegisterResponseDto;
 import com.flz.exception.ErrorType;
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.exception.UserServiceException;
@@ -40,12 +41,12 @@ public class UsersService extends ServiceManager<Users,Long> {
 
     EmployeesService employeesService;
 
-    public Users doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
+    public DoRegisterResponseDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
 
         System.out.println("DoCustomerRegisterRequestDto: "+dto);
 
-        //if (repository.existsByUsername(dto.getUsername()))
-        //   throw new Exception();
+        if (IusersRepository.existsByEmail(dto.getEmail()))
+            throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
 
         Users users=new Users();
 
@@ -71,10 +72,13 @@ public class UsersService extends ServiceManager<Users,Long> {
         System.out.println("Customer : "+ customers);
         System.out.println("User : "+ users);
 
-        return users;
+        DoRegisterResponseDto responseDto = new DoRegisterResponseDto();
+        responseDto.setEmail(dto.getEmail());
+        return responseDto;
+
     }
 
-    public Users doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
+    public DoRegisterResponseDto doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
 
         System.out.println("DoEmployeeRegisterRequestDto: "+dto);
 
@@ -110,22 +114,33 @@ public class UsersService extends ServiceManager<Users,Long> {
         System.out.println("Employee : "+ employees);
         System.out.println("User : "+ users);
 
-        return users;
+        DoRegisterResponseDto responseDto = new DoRegisterResponseDto();
+        responseDto.setEmail(dto.getEmail());
+        return responseDto;
+
     }
-//    // JWTsiz sıradan düz bir login
-//    public String doLoginOld(DoLoginRequestDto dto) {
-//
-//        Optional<Users> users = IusersRepository.findOptionalByEmailAndPassword(dto.getEmail(),dto.getPassword());
-//        if(customersService.getByCustomer(users.get().getId()))
-//            return "Aradığınız kayıt bilgileri: "+
-//        if (users.isEmpty())
-//            throw new UserServiceException(ErrorType.DOLOGIN_USERNAMEORPASSWORD_NOTEXISTS);
-//
-//        return users.get().getId().toString();
-//    }
-//
 
+    public String doLoginCustomer(DoLoginRequestDto dto) {
 
+        Optional<Users> users = IusersRepository.findOptionalByEmailAndPassword(dto.getEmail(), dto.getPassword());
+
+        if (users.isEmpty())
+            throw new UserServiceException(ErrorType.DOLOGIN_USERNAMEORPASSWORD_NOTEXISTS);
+
+        return users.get().getId().toString();
+    }
+
+    public String doLoginEmployee(DoLoginRequestDto dto) {
+
+        Optional<Users> users = IusersRepository.findOptionalByEmailAndPassword(dto.getEmail(), dto.getPassword());
+
+        if (users.isEmpty())
+            throw new UserServiceException(ErrorType.DOLOGIN_USERNAMEORPASSWORD_NOTEXISTS);
+
+        return users.get().getId().toString();
+    }
+
+//8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888//
 //    public List<Users> getAllUsers() {
 //        return IusersRepository.findAll();
 //    }
