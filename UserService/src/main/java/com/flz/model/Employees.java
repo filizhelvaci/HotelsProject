@@ -2,12 +2,15 @@ package com.flz.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Builder
+@SuperBuilder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table
-public class Employees  {
+public class Employees extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +35,13 @@ public class Employees  {
     private String IDnumber;
 
     @Column(name="CONTRACT_PERIOD",nullable = false)
-    private Date contractPeriod;
+    private int contractPeriod;
 
     @Column(name="GRADUATION_STATUS")
     private String graduationStatus;
 
     @Column(name="GRADUATION_YEAR")
-    private Date graduationYear;
+    private String graduationYear;
 
     //-----------------------------------------------------------------------------------
     //  Employees       Positions

@@ -29,13 +29,14 @@ import java.util.Optional;
 @Service
 public class UsersService extends ServiceManager<Users,Long> {
 
+    // ****************** @AutoWired *************** //
     private final IUsersRepository IusersRepository;
 
     public UsersService(IUsersRepository IusersRepository) {
         super(IusersRepository);
         this.IusersRepository = IusersRepository;
     }
-
+   // ************************************************* //
 
     CustomersService customersService;
 
@@ -67,7 +68,7 @@ public class UsersService extends ServiceManager<Users,Long> {
         customers.setNationality(dto.getNationality());
         customers.setIDnumber(dto.getIDnumber());
         customers.setUser(users);
-        customersService.saveCustomer(customers);
+        customersService.save(customers);
 
         System.out.println("Customer : "+ customers);
         System.out.println("User : "+ users);
@@ -80,15 +81,15 @@ public class UsersService extends ServiceManager<Users,Long> {
 
     public DoRegisterResponseDto doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
 
-        System.out.println("DoEmployeeRegisterRequestDto: "+dto);
-
-        if (IusersRepository.existsByEmail(dto.getEmail()))
-                throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
-
-
-
-        if (!dto.getPassword().equals(dto.getRePassword()))
-            throw new UserServiceException(ErrorType.REGISTER_PASSWORD_MISMATCH);
+//        System.out.println("DoEmployeeRegisterRequestDto: "+dto);
+//
+//        if (IusersRepository.existsByEmail(dto.getEmail()))
+//                throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
+//
+//
+//
+//        if (!dto.getPassword().equals(dto.getRePassword()))
+//            throw new UserServiceException(ErrorType.REGISTER_PASSWORD_MISMATCH);
 
         Users users=new Users();
         users.setEmail(dto.getEmail());
@@ -109,7 +110,7 @@ public class UsersService extends ServiceManager<Users,Long> {
         employees.setUser(users);
 
 
-        employeesService.saveEmployee(employees);
+        employeesService.save(employees);
 
         System.out.println("Employee : "+ employees);
         System.out.println("User : "+ users);

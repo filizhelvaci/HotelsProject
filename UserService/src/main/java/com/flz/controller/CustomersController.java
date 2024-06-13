@@ -20,10 +20,18 @@ import java.util.Map;
 @RequestMapping("/customers")
 public class CustomersController {
 
-    @Autowired
-    CustomersService customersService;
 
+    // ****************** @AutoWired *************** //
+    private final CustomersService customersService;
+
+    public CustomersController(CustomersService customersService) {
+        this.customersService = customersService;
+    }
+
+
+    // *******************    ********************* //
     UsersService usersService;
+
 
 
     // -----------------------------REGISTER----------------------------------------------//
@@ -49,7 +57,7 @@ public class CustomersController {
     @GetMapping("/getall")
     public List<Customers> getCustomers(){
 
-        return customersService.getAllCustomers();
+        return customersService.findAll();
     }
 
 
@@ -57,7 +65,7 @@ public class CustomersController {
     @GetMapping("/getone/{id}")
     public ResponseEntity<Customers> getCustomer(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
 
-        return customersService.getByCustomer(id);
+        return ResponseEntity.ok(customersService.findById(id).get());
     }
 
 
@@ -65,7 +73,7 @@ public class CustomersController {
     @PostMapping("/save")
     public Customers saveCustomer(@RequestBody Customers customer){
 
-        return customersService.saveCustomer(customer);
+        return customersService.save(customer);
     }
 
     // http://localhost:8083/customers/update/
@@ -74,16 +82,15 @@ public class CustomersController {
                                     @RequestBody Customers customers) throws ResourceNotFoundException
     {
 
-        return customersService.updateCustomer(id, customers);
+        return ResponseEntity.ok(customersService.update(customers));
     }
 
 
     // DELETE - DELETE
     // http://localhost:8083/customers/delete/
     @DeleteMapping ("/delete/{id}")
-    public Map<String,Boolean> deleteCustomer(@PathVariable (value = "id") Long id) throws ResourceNotFoundException {
-
-        return customersService.deleteCustomer(id);
+    public void deleteCustomer(@PathVariable (value = "id") Long id) throws ResourceNotFoundException {
+        customersService.deleteById(id);
     }
 
 

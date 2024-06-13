@@ -2,8 +2,9 @@ package com.flz.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,7 +12,7 @@ import lombok.*;
 
 @Entity
 @Table
-public class Customers {
+public class Customers extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

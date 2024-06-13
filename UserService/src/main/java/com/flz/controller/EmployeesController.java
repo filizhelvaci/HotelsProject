@@ -49,7 +49,7 @@ public class EmployeesController {
     @GetMapping("/getall")
     public List<Employees> getEmployees(){
 
-        return employeesService.getAllEmployees();
+        return employeesService.findAll();
      }
 
 
@@ -57,31 +57,32 @@ public class EmployeesController {
      @GetMapping("/getone/{id}")
     public ResponseEntity<Employees> getEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
 
-        return employeesService.getByEmployee(id);
+        return ResponseEntity.ok(employeesService.findById(id).get());
      }
 
     //    http://localhost:8083/employees/save
     @PostMapping("/save")
     public Employees saveEmployee(@RequestBody Employees employee){
 
-        return employeesService.saveEmployee(employee);
+        return employeesService.save(employee);
     }
 
 
+
+// FIXME update
     // http://localhost:8083/employee/update/
     @PutMapping ("/update/{id}")
     public ResponseEntity<Employees> updateEmployee(@PathVariable(value="id") Long id,
                                  @RequestBody Employees employees)throws ResourceNotFoundException {
 
-       return employeesService.updateEmployee(id,employees);
+       return ResponseEntity.ok(employeesService.update(employees));
     }
 
 
     // http://localhost:8083/employee/delete/
     @DeleteMapping ("/delete/{id}")
-    public Map<String,Boolean> deleteEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
-
-        return employeesService.deleteEmployee(id);
+    public void deleteEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
+        employeesService.deleteById(id);
     }
 
 }

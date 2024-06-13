@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.Date;
 
 @Builder // bir sınıfın kolayca nesne oluşturmasını sağlar
@@ -18,9 +20,9 @@ public class DoEmployeeRegisterRequestDto {
     private String insideNumber;
     private String birthDate;
     private String IDnumber;
-    private Date contractPeriod;
+    private int contractPeriod;
     private String graduationStatus;
-    private Date graduationYear;
+    private String graduationYear;
 
     private String name;
     private String lastName;
