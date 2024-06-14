@@ -11,6 +11,7 @@ import com.flz.exception.UserServiceException;
 import com.flz.model.Customers;
 import com.flz.model.Employees;
 import com.flz.model.Users;
+import com.flz.repository.ICustomersRepository;
 import com.flz.repository.IEmployeesRepository;
 import com.flz.repository.IUsersRepository;
 import com.flz.utils.ServiceManager;
@@ -38,18 +39,58 @@ public class UsersService extends ServiceManager<Users,Long> {
     }
    // ************************************************* //
 
-    CustomersService customersService;
+    @Autowired
+    private IEmployeesRepository IemployeesRepository;
 
-    EmployeesService employeesService;
 
-    public DoRegisterResponseDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
+    @Autowired
+    private ICustomersRepository IcustomersRepository;
 
-        System.out.println("DoCustomerRegisterRequestDto: "+dto);
+//    @Transactional
+//    public UserDTO saveUser(UserDTO userDTO) {
+//        User user = new User();
+//        if (userDTO.getId() != null) {
+//            user = userRepository.findById(userDTO.getId()).orElse(new User());
+//        }
+//        user.setName(userDTO.getName());
+//
+//        UserProfile userProfile = new UserProfile();
+//        if (user.getUserProfile() != null) {
+//            userProfile = user.getUserProfile();
+//        }
+//        userProfile.setAddress(userDTO.getAddress());
+//        userProfile.setPhoneNumber(userDTO.getPhoneNumber());
+//
+//        user.setUserProfile(userProfile);
+//
+//        User savedUser = userRepository.save(user);
+//
+//        return convertToDTO(savedUser);
+//    }
+//
+//    private UserDTO convertToDTO(User user) {
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setId(user.getId());
+//        userDTO.setName(user.getName());
+//
+//        if (user.getUserProfile() != null) {
+//            userDTO.setAddress(user.getUserProfile().getAddress());
+//            userDTO.setPhoneNumber(user.getUserProfile().getPhoneNumber());
+//        }
+//        return userDTO;
+//    }
+
+    public DoCustomerRegisterRequestDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
+
+        System.out.println("DoCustomerRegisterRequestDto: " + dto);
 
         if (IusersRepository.existsByEmail(dto.getEmail()))
             throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
 
-        Users users=new Users();
+        Users users = new Users();
+        if (dto.getId() != null) {
+            users = IusersRepository.findById(dto.getId()).orElse(new Users());
+        }
 
         if (!dto.getPassword().equals(dto.getRePassword()))
             throw new UserServiceException(ErrorType.REGISTER_PASSWORD_MISMATCH);
@@ -61,35 +102,53 @@ public class UsersService extends ServiceManager<Users,Long> {
         users.setLastName(dto.getLastName());
         users.setCreateAt(System.currentTimeMillis());
         users.setState(true);
-        save(users);
 
-        Customers customers=new Customers();
+
+        Customers customers = new Customers();
+        if (users.getCustomer() != null) {
+            customers = users.getCustomer();
+        }
+
         customers.setBirthDate(dto.getBirthDate());
         customers.setNationality(dto.getNationality());
         customers.setIDnumber(dto.getIDnumber());
-        customers.setUser(users);
-        customersService.save(customers);
 
-        System.out.println("Customer : "+ customers);
-        System.out.println("User : "+ users);
 
-        DoRegisterResponseDto responseDto = new DoRegisterResponseDto();
-        responseDto.setEmail(dto.getEmail());
-        return responseDto;
+        users.setCustomer(customers);
+
+        Users savedUser = IusersRepository.save(users);
+
+        return convertToDTO(savedUser);
+    }
+
+      private DoCustomerRegisterRequestDto  convertToDTO(Users users)
+      {
+            DoCustomerRegisterRequestDto dto = new DoCustomerRegisterRequestDto();
+            dto.setId(users.getId());
+            dto.setName(users.getName());
+            dto.setLastName(users.getLastName());
+            dto.setPassword(users.getPassword());
+            dto.setEmail(users.getEmail());
+            dto.setPhoneNumber(users.getPhoneNumber());
+
+            if (users.getCustomer()!= null) {
+                dto.setBirthDate(users.getCustomer().getBirthDate());
+                dto.setNationality(users.getCustomer().getNationality());
+                dto.setIDnumber(users.getCustomer().getIDnumber());
+            }
+            return dto;
 
     }
 
     public DoRegisterResponseDto doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
 
-//        System.out.println("DoEmployeeRegisterRequestDto: "+dto);
-//
-//        if (IusersRepository.existsByEmail(dto.getEmail()))
-//                throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
-//
-//
-//
-//        if (!dto.getPassword().equals(dto.getRePassword()))
-//            throw new UserServiceException(ErrorType.REGISTER_PASSWORD_MISMATCH);
+        System.out.println("DoEmployeeRegisterRequestDto: "+dto);
+
+        if (IusersRepository.existsByEmail(dto.getEmail()))
+                throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
+
+        if (!dto.getPassword().equals(dto.getRePassword()))
+            throw new UserServiceException(ErrorType.REGISTER_PASSWORD_MISMATCH);
 
         Users users=new Users();
         users.setEmail(dto.getEmail());
@@ -107,13 +166,12 @@ public class UsersService extends ServiceManager<Users,Long> {
         employees.setInsideNumber(dto.getInsideNumber());
         employees.setContractPeriod(dto.getContractPeriod());
         employees.setGraduationStatus(dto.getGraduationStatus());
-        employees.setUser(users);
+//        employees.setUser(users);
 
-
-        employeesService.save(employees);
+        IemployeesRepository.save(employees);
 
         System.out.println("Employee : "+ employees);
-        System.out.println("User : "+ users);
+//        System.out.println("User : "+ users);
 
         DoRegisterResponseDto responseDto = new DoRegisterResponseDto();
         responseDto.setEmail(dto.getEmail());

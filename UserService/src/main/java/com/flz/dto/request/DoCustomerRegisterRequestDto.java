@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DoCustomerRegisterRequestDto {
 
+    private Long id;
     private String IDnumber;
     private String nationality;
     private String birthDate;
