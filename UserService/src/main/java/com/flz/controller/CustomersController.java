@@ -38,7 +38,7 @@ public class CustomersController {
 
     //    http://localhost:8083/customers/register
     @PostMapping(EndPoint.REGISTER)
-    public ResponseEntity<DoCustomerRegisterRequestDto> doRegister(@RequestBody DoCustomerRegisterRequestDto dto){
+    public ResponseEntity<DoRegisterResponseDto> doRegister(@RequestBody DoCustomerRegisterRequestDto dto){
         System.out.println("DTO: " +  dto);
         return ResponseEntity.ok(usersService.doRegisterCustomer(dto));
     }

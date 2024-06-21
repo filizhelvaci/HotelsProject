@@ -40,51 +40,18 @@ public class UsersService extends ServiceManager<Users,Long> {
    // ************************************************* //
 
     @Autowired
-    private IEmployeesRepository IemployeesRepository;
+    private EmployeesService employeesService;
 
 
     @Autowired
-    private ICustomersRepository IcustomersRepository;
+    private CustomersService customersService;
 
-//    @Transactional
-//    public UserDTO saveUser(UserDTO userDTO) {
-//        User user = new User();
-//        if (userDTO.getId() != null) {
-//            user = userRepository.findById(userDTO.getId()).orElse(new User());
-//        }
-//        user.setName(userDTO.getName());
-//
-//        UserProfile userProfile = new UserProfile();
-//        if (user.getUserProfile() != null) {
-//            userProfile = user.getUserProfile();
-//        }
-//        userProfile.setAddress(userDTO.getAddress());
-//        userProfile.setPhoneNumber(userDTO.getPhoneNumber());
-//
-//        user.setUserProfile(userProfile);
-//
-//        User savedUser = userRepository.save(user);
-//
-//        return convertToDTO(savedUser);
-//    }
-//
-//    private UserDTO convertToDTO(User user) {
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setId(user.getId());
-//        userDTO.setName(user.getName());
-//
-//        if (user.getUserProfile() != null) {
-//            userDTO.setAddress(user.getUserProfile().getAddress());
-//            userDTO.setPhoneNumber(user.getUserProfile().getPhoneNumber());
-//        }
-//        return userDTO;
-//    }
 
-    public DoCustomerRegisterRequestDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
+    public DoRegisterResponseDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
 
         System.out.println("DoCustomerRegisterRequestDto: " + dto);
 
-        if (IusersRepository.existsByEmail(dto.getEmail()))
+       if (IusersRepository.existsByEmail(dto.getEmail()))
             throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
 
         Users users = new Users();
@@ -104,41 +71,63 @@ public class UsersService extends ServiceManager<Users,Long> {
         users.setState(true);
 
 
-        Customers customers = new Customers();
-        if (users.getCustomer() != null) {
-            customers = users.getCustomer();
-        }
-
-        customers.setBirthDate(dto.getBirthDate());
-        customers.setNationality(dto.getNationality());
-        customers.setIDnumber(dto.getIDnumber());
-
-
+        Customers customers=customersService.saveCustomer(dto);
         users.setCustomer(customers);
 
         Users savedUser = IusersRepository.save(users);
+        DoRegisterResponseDto doRegisterResponseDto=new DoRegisterResponseDto();
+        doRegisterResponseDto.setPassword(savedUser.getPassword());
+        doRegisterResponseDto.setEmail(savedUser.getEmail());
 
-        return convertToDTO(savedUser);
+        //Customers savedCustomer=IcustomersRepository.save(customers);
+
+        return doRegisterResponseDto;
     }
+//
+//    UserProfile userProfile = userProfileService.saveUserProfile(userDTO);
+//    UserAddress userAddress = userAddressService.saveUserAddress(userDTO);
+//
+//        user.setUserProfile(userProfile);
+//        user.setUserAddress(userAddress);
+//
+//    User savedUser = userRepository.save(user);
+//
+//        return convertToDTO(savedUser);
+//}
+//
+//private UserDTO convertToDTO(User user) {
+//    UserDTO userDTO = new UserDTO();
+//    userDTO.setId(user.getId());
+//    userDTO.setName(user.getName());
+//
+//    if (user.getUserProfile != null) {
+//        userDTO.setPhoneNumber(user.getUserProfile().getPhoneNumber());
+//    }
+//    if (user.getUserAddress() != null) {
+//        userDTO.setAddress(user.getUserAddress().getAddress());
+//    }
+//
+//    return userDTO;
+//}
 
-      private DoCustomerRegisterRequestDto  convertToDTO(Users users)
-      {
-            DoCustomerRegisterRequestDto dto = new DoCustomerRegisterRequestDto();
-            dto.setId(users.getId());
-            dto.setName(users.getName());
-            dto.setLastName(users.getLastName());
-            dto.setPassword(users.getPassword());
-            dto.setEmail(users.getEmail());
-            dto.setPhoneNumber(users.getPhoneNumber());
-
-            if (users.getCustomer()!= null) {
-                dto.setBirthDate(users.getCustomer().getBirthDate());
-                dto.setNationality(users.getCustomer().getNationality());
-                dto.setIDnumber(users.getCustomer().getIDnumber());
-            }
-            return dto;
-
-    }
+//      private DoCustomerRegisterRequestDto  convertToDTO(Users users)
+//      {
+//            DoCustomerRegisterRequestDto dto = new DoCustomerRegisterRequestDto();
+//            dto.setId(users.getId());
+//            dto.setName(users.getName());
+//            dto.setLastName(users.getLastName());
+//            dto.setPassword(users.getPassword());
+//            dto.setEmail(users.getEmail());
+//            dto.setPhoneNumber(users.getPhoneNumber());
+//
+//            if (users.getCustomer()!= null) {
+//                dto.setBirthDate(users.getCustomer().getBirthDate());
+//                dto.setNationality(users.getCustomer().getNationality());
+//                dto.setIDnumber(users.getCustomer().getIDnumber());
+//            }
+//            return dto;
+//
+//    }
 
     public DoRegisterResponseDto doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
 
@@ -160,21 +149,22 @@ public class UsersService extends ServiceManager<Users,Long> {
         users.setState(true);
         save(users);
 
-        Employees employees=new Employees();
-        employees.setBirthDate(dto.getBirthDate());
-        employees.setIDnumber(dto.getIDnumber());
-        employees.setInsideNumber(dto.getInsideNumber());
-        employees.setContractPeriod(dto.getContractPeriod());
-        employees.setGraduationStatus(dto.getGraduationStatus());
-//        employees.setUser(users);
+//        Employees employees=new Employees();
+//        employees.setBirthDate(dto.getBirthDate());
+//        employees.setIDnumber(dto.getIDnumber());
+//        employees.setInsideNumber(dto.getInsideNumber());
+//        employees.setContractPeriod(dto.getContractPeriod());
+//        employees.setGraduationStatus(dto.getGraduationStatus());
+////        employees.setUser(users);
 
-        IemployeesRepository.save(employees);
+      //  IemployeesRepository.save(employees);
 
-        System.out.println("Employee : "+ employees);
+      //  System.out.println("Employee : "+ employees);
 //        System.out.println("User : "+ users);
 
         DoRegisterResponseDto responseDto = new DoRegisterResponseDto();
         responseDto.setEmail(dto.getEmail());
+        responseDto.setEmail(dto.getPassword());
         return responseDto;
 
     }

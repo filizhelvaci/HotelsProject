@@ -20,8 +20,8 @@ public class Users extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="UID",unique = true)
-    private Long Id;
+    @Column(name="ID",unique = true)
+    private Long id;
 
     @Column(name="NAME",nullable = false,length = 30)
     private String name;
@@ -43,7 +43,7 @@ public class Users extends BaseEntity {
     //     M                M
     @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable (name = "USERS_ADDRESS",
-            joinColumns = { @JoinColumn(name = "UID", nullable = false)  },
+            joinColumns = { @JoinColumn(name = "ID", nullable = false)  },
             inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
     )
     private Set<Address> address = new HashSet<>();

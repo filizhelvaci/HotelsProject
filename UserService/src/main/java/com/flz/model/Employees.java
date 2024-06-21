@@ -67,7 +67,7 @@ public class Employees extends BaseEntity {
     //  Employee      User
     //      1          1
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UID")
+    @JoinColumn(name = "ID")
     private Users user;
 
     //-----------------------------------------------------------------------------------

@@ -47,7 +47,7 @@ public class Customers extends BaseEntity {
     //   Customer     User
     //      1          1
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UID",referencedColumnName = "id")
+    @JoinColumn(name = "ID",referencedColumnName = "id")
     private Users user;
 
 

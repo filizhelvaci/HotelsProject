@@ -3,5 +3,7 @@ dependencies {
     implementation libs.springBootDataJpa
     implementation libs.lombok
     implementation libs.swaggerApi
+    implementation libs.mapStruct
+    annotationProcessor libs.mapStructProcessor
 
 }

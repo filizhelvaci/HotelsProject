@@ -1,7 +1,10 @@
 package com.flz.service;
 
+import com.flz.dto.request.DoCustomerRegisterRequestDto;
+import com.flz.dto.request.DoEmployeeRegisterRequestDto;
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.Customers;
+import com.flz.model.Employees;
 import com.flz.repository.ICustomersRepository;
 import com.flz.repository.IUsersRepository;
 import com.flz.utils.ServiceManager;
@@ -14,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Transactional
+
 @Service
 public class CustomersService extends ServiceManager<Customers,Long> {
 
@@ -27,47 +30,13 @@ public class CustomersService extends ServiceManager<Customers,Long> {
     }
     // *********************************************** //
 
-//
-//    public List<Customers> getAllCustomers() {
-//        return IcustomersRepository.findAll();
-//    }
-//
-//    public ResponseEntity<Customers> getByCustomer(Long id)throws ResourceNotFoundException {
-//
-//        Customers customers=IcustomersRepository.findById(id)
-//                .orElseThrow(()-> new ResourceNotFoundException("Customer not found ID : "+ id));
-//
-//        return ResponseEntity.ok().body(customers);
-//    }
-//
-//
-//    public Customers saveCustomer(Customers customer){
-//        if(IcustomersRepository.findById(customer.getId()).isPresent())
-//            return null;
-//
-//        return IcustomersRepository.save(customer);
-//    }
-//
-//    public Map<String,Boolean> deleteCustomer(Long id) throws ResourceNotFoundException{
-//
-//        Customers customers=IcustomersRepository.findById(id)
-//                .orElseThrow(()-> new ResourceNotFoundException("Customer not found ID : " +id));
-//
-//        IcustomersRepository.deleteById(id);
-//        Map<String,Boolean> response=new HashMap<>();
-//        response.put("Deleted "+id ,Boolean.TRUE);
-//
-//        return response;
-//    }
-//
-//
-//
-//    public ResponseEntity<Customers> updateCustomer(Long id, Customers customers) throws ResourceNotFoundException {
-//
-//        IcustomersRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException( "Customer not found ID : "+id));
-//        customers.setId(id);
-//        return ResponseEntity.ok(IcustomersRepository.save(customers));
-//    }
+    @Transactional
+    public Customers saveCustomer(DoCustomerRegisterRequestDto userDTO) {
+        Customers customers = new Customers();
+        customers.setIDnumber(userDTO.getIDnumber());
+        customers.setBirthDate(userDTO.getBirthDate());
+        customers.setNationality(userDTO.getNationality());
 
-
+        return IcustomersRepository.save(customers);
+    }
 }

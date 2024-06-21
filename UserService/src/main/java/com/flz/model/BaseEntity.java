@@ -13,6 +13,5 @@ import lombok.experimental.SuperBuilder;
 @Data
 public class BaseEntity {
     private Long createAt;
-    private Long updateAt;
     private boolean state;
 }
