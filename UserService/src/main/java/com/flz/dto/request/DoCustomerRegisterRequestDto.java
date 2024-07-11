@@ -13,15 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DoCustomerRegisterRequestDto {
 
-    private Long id;
+
     private String IDnumber;
     private String nationality;
     private String birthDate;
     private String name;
     private String lastName;
     @Email
-    @Column(unique = true)
     private String email;
+
     private String phoneNumber;
     private String password;
     private String rePassword;

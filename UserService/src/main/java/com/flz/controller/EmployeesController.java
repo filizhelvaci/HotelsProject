@@ -43,46 +43,46 @@ public class EmployeesController {
     }
 
 // 888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888 //
-
-
-    //    http://localhost:8083/employees/getall
-    @GetMapping("/getall")
-    public List<Employees> getEmployees(){
-
-        return employeesService.findAll();
-     }
-
-
-    //    http://localhost:8083/employees/getone/
-     @GetMapping("/getone/{id}")
-    public ResponseEntity<Employees> getEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
-
-        return ResponseEntity.ok(employeesService.findById(id).get());
-     }
-
-    //    http://localhost:8083/employees/save
-    @PostMapping("/save")
-    public Employees saveEmployee(@RequestBody Employees employee){
-
-        return employeesService.save(employee);
-    }
-
-
-
-// FIXME update
-    // http://localhost:8083/employee/update/
-    @PutMapping ("/update/{id}")
-    public ResponseEntity<Employees> updateEmployee(@PathVariable(value="id") Long id,
-                                 @RequestBody Employees employees)throws ResourceNotFoundException {
-
-       return ResponseEntity.ok(employeesService.update(employees));
-    }
-
-
-    // http://localhost:8083/employee/delete/
-    @DeleteMapping ("/delete/{id}")
-    public void deleteEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
-        employeesService.deleteById(id);
-    }
+//
+//
+//    //    http://localhost:8083/employees/getall
+//    @GetMapping("/getall")
+//    public List<Employees> getEmployees(){
+//
+//        return employeesService.findAll();
+//     }
+//
+//
+//    //    http://localhost:8083/employees/getone/
+//     @GetMapping("/getone/{id}")
+//    public ResponseEntity<Employees> getEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
+//
+//        return ResponseEntity.ok(employeesService.findById(id).get());
+//     }
+//
+//    //    http://localhost:8083/employees/save
+//    @PostMapping("/save")
+//    public Employees saveEmployee(@RequestBody Employees employee){
+//
+//        return employeesService.save(employee);
+//    }
+//
+//
+//
+//// FIXME update
+//    // http://localhost:8083/employee/update/
+//    @PutMapping ("/update/{id}")
+//    public ResponseEntity<Employees> updateEmployee(@PathVariable(value="id") Long id,
+//                                 @RequestBody Employees employees)throws ResourceNotFoundException {
+//
+//       return ResponseEntity.ok(employeesService.update(employees));
+//    }
+//
+//
+//    // http://localhost:8083/employee/delete/
+//    @DeleteMapping ("/delete/{id}")
+//    public void deleteEmployee(@PathVariable (value = "id") Long id)throws ResourceNotFoundException {
+//        employeesService.deleteById(id);
+//    }
 
 }

@@ -49,14 +49,13 @@ public class UsersService extends ServiceManager<Users,Long> {
 
     public DoRegisterResponseDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
 
-        System.out.println("DoCustomerRegisterRequestDto: " + dto);
-
-       if (IusersRepository.existsByEmail(dto.getEmail()))
-            throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
-
         Users users = new Users();
-        if (dto.getId() != null) {
-            users = IusersRepository.findById(dto.getId()).orElse(new Users());
+
+//       if (IusersRepository.existsByEmail(dto.getEmail()))
+//            throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
+
+       if (dto.getEmail() != null) {
+            users = IusersRepository.findByEmail(dto.getEmail()).orElse(new Users());
         }
 
         if (!dto.getPassword().equals(dto.getRePassword()))
@@ -75,6 +74,9 @@ public class UsersService extends ServiceManager<Users,Long> {
         users.setCustomer(customers);
 
         Users savedUser = IusersRepository.save(users);
+
+
+        //FIXME çalışmazsa buraya converttoDTO eklenecek
         DoRegisterResponseDto doRegisterResponseDto=new DoRegisterResponseDto();
         doRegisterResponseDto.setPassword(savedUser.getPassword());
         doRegisterResponseDto.setEmail(savedUser.getEmail());
@@ -131,15 +133,18 @@ public class UsersService extends ServiceManager<Users,Long> {
 
     public DoRegisterResponseDto doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
 
-        System.out.println("DoEmployeeRegisterRequestDto: "+dto);
+        //        if (IusersRepository.existsByEmail(dto.getEmail()))
+//                throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
 
-        if (IusersRepository.existsByEmail(dto.getEmail()))
-                throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
+        Users users = new Users();
+
+        if (dto.getEmail() != null) {
+            users = IusersRepository.findByEmail(dto.getEmail()).orElse(new Users());
+        }
 
         if (!dto.getPassword().equals(dto.getRePassword()))
             throw new UserServiceException(ErrorType.REGISTER_PASSWORD_MISMATCH);
 
-        Users users=new Users();
         users.setEmail(dto.getEmail());
         users.setPassword(dto.getPassword());
         users.setPhoneNumber(dto.getPhoneNumber());
@@ -147,21 +152,12 @@ public class UsersService extends ServiceManager<Users,Long> {
         users.setLastName(dto.getLastName());
         users.setCreateAt(System.currentTimeMillis());
         users.setState(true);
-        save(users);
 
-//        Employees employees=new Employees();
-//        employees.setBirthDate(dto.getBirthDate());
-//        employees.setIDnumber(dto.getIDnumber());
-//        employees.setInsideNumber(dto.getInsideNumber());
-//        employees.setContractPeriod(dto.getContractPeriod());
-//        employees.setGraduationStatus(dto.getGraduationStatus());
-////        employees.setUser(users);
+        Employees employees=employeesService.saveEmployee(dto);
+        users.setEmployee(employees);
 
-      //  IemployeesRepository.save(employees);
 
-      //  System.out.println("Employee : "+ employees);
-//        System.out.println("User : "+ users);
-
+        //FIXME Convert can do
         DoRegisterResponseDto responseDto = new DoRegisterResponseDto();
         responseDto.setEmail(dto.getEmail());
         responseDto.setEmail(dto.getPassword());
@@ -176,7 +172,7 @@ public class UsersService extends ServiceManager<Users,Long> {
         if (users.isEmpty())
             throw new UserServiceException(ErrorType.DOLOGIN_USERNAMEORPASSWORD_NOTEXISTS);
 
-        return users.get().getId().toString();
+        return users.get().getEmail().toString();
     }
 
     public String doLoginEmployee(DoLoginRequestDto dto) {
@@ -186,7 +182,7 @@ public class UsersService extends ServiceManager<Users,Long> {
         if (users.isEmpty())
             throw new UserServiceException(ErrorType.DOLOGIN_USERNAMEORPASSWORD_NOTEXISTS);
 
-        return users.get().getId().toString();
+        return users.get().getEmail().toString();
     }
 
 //8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888//

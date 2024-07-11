@@ -18,7 +18,7 @@ public class ServiceManager<T extends BaseEntity, ID> implements IService<T,ID>{
         long time=System.currentTimeMillis();
         t.setState(true);
         t.setCreateAt(time);
-        t.setUpdateAt(time);
+       // t.setUpdateAt(time);
         return repository.save(t);
     }
 
@@ -28,14 +28,14 @@ public class ServiceManager<T extends BaseEntity, ID> implements IService<T,ID>{
         t.forEach(x->{
             x.setState(true);
             x.setCreateAt(time);
-            x.setUpdateAt(time);
+            //x.setUpdateAt(time);
         });
         return repository.saveAll(t);
     }
 
     @Override
     public T update(T t) {
-        t.setUpdateAt(System.currentTimeMillis());
+        //t.setUpdateAt(System.currentTimeMillis());
         return repository.save(t);
     }
 

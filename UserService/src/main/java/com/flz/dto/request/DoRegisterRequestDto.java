@@ -2,6 +2,7 @@ package com.flz.dto.request;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +19,6 @@ public class DoRegisterRequestDto {
 
         // @Email kısmı burdada yapılabilir.
         @Email
-        @Column(unique = true)
         private String email;
 
         private String phoneNumber;
@@ -28,6 +28,7 @@ public class DoRegisterRequestDto {
         // constant -> EndPoint'ede koyabiliriz bu kısmı
         //  @NotBlank (message = "Şifre boş geçilemez.")
         //@Pattern(regexp = PASSWORD_PATTERN)
+        @NotBlank(message="Şifre boş geçilemez")
         private String password;
         private String rePassword;
     }

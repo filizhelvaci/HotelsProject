@@ -52,47 +52,47 @@ public class CustomersController {
     }
 
 // 888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888 //
-
-    //    http://localhost:8083/customers/getall
-    @GetMapping("/getall")
-    public List<Customers> getCustomers(){
-
-        return customersService.findAll();
-    }
-
-
-    //    http://localhost:8083/customers/getone/
-    @GetMapping("/getone/{id}")
-    public ResponseEntity<Customers> getCustomer(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
-
-        return ResponseEntity.ok(customersService.findById(id).get());
-    }
-
-
-    //    http://localhost:8083/customers/save
-    @PostMapping("/save")
-    public Customers saveCustomer(@RequestBody Customers customer){
-
-        return customersService.save(customer);
-    }
-
-    // http://localhost:8083/customers/update/
-    @PutMapping ("/update/{id}")
-    public ResponseEntity<Customers> updateCustomer(@PathVariable(value="id") Long id,
-                                    @RequestBody Customers customers) throws ResourceNotFoundException
-    {
-
-        return ResponseEntity.ok(customersService.update(customers));
-    }
-
-
-    // DELETE - DELETE
-    // http://localhost:8083/customers/delete/
-    @DeleteMapping ("/delete/{id}")
-    public void deleteCustomer(@PathVariable (value = "id") Long id) throws ResourceNotFoundException {
-        customersService.deleteById(id);
-    }
-
+//
+//    //    http://localhost:8083/customers/getall
+//    @GetMapping("/getall")
+//    public List<Customers> getCustomers(){
+//
+//        return customersService.findAll();
+//    }
+//
+//
+//    //    http://localhost:8083/customers/getone/
+//    @GetMapping("/getone/{id}")
+//    public ResponseEntity<Customers> getCustomer(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+//
+//        return ResponseEntity.ok(customersService.findById(id).get());
+//    }
+//
+//
+//    //    http://localhost:8083/customers/save
+//    @PostMapping("/save")
+//    public Customers saveCustomer(@RequestBody Customers customer){
+//
+//        return customersService.save(customer);
+//    }
+//
+//    // http://localhost:8083/customers/update/
+//    @PutMapping ("/update/{id}")
+//    public ResponseEntity<Customers> updateCustomer(@PathVariable(value="id") Long id,
+//                                    @RequestBody Customers customers) throws ResourceNotFoundException
+//    {
+//
+//        return ResponseEntity.ok(customersService.update(customers));
+//    }
+//
+//
+//    // DELETE - DELETE
+//    // http://localhost:8083/customers/delete/
+//    @DeleteMapping ("/delete/{id}")
+//    public void deleteCustomer(@PathVariable (value = "id") Long id) throws ResourceNotFoundException {
+//        customersService.deleteById(id);
+//    }
+//
 
 
 }

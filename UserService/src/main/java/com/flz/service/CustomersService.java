@@ -5,6 +5,7 @@ import com.flz.dto.request.DoEmployeeRegisterRequestDto;
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.Customers;
 import com.flz.model.Employees;
+import com.flz.model.Users;
 import com.flz.repository.ICustomersRepository;
 import com.flz.repository.IUsersRepository;
 import com.flz.utils.ServiceManager;

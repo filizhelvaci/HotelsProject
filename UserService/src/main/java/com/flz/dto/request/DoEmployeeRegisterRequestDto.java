@@ -27,8 +27,8 @@ public class DoEmployeeRegisterRequestDto {
     private String name;
     private String lastName;
     @Email
-    @Column(unique = true)
     private String email;
+
     private String phoneNumber;
     private String password;
     private String rePassword;
