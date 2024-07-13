@@ -9,9 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoRegisterResponseDto {
+public class DoRegisterResponseEmployeesDto {
 
     private String password;
     private String email;
+    private String name;
+    private String lastname;
+    private Long id;
 
 }

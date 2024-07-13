@@ -1,20 +1,15 @@
 package com.flz.controller;
 
 import com.flz.constant.EndPoint;
-import com.flz.dto.request.DoCustomerRegisterRequestDto;
 import com.flz.dto.request.DoEmployeeRegisterRequestDto;
 import com.flz.dto.request.DoLoginRequestDto;
-import com.flz.dto.response.DoRegisterResponseDto;
-import com.flz.exception.ResourceNotFoundException;
-import com.flz.model.Employees;
+import com.flz.dto.response.DoRegisterResponseCustomerDto;
+import com.flz.dto.response.DoRegisterResponseEmployeesDto;
 import com.flz.service.EmployeesService;
 import com.flz.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/employees")
@@ -29,7 +24,7 @@ public class EmployeesController {
 
     //    http://localhost:8083/employees/register
     @PostMapping(EndPoint.REGISTER)
-    public ResponseEntity<DoRegisterResponseDto> doRegister(@RequestBody DoEmployeeRegisterRequestDto dto){
+    public ResponseEntity<DoRegisterResponseEmployeesDto> doRegister(@RequestBody DoEmployeeRegisterRequestDto dto){
         System.out.println("DTO: " +  dto);
         return ResponseEntity.ok(usersService.doRegisterEmployee(dto));
     }

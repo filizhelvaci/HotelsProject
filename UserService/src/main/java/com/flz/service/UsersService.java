@@ -3,27 +3,19 @@ package com.flz.service;
 import com.flz.dto.request.DoCustomerRegisterRequestDto;
 import com.flz.dto.request.DoEmployeeRegisterRequestDto;
 import com.flz.dto.request.DoLoginRequestDto;
-import com.flz.dto.request.DoRegisterRequestDto;
-import com.flz.dto.response.DoRegisterResponseDto;
+import com.flz.dto.response.DoRegisterResponseCustomerDto;
+import com.flz.dto.response.DoRegisterResponseEmployeesDto;
 import com.flz.exception.ErrorType;
-import com.flz.exception.ResourceNotFoundException;
 import com.flz.exception.UserServiceException;
 import com.flz.model.Customers;
 import com.flz.model.Employees;
 import com.flz.model.Users;
-import com.flz.repository.ICustomersRepository;
-import com.flz.repository.IEmployeesRepository;
 import com.flz.repository.IUsersRepository;
 import com.flz.utils.ServiceManager;
 import jakarta.transaction.Transactional;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Transactional
@@ -47,7 +39,7 @@ public class UsersService extends ServiceManager<Users,Long> {
     private CustomersService customersService;
 
 
-    public DoRegisterResponseDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
+    public DoRegisterResponseCustomerDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
 
         Users users = new Users();
 
@@ -75,17 +67,33 @@ public class UsersService extends ServiceManager<Users,Long> {
 
         Users savedUser = IusersRepository.save(users);
 
-
-        //FIXME çalışmazsa buraya converttoDTO eklenecek
-        DoRegisterResponseDto doRegisterResponseDto=new DoRegisterResponseDto();
-        doRegisterResponseDto.setPassword(savedUser.getPassword());
-        doRegisterResponseDto.setEmail(savedUser.getEmail());
-
-        //Customers savedCustomer=IcustomersRepository.save(customers);
-
-        return doRegisterResponseDto;
-    }
 //
+//        //FIXME çalışmazsa buraya converttoDTO eklenecek
+//        DoRegisterResponseDto doRegisterResponseDto=new DoRegisterResponseDto();
+//        doRegisterResponseDto.setPassword(savedUser.getPassword());
+//        doRegisterResponseDto.setEmail(savedUser.getEmail());
+//
+//        //Customers savedCustomer=IcustomersRepository.save(customers);
+//
+//        return doRegisterResponseDto;
+
+        return convertToDTO(savedUser);
+    }
+    private DoRegisterResponseCustomerDto convertToDTO(Users user) {
+        DoRegisterResponseCustomerDto responseDto = new DoRegisterResponseCustomerDto();
+        responseDto.setEmail(user.getEmail());
+        responseDto.setName(user.getName());
+        responseDto.setLastname(user.getLastName());
+
+
+        if (user.getCustomer()!= null) {
+            responseDto.setIDnumber(user.getCustomer().getIDnumber());
+        }
+
+        return responseDto;
+}
+
+
 //    UserProfile userProfile = userProfileService.saveUserProfile(userDTO);
 //    UserAddress userAddress = userAddressService.saveUserAddress(userDTO);
 //
@@ -131,7 +139,7 @@ public class UsersService extends ServiceManager<Users,Long> {
 //
 //    }
 
-    public DoRegisterResponseDto doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
+    public DoRegisterResponseEmployeesDto doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
 
         //        if (IusersRepository.existsByEmail(dto.getEmail()))
 //                throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
@@ -157,12 +165,29 @@ public class UsersService extends ServiceManager<Users,Long> {
         users.setEmployee(employees);
 
 
-        //FIXME Convert can do
-        DoRegisterResponseDto responseDto = new DoRegisterResponseDto();
-        responseDto.setEmail(dto.getEmail());
-        responseDto.setEmail(dto.getPassword());
-        return responseDto;
+//        //FIXME Convert can do
+//        DoRegisterResponseCustomerDto responseDto = new DoRegisterResponseCustomerDto();
+//        responseDto.setEmail(dto.getEmail());
+//        responseDto.setEmail(dto.getPassword());
+//        return responseDto;
+        Users savedUser = IusersRepository.save(users);
 
+        return convertToEDTO(savedUser);
+
+    }
+    private DoRegisterResponseEmployeesDto convertToEDTO(Users user) {
+        DoRegisterResponseEmployeesDto responseDto = new DoRegisterResponseEmployeesDto();
+        responseDto.setEmail(user.getEmail());
+        responseDto.setName(user.getName());
+        responseDto.setLastname(user.getLastName());
+        responseDto.setPassword(user.getPassword());
+
+
+        if (user.getCustomer()!= null) {
+            responseDto.setId(user.getCustomer().getId());
+        }
+
+        return responseDto;
     }
 
     public String doLoginCustomer(DoLoginRequestDto dto) {
