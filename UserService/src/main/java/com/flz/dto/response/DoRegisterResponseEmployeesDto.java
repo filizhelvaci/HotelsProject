@@ -15,6 +15,6 @@ public class DoRegisterResponseEmployeesDto {
     private String email;
     private String name;
     private String lastname;
-    private Long id;
+    private Long employeeId;
 
 }

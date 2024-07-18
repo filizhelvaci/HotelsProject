@@ -6,6 +6,7 @@ import com.flz.dto.request.DoLoginRequestDto;
 import com.flz.dto.response.DoRegisterResponseCustomerDto;
 import com.flz.service.CustomersService;
 import com.flz.service.UsersService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class CustomersController {
 
 
     // *******************    ********************* //
+    @Autowired
     UsersService usersService;
 
 

@@ -43,7 +43,7 @@ public class Address {
     //-----------------------------------------------------------------------------------
     //  Address           Users
     //     M                M
-    @ManyToMany(mappedBy = "address", fetch = FetchType.LAZY)
-    private Set<Users> users = new HashSet<>();
+//    @ManyToMany(mappedBy = "address", fetch = FetchType.LAZY)
+//    private Set<Users> users = new HashSet<>();
 
 }

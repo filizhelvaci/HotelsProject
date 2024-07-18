@@ -18,6 +18,7 @@ public class EmployeesController {
     @Autowired
     EmployeesService employeesService;
 
+    @Autowired
     UsersService usersService;
 
     // -----------------------------REGISTER----------------------------------------------//

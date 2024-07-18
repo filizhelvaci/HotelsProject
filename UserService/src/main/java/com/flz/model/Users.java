@@ -41,24 +41,24 @@ public class Users extends BaseEntity {
     //-----------------------------------------------------------------------------------
     //  Users           Address
     //     M                M
-    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable (name = "USERS_ADDRESS",
-            joinColumns = { @JoinColumn(name = "ID", nullable = false)  },
-            inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
-    )
-    private Set<Address> address = new HashSet<>();
+//    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinTable (name = "USERS_ADDRESS",
+//            joinColumns = { @JoinColumn(name = "ID", nullable = false)  },
+//            inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
+//    )
+//    private Set<Address> address = new HashSet<>();
 
     //-----------------------------------------------------------------------------------
     //   Users            Customers
     //     1                 1
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Customers customer;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Customers customer;
 
     //-----------------------------------------------------------------------------------
     //   Users            Employees
     //     1                 1
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Employees employee;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Employees employee;
 
 //    //  ********************************************
 //    // Rezervasyon yaptırmak istediğinde bu bilgileri girmek zorunda

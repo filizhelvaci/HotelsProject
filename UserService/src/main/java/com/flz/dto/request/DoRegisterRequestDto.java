@@ -30,6 +30,7 @@ public class DoRegisterRequestDto {
         //@Pattern(regexp = PASSWORD_PATTERN)
         @NotBlank(message="Şifre boş geçilemez")
         private String password;
+        @NotBlank(message="Şifre boş geçilemez")
         private String rePassword;
     }
 

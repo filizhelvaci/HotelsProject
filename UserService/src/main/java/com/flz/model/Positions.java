@@ -37,8 +37,8 @@ public class Positions {
     //----------------------------------------------------------------
     //  Positions      Employees
     //     M              M
-    @ManyToMany(mappedBy = "positions", fetch = FetchType.LAZY)
-    private Set<Employees> employees = new HashSet<>();
+//    @ManyToMany(mappedBy = "positions", fetch = FetchType.LAZY)
+//    private Set<Employees> employees = new HashSet<>();
 
 
     //----------------------------------------------------------------

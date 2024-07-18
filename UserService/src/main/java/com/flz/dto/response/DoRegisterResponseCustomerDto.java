@@ -16,4 +16,5 @@ public class DoRegisterResponseCustomerDto {
     private String name;
     private String lastname;
     private String IDnumber;
+    private Long customerId;
 }

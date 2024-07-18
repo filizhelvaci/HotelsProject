@@ -8,7 +8,7 @@ ext {
             mapStruct           : "1.5.5.Final",
             postgreSql          : "42.7.1",
             swaggerApi          : "2.3.0"
-
+//jwt ekle
     ]
 
     /**

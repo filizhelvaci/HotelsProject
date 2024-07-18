@@ -7,6 +7,7 @@ import com.flz.dto.response.DoRegisterResponseCustomerDto;
 import com.flz.dto.response.DoRegisterResponseEmployeesDto;
 import com.flz.exception.ErrorType;
 import com.flz.exception.UserServiceException;
+import com.flz.mapper.IUsersMapper;
 import com.flz.model.Customers;
 import com.flz.model.Employees;
 import com.flz.model.Users;
@@ -31,161 +32,60 @@ public class UsersService extends ServiceManager<Users,Long> {
     }
    // ************************************************* //
 
+
     @Autowired
-    private EmployeesService employeesService;
+    EmployeesService employeesService;
 
 
     @Autowired
-    private CustomersService customersService;
+    CustomersService customersService;
+
 
 
     public DoRegisterResponseCustomerDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
 
-        Users users = new Users();
-
-//       if (IusersRepository.existsByEmail(dto.getEmail()))
-//            throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
-
-       if (dto.getEmail() != null) {
-            users = IusersRepository.findByEmail(dto.getEmail()).orElse(new Users());
-        }
+       if (IusersRepository.existsByEmail(dto.getEmail()))
+            throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
 
         if (!dto.getPassword().equals(dto.getRePassword()))
             throw new UserServiceException(ErrorType.REGISTER_PASSWORD_MISMATCH);
 
-        users.setEmail(dto.getEmail());
-        users.setPassword(dto.getPassword());
-        users.setPhoneNumber(dto.getPhoneNumber());
-        users.setName(dto.getName());
-        users.setLastName(dto.getLastName());
-        users.setCreateAt(System.currentTimeMillis());
-        users.setState(true);
-
+        Users user= IUsersMapper.INSTANCE.toUserC(dto);
 
         Customers customers=customersService.saveCustomer(dto);
-        users.setCustomer(customers);
 
-        Users savedUser = IusersRepository.save(users);
+        Users savedUser = IusersRepository.save(user);
 
-//
-//        //FIXME çalışmazsa buraya converttoDTO eklenecek
-//        DoRegisterResponseDto doRegisterResponseDto=new DoRegisterResponseDto();
-//        doRegisterResponseDto.setPassword(savedUser.getPassword());
-//        doRegisterResponseDto.setEmail(savedUser.getEmail());
-//
-//        //Customers savedCustomer=IcustomersRepository.save(customers);
-//
-//        return doRegisterResponseDto;
+        DoRegisterResponseCustomerDto doRegisterResponseDto=new DoRegisterResponseCustomerDto();
+        doRegisterResponseDto.setName(savedUser.getName());
+        doRegisterResponseDto.setLastname(savedUser.getLastName());
+        doRegisterResponseDto.setEmail(savedUser.getEmail());
+        doRegisterResponseDto.setIDnumber(customers.getIDnumber());
+        doRegisterResponseDto.setCustomerId(customers.getId());
 
-        return convertToDTO(savedUser);
+        return doRegisterResponseDto;
     }
-    private DoRegisterResponseCustomerDto convertToDTO(Users user) {
-        DoRegisterResponseCustomerDto responseDto = new DoRegisterResponseCustomerDto();
-        responseDto.setEmail(user.getEmail());
-        responseDto.setName(user.getName());
-        responseDto.setLastname(user.getLastName());
-
-
-        if (user.getCustomer()!= null) {
-            responseDto.setIDnumber(user.getCustomer().getIDnumber());
-        }
-
-        return responseDto;
-}
-
-
-//    UserProfile userProfile = userProfileService.saveUserProfile(userDTO);
-//    UserAddress userAddress = userAddressService.saveUserAddress(userDTO);
-//
-//        user.setUserProfile(userProfile);
-//        user.setUserAddress(userAddress);
-//
-//    User savedUser = userRepository.save(user);
-//
-//        return convertToDTO(savedUser);
-//}
-//
-//private UserDTO convertToDTO(User user) {
-//    UserDTO userDTO = new UserDTO();
-//    userDTO.setId(user.getId());
-//    userDTO.setName(user.getName());
-//
-//    if (user.getUserProfile != null) {
-//        userDTO.setPhoneNumber(user.getUserProfile().getPhoneNumber());
-//    }
-//    if (user.getUserAddress() != null) {
-//        userDTO.setAddress(user.getUserAddress().getAddress());
-//    }
-//
-//    return userDTO;
-//}
-
-//      private DoCustomerRegisterRequestDto  convertToDTO(Users users)
-//      {
-//            DoCustomerRegisterRequestDto dto = new DoCustomerRegisterRequestDto();
-//            dto.setId(users.getId());
-//            dto.setName(users.getName());
-//            dto.setLastName(users.getLastName());
-//            dto.setPassword(users.getPassword());
-//            dto.setEmail(users.getEmail());
-//            dto.setPhoneNumber(users.getPhoneNumber());
-//
-//            if (users.getCustomer()!= null) {
-//                dto.setBirthDate(users.getCustomer().getBirthDate());
-//                dto.setNationality(users.getCustomer().getNationality());
-//                dto.setIDnumber(users.getCustomer().getIDnumber());
-//            }
-//            return dto;
-//
-//    }
 
     public DoRegisterResponseEmployeesDto doRegisterEmployee(DoEmployeeRegisterRequestDto dto) {
 
-        //        if (IusersRepository.existsByEmail(dto.getEmail()))
-//                throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
-
-        Users users = new Users();
-
-        if (dto.getEmail() != null) {
-            users = IusersRepository.findByEmail(dto.getEmail()).orElse(new Users());
-        }
+        if (IusersRepository.existsByEmail(dto.getEmail()))
+          throw new UserServiceException(ErrorType.KAYIT_EKLEME_HATASI);
 
         if (!dto.getPassword().equals(dto.getRePassword()))
             throw new UserServiceException(ErrorType.REGISTER_PASSWORD_MISMATCH);
 
-        users.setEmail(dto.getEmail());
-        users.setPassword(dto.getPassword());
-        users.setPhoneNumber(dto.getPhoneNumber());
-        users.setName(dto.getName());
-        users.setLastName(dto.getLastName());
-        users.setCreateAt(System.currentTimeMillis());
-        users.setState(true);
+        Users user= IUsersMapper.INSTANCE.toUserE(dto);
 
         Employees employees=employeesService.saveEmployee(dto);
-        users.setEmployee(employees);
 
+        Users savedUser = IusersRepository.save(user);
 
-//        //FIXME Convert can do
-//        DoRegisterResponseCustomerDto responseDto = new DoRegisterResponseCustomerDto();
-//        responseDto.setEmail(dto.getEmail());
-//        responseDto.setEmail(dto.getPassword());
-//        return responseDto;
-        Users savedUser = IusersRepository.save(users);
-
-        return convertToEDTO(savedUser);
-
-    }
-    private DoRegisterResponseEmployeesDto convertToEDTO(Users user) {
         DoRegisterResponseEmployeesDto responseDto = new DoRegisterResponseEmployeesDto();
-        responseDto.setEmail(user.getEmail());
-        responseDto.setName(user.getName());
-        responseDto.setLastname(user.getLastName());
-        responseDto.setPassword(user.getPassword());
-
-
-        if (user.getCustomer()!= null) {
-            responseDto.setId(user.getCustomer().getId());
-        }
+        responseDto.setEmail(savedUser.getEmail());
+        responseDto.setName(savedUser.getName());
+        responseDto.setLastname(savedUser.getLastName());
+        responseDto.setPassword(savedUser.getPassword());
+        responseDto.setEmployeeId(employees.getId());
 
         return responseDto;
     }
@@ -209,47 +109,5 @@ public class UsersService extends ServiceManager<Users,Long> {
 
         return users.get().getEmail().toString();
     }
-
-//8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888//
-//    public List<Users> getAllUsers() {
-//        return IusersRepository.findAll();
-//    }
-//
-//    public ResponseEntity<Users> getByUser(Long id)throws ResourceNotFoundException {
-//
-//        Users users=IusersRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User not found ID: "+ id));
-//
-//        return ResponseEntity.ok().body(users);
-//    }
-//
-//
-//    public Users saveUser(Users users){
-//
-//        if(IusersRepository.findById(users.getId()).isPresent())
-//            return null;
-//
-//        return IusersRepository.save(users);
-//    }
-//
-//    public Map<String,Boolean> deleteUser(Long id) throws ResourceNotFoundException{
-//
-//        Users users=IusersRepository.findById(id)
-//                .orElseThrow(()-> new ResourceNotFoundException("Customer not found ID : " +id));
-//
-//        IusersRepository.deleteById(id);
-//
-//        Map<String,Boolean> response=new HashMap<>();
-//        response.put("Deleted "+id ,Boolean.TRUE);
-//
-//        return response;
-//    }
-//
-//    public ResponseEntity<Users> updateUsers(Long id,Users users)throws ResourceNotFoundException{
-//
-//        IusersRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException( "User not found ID : "+id));
-//        users.setId(id);
-//        return ResponseEntity.ok(IusersRepository.save(users));
-//
-//    }
 
 }
