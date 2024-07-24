@@ -11,6 +11,8 @@ import org.hibernate.annotations.FetchMode;
 @AllArgsConstructor
 @ToString
 
+
+
 @Entity
 @Table(name="ROOMS")
 public class Rooms {
@@ -49,6 +51,9 @@ public class Rooms {
 
     @Column(name="DESCRIPTION")
     private String description;
+
+    @Column(name="ROOM_COUNT",nullable = false,length = 5)
+    private int RoomCount;
 //
 //    // Rooms          RoomTypes
 //    //    m               1
