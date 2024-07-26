@@ -72,6 +72,8 @@ allprojects {
 		annotationProcessor libs.mapStructProcessor
 		implementation libs.swaggerApi
 		implementation libs.postgreSql
+		implementation  libs.jwt
+		implementation libs.springCloudOpenFeign
 	}
 }
 

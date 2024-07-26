@@ -1,9 +1,17 @@
 package com.flz.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
+@Builder // bir sınıftan nesne türetmek için
+@Data //set get metotlarını otomatik tanımlar
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 
 @Entity
 @Table
@@ -14,11 +22,13 @@ public class Reservation {
     private Long id;
     private String roomId; //LİST
     private String userId;
-
+    private String eMail;
     private Date startDate;
-    private Date exitDate;
-    @Column(name="REZERVATION_MAKE_DATE",length =20)
-    private Date rezervationMakeDate;
+    private Date endDate;
+
+    @Column(name="REZERVATION_CREATE_DATE",length =20)
+    @CreatedDate
+    private Date rezervationCreateDate;
 
     private String paymentMethods;
 

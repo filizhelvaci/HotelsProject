@@ -40,6 +40,8 @@ public class UsersService extends ServiceManager<Users,Long> {
     @Autowired
     CustomersService customersService;
 
+    final byte emp=0;
+    final byte cus=1;
 
 
     public DoRegisterResponseCustomerDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
@@ -54,6 +56,7 @@ public class UsersService extends ServiceManager<Users,Long> {
 
         Customers customers=customersService.saveCustomer(dto);
 
+        user.setUserType(cus);
         Users savedUser = IusersRepository.save(user);
 
         DoRegisterResponseCustomerDto doRegisterResponseDto=new DoRegisterResponseCustomerDto();
@@ -77,7 +80,7 @@ public class UsersService extends ServiceManager<Users,Long> {
         Users user= IUsersMapper.INSTANCE.toUserE(dto);
 
         Employees employees=employeesService.saveEmployee(dto);
-
+        user.setUserType(emp);
         Users savedUser = IusersRepository.save(user);
 
         DoRegisterResponseEmployeesDto responseDto = new DoRegisterResponseEmployeesDto();

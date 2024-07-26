@@ -38,6 +38,9 @@ public class Users extends BaseEntity {
     @Column(name="PASSWORD",nullable = false,length = 13)
     private String password;
 
+    @Column(name="USER_TYPE",nullable = false )
+    private byte userType;
+
     //-----------------------------------------------------------------------------------
     //  Users           Address
     //     M                M
