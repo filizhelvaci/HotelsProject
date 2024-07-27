@@ -1,18 +1,17 @@
 package com.flz.dto.request;
 
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Builder // bir sınıfın kolayca nesne oluşturmasını sağlar
+@Builder // bir sınıftan nesne türetmek için
 @Data //set get metotlarını otomatik tanımlar
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class DoLoginRequestDto {
 
     private String Email;
-    @Size(min=6, max=15)
+    //@Size(min=6, max=15)
     private String password;
 }

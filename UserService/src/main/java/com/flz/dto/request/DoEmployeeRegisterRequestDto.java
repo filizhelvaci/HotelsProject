@@ -2,19 +2,18 @@ package com.flz.dto.request;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.Date;
 
-@Builder // bir sınıfın kolayca nesne oluşturmasını sağlar
+@Builder // bir sınıftan nesne türetmek için
 @Data //set get metotlarını otomatik tanımlar
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class DoEmployeeRegisterRequestDto {
 
     private String insideNumber;

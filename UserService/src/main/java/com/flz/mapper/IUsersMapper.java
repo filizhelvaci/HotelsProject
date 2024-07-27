@@ -2,8 +2,10 @@ package com.flz.mapper;
 
 import com.flz.dto.request.DoCustomerRegisterRequestDto;
 import com.flz.dto.request.DoEmployeeRegisterRequestDto;
+import com.flz.dto.request.DoReservationRequestDto;
 import com.flz.model.Users;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
@@ -14,6 +16,13 @@ public interface IUsersMapper {
     Users toUserE(final DoEmployeeRegisterRequestDto dto);
 
     Users toUserC(final DoCustomerRegisterRequestDto dto);
+
+
+    /*
+
+    @Mapping(target="userId",source="id") adı değişen alanları tanımla
+*/
+    DoReservationRequestDto fromUsertoReservationDto(final Users users);
 
 
 }

@@ -1,12 +1,9 @@
 package com.flz.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder // bir sınıftan nesne türetmek için
+@Builder // bir sınıftan nesne türetmek için
 @Data //set get metotlarını otomatik tanımlar
 @NoArgsConstructor
 @AllArgsConstructor

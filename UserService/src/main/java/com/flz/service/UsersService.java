@@ -7,6 +7,7 @@ import com.flz.dto.response.DoRegisterResponseCustomerDto;
 import com.flz.dto.response.DoRegisterResponseEmployeesDto;
 import com.flz.exception.ErrorType;
 import com.flz.exception.UserServiceException;
+import com.flz.manager.IReservationManager;
 import com.flz.mapper.IUsersMapper;
 import com.flz.model.Customers;
 import com.flz.model.Employees;
@@ -25,24 +26,24 @@ public class UsersService extends ServiceManager<Users,Long> {
 
     // ****************** @AutoWired *************** //
     private final IUsersRepository IusersRepository;
+    private final IReservationManager reservationManager;
 
-    public UsersService(IUsersRepository IusersRepository) {
+    public UsersService(IUsersRepository IusersRepository, IReservationManager reservationManager) {
         super(IusersRepository);
         this.IusersRepository = IusersRepository;
+        this.reservationManager = reservationManager;
     }
-   // ************************************************* //
-
 
     @Autowired
     EmployeesService employeesService;
 
-
     @Autowired
     CustomersService customersService;
 
+    // ************************************************* //
+
     final byte emp=0;
     final byte cus=1;
-
 
     public DoRegisterResponseCustomerDto doRegisterCustomer(DoCustomerRegisterRequestDto dto) {
 
@@ -58,6 +59,9 @@ public class UsersService extends ServiceManager<Users,Long> {
 
         user.setUserType(cus);
         Users savedUser = IusersRepository.save(user);
+
+        //Başka bir servisi
+        reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(savedUser));
 
         DoRegisterResponseCustomerDto doRegisterResponseDto=new DoRegisterResponseCustomerDto();
         doRegisterResponseDto.setName(savedUser.getName());
@@ -82,6 +86,9 @@ public class UsersService extends ServiceManager<Users,Long> {
         Employees employees=employeesService.saveEmployee(dto);
         user.setUserType(emp);
         Users savedUser = IusersRepository.save(user);
+
+        //Başka bir servisi buradan çağırıyoruz.
+        reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(savedUser));
 
         DoRegisterResponseEmployeesDto responseDto = new DoRegisterResponseEmployeesDto();
         responseDto.setEmail(savedUser.getEmail());

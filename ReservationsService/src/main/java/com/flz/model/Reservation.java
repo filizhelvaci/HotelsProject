@@ -7,7 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
-@Builder // bir sınıftan nesne türetmek için
+@SuperBuilder // bir sınıftan nesne türetmek için
 @Data //set get metotlarını otomatik tanımlar
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,20 +15,22 @@ import java.util.Date;
 
 @Entity
 @Table
-public class Reservation {
+public class Reservation extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String roomId; //LİST
+
     private String userId;
+    private String name;
+    private String lastname;
     private String eMail;
+    private byte userType;
+
     private Date startDate;
     private Date endDate;
-
-    @Column(name="REZERVATION_CREATE_DATE",length =20)
-    @CreatedDate
-    private Date rezervationCreateDate;
 
     private String paymentMethods;
 
