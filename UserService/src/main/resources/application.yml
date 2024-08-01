@@ -12,7 +12,7 @@ spring:
     driver-class-name: org.postgresql.Driver             # PostgreSQL JDBC sürücüsü
   jpa:
     hibernate:
-      ddl-auto: create                                # Veritabanı şemasının otomatik güncellenmesi
+      ddl-auto: update                                # Veritabanı şemasının otomatik güncellenmesi
     show-sql: true
 
 ##### swagger-ui path #####

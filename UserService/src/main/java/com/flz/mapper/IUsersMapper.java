@@ -22,7 +22,9 @@ public interface IUsersMapper {
 
     @Mapping(target="userId",source="id") adı değişen alanları tanımla
 */
-    DoReservationRequestDto fromUsertoReservationDto(final Users users);
+
+   // Users toUser(final DoReservationRequestDto dto);
+     DoReservationRequestDto fromUsertoReservationDto(final Users users);
 
 
 }

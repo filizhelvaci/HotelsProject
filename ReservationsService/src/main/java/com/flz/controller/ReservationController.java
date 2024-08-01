@@ -24,9 +24,9 @@ public class ReservationController {
 
     // http://localhost:8081/reservation/create
     @PostMapping("/create")
-    public ResponseEntity<Boolean> create (@RequestBody DoReservationRequestDto dto){
+    public ResponseEntity<String> create (@RequestBody DoReservationRequestDto dto){
         reservationService.createReservation(dto);
-        return ResponseEntity.ok(Boolean.TRUE);
+        return ResponseEntity.ok("Başarılı");
     }
     
 }

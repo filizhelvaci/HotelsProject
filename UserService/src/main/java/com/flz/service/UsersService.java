@@ -3,6 +3,7 @@ package com.flz.service;
 import com.flz.dto.request.DoCustomerRegisterRequestDto;
 import com.flz.dto.request.DoEmployeeRegisterRequestDto;
 import com.flz.dto.request.DoLoginRequestDto;
+import com.flz.dto.request.DoReservationRequestDto;
 import com.flz.dto.response.DoRegisterResponseCustomerDto;
 import com.flz.dto.response.DoRegisterResponseEmployeesDto;
 import com.flz.exception.ErrorType;
@@ -61,7 +62,7 @@ public class UsersService extends ServiceManager<Users,Long> {
         Users savedUser = IusersRepository.save(user);
 
         //Başka bir servisi
-        reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(savedUser));
+        //reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(savedUser));
 
         DoRegisterResponseCustomerDto doRegisterResponseDto=new DoRegisterResponseCustomerDto();
         doRegisterResponseDto.setName(savedUser.getName());
@@ -87,9 +88,6 @@ public class UsersService extends ServiceManager<Users,Long> {
         user.setUserType(emp);
         Users savedUser = IusersRepository.save(user);
 
-        //Başka bir servisi buradan çağırıyoruz.
-        reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(savedUser));
-
         DoRegisterResponseEmployeesDto responseDto = new DoRegisterResponseEmployeesDto();
         responseDto.setEmail(savedUser.getEmail());
         responseDto.setName(savedUser.getName());
@@ -107,6 +105,17 @@ public class UsersService extends ServiceManager<Users,Long> {
         if (users.isEmpty())
             throw new UserServiceException(ErrorType.DOLOGIN_USERNAMEORPASSWORD_NOTEXISTS);
 
+//        reservationManager.create(DoReservationRequestDto.builder()
+//                .lastName(users.get().getLastName())
+//                .name(users.get().getName())
+//                .eMail(users.get().getEmail())
+//                .userType(users.get().getUserType())
+//                .build());
+
+
+        DoReservationRequestDto rdto=IUsersMapper.INSTANCE.fromUsertoReservationDto(users.get());
+        reservationManager.create(rdto);
+
         return users.get().getEmail().toString();
     }
 
@@ -114,8 +123,19 @@ public class UsersService extends ServiceManager<Users,Long> {
 
         Optional<Users> users = IusersRepository.findOptionalByEmailAndPassword(dto.getEmail(), dto.getPassword());
 
+
         if (users.isEmpty())
             throw new UserServiceException(ErrorType.DOLOGIN_USERNAMEORPASSWORD_NOTEXISTS);
+
+        reservationManager.create(DoReservationRequestDto.builder()
+                .lastName(users.get().getLastName())
+                .name(users.get().getName())
+                .eMail(users.get().getEmail())
+                .userType(users.get().getUserType())
+                .build());
+
+        //Başka bir servisi buradan çağırıyoruz.
+       // reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(DoReservationRequestDto));
 
         return users.get().getEmail().toString();
     }

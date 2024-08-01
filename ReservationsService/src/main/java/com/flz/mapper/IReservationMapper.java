@@ -12,6 +12,8 @@ import org.mapstruct.factory.Mappers;
 public interface IReservationMapper {
 
     IReservationMapper INSTANCE= Mappers.getMapper(IReservationMapper.class);
+
+
     Reservation fromUsertoReservation(final DoReservationRequestDto dto);
 
     Reservation fromRoomtoReservation(final DoRoomReservationRequestDto dto);

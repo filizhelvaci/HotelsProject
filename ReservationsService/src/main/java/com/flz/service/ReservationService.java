@@ -19,9 +19,15 @@ public class ReservationService extends ServiceManager<Reservation,Long> {
     }
     // ************************************************* //
 
-    public Boolean createReservation(DoReservationRequestDto dto){
+    public String createReservation(DoReservationRequestDto dto){
 
-        return null;
+
+        Reservation reservation= IReservationMapper.INSTANCE.fromUsertoReservation(dto);
+
+        Reservation savedReservation=IreservationRepository.save(reservation);
+
+
+        return "Reservasyon yapıldı.";
     }
 
 
