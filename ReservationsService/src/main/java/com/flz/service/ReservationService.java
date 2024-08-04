@@ -19,16 +19,39 @@ public class ReservationService extends ServiceManager<Reservation,Long> {
     }
     // ************************************************* //
 
-    public String createReservation(DoReservationRequestDto dto){
+    public Boolean createReservation(DoReservationRequestDto dto){
 
 
-        Reservation reservation= IReservationMapper.INSTANCE.fromUsertoReservation(dto);
+        save(IReservationMapper.INSTANCE.fromUsertoReservation(dto));
 
-        Reservation savedReservation=IreservationRepository.save(reservation);
+       // Reservation savedReservation=IreservationRepository.save(reservation);
+/*
+        Reservation reservation=new Reservation();
+        reservation.setEMail(dto.getEMail());
+        reservation.setName(dto.getName());
+        reservation.setLastname(dto.getLastName());
+        reservation.setUserType(dto.getUserType());
+        save(reservation); */
+/*
+        Reservation reservation1=Reservation.builder()
+                .name(dto.getName())
+                .lastname(dto.getLastName())
+                .eMail(dto.getEMail())
+                .userType(dto.getUserType())
+                .build();
+        save(reservation1);
+*/
 
-
-        return "Reservasyon yapıldı.";
+       /* save(Reservation.builder()
+                .name(dto.getName())
+                .lastname(dto.getLastName())
+                .eMail(dto.getEMail())
+                .userType(dto.getUserType())
+                .build());
+*/
+        return true;
     }
+
 
 
 }

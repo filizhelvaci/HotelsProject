@@ -27,7 +27,7 @@ public class Users extends BaseEntity {
     private String name;
 
     @Column(name="LASTNAME",nullable = false,length = 30)
-    private String lastName;
+    private String lastname;
 
     @Column(name="E_MAIL",nullable = false,length = 50,unique = true)
     private String email;

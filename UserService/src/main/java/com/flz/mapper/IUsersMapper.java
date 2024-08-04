@@ -18,13 +18,20 @@ public interface IUsersMapper {
     Users toUserC(final DoCustomerRegisterRequestDto dto);
 
 
-    /*
+
+ /*
+    @Mappings({
+            @Mapping(target = "firstname", source = "fname"),
+            @Mapping(target = "lastname", source = "lname")
+    })
+
 
     @Mapping(target="userId",source="id") adı değişen alanları tanımla
 */
 
    // Users toUser(final DoReservationRequestDto dto);
      DoReservationRequestDto fromUsertoReservationDto(final Users users);
+
 
 
 }

@@ -1,7 +1,6 @@
 package com.flz.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.flz.service.ReservationService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +28,13 @@ public class GlobalExceptionHandler {
      *
      * @return
      */
+    @ExceptionHandler(ReservationServiceException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorMessage> handleAuthException(ReservationServiceException e) {
+        ErrorType errorType = e.getType();
+        HttpStatus httpStatus = errorType.getStatus();
+        return new ResponseEntity<ErrorMessage>(createErrorMesaj(errorType, e), httpStatus);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {

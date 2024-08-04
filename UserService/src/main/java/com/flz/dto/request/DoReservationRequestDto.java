@@ -10,8 +10,8 @@ import lombok.experimental.SuperBuilder;
 
 public class DoReservationRequestDto {
 
-    private String name;
-    private String lastName;
-    private String eMail;
-    private byte userType;
+    String name;
+    String lastname;
+    String email;
+     byte userType;
 }

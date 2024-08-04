@@ -16,7 +16,7 @@ public interface IReservationMapper {
 
     Reservation fromUsertoReservation(final DoReservationRequestDto dto);
 
-    Reservation fromRoomtoReservation(final DoRoomReservationRequestDto dto);
+    //Reservation fromRoomtoReservation(final DoRoomReservationRequestDto dto);
 
 
 }

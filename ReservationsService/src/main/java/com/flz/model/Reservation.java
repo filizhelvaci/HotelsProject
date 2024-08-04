@@ -23,10 +23,9 @@ public class Reservation extends BaseEntity {
 
     private String roomId; //LİST
 
-    private String userId;
     private String name;
     private String lastname;
-    private String eMail;
+    private String email;
     private byte userType;
 
     private Date startDate;

@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 
 public class DoLoginRequestDto {
 
-    private String Email;
+    private String email;
     //@Size(min=6, max=15)
     private String password;
 }

@@ -66,7 +66,7 @@ public class UsersService extends ServiceManager<Users,Long> {
 
         DoRegisterResponseCustomerDto doRegisterResponseDto=new DoRegisterResponseCustomerDto();
         doRegisterResponseDto.setName(savedUser.getName());
-        doRegisterResponseDto.setLastname(savedUser.getLastName());
+        doRegisterResponseDto.setLastname(savedUser.getLastname());
         doRegisterResponseDto.setEmail(savedUser.getEmail());
         doRegisterResponseDto.setIDnumber(customers.getIDnumber());
         doRegisterResponseDto.setCustomerId(customers.getId());
@@ -91,7 +91,7 @@ public class UsersService extends ServiceManager<Users,Long> {
         DoRegisterResponseEmployeesDto responseDto = new DoRegisterResponseEmployeesDto();
         responseDto.setEmail(savedUser.getEmail());
         responseDto.setName(savedUser.getName());
-        responseDto.setLastname(savedUser.getLastName());
+        responseDto.setLastname(savedUser.getLastname());
         responseDto.setPassword(savedUser.getPassword());
         responseDto.setEmployeeId(employees.getId());
 
@@ -113,8 +113,8 @@ public class UsersService extends ServiceManager<Users,Long> {
 //                .build());
 
 
-        DoReservationRequestDto rdto=IUsersMapper.INSTANCE.fromUsertoReservationDto(users.get());
-        reservationManager.create(rdto);
+        reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(users.get()));
+
 
         return users.get().getEmail().toString();
     }
@@ -127,15 +127,17 @@ public class UsersService extends ServiceManager<Users,Long> {
         if (users.isEmpty())
             throw new UserServiceException(ErrorType.DOLOGIN_USERNAMEORPASSWORD_NOTEXISTS);
 
-        reservationManager.create(DoReservationRequestDto.builder()
+       /* reservationManager.create(DoReservationRequestDto.builder()
                 .lastName(users.get().getLastName())
                 .name(users.get().getName())
                 .eMail(users.get().getEmail())
                 .userType(users.get().getUserType())
                 .build());
 
+        */
+
         //Başka bir servisi buradan çağırıyoruz.
-       // reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(DoReservationRequestDto));
+       reservationManager.create(IUsersMapper.INSTANCE.fromUsertoReservationDto(users.get()));
 
         return users.get().getEmail().toString();
     }

@@ -24,7 +24,7 @@ public class DoEmployeeRegisterRequestDto {
     private String graduationYear;
 
     private String name;
-    private String lastName;
+    private String lastname;
     @Email
     private String email;
 

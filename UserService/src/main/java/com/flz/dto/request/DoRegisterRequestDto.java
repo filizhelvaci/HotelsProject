@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class DoRegisterRequestDto {
 
         private String name;
-        private String lastName;
+        private String lastname;
 
         // @Email kısmı burdada yapılabilir.
         @Email

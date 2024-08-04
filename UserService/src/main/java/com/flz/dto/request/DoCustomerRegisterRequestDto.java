@@ -17,7 +17,7 @@ public class DoCustomerRegisterRequestDto {
     private String nationality;
     private String birthDate;
     private String name;
-    private String lastName;
+    private String lastname;
     @Email
     private String email;
 

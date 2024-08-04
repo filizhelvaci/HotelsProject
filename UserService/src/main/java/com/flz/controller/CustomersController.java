@@ -4,11 +4,15 @@ import com.flz.constant.EndPoint;
 import com.flz.dto.request.DoCustomerRegisterRequestDto;
 import com.flz.dto.request.DoLoginRequestDto;
 import com.flz.dto.response.DoRegisterResponseCustomerDto;
+import com.flz.exception.ResourceNotFoundException;
+import com.flz.model.Customers;
 import com.flz.service.CustomersService;
 import com.flz.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/customers")
@@ -47,22 +51,22 @@ public class CustomersController {
     }
 
 // 888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888 //
-//
-//    //    http://localhost:8083/customers/getall
-//    @GetMapping("/getall")
-//    public List<Customers> getCustomers(){
-//
-//        return customersService.findAll();
-//    }
-//
-//
-//    //    http://localhost:8083/customers/getone/
-//    @GetMapping("/getone/{id}")
-//    public ResponseEntity<Customers> getCustomer(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
-//
-//        return ResponseEntity.ok(customersService.findById(id).get());
-//    }
-//
+
+    //    http://localhost:8083/customers/getall
+    @GetMapping("/getall")
+    public ResponseEntity<List<Customers>> getCustomers(){
+
+        return ResponseEntity.ok(customersService.findAll());
+    }
+
+
+    //    http://localhost:8083/customers/getone/
+    @GetMapping("/getone/{id}")
+    public ResponseEntity<Customers> getCustomer(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+
+        return ResponseEntity.ok(customersService.findById(id).get());
+    }
+
 //
 //    //    http://localhost:8083/customers/save
 //    @PostMapping("/save")

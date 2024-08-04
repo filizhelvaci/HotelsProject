@@ -53,7 +53,7 @@ public class Rooms {
     private String description;
 
     @Column(name="ROOM_COUNT",nullable = false,length = 5)
-    private int RoomCount;
+    private float roomCount;
 //
 //    // Rooms          RoomTypes
 //    //    m               1
