@@ -41,27 +41,27 @@ public class Users extends BaseEntity {
     @Column(name="USER_TYPE",nullable = false )
     private byte userType;
 
-    //-----------------------------------------------------------------------------------
-    //  Users           Address
-    //     M                M
-//    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinTable (name = "USERS_ADDRESS",
-//            joinColumns = { @JoinColumn(name = "ID", nullable = false)  },
-//            inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
-//    )
-//    private Set<Address> address = new HashSet<>();
+//    -----------------------------------------------------------------------------------
+//      Users           Address
+//         M                M
+    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable (name = "USERS_ADDRESS",
+            joinColumns = { @JoinColumn(name = "ID", nullable = false)  },
+            inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
+    )
+    private Set<Address> address = new HashSet<>();
 
-    //-----------------------------------------------------------------------------------
-    //   Users            Customers
-    //     1                 1
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Customers customer;
+//    -----------------------------------------------------------------------------------
+//       Users            Customers
+//         1                 1
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Customers customer;
 
-    //-----------------------------------------------------------------------------------
-    //   Users            Employees
-    //     1                 1
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Employees employee;
+//    -----------------------------------------------------------------------------------
+//       Users            Employees
+//         1                 1
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Employees employee;
 
 //    //  ********************************************
 //    // Rezervasyon yaptırmak istediğinde bu bilgileri girmek zorunda

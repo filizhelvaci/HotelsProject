@@ -32,6 +32,7 @@ public class Reservation extends BaseEntity {
     private Date endDate;
 
     private String paymentMethods;
+    // ödeme hareket tablosu ile ilişkilendir
 
     /*
 
