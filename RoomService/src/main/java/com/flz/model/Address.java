@@ -44,9 +44,9 @@ public class Address {
 
     //  Address        Hotel
     //     1             1
-//    @OneToOne
-//    @JoinColumn(name = "HOTEL_ID")
-//    private Hotel hotel;
+    @OneToOne
+    @JoinColumn(name = "HOTEL_ID")
+    private Hotel hotel;
 
 
 

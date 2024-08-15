@@ -25,18 +25,22 @@ public class RoomType {
     @Column(name="ROOM_TYPE_NAME",nullable = false,length = 50)
     private String RoomTypeName;
 
+    @Column(name="ADDITIONAL_PRICE",nullable = false,length = 15)
+    private float additionalPrice;
 
+    // fixme : ek özellikler atanacak
+    // private String AdditionalFeatures
 
 //    // RoomType           Hotel
 //    //    m                 m
-//    @ManyToMany(mappedBy = "roomTypes",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY)
-//    private Set<Hotel> hotels = new HashSet<>();
-//
+    @ManyToMany(mappedBy = "roomTypes",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private Set<Hotel> hotels = new HashSet<>();
+
 //    // RoomType           Rooms
 //    //    m                 m
-//    @OneToMany(mappedBy = "roomType",fetch = FetchType.LAZY)
-//    @Fetch(FetchMode.SELECT)
-//    private Set<Rooms> roomT = new HashSet<>();
+    @OneToMany(mappedBy = "roomType",fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private Set<Rooms> roomT = new HashSet<>();
 }

@@ -35,7 +35,7 @@ public class Rooms {
     @Column(name="SIZE",length = 4,nullable = false)
     private int m2;
 
-    @Column(name="PRICE")
+    @Column(name="PRICE",nullable = false,length = 20)
     private float price;
 
     @Column(name="IS_FULL")
@@ -69,19 +69,20 @@ public class Rooms {
 
 //    @Column(name="ROOM_PROPERTIES",nullable = false)
 //    private String roomProperties;
-//
+
+
 //    // Rooms          RoomTypes
 //    //    m               1
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @Fetch(FetchMode.SELECT)
-//    @JoinColumn(name="ROOM_TYPE_ID")
-//    private RoomType roomType;
-//
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    @JoinColumn(name="ROOM_TYPE_ID")
+    private RoomType roomType;
+
 //    // Rooms            Hotel
 //    //    m               1
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @Fetch(FetchMode.SELECT)
-//    @JoinColumn(name="HOTEL_ID")
-//    private Hotel hotel;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    @JoinColumn(name="HOTEL_ID")
+    private Hotel hotel;
 
 }
