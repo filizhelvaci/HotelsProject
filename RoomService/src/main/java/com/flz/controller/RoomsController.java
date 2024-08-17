@@ -72,7 +72,12 @@ public class RoomsController {
         return roomsService.deleteAllRoomType();
     }
 
-
+//    @PutMapping("/{id}/feature/{addFeaId}")
+//    public ResponseEntity<Rooms> addFeature(@PathVariable Long id, @PathVariable Long addFeaId) {
+//        Rooms rooms = RoomsService.AdditionalFeatureAdd(id,addFeaId);
+//        return ResponseEntity.ok(rooms);
+//    }
+//
 
 
 }

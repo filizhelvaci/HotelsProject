@@ -3,7 +3,6 @@ package com.flz.utils;
 import com.flz.model.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +35,7 @@ public class ServiceManager<T extends BaseEntity, ID> implements IService<T,ID>{
 
     @Override
     public T update(T t) {
-        //t.setUpdateAt(System.currentTimeMillis());
+        t.setUpdateAt(System.currentTimeMillis());
         return repository.save(t);
     }
 

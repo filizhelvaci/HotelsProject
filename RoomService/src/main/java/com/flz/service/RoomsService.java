@@ -5,6 +5,7 @@ import com.flz.model.RoomType;
 import com.flz.model.Rooms;
 import com.flz.repository.IRoomsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +62,16 @@ public class RoomsService {
         room.setId(id);
         return ResponseEntity.ok(IroomsRepository.save(room));
     }
+
+//    public Rooms AdditionalFeatureAdd(Long id, Long addFeaId)throws ResourceNotFoundException {
+//        Rooms rooms=IroomsRepository.findById(id)
+//                .orElseThrow(()-> new ResourceNotFoundException("Room not found ID"+id));
+//
+//        // fixme eközellik servis ve repository kısmı yapılacak
+//        /*AdditionalFeatureAdd additionalFeatureAdd=
+//        k ekOzellik = ekOzellikRepository.findById(ekOzellikId).orElseThrow(() -> new NotFoundException("Ek özellik bulunamadı"));
+//        oda.getEkOzellikler().add(ekOzellik);
+//        return odaRepository.save(oda);*/
+//    }
 
 }
