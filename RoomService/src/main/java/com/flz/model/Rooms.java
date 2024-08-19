@@ -5,7 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -84,5 +86,10 @@ public class Rooms {
     @Fetch(FetchMode.SELECT)
     @JoinColumn(name="HOTEL_ID")
     private Hotel hotel;
+
+    // Rooms             Inventor
+    //   m                  m
+    @ManyToMany
+    private List<Inventory> inventoryList = new ArrayList<>();
 
 }

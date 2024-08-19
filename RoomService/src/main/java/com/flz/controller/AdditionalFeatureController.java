@@ -47,12 +47,21 @@ public class AdditionalFeatureController {
     }
 
     // fixme Save yaparken den fazla nesne oluşturabilmeliyiz. Örneğin yatak alındıysa hepsini tek tek oluşturmak mantıksız
+
     //    http://localhost:8082/additionalFeatures/save
     @PostMapping("/save")
     public AdditionalFeature saveAdditionalFeature(@RequestBody AdditionalFeature additionalFeature){
 
         return additionalFeatureService.save(additionalFeature);
     }
+
+    //    http://localhost:8082/additionalFeatures/save
+    @PostMapping("/saveAll")
+    public ResponseEntity<List<AdditionalFeature>> saveAllAdditionalFeature(@RequestBody List<AdditionalFeature> additionalFeatures){
+
+        return ResponseEntity.ok().body((List<AdditionalFeature>) additionalFeatureService.saveAll(additionalFeatures));
+    }
+
     // http://localhost:8082/additionalFeatures/update/
     @PutMapping ("/update/{id}")
     public ResponseEntity<AdditionalFeature> updateAdditionalFeature(@PathVariable(value="id") Long id,
