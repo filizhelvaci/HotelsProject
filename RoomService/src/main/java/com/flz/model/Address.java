@@ -39,8 +39,6 @@ public class Address {
     @Column(name="STREET_NUMBER",length = 5)
     private String streetNumber;
 
-    //FIXME onetoone hotel
-    // @OneToOne
 
     //  Address        Hotel
     //     1             1

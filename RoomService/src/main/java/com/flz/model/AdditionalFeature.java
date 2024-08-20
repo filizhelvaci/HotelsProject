@@ -23,33 +23,34 @@ public class AdditionalFeature extends BaseEntity {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name="ADD_FEA_ID")
+        @Column(name = "ADD_FEA_ID")
         private Long id;
 
-        @Column(name="FEATURE_NAME",nullable = false,length = 50)
+        @Column(name = "FEATURE_NAME", nullable = false, length = 50)
         private String featureName;
 
-        @Column(name="DESCRIPTION")
+        @Column(name = "DESCRIPTION")
         private String description;
 
-        @Column(name="PRICE",nullable = false,length = 15)
+        @Column(name = "PRICE", nullable = false, length = 15)
         private float price;
 
-        @Column(name = "BRAND",nullable = false,length = 50)
-        private String brand;
-
-        @Column(name="COLOR",nullable = false,length = 25)
-        private String color;
+//        @Column(name = "BRAND",nullable = false,length = 50)
+//        private String brand;
+//
+//        @Column(name="COLOR",nullable = false,length = 25)
+//        private String color;
 
         // AdditionalFeature   Inventory
-        //   1                    m
-        @OneToMany(mappedBy = "additionalFeature", fetch = FetchType.LAZY)
+        //       m                1
+        @ManyToOne
         @Fetch(FetchMode.SELECT)
-        private Set<Inventory> inventories = new HashSet<>();
+        private Inventory inventory;
 
-        @ManyToMany(mappedBy = "addFeature")
+        @ManyToMany(mappedBy = "additionalFeatures", fetch = FetchType.LAZY)
+        private Set<RoomType> roomType = new HashSet<>();
+
+        @ManyToMany(mappedBy = "additionalFeature", fetch = FetchType.LAZY)
         private Set<Rooms> rooms = new HashSet<>();
-
-
 
 }

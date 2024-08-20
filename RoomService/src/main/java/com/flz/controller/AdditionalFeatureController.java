@@ -46,7 +46,6 @@ public class AdditionalFeatureController {
         return additionalFeatures;
     }
 
-    // fixme Save yaparken den fazla nesne oluşturabilmeliyiz. Örneğin yatak alındıysa hepsini tek tek oluşturmak mantıksız
 
     //    http://localhost:8082/additionalFeatures/save
     @PostMapping("/save")

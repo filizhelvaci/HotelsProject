@@ -43,11 +43,11 @@ public class Hotel {
     @Column(name="DESCRIPTION",nullable = false)
     private String Description;
 
-//   // Hotel                Rooms
-     //   1                    m
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    private Set<Rooms> rooms = new HashSet<>();
+////   // Hotel                Rooms
+//     //   1                    m
+//    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    private Set<Rooms> rooms = new HashSet<>();
 
 //    //  Hotel             Address
 //    //    1                 1

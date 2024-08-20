@@ -90,6 +90,6 @@ public class Rooms {
     // Rooms             Inventor
     //   m                  m
     @ManyToMany
-    private List<Inventory> inventoryList = new ArrayList<>();
+    private List<AdditionalFeature> additionalFeature = new ArrayList<>();
 
 }
