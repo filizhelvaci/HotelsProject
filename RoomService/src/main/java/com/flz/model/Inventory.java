@@ -18,7 +18,7 @@ import java.util.*;
 @ToString
 
 @Entity
-public class Inventory {
+public class Inventory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

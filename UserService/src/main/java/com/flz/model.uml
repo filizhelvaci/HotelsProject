@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/filiz/javaProjects/HotelsProject/UserService/src/main/java/com/flz/model</OriginalElement>
+  <nodes>
+    <node x="-1032.4057720383034" y="1114.8017965526674">com.flz.model.Address</node>
+    <node x="-634.9169341723665" y="21.945937072503256">com.flz.model.Positions</node>
+    <node x="-517.4700145554033" y="856.8833899863193">com.flz.model.Users</node>
+    <node x="-90.0194370451436" y="518.8490107797534">com.flz.model.Customers</node>
+    <node x="-90.0194370451436" y="77.27054008207921">com.flz.model.Permissions</node>
+    <node x="-1125.619270478796" y="385.07686872777">com.flz.model.Departments</node>
+    <node x="-505.3451410123116" y="397.0768687277699">com.flz.model.BaseEntity</node>
+    <node x="-1125.6192704787961" y="145.4516395075239">com.flz.model.Roles</node>
+    <node x="-1125.619270478796" y="641.4397106429547">com.flz.model.Employees</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.flz.model.Positions" target="com.flz.model.Employees" relationship="TO_MANY">
+      <point x="-103.92820683994512" y="129.00000000000003" />
+      <point x="-522.8451410123116" y="803.4397106429547" />
+      <point x="204.0" y="-15.0" />
+    </edge>
+    <edge source="com.flz.model.Employees" target="com.flz.model.Positions" relationship="TO_MANY">
+      <point x="-204.0" y="0.0" />
+      <point x="-1249.7438741450069" y="818.4397106429547" />
+      <point x="-1249.7438741450069" y="127.95163950752391" />
+      <point x="-216.0" y="-22.994297564979348" />
+    </edge>
+    <edge source="com.flz.model.Positions" target="com.flz.model.Roles" relationship="TO_MANY">
+      <point x="-216.0" y="87.50570243502065" />
+      <point x="199.0" y="0.0" />
+    </edge>
+    <edge source="com.flz.model.Roles" target="com.flz.model.Positions" relationship="TO_MANY">
+      <point x="199.0" y="-85.5" />
+      <point x="-216.0" y="2.005702435020652" />
+    </edge>
+    <edge source="com.flz.model.Positions" target="com.flz.model.Departments" relationship="TO_ONE">
+      <point x="-216.0" y="-37.99429756497935" />
+      <point x="-1264.7438741450069" y="112.95163950752391" />
+      <point x="-1264.7438741450069" y="478.07686872777" />
+      <point x="-180.0" y="0.0" />
+    </edge>
+    <edge source="com.flz.model.Employees" target="com.flz.model.Address" relationship="TO_MANY">
+      <point x="0.0" y="177.0000000000001" />
+      <point x="-921.6192704787959" y="1261.9857702872778" />
+      <point x="-209.5" y="6.18397373461039" />
+    </edge>
+    <edge source="com.flz.model.Users" target="com.flz.model.Employees" relationship="TO_ONE">
+      <point x="-207.5" y="0.0" />
+      <point x="-1072.619270478796" y="1033.8833899863193" />
+      <point x="-151.0" y="177.0000000000001" />
+    </edge>
+    <edge source="com.flz.model.Employees" target="com.flz.model.Users" relationship="TO_ONE">
+      <point x="-181.0" y="177.0000000000001" />
+      <point x="-1102.619270478796" y="1048.8833899863193" />
+      <point x="-207.5" y="15.0" />
+    </edge>
+    <edge source="com.flz.model.Address" target="com.flz.model.Users" relationship="TO_MANY">
+      <point x="-30.7297405198359" y="-141.0" />
+      <point x="-853.6355125581393" y="1343.8497081258545" />
+      <point x="-309.9700145554033" y="1343.8497081258545" />
+      <point x="0.0" y="177.0" />
+    </edge>
+    <edge source="com.flz.model.Users" target="com.flz.model.Address" relationship="TO_MANY">
+      <point x="-34.0" y="177.0" />
+      <point x="-343.9700145554033" y="1343.8497081258545" />
+      <point x="-887.6355125581393" y="1343.8497081258545" />
+      <point x="-64.7297405198359" y="-141.0" />
+    </edge>
+    <edge source="com.flz.model.Employees" target="com.flz.model.BaseEntity" relationship="GENERALIZATION">
+      <point x="204.0" y="0.0" />
+      <point x="-366.8451410123116" y="818.4397106429547" />
+      <point x="0.0" y="81.0" />
+    </edge>
+    <edge source="com.flz.model.Permissions" target="com.flz.model.Roles" relationship="TO_MANY">
+      <point x="99.5" y="-93.0" />
+      <point x="208.4805629548564" y="331.4516395075239" />
+      <point x="99.5" y="93.0" />
+    </edge>
+    <edge source="com.flz.model.Roles" target="com.flz.model.Permissions" relationship="TO_MANY">
+      <point x="-99.5" y="93.0" />
+      <point x="9.480562954856396" y="331.4516395075239" />
+      <point x="-99.5" y="-93.0" />
+    </edge>
+    <edge source="com.flz.model.Users" target="com.flz.model.Customers" relationship="TO_ONE">
+      <point x="200.0" y="-177.0" />
+      <point x="-109.97001455540328" y="820.086967551299" />
+      <point x="-62.56996290013706" y="820.086967551299" />
+      <point x="-161.05052585499345" y="129.0" />
+    </edge>
+    <edge source="com.flz.model.Customers" target="com.flz.model.Users" relationship="TO_ONE">
+      <point x="-188.5" y="0.0" />
+      <point x="-309.9700145554033" y="647.8490107797534" />
+      <point x="0.0" y="-177.0" />
+    </edge>
+    <edge source="com.flz.model.Users" target="com.flz.model.BaseEntity" relationship="GENERALIZATION">
+      <point x="187.0" y="-177.0" />
+      <point x="-122.97001455540328" y="463.0768687277699" />
+      <point x="138.5" y="-15.0" />
+    </edge>
+    <edge source="com.flz.model.Departments" target="com.flz.model.Positions" relationship="TO_MANY">
+      <point x="-180.0" y="-15.0" />
+      <point x="-1279.7438741450069" y="463.07686872777" />
+      <point x="-1279.7438741450069" y="97.95163950752391" />
+      <point x="-216.0" y="-52.99429756497935" />
+    </edge>
+    <edge source="com.flz.model.Customers" target="com.flz.model.BaseEntity" relationship="GENERALIZATION">
+      <point x="-124.27946987688142" y="-129.0" />
+      <point x="-25.798906922025026" y="478.0768687277699" />
+      <point x="138.5" y="0.0" />
+    </edge>
+    <edge source="com.flz.model.Permissions" target="com.flz.model.Positions" relationship="TO_MANY">
+      <point x="-199.0" y="-19.324603009575952" />
+      <point x="216.0" y="0.0" />
+    </edge>
+    <edge source="com.flz.model.Positions" target="com.flz.model.Permissions" relationship="TO_MANY">
+      <point x="216.0" y="19.324603009575952" />
+      <point x="-199.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.6209700656750173" showDependencies="true" x="-290.0574861833104" y="727.0362703146376" />
+  <SelectedNodes>
+    <node>com.flz.model.Customers</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
