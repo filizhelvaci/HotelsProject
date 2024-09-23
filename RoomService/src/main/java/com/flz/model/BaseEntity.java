@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import java.time.LocalDate;
 
 @MappedSuperclass
 @SuperBuilder
@@ -16,10 +17,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 public class BaseEntity {
 
     @CreatedDate()
-    private Long createAt;
+    private LocalDate createAt;
 
     @LastModifiedDate
-    private Long updateAt;
+    private LocalDate updateAt;
 
     private boolean state=true;
 }

@@ -25,16 +25,16 @@ public class Inventory {
     private Long id;
 
 
-    // Inventory       AdditionalFeature
-    //   1                    m
-    @OneToMany(mappedBy = "inventory", fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    private Set<AdditionalFeature> additionalFeature = new HashSet<>();
+//    // Inventory       AdditionalFeature
+//    //   1                    m
+//    @OneToMany(mappedBy = "inventory", fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    private Set<AdditionalFeature> additionalFeature = new HashSet<>();
 
+    private Long aFId;
 
     private Long availableQuantity; // mevcut miktar
     private Long amountUsed; // Kullanılan miktar
-
-
+    private String place;
 
 }

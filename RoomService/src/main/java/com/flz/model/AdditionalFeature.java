@@ -43,14 +43,14 @@ public class AdditionalFeature extends BaseEntity {
 
         // AdditionalFeature   Inventory
         //       m                1
-        @ManyToOne
-        @Fetch(FetchMode.SELECT)
-        private Inventory inventory;
-
-        @ManyToMany(mappedBy = "additionalFeatures", fetch = FetchType.LAZY)
-        private Set<RoomType> roomType = new HashSet<>();
-
-        @ManyToMany(mappedBy = "additionalFeature", fetch = FetchType.LAZY)
-        private Set<Rooms> rooms = new HashSet<>();
+//        @ManyToOne
+//        @Fetch(FetchMode.SELECT)
+//        private Inventory inventory;
+//
+//        @ManyToMany(mappedBy = "additionalFeatures", fetch = FetchType.LAZY)
+//        private Set<RoomType> roomType = new HashSet<>();
+//
+//        @ManyToMany(mappedBy = "additionalFeature", fetch = FetchType.LAZY)
+//        private Set<Rooms> rooms = new HashSet<>();
 
 }

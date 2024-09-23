@@ -73,23 +73,23 @@ public class Rooms {
 //    private String roomProperties;
 
 
-//    // Rooms          RoomTypes
-//    //    m               1
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    @JoinColumn(name="ROOM_TYPE_ID")
-    private RoomType roomType;
-
-//    // Rooms            Hotel
-//    //    m               1
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    @JoinColumn(name="HOTEL_ID")
-    private Hotel hotel;
-
-    // Rooms             Inventor
-    //   m                  m
-    @ManyToMany
-    private List<AdditionalFeature> additionalFeature = new ArrayList<>();
+////    // Rooms          RoomTypes
+////    //    m               1
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    @JoinColumn(name="ROOM_TYPE_ID")
+//    private RoomType roomType;
+//
+////    // Rooms            Hotel
+////    //    m               1
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    @JoinColumn(name="HOTEL_ID")
+//    private Hotel hotel;
+//
+//    // Rooms             Inventor
+//    //   m                  m
+//    @ManyToMany
+//    private List<AdditionalFeature> additionalFeature = new ArrayList<>();
 
 }

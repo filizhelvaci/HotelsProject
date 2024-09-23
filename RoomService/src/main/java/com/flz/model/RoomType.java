@@ -31,7 +31,7 @@ public class RoomType {
     private float additionalPrice;
 
     // fixme : ek özellikler atanacak
-    // private String AdditionalFeatures
+    private Set<String> AdditionalFeatures=new HashSet<>();
 //
 ////    // RoomType           Hotel
 ////    //    m                 m
@@ -40,21 +40,21 @@ public class RoomType {
 //            fetch = FetchType.LAZY)
 //    private Set<Hotel> hotels = new HashSet<>();
 
-//    // RoomType           Rooms
-//    //     1                m
-    @OneToMany(mappedBy = "roomType",fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
-    private Set<Rooms> roomT = new HashSet<>();
-
-    // RoomType          AdditionalFeature
-    //    m                    m
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinTable (name = "ROOM_TYPES_ADDITIONALFEATURES",
-            joinColumns = { @JoinColumn(name = "ROOM_TYPE_ID", nullable = false)  },
-            inverseJoinColumns = { @JoinColumn(name = "ADD_FEA_ID", nullable = false)}
-    )
-    private List<AdditionalFeature> additionalFeatures = new ArrayList<>();
-
+////    // RoomType           Rooms
+////    //     1                m
+//    @OneToMany(mappedBy = "roomType",fetch = FetchType.LAZY)
+//    @Fetch(FetchMode.SELECT)
+//    private Set<Rooms> roomT = new HashSet<>();
+//
+//    // RoomType          AdditionalFeature
+//    //    m                    m
+//    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+//    @JoinTable (name = "ROOM_TYPES_ADDITIONALFEATURES",
+//            joinColumns = { @JoinColumn(name = "ROOM_TYPE_ID", nullable = false)  },
+//            inverseJoinColumns = { @JoinColumn(name = "ADD_FEA_ID", nullable = false)}
+//    )
+//    private List<AdditionalFeature> additionalFeatures = new ArrayList<>();
+//
 
 
 }
