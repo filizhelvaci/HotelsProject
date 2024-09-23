@@ -25,6 +25,7 @@ public class Rooms {
     @Column(name="ROOM_ID")
     private Long Id;
 
+
     @Column(name="ROOM_NUMBER",nullable = false,length = 5)
     private String roomNumber;
 

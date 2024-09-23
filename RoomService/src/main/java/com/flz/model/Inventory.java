@@ -35,6 +35,6 @@ public class Inventory extends BaseEntity {
 
     private Long availableQuantity; // mevcut miktar
     private Long amountUsed; // Kullanılan miktar
-    private String place;
+
 
 }
