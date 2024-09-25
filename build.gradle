@@ -77,8 +77,8 @@ allprojects {
 		implementation libs.springCloudStarterConfig
 		implementation libs.springCloudClient
 		implementation libs.springCloudServer
-
-
+        implementation libs.flywayCore
+		runtimeOnly libs.flywayPostgres
 	}
 }
 
