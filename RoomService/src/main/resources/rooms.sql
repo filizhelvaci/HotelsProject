@@ -1,4 +1,8 @@
-create table rs_room_type
+create database hotel_database;
+
+create schema hotel_room;
+
+create table hotel_room.rs_room_type
 (
     id           bigint generated always as identity primary key,
     name         varchar(50)    not null unique,
@@ -7,7 +11,7 @@ create table rs_room_type
     size         smallint  not null,
     description  varchar(200)
 );
-create table rs_room
+create table hotel_room.rs_room
 (
     id      bigint generated always as identity primary key,
     type_id bigint      not null references rs_room_type (id),
@@ -18,7 +22,7 @@ create table rs_room
 
 
 
-create table rs_asset
+create table hotel_room.rs_asset
 (
     id         bigint generated always as identity primary key,
     name       varchar(50)    not null,
@@ -26,7 +30,7 @@ create table rs_asset
     is_default smallint       not null
 );
 
-create table rs_room_type_asset
+create table hotel_room.rs_room_type_asset
 (
     id           bigint generated always as identity primary key,
     room_type_id bigint not null references rs_room_type (id),
