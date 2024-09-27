@@ -1,6 +1,5 @@
 package com.flz.utils;
 
-import com.flz.model.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

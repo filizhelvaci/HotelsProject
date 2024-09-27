@@ -1,7 +1,7 @@
 package com.flz.controller;
 
 import com.flz.exception.ResourceNotFoundException;
-import com.flz.model.RoomType;
+import com.flz.model.RoomTypeEntity;
 import com.flz.service.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class RoomTypeController {
     // GET -GETALL
     //    http://localhost:8082/roomtypes/getall
     @GetMapping("/getall")
-    public List<RoomType> getRoomType(){
+    public List<RoomTypeEntity> getRoomType(){
 
         return roomTypeService.getAllRoomType();
     }
@@ -34,7 +34,7 @@ public class RoomTypeController {
     //    http://localhost:8082/roomtypes/getone/id
 
     @GetMapping("/getone/{id}")
-    public ResponseEntity<RoomType> getRoomType(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
+    public ResponseEntity<RoomTypeEntity> getRoomType(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
 
         return roomTypeService.getByRoomType(id);
     }
@@ -42,7 +42,7 @@ public class RoomTypeController {
     // SAVE - INSERT
     //    http://localhost:8082/roomtypes/save
     @PostMapping("/save")
-    public RoomType saveRoomType(@RequestBody RoomType roomType){
+    public RoomTypeEntity saveRoomType(@RequestBody RoomTypeEntity roomType){
 
         return roomTypeService.saveRoomType(roomType);
     }
@@ -50,8 +50,8 @@ public class RoomTypeController {
     // PUT - UPDATE
     // http://localhost:8082/roomtypes/update
     @PutMapping ("/update/{id}")
-    public ResponseEntity<RoomType> updateRoomType(@PathVariable(value="id") Long id,
-                                   @RequestBody RoomType roomType)throws ResourceNotFoundException {
+    public ResponseEntity<RoomTypeEntity> updateRoomType(@PathVariable(value="id") Long id,
+                                                         @RequestBody RoomTypeEntity roomType)throws ResourceNotFoundException {
 
         return roomTypeService.updateRoomType(id,roomType);
     }

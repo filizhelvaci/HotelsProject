@@ -8,9 +8,10 @@ create table hotel_room.rs_room_type
     description  varchar(200),
     created_at timestamp(0) not null default current_timestamp,
     created_by varchar(120) not null ,
-    update_at timestamp(0) not null default current_timestamp,
+    update_at timestamp(0) not null default now(),
     update_by varchar(120) not null
 );
+
 create table hotel_room.rs_room
 (
     id      bigint generated always as identity primary key,
@@ -20,11 +21,9 @@ create table hotel_room.rs_room
     status  varchar(25) not null check (status in ('EMPTY', 'FULL', 'RESERVE', 'IN_MAINTENANCE')),
     created_at timestamp(0) not null default current_timestamp,
     created_by varchar(120) not null ,
-    update_at timestamp(0) not null default current_timestamp,
+    update_at timestamp(0) not null default now(),
     update_by varchar(120) not null
 );
-
-
 
 create table hotel_room.rs_asset
 (
@@ -34,7 +33,7 @@ create table hotel_room.rs_asset
     is_default smallint       not null,
     created_at timestamp(0) not null default current_timestamp,
     created_by varchar(120) not null ,
-    update_at timestamp(0) not null default current_timestamp,
+    update_at timestamp(0) not null default now(),
     update_by varchar(120) not null
 );
 
@@ -45,6 +44,6 @@ create table hotel_room.rs_room_type_asset
     asset_id     bigint not null references rs_asset (id),
     created_at timestamp(0) not null default current_timestamp,
     created_by varchar(120) not null ,
-    update_at timestamp(0) not null default current_timestamp,
+    update_at timestamp(0) not null default now(),
     update_by varchar(120) not null
 );

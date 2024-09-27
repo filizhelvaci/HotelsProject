@@ -1,17 +1,15 @@
 package com.flz.service;
 
-import com.flz.model.AdditionalFeature;
-import com.flz.model.BaseEntity;
+import com.flz.model.AssetEntity;
 import com.flz.repository.IAdditionalFeatureRepository;
 import com.flz.utils.ServiceManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class AdditionalFeatureService extends ServiceManager<AdditionalFeature,Long> {
+public class AdditionalFeatureService extends ServiceManager<AssetEntity,Long> {
 
     // ****************** @AutoWired *************** //
     private final IAdditionalFeatureRepository IadditionalFeatureRepository;
@@ -21,8 +19,8 @@ public class AdditionalFeatureService extends ServiceManager<AdditionalFeature,L
         this.IadditionalFeatureRepository = IadditionalFeatureRepository;
     }
 
-    public ResponseEntity<List<AdditionalFeature>> getsomeAdditionalFeature(List<Long> ids) {
-         List<AdditionalFeature> additionalFeature=IadditionalFeatureRepository.findByIdIn(ids);
+    public ResponseEntity<List<AssetEntity>> getsomeAdditionalFeature(List<Long> ids) {
+         List<AssetEntity> additionalFeature=IadditionalFeatureRepository.findByIdIn(ids);
         return ResponseEntity.ok().body(additionalFeature);
     }
 }

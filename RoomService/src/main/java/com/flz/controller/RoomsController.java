@@ -1,7 +1,7 @@
 package com.flz.controller;
 
 import com.flz.exception.ResourceNotFoundException;
-import com.flz.model.Rooms;
+import com.flz.model.RoomEntity;
 import com.flz.service.RoomsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class RoomsController {
 
     //    http://localhost:8082/Rooms/getall
     @GetMapping("/getall")
-    public List<Rooms> getRooms(){
+    public List<RoomEntity> getRooms(){
 
         return roomsService.getAllRoom();
     }
@@ -34,14 +34,14 @@ public class RoomsController {
 
     //    http://localhost:8082/rooms/getone/id
     @GetMapping("/getone/{id}")
-    public ResponseEntity<Rooms> getRoom(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
+    public ResponseEntity<RoomEntity> getRoom(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
 
         return roomsService.getByRoom(id);
     }
 
     //    http://localhost:8082/rooms/save
     @PostMapping("/save")
-    public Rooms saveRoom(@RequestBody Rooms rooms){
+    public RoomEntity saveRoom(@RequestBody RoomEntity rooms){
 
         return roomsService.saveRoom(rooms);
     }
@@ -49,8 +49,8 @@ public class RoomsController {
     // PUT - UPDATE
     // http://localhost:8082/rooms/update
     @PutMapping ("/update/{id}")
-    public ResponseEntity<Rooms> updateRoom(@PathVariable(value="id") Long id,
-                                   @RequestBody Rooms room)throws ResourceNotFoundException {
+    public ResponseEntity<RoomEntity> updateRoom(@PathVariable(value="id") Long id,
+                                                 @RequestBody RoomEntity room)throws ResourceNotFoundException {
 
     return roomsService.updateRoom(id,room);
     }

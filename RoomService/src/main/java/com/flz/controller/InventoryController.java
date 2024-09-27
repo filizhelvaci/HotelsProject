@@ -1,7 +1,7 @@
 package com.flz.controller;
 
 import com.flz.exception.ResourceNotFoundException;
-import com.flz.model.Inventory;
+import com.flz.model.RoomTypeAssetEntity;
 import com.flz.service.InventoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ public class InventoryController {
 
     //    http://localhost:8082/Inventory/getall
     @GetMapping("/getall")
-    public List<Inventory> getInventory(){
+    public List<RoomTypeAssetEntity> getInventory(){
 
         return inventoryService.findAll();
     }
@@ -32,7 +32,7 @@ public class InventoryController {
 
     //    http://localhost:8082/Inventory/getone/
     @GetMapping("/getone/{id}")
-    public Optional<Inventory> getAdditionalFeature(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
+    public Optional<RoomTypeAssetEntity> getAdditionalFeature(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
 
         return inventoryService.findById(id);
     }
@@ -40,22 +40,22 @@ public class InventoryController {
 
     //    http://localhost:8082/Inventory/save
     @PostMapping("/save")
-    public Inventory saveAdditionalFeature(@RequestBody Inventory additionalFeature){
+    public RoomTypeAssetEntity saveAdditionalFeature(@RequestBody RoomTypeAssetEntity additionalFeature){
 
         return inventoryService.save(additionalFeature);
     }
 
     //    http://localhost:8082/Inventory/save
     @PostMapping("/saveAll")
-    public ResponseEntity<List<Inventory>> saveAllAdditionalFeature(@RequestBody List<Inventory> additionalFeatures){
+    public ResponseEntity<List<RoomTypeAssetEntity>> saveAllAdditionalFeature(@RequestBody List<RoomTypeAssetEntity> additionalFeatures){
 
-        return ResponseEntity.ok().body((List<Inventory>) inventoryService.saveAll(additionalFeatures));
+        return ResponseEntity.ok().body((List<RoomTypeAssetEntity>) inventoryService.saveAll(additionalFeatures));
     }
 
     // http://localhost:8082/Inventory/update/
     @PutMapping ("/update/{id}")
-    public ResponseEntity<Inventory> updateAdditionalFeature(@PathVariable(value="id") Long id,
-                                                        @RequestBody Inventory additionalFeature) throws ResourceNotFoundException {
+    public ResponseEntity<RoomTypeAssetEntity> updateAdditionalFeature(@PathVariable(value="id") Long id,
+                                                                       @RequestBody RoomTypeAssetEntity additionalFeature) throws ResourceNotFoundException {
 
       return ResponseEntity.ok(inventoryService.update(additionalFeature));
     }

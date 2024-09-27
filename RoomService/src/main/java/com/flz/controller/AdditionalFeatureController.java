@@ -1,15 +1,13 @@
 package com.flz.controller;
 
 import com.flz.exception.ResourceNotFoundException;
-import com.flz.model.AdditionalFeature;
+import com.flz.model.AssetEntity;
 import com.flz.service.AdditionalFeatureService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/additionalFeatures")
@@ -26,7 +24,7 @@ public class AdditionalFeatureController {
 
     //    http://localhost:8082/additionalFeatures/getall
     @GetMapping("/getall")
-    public List<AdditionalFeature> getAdditionalFeatures(){
+    public List<AssetEntity> getAdditionalFeatures(){
 
         return additionalFeatureService.findAll();
     }
@@ -34,37 +32,37 @@ public class AdditionalFeatureController {
 
     //    http://localhost:8082/additionalFeatures/getone/
     @GetMapping("/getone/{id}")
-    public Optional<AdditionalFeature> getAdditionalFeature(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
+    public Optional<AssetEntity> getAdditionalFeature(@PathVariable(value = "id") Long id)throws ResourceNotFoundException {
 
         return additionalFeatureService.findById(id);
     }
 
     //    http://localhost:8082/additionalFeatures/getsome/
     @GetMapping("/getsome")
-    public ResponseEntity<List<AdditionalFeature>> getsomeAdditionalFeature(List<Long> ids){
-        ResponseEntity<List<AdditionalFeature> > additionalFeatures=additionalFeatureService.getsomeAdditionalFeature(ids);
+    public ResponseEntity<List<AssetEntity>> getsomeAdditionalFeature(List<Long> ids){
+        ResponseEntity<List<AssetEntity> > additionalFeatures=additionalFeatureService.getsomeAdditionalFeature(ids);
         return additionalFeatures;
     }
 
 
     //    http://localhost:8082/additionalFeatures/save
     @PostMapping("/save")
-    public AdditionalFeature saveAdditionalFeature(@RequestBody AdditionalFeature additionalFeature){
+    public AssetEntity saveAdditionalFeature(@RequestBody AssetEntity additionalFeature){
 
         return additionalFeatureService.save(additionalFeature);
     }
 
     //    http://localhost:8082/additionalFeatures/save
     @PostMapping("/saveAll")
-    public ResponseEntity<List<AdditionalFeature>> saveAllAdditionalFeature(@RequestBody List<AdditionalFeature> additionalFeatures){
+    public ResponseEntity<List<AssetEntity>> saveAllAdditionalFeature(@RequestBody List<AssetEntity> additionalFeatures){
 
-        return ResponseEntity.ok().body((List<AdditionalFeature>) additionalFeatureService.saveAll(additionalFeatures));
+        return ResponseEntity.ok().body((List<AssetEntity>) additionalFeatureService.saveAll(additionalFeatures));
     }
 
     // http://localhost:8082/additionalFeatures/update/
     @PutMapping ("/update/{id}")
-    public ResponseEntity<AdditionalFeature> updateAdditionalFeature(@PathVariable(value="id") Long id,
-                                                        @RequestBody AdditionalFeature additionalFeature) throws ResourceNotFoundException {
+    public ResponseEntity<AssetEntity> updateAdditionalFeature(@PathVariable(value="id") Long id,
+                                                               @RequestBody AssetEntity additionalFeature) throws ResourceNotFoundException {
 
       return ResponseEntity.ok(additionalFeatureService.update(additionalFeature));
     }
