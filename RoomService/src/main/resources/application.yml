@@ -10,10 +10,6 @@ spring:
     username: postgres                                    # Veritabanı kullanıcı adı
     password: 4321                                 # Veritabanı şifresi
     driver-class-name: org.postgresql.Driver             # PostgreSQL JDBC sürücüsü
-  jpa:
-    hibernate:
-      ddl-auto: create                            # Veritabanı şemasının otomatik güncellenmesi
-    show-sql: true
 
 ##### swagger-ui path #####
 springdoc:
