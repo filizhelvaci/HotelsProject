@@ -1,4 +1,18 @@
-create table hotel_room.rs_room_type
+create database my_otel_db
+    with
+    owner = postgres
+    encoding = 'UTF8'
+    lc_collate ='C'
+    lc_ctype = 'C'
+    locale_provider = 'libc'
+    tablespace = pg_default
+    connection limit = -1
+    is_template = false;
+
+create schema if not exists otel_rooms
+    authorization postgres;
+
+create table otel_rooms.rs_room_type
 (
     id           bigint generated always as identity primary key,
     name         varchar(50)    not null unique,
@@ -12,7 +26,7 @@ create table hotel_room.rs_room_type
     update_by varchar(120) not null
 );
 
-create table hotel_room.rs_room
+create table otel_rooms.rs_room
 (
     id      bigint generated always as identity primary key,
     type_id bigint      not null references rs_room_type (id),
@@ -25,7 +39,7 @@ create table hotel_room.rs_room
     update_by varchar(120) not null
 );
 
-create table hotel_room.rs_asset
+create table otel_rooms.rs_asset
 (
     id         bigint generated always as identity primary key,
     name       varchar(50)    not null,
@@ -37,7 +51,7 @@ create table hotel_room.rs_asset
     update_by varchar(120) not null
 );
 
-create table hotel_room.rs_room_type_asset
+create table otel_rooms.rs_room_type_asset
 (
     id           bigint generated always as identity primary key,
     room_type_id bigint not null references rs_room_type (id),
