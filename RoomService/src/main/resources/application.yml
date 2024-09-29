@@ -6,12 +6,8 @@ server:
 ##### data postgresql #####
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=hotelroom   # PostgreSQL veritabanı URL'si
-    username: postgres                                    # Veritabanı kullanıcı adı
-    password: 4321                                 # Veritabanı şifresi
-    driver-class-name: org.postgresql.Driver             # PostgreSQL JDBC sürücüsü
+    url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=hotelroom
+    username: postgres
+    password: 4321
+    driver-class-name: org.postgresql.Driver
 
-##### swagger-ui path #####
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
