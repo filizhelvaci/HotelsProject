@@ -21,10 +21,10 @@ public class RoomEntity {
     @Column(name = "floor")
     private String floor;
 
-    @Column(name = "type_id")
-    private Long typeId;
-
     @Column(name = "status")
     private String status;
+
+    @Column(name = "type_id")
+    private Long typeId;
 
 }

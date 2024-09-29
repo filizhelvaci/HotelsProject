@@ -15,10 +15,10 @@ create table hotel_rooms.rs_room_type
 create table hotel_rooms.rs_room
 (
     id         bigint generated always as identity primary key,
-    type_id    bigint       not null references rs_room_type (id),
     number     smallint     not null,
     floor      smallint     not null,
     status     varchar(25)  not null check (status in ('EMPTY', 'FULL', 'RESERVE', 'IN_MAINTENANCE')),
+    type_id    bigint       not null references rs_room_type (id),
     created_at timestamp(0) not null default current_timestamp,
     created_by varchar(120) not null,
     update_at  timestamp(0),
