@@ -1,5 +1,6 @@
 package com.flz.model.entity;
 
+import com.flz.model.enums.RoomStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,10 +22,13 @@ public class RoomEntity {
     @Column(name = "floor")
     private String floor;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private RoomStatus status;
 
     @Column(name = "type_id")
     private Long typeId;
+
+
 
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +33,12 @@ public class RoomTypeEntity {
     @Column(name = "description")
     private String description;
 
+
+    @ManyToMany
+    @JoinTable(
+            name="rs_room_type_asset",
+            joinColumns = @JoinColumn(name="room_type_id"),
+            inverseJoinColumns = @JoinColumn(name="asset_id")
+    )
+    private List<AssetEntity> assets;
 }
