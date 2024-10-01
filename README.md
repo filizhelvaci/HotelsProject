@@ -31,3 +31,13 @@ _*Version Control*_
  
 _*APIs Interaction Platform*_
 * _Postman_
+
+---
+## DATA MODEL ANALYSIS
+
+| TABLE_NAME | FIELDS  | 
+| ---------- | ------- |
+| ROOM    | ID , NUMBER , FLOOR , STATUS , TYPE_ID |
+| ROOM_TYPE | ID , NAME , PRICE , PERSON_COUNT , SIZE , DESCRIPTION |
+| ROOM_TYPE_ASSET | ID , ROOM_TYPE_ID , ASSET_ID |
+| ASSET | ID , NAME , PRICE , IS_DEFAULT |  
