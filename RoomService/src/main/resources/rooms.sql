@@ -8,8 +8,8 @@ create table hotel_rooms.rs_room_type
     description  varchar(200)   not null,
     created_at   timestamp(0)   not null default current_timestamp,
     created_by   varchar(120)   not null,
-    updated_at    timestamp(0),
-    updated_by    varchar(120)
+    updated_at   timestamp(0),
+    updated_by   varchar(120)
 );
 
 create table hotel_rooms.rs_room
@@ -21,8 +21,8 @@ create table hotel_rooms.rs_room
     type_id    bigint       not null references rs_room_type (id),
     created_at timestamp(0) not null default current_timestamp,
     created_by varchar(120) not null,
-    updated_at  timestamp(0),
-    updated_by  varchar(120)
+    updated_at timestamp(0),
+    updated_by varchar(120)
 );
 
 create table hotel_rooms.rs_asset
@@ -33,8 +33,8 @@ create table hotel_rooms.rs_asset
     is_default smallint       not null,
     created_at timestamp(0)   not null default current_timestamp,
     created_by varchar(120)   not null,
-    updated_at  timestamp(0),
-    updated_by  varchar(120)
+    updated_at timestamp(0),
+    updated_by varchar(120)
 );
 
 create table hotel_rooms.rs_room_type_asset

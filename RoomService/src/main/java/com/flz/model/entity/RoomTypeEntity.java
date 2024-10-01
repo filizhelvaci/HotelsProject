@@ -2,9 +2,13 @@ package com.flz.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -33,12 +37,22 @@ public class RoomTypeEntity {
     @Column(name = "description")
     private String description;
 
-
+    //----------------------------------------------------------------
+    //  RoomTypeEntity   AssetEntity
+    //        M              M
     @ManyToMany
     @JoinTable(
-            name="rs_room_type_asset",
-            joinColumns = @JoinColumn(name="room_type_id"),
-            inverseJoinColumns = @JoinColumn(name="asset_id")
+            name = "rs_room_type_asset",
+            joinColumns = @JoinColumn(name = "room_type_id"),
+            inverseJoinColumns = @JoinColumn(name = "asset_id")
     )
     private List<AssetEntity> assets;
+
+    //----------------------------------------------------------------
+    // RoomTypeEntity  RoomEntity
+    //      1               M
+    @OneToMany(mappedBy = "roomTypeEntity", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SELECT)
+    private List<RoomEntity> roomEntities;
+
 }
