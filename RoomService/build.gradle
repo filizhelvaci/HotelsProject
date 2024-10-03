@@ -2,7 +2,4 @@ dependencies {
     implementation libs.postgreSql
     implementation libs.springBootDataJpa
     implementation libs.lombok
-    implementation libs.flywayCore
-    runtimeOnly libs.flywayPostgres
-
-}
+    }

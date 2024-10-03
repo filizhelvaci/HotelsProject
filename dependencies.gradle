@@ -1,7 +1,4 @@
 ext {
-    /**
-     * Bağımlılıkları versiyonlama işlemleri:
-     */
     versions = [
             springBoot          : "3.2.2",
             springCloud         : "4.1.0",
@@ -12,20 +9,8 @@ ext {
             jwt                 : "4.4.0",
             springCloudConfig   : "4.1.0",
             flyway              : "10.18.0"
-//jwt ekle
     ]
-
-    /**
-     * Bu kısımda bağımlılık listesini oluştracağız. K:V
-     * 1. bağımlılığa bir ad belirle
-     * 2. iki nokta üst üste(:)
-     * 3. Projenin group idsini yazın.
-     * 4. iki nokta üst üste(:)
-     * 5. Projenin artifact id'sini yazın.
-     * 6. iki nokta üst üste(:)
-     * 7. Versiyon numarasını veya yukarıda belirttiğimiz key değerini çağır.
-     */
-    libs = [
+     libs = [
             springBootWeb                   : "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
             springBootDataJpa               : "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
 

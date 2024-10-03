@@ -36,7 +36,7 @@ public class RoomEntity {
     //     M                 1
     @ManyToOne(fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "type_id")
     private RoomTypeEntity roomTypeEntity;
 
 

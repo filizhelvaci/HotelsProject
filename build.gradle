@@ -1,11 +1,4 @@
-/**
- * ROOT build.gradle file:
- */
 plugins {
-	/**
-	 * Buraya yazılan özellikler tüm diğer servislerde etkili olacak.
-	 * Diğerlerinde hiç yazmasak bile geçerli olacak bunlar.
-	 */
 	id 'java'
 	id 'org.springframework.boot' version '3.2.2'
 	id 'io.spring.dependency-management' version '1.1.4'
@@ -14,9 +7,6 @@ plugins {
 }
 
 allprojects {
-	/**
-	 * tüm projelere(root+sub) pluginleri atamak için:
-	 */
 	apply from  :  "${rootDir}/dependencies.gradle"
 	apply plugin: 'application'
 	group = 'com.flz'
@@ -26,11 +16,6 @@ allprojects {
 }
 
 subprojects {
-	/**
-	 * sadece sub
-	 * Bütün alt projelerimde group ve version adı ile
-	 * diğer özelliklerin aynı olması için:
-	 */
 	tasks.withType(JavaCompile).tap {
 		configureEach {
 			options.encoding = 'UTF-8'
@@ -60,11 +45,6 @@ allprojects {
 		}
 	}
 	dependencies {
-		/**
-		 * bütün projeye yayılacak bağımlıkları yazıyoruz.
-		 * Yazarken libs içindekileri çekiyoruz.
-		 * Bütün projelere entegre gelecek.
-		 */
 		implementation libs.springBootWeb
 		compileOnly libs.lombok
 		annotationProcessor libs.lombok
@@ -87,44 +67,3 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 }
-
-/*
-plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.2'
-	id 'io.spring.dependency-management' version '1.1.4'
-}
-
-group = 'com.flz'
-version = '0.0.1'
-
-java {
-	sourceCompatibility = '17'
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
-repositories {
-	mavenCentral()
-}
-
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-*/
