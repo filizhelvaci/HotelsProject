@@ -1,0 +1,479 @@
+{
+	"info": {
+		"_postman_id": "73ea5126-92ae-436c-8c07-1308855c7ba1",
+		"name": "Hotel Project",
+		"description": "Hotel Reservation System APIs\n\nHotel Reservation System was designed as an application where hotel personnel with different authorities can organize the operation of the hotel and customers who want to come to the hotel can make reservations.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32358530"
+	},
+	"item": [
+		{
+			"name": "RS",
+			"item": [
+				{
+					"name": "CustomerPanel",
+					"item": [
+						{
+							"name": "RoomType",
+							"item": [
+								{
+									"name": "room-types",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room-types",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room-types"
+											]
+										},
+										"description": "- It allows viewing of all room types or room types that meet the conditions by filtering according to the characteristics of the room types.\n    \n- Filtering; It can be done according to the following values\n    \n    - _Id_\n        \n    - _Name_\n        \n    - _Price_\n        \n    - _Person Count_\n        \n    - _Size_\n        \n- After filtering, the rooms with the following values ​​are listed.\n    \n    - _Id_\n        \n    - _Name_\n        \n    - _Price_\n        \n    - _Person Count_\n        \n    - _Size_\n        \n- This service can be accessed by customer"
+									},
+									"response": []
+								}
+							],
+							"description": "This service allows customers to view their room types"
+						}
+					],
+					"description": "This panel is used for customers to view rooms."
+				},
+				{
+					"name": "Personel Panel",
+					"item": [
+						{
+							"name": "RoomType",
+							"item": [
+								{
+									"name": "room-types",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room-types",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room-types"
+											]
+										},
+										"description": "* It lists the Room types that meet these conditions by filtering them according to the values ​​received from the Request Body.\n    \n* Filtering; It can be done according to the following values\n    \n\n  - Id\n    \n  - Name\n    \n  - Price\n    \n  - Person Count\n    \n  - Size\n    \n\n* After filtering, the rooms with the following values ​​are listed.\n    \n\n  - Id\n    \n  - Name\n    \n  - Price\n    \n  - Person Count\n    \n  - Size\n    \n\n* This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "room-type/{id}",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room-type/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room-type",
+												"{id}"
+											]
+										},
+										"description": "- In this service, the values ​​of the room type whose _Id_ is given are displayed.\n    \n- After filtering, the rooms with the following values ​​are listed.\n    \n    - _Id_\n        \n    - _Name_\n        \n    - _Price_\n        \n    - _Person Count_\n        \n    - _Size_\n        \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "room-type",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\" : \"Standart\",\r\n    \"price\" : 1500,\r\n    \"personCount\" : 2,\r\n    \"size\" : 30,\r\n    \"description\": \"Bu rahat ve ferah deniz manzaralı odada bir balkon, kanepe/koltuk, küvet, duş ve ayrı tuvaleti olan bir banyo bulunmaktadır. 55 inç LCD televizyonda dizi keyfi yapın ya da WiFi bağlantısının tadını çıkarın.Standart hizmetler, çay/kahve yapma olanakları, yastık menüsü ve MP3 çalar/radyo/çalar saati kapsamaktadır.\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room-type",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room-type"
+											]
+										},
+										"description": "- This service allows creating a new room type.\n    \n- This service returns all values ​​as a return value, as well as the Id value given to the new room type.\n    \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "room-type/{id}",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\" : \"Deniz Manzaralı iki kişilk oda\",\r\n    \"price\" : 1750,\r\n    \"personCount\" : 2 \r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room-type/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room-type",
+												"{id}"
+											]
+										},
+										"description": "- This service allows updating the room type information given with the Id.\n    \n- The following information can be updated in this service.\n    \n    - Name\n        \n    - Price\n        \n    - Person Count\n        \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "room-type/{id}",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room-type/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room-type",
+												"{id}"
+											]
+										},
+										"description": "- This service deletes the room type whose Id is given.\n    \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								}
+							],
+							"description": "It contains services where transactions regarding room types are carried out."
+						},
+						{
+							"name": "Room",
+							"item": [
+								{
+									"name": "rooms",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/rooms",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"rooms"
+											]
+										},
+										"description": "- It lists the Room types that meet these conditions by filtering them according to the values ​​received from the Request Body.\n    \n- Filtering; It can be done according to the following values\n    \n    - _Id_\n        \n    - _Name_\n        \n    - _Price_\n        \n    - _Person Count_\n        \n    - _Size_\n        \n- After filtering, the rooms with the following values ​​are listed.\n    \n    - _Id_\n        \n    - _Name_\n        \n    - _Price_\n        \n    - _Person Count_\n        \n    - _Size_\n        \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "room/{id}",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room",
+												"{id}"
+											]
+										},
+										"description": "- This service _Id_ displays the information of the room given as a parameter.\n    \n- If the sent id value exists in the room table, the following values ​​are returned ;\n    \n    - Room Type Id\n        \n    - Number\n        \n    - Floor\n        \n- Status ( Reserve, Full, Empty, In Maintenance )\n    \n- If the given id value is not found, it returns an error message.\n    \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "room",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"number\":101,\r\n    \"floor\":1,\r\n    \"status\":\"EMPTY\",\r\n    \"typeId\":2\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room"
+											]
+										},
+										"description": "- This service can be accessed by hotel staff.\n    \n- This service is used to create new room registration.\n    \n- With each new record, the Id value will be automatically assigned by the application."
+									},
+									"response": []
+								},
+								{
+									"name": "room/{id}",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"number\": 103,\r\n    \"status\":\"EMPTY\",\r\n    \"typeId\":2\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room",
+												"{id}"
+											]
+										},
+										"description": "- This service can be accessed by hotel staff.\n    \n- This service allows updating the information of the room whose _Id_ is given.\n    \n- If the given id value is not found, it returns an error message.\n    \n- The update process is done in the following areas.\n    \n    - Number\n        \n    - Status\n        \n    - Type Id\n        \n- Returns all new values ​​of the room"
+									},
+									"response": []
+								},
+								{
+									"name": "room/{id}",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/room/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"room",
+												"{id}"
+											]
+										},
+										"description": "- This service can be accessed by hotel staff.\n    \n- This service allows delete the information of the room whose id is given.\n    \n- If the given id value is not found, it returns an error message."
+									},
+									"response": []
+								}
+							],
+							"description": "- The area where we determine the rooms to be added or removed from the hotel and the room type of the rooms."
+						},
+						{
+							"name": "Asset",
+							"item": [
+								{
+									"name": "assets",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/assets",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"assets"
+											]
+										},
+										"description": "* It lists the Asset that meet these conditions by filtering them according to the values ​​received from the Request Body.\n    \n* Filtering; It can be done according to the following values\n    \n - _Id_\n    \n - _Name_\n    \n - _Price_\n    \n - _Is_Default_\n    \n* After filtering, the rooms with the following values ​​are listed.\n    \n - _Id_\n    \n - _Name_\n    \n - _Price_\n    \n - _Is_Default_\n    \n* This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "asset/{id}",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/asset/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"asset",
+												"{id}"
+											]
+										},
+										"description": "- This service shows the values ​​of the entity whose _Id_ is given.\n    \n- This service returns the following values.\n    \n    - Id\n        \n    - Name\n        \n    - Price\n        \n    - Is_Default\n        \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "asset",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"55 Ekran TV\",\r\n    \"price\": 100,\r\n    \"isDefault\": \"Y\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/api/v1/asset",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"asset"
+											]
+										},
+										"description": "- This service allows creating a new asset.\n    \n- This service returns all values ​​as a return value, as well as the _Id_ value given to the new asset.\n    \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "asset/{id}",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"55inçTV\",\r\n    \"price\": 100,\r\n    \"isDefault\": \"Y\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8082/api/v1/asset/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"asset",
+												"{id}"
+											]
+										},
+										"description": "- This service allows updating asset information given with the Id.\n    \n- The following information can be updated in this service.\n    \n    - Name\n        \n    - Price\n        \n    - Is_Default\n        \n- This service can be accessed by hotel staff."
+									},
+									"response": []
+								},
+								{
+									"name": "asset/{id}",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8082/api/v1/asset/{id}",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8082",
+											"path": [
+												"api",
+												"v1",
+												"asset",
+												"{id}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "- It includes services where transactions are made regarding the assets in hotel rooms."
+						}
+					],
+					"description": "Only personnel can access this panel."
+				}
+			],
+			"description": "The service where the room, room type and assets in the rooms are managed."
+		}
+	]
+}
