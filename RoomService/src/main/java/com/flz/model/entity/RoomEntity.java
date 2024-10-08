@@ -8,7 +8,6 @@ import org.hibernate.annotations.FetchMode;
 
 @Getter
 @Setter
-
 @Entity
 @Table(name = "rs_room")
 public class RoomEntity {
@@ -31,13 +30,13 @@ public class RoomEntity {
     @Column(name = "type_id")
     private Long typeId;
 
-    //----------------------------------------------------------------
-    //  RoomEntity      RoomTypeEntity
-    //     M                 1
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SELECT)
+    /**----------------------------------------------------------------
+      RoomEntity      RoomTypeEntity
+          1                 1
+    */
+    @OneToOne
     @JoinColumn(name = "type_id")
-    private RoomTypeEntity roomTypeEntity;
+    private RoomTypeEntity type;
 
 
 }

@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-
 @Entity
 @Table(name = "rs_asset")
 public class AssetEntity {
