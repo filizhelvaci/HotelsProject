@@ -21,14 +21,11 @@ public class RoomEntity {
     private Integer number;
 
     @Column(name = "floor")
-    private String floor;
+    private Integer floor;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private RoomStatus status;
-
-    @Column(name = "type_id")
-    private Long typeId;
 
     /**----------------------------------------------------------------
       RoomEntity      RoomTypeEntity
