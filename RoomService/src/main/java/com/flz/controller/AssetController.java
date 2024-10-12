@@ -6,8 +6,9 @@ import com.flz.service.AssetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/v1")
@@ -16,37 +17,39 @@ public class AssetController {
 
     private final AssetService assetService;
 
-    //    http://localhost:8082/api/v1/asset/{id}
-    @GetMapping("/asset/{id}")
-    public ResponseEntity<AssetEntity> asset(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
-        return ResponseEntity.ok(assetService.getOneAsset(id).getBody());
-    }
 
-    // http://localhost:8082/api/v1/assets
     @GetMapping("/assets")
-    public List<AssetEntity> getAllAssets() {
-        return assetService.getAllAssets();
+    public ResponseEntity<List<AssetEntity>> findAll() {
+        final List<AssetEntity> entities = assetService.findAll();
+        return ResponseEntity.ok(entities);
     }
 
-    // http://localhost:8082/api/v1/asset
+    @GetMapping("/asset/{id}")
+    public ResponseEntity<AssetEntity> findById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+        AssetEntity entity = assetService.findById(id);
+        return ResponseEntity.ok(entity);
+    }
+
+
     @PostMapping("/asset")
-    public AssetEntity createAsset(@RequestBody AssetEntity assetEntity) {
-        return assetService.createAsset(assetEntity);
+    public ResponseEntity<Void> create(@RequestBody AssetEntity assetEntity) {
+        assetService.create(assetEntity);
+        return ResponseEntity.ok().build();
     }
 
-    // http://localhost:8082/api/v1/asset/{id}
-    @DeleteMapping("/asset/{id}")
-    public Map<String, Boolean> deleteOneAsset(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
-        return assetService.deleteOneAsset(id);
-    }
-
-    // http://localhost:8082/api/v1/asset/1
     @PutMapping("/asset/{id}")
-    public ResponseEntity<AssetEntity> updateOneAsset(
+    public ResponseEntity<Void> update(
             @PathVariable(value = "id") Long id,
             @RequestBody AssetEntity assetEntity) throws ResourceNotFoundException {
 
-        return assetService.updateOneAsset(id,assetEntity);
+        assetService.update(id, assetEntity);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/asset/{id}")
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+        assetService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
 
