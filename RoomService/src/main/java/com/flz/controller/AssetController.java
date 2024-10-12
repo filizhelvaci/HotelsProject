@@ -45,8 +45,9 @@ public class AssetController {
     public ResponseEntity<AssetEntity> updateOneAsset(
             @PathVariable(value = "id") Long id,
             @RequestBody AssetEntity assetEntity) throws ResourceNotFoundException {
-        assetEntity.setId(id);
-        System.out.println(assetEntity.toString());
-        return assetService.updateOneAsset(assetEntity);
+
+        return assetService.updateOneAsset(id,assetEntity);
     }
+
+
 }

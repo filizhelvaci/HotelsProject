@@ -4,12 +4,14 @@ import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.repository.IAssetRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AssetService {
@@ -38,7 +40,7 @@ public class AssetService {
 
 
     public Map<String, Boolean> deleteOneAsset(Long id) throws ResourceNotFoundException {
-        AssetEntity assetEntity = IassetRepository.findById(id)
+        IassetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found ID: " + id));
         IassetRepository.deleteById(id);
         Map<String, Boolean> response = new HashMap<>();
@@ -46,10 +48,16 @@ public class AssetService {
         return response;
     }
 
-    public ResponseEntity<AssetEntity> updateOneAsset(AssetEntity assetEntity) throws ResourceNotFoundException {
-        AssetEntity assetEntityInfo = IassetRepository.findById(assetEntity.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Asset not found ID: " + assetEntity.getId()));
-        return ResponseEntity.ok(IassetRepository.save(assetEntityInfo));
+    public ResponseEntity<AssetEntity> updateOneAsset(Long id, AssetEntity assetEntity) {
+        Optional<AssetEntity> assetEntityInfo = IassetRepository.findById(id);
+        if (assetEntityInfo.isPresent()) {
+            assetEntityInfo.get().setName(assetEntity.getName());
+            assetEntityInfo.get().setPrice(assetEntity.getPrice());
+            assetEntityInfo.get().setIsDefault(assetEntity.getIsDefault());
+            return new ResponseEntity<>(IassetRepository.save(assetEntityInfo.get()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }
