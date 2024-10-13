@@ -9,18 +9,22 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AssetServiceImpl implements AssetService {
+class AssetServiceImpl implements AssetService {
 
     private final AssetRepository assetRepository;
 
     public AssetServiceImpl(AssetRepository assetRepository) {
+
         this.assetRepository = assetRepository;
     }
 
+
     @Override
     public List<AssetEntity> findAll() {
+
         return assetRepository.findAll();
     }
+
 
     @Override
     public AssetEntity findById(Long id) throws ResourceNotFoundException {
@@ -29,10 +33,13 @@ public class AssetServiceImpl implements AssetService {
         return assetEntity;
     }
 
+
     @Override
     public void create(AssetEntity assetEntity) {
+
         assetRepository.save(assetEntity);
     }
+
 
     @Override
     public void update(Long id, AssetEntity assetEntity) throws ResourceNotFoundException {
@@ -47,6 +54,7 @@ public class AssetServiceImpl implements AssetService {
         assetRepository.save(assetEntityInfo);
 
     }
+
 
     @Override
     public void delete(Long id) throws ResourceNotFoundException {

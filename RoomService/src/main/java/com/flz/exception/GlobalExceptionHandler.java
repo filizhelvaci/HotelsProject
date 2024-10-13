@@ -12,19 +12,19 @@ import java.util.Date;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<?> globalException(Exception ex, WebRequest request){
-        ErrorDetails errorDetails=new ErrorDetails(new Date(),ex.getMessage(),request.getDescription(false));
+    public ResponseEntity<?> globalException(Exception ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
 
-        return new ResponseEntity<>(errorDetails,HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = ResourceNotFoundException.class)
-    public ResponseEntity<?> resourceNotFoundException(Exception ex, WebRequest request){
-        ErrorDetails errorDetails=new ErrorDetails(
+    public ResponseEntity<?> resourceNotFoundException(Exception ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(false));
 
-        return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 }

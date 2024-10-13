@@ -3,7 +3,6 @@ package com.flz.controller;
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.service.AssetService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
-@RequiredArgsConstructor
-public class AssetController {
+class AssetController {
 
     private final AssetService assetService;
+
+    public AssetController(AssetService assetService) {
+        this.assetService = assetService;
+    }
 
 
     @GetMapping("/assets")
@@ -23,6 +25,7 @@ public class AssetController {
         final List<AssetEntity> entities = assetService.findAll();
         return ResponseEntity.ok(entities);
     }
+
 
     @GetMapping("/asset/{id}")
     public ResponseEntity<AssetEntity> findById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
@@ -37,6 +40,7 @@ public class AssetController {
         return ResponseEntity.ok().build();
     }
 
+
     @PutMapping("/asset/{id}")
     public ResponseEntity<Void> update(
             @PathVariable(value = "id") Long id,
@@ -45,6 +49,7 @@ public class AssetController {
         assetService.update(id, assetEntity);
         return ResponseEntity.ok().build();
     }
+
 
     @DeleteMapping("/asset/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
