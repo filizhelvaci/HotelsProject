@@ -21,7 +21,6 @@ class AssetServiceImpl implements AssetService {
 
     @Override
     public List<AssetEntity> findAll() {
-
         return assetRepository.findAll();
     }
 
@@ -36,14 +35,12 @@ class AssetServiceImpl implements AssetService {
 
     @Override
     public void create(AssetEntity assetEntity) {
-
         assetRepository.save(assetEntity);
     }
 
 
     @Override
     public void update(Long id, AssetEntity assetEntity) throws ResourceNotFoundException {
-
         AssetEntity assetEntityInfo = assetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found ID: " + id));
 
