@@ -1,4 +1,4 @@
-package com.flz.model;
+package com.flz.model.entity;
 
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;

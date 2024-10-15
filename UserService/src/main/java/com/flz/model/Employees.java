@@ -1,89 +1,78 @@
 package com.flz.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Year;
-import java.time.YearMonth;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @SuperBuilder
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-
 @Entity
 @Table
 public class Employees extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="EMPLOYEES_ID",nullable = false)
-    private Long Id;
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-    @Column(name="INSIDE_NUMBER",nullable = false)
+    @Column(name = "inside_number", nullable = false)
     private String insideNumber;
 
-    @Column(name="BIRTHDATE",nullable = false)
-    private String birthDate;
+    @Column(name = "birth_date", nullable = false)
+    private LocalDateTime birthDate;
 
-    @Column(name="IDENTY_NUMBER",nullable = false,unique = true)
-    private String IDnumber;
+    @Column(name = "identy_number", nullable = false, unique = true)
+    private String idNumber;
 
-    @Column(name="CONTRACT_PERIOD",nullable = false)
+    @Column(name = "contract_period", nullable = false)
     private int contractPeriod;
 
-    @Column(name="GRADUATION_STATUS")
+    @Column(name = "graduation_status")
     private String graduationStatus;
 
-    @Column(name="GRADUATION_YEAR")
-    private String graduationYear;
+    @Column(name = "graduation_year")
+    private LocalDateTime graduationYear;
 
-    //-----------------------------------------------------------------------------------
-    //  Employees       Positions
-    //     M                M
+    /**
+     * -----------------------------------------------------------------------------------
+     * Employees       Positions
+     * M                M
+     */
     @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable (name = "EMPLOYEES_POSITIONS",
-            joinColumns = { @JoinColumn(name = "EMPLOYEES_ID", nullable = false)  },
+    @JoinTable(name = "employees_position",
+            joinColumns = {@JoinColumn(name = "id", nullable = false)},
             inverseJoinColumns = { @JoinColumn(name = "POSITION_ID", nullable = false)}
     )
     private Set<Positions> positions = new HashSet<>();
 
-    //-----------------------------------------------------------------------------------
-    //  Employees       Address
-    //     M                M
+    /**
+     * -----------------------------------------------------------------------------------
+     * Employees       Address
+     * M                M
+     */
     @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable (name = "EMPLOYEES_ADDRESS",
-            joinColumns = { @JoinColumn(name = "EMPLOYEES_ID", nullable = false)  },
-            inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID", nullable = false)}
+    @JoinTable(name = "employees_address",
+            joinColumns = {@JoinColumn(name = "id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "id", nullable = false)}
     )
     private Set<Address> address = new HashSet<>();
 
-    //-----------------------------------------------------------------------------------
-    //  Employee      User
-    //      1          1
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID")
-    private Users user;
-
-    //-----------------------------------------------------------------------------------
-    /*
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long GuestServiceId;
-    private String GraduatedDepartment;
-
-    private String Experiences;
-
-    private String Skills;
-
-    //CleaningReport(roomid,date,generalWorker_id)
-    //CleaningControl() //Eğer extra temizlik ücreti varsa
-    //FoodServiceReport(roomid,date,)
+    /**-----------------------------------------------------------------------------------
+     Employee      User
+     1          1
     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private Users user;
 
 }

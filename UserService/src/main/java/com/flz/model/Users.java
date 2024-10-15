@@ -1,49 +1,52 @@
 package com.flz.model;
 
-
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data//set get metotlarını otomatik tanımlar
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-
 @Entity
 @Table
 public class Users extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ID",unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name="NAME",nullable = false,length = 30)
+    @Column(name = "name")
     private String name;
 
-    @Column(name="LASTNAME",nullable = false,length = 30)
+    @Column(name = "last_name")
     private String lastname;
 
-    @Column(name="E_MAIL",nullable = false,length = 50,unique = true)
+    @Column(name = "e_mail")
     private String email;
 
-    @Column(name="PHONE_NUMBER",nullable = false,length = 20)
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name="PASSWORD",nullable = false,length = 13)
+    @Column(name = "password")
     private String password;
 
-    @Column(name="USER_TYPE",nullable = false )
+    @Column(name = "user_type")
     private byte userType;
 
-//    -----------------------------------------------------------------------------------
-//      Users           Address
-//         M                M
+    /**
+     * -----------------------------------------------------------------------------------
+     * Users           Address
+     * M                M
+     */
     @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable (name = "USERS_ADDRESS",
             joinColumns = { @JoinColumn(name = "ID", nullable = false)  },
@@ -51,29 +54,20 @@ public class Users extends BaseEntity {
     )
     private Set<Address> address = new HashSet<>();
 
-//    -----------------------------------------------------------------------------------
-//       Users            Customers
-//         1                 1
+    /**
+     * -----------------------------------------------------------------------------------
+     * Users            Customers
+     * 1                 1
+     */
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Customers customer;
 
-//    -----------------------------------------------------------------------------------
-//       Users            Employees
-//         1                 1
+    /**
+     * -----------------------------------------------------------------------------------
+     * Users            Employees
+     * 1                 1
+     */
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Employees employee;
-
-//    //  ********************************************
-//    // Rezervasyon yaptırmak istediğinde bu bilgileri girmek zorunda
-//    // dto ile customer db kısmına user bilgileri gönderilmeli
-//    // Sisteme kayıt için sadece email ve password yeterli
-//    // *********************************************
-//
-//    //User and MakeRezervation link
-//    /*@OneToOne (mappedBy = "users",
-//            fetch = FetchType.LAZY,
-//            cascade = CascadeType.ALL)
-//    private MakeRezervation maketheRezervation; */
-
 
 }

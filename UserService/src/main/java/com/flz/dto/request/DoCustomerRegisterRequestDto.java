@@ -1,17 +1,12 @@
 package com.flz.dto.request;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
+import lombok.Getter;
 
-@Builder // bir sınıftan nesne türetmek için
-@Data //set get metotlarını otomatik tanımlar
-@NoArgsConstructor
-@AllArgsConstructor
-
+@Builder
+@Getter
 public class DoCustomerRegisterRequestDto {
-
 
     private String IDnumber;
     private String nationality;
@@ -20,7 +15,6 @@ public class DoCustomerRegisterRequestDto {
     private String lastname;
     @Email
     private String email;
-
     private String phoneNumber;
     private String password;
     private String rePassword;

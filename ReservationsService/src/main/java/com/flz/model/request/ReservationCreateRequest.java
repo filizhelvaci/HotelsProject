@@ -1,14 +1,15 @@
-package com.flz.dto.request;
+package com.flz.model.request;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class DoReservationRequestDto {
+public class ReservationCreateRequest {
 
+    String email;
     String name;
     String lastname;
-    String email;
     byte userType;
+
 }

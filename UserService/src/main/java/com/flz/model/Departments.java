@@ -1,21 +1,19 @@
 package com.flz.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 
 @Entity
 @Table
@@ -23,25 +21,23 @@ public class Departments {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="DEPARTMENT_ID")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "DEPARTMENT_NAME",nullable = false)
-    private String DepartmentName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    private Date DepartmentEstablishmentDate;
+    private LocalDateTime establishmentDate;
 
 
-    //----------------------------------------------------------------
-    //  Departments     Positions
-    //     1               M
+    /**
+     * ----------------------------------------------------------------
+     * Departments     Positions
+     * 1               M
+     */
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<Positions> positions = new HashSet<>();
-
-
-
-
 
 
 }

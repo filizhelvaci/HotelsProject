@@ -4,8 +4,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=room_hotel_db
-    username: postgres
-    password: 4321
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:4321}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

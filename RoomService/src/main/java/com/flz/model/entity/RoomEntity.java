@@ -2,9 +2,8 @@ package com.flz.model.entity;
 
 import com.flz.model.enums.RoomStatus;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

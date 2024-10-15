@@ -3,7 +3,6 @@ package com.flz.utils;
 import com.flz.model.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,27 +15,20 @@ public class ServiceManager<T extends BaseEntity, ID> implements IService<T,ID>{
 
     @Override
     public T save(T t) {
-        long time=System.currentTimeMillis();
         t.setState(true);
-        t.setCreateAt(time);
-        t.setUpdateAt(time);
         return repository.save(t);
     }
 
     @Override
     public Iterable<T> saveAll(Iterable<T> t) {
-        long time=System.currentTimeMillis();
         t.forEach(x->{
             x.setState(true);
-            x.setCreateAt(time);
-            x.setUpdateAt(time);
         });
         return repository.saveAll(t);
     }
 
     @Override
     public T update(T t) {
-        //t.setUpdateAt(System.currentTimeMillis());
         return repository.save(t);
     }
 
@@ -44,7 +36,6 @@ public class ServiceManager<T extends BaseEntity, ID> implements IService<T,ID>{
     public void delete(T t) {
         repository.delete(t);
     }
-
 
     @Override
     public void deleteById(ID id) {

@@ -27,9 +27,9 @@ class AssetServiceImpl implements AssetService {
 
     @Override
     public AssetEntity findById(Long id) throws ResourceNotFoundException {
-        AssetEntity assetEntity = assetRepository.findById(id)
+        return assetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found ID: " + id));
-        return assetEntity;
+
     }
 
 
