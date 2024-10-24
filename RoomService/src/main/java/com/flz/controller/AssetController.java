@@ -1,7 +1,8 @@
 package com.flz.controller;
 
 import com.flz.exception.ResourceNotFoundException;
-import com.flz.model.entity.AssetEntity;
+import com.flz.model.request.AssetCreateRequest;
+import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
 import com.flz.service.AssetService;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +31,14 @@ class AssetController {
 
     @GetMapping("/asset/{id}")
     public ResponseEntity<AssetResponse> findById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
-        AssetResponse response = assetService.findById(id);
-        return ResponseEntity.ok(response);
+        AssetResponse assetResponse = assetService.findById(id);
+        return ResponseEntity.ok(assetResponse);
     }
 
 
     @PostMapping("/asset")
-    public ResponseEntity<Void> create(@RequestBody AssetEntity assetEntity) {
-        assetService.create(assetEntity);
+    public ResponseEntity<Void> create(@RequestBody AssetCreateRequest createRequest) {
+        assetService.create(createRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -45,9 +46,9 @@ class AssetController {
     @PutMapping("/asset/{id}")
     public ResponseEntity<Void> update(
             @PathVariable(value = "id") Long id,
-            @RequestBody AssetEntity assetEntity) throws ResourceNotFoundException {
+            @RequestBody AssetUpdateRequest assetUpdateRequest) throws ResourceNotFoundException {
 
-        assetService.update(id, assetEntity);
+        assetService.update(id, assetUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
