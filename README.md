@@ -34,3 +34,9 @@ _*APIs Interaction Platform*_
 
 ---
 
+## Project Documents
+For other information, you can check [Wiki](https://github.com/filizhelvaci/HotelsProject/wiki) Page.
+
+## Postman
+[Documentation](https://documenter.getpostman.com/view/32358530/2sAXxMeY7R) & [Workspace](https://web.postman.co/workspace/c650cd2a-6905-4c80-a9a3-16f6dedde96e/collection/32358530-73ea5126-92ae-436c-8c07-1308855c7ba1)
+
