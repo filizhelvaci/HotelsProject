@@ -2,6 +2,7 @@ package com.flz.controller;
 
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.entity.AssetEntity;
+import com.flz.model.response.AssetResponse;
 import com.flz.service.AssetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,16 +22,16 @@ class AssetController {
 
 
     @GetMapping("/assets")
-    public ResponseEntity<List<AssetEntity>> findAll() {
-        final List<AssetEntity> entities = assetService.findAll();
-        return ResponseEntity.ok(entities);
+    public ResponseEntity<List<AssetResponse>> findAll() {
+        final List<AssetResponse> assetResponses = assetService.findAll();
+        return ResponseEntity.ok(assetResponses);
     }
 
 
     @GetMapping("/asset/{id}")
-    public ResponseEntity<AssetEntity> findById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
-        AssetEntity entity = assetService.findById(id);
-        return ResponseEntity.ok(entity);
+    public ResponseEntity<AssetResponse> findById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+        AssetResponse response = assetService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
 

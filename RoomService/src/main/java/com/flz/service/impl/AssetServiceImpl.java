@@ -2,6 +2,8 @@ package com.flz.service.impl;
 
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.entity.AssetEntity;
+import com.flz.model.mapper.AssetEntityToResponseMapper;
+import com.flz.model.response.AssetResponse;
 import com.flz.repository.AssetRepository;
 import com.flz.service.AssetService;
 import org.springframework.stereotype.Service;
@@ -20,15 +22,18 @@ class AssetServiceImpl implements AssetService {
 
 
     @Override
-    public List<AssetEntity> findAll() {
-        return assetRepository.findAll();
+    public List<AssetResponse> findAll() {
+        List<AssetEntity> assetEntities = assetRepository.findAll();
+        return AssetEntityToResponseMapper.map(assetEntities);
     }
 
 
     @Override
-    public AssetEntity findById(Long id) throws ResourceNotFoundException {
-        return assetRepository.findById(id)
+    public AssetResponse findById(Long id) throws ResourceNotFoundException {
+        AssetEntity assetEntity = assetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found ID: " + id));
+
+        return AssetEntityToResponseMapper.map(assetEntity);
 
     }
 

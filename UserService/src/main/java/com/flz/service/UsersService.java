@@ -12,7 +12,7 @@ import com.flz.mapper.IUsersMapper;
 import com.flz.model.Customers;
 import com.flz.model.Employees;
 import com.flz.model.Users;
-import com.flz.repository.IUsersRepository;
+import com.flz.repository.UsersRepository;
 import com.flz.utils.ServiceManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,10 @@ import java.util.Optional;
 @Service
 public class UsersService extends ServiceManager<Users,Long> {
 
-    private final IUsersRepository IusersRepository;
+    private final UsersRepository IusersRepository;
     private final IReservationManager reservationManager;
 
-    public UsersService(IUsersRepository IusersRepository, IReservationManager reservationManager) {
+    public UsersService(UsersRepository IusersRepository, IReservationManager reservationManager) {
         super(IusersRepository);
         this.IusersRepository = IusersRepository;
         this.reservationManager = reservationManager;
