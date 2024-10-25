@@ -2,7 +2,11 @@ package com.flz.service.impl;
 
 import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.entity.AssetEntity;
+import com.flz.model.mapper.AssetCreateRequestToEntityMapper;
 import com.flz.model.mapper.AssetEntityToResponseMapper;
+import com.flz.model.mapper.AssetUpdateRequestToEntityMapper;
+import com.flz.model.request.AssetCreateRequest;
+import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
 import com.flz.repository.AssetRepository;
 import com.flz.service.AssetService;
@@ -39,22 +43,18 @@ class AssetServiceImpl implements AssetService {
 
 
     @Override
-    public void create(AssetEntity assetEntity) {
+    public void create(AssetCreateRequest assetCreateRequest) {
+        AssetEntity assetEntity = AssetCreateRequestToEntityMapper.map(assetCreateRequest);
         assetRepository.save(assetEntity);
     }
 
 
     @Override
-    public void update(Long id, AssetEntity assetEntity) throws ResourceNotFoundException {
-        AssetEntity assetEntityInfo = assetRepository.findById(id)
+    public void update(Long id, AssetUpdateRequest assetUpdateRequest) throws ResourceNotFoundException {
+        AssetEntity assetEntity = assetRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Asset not found ID: " + id));
-
-        assetEntityInfo.setName(assetEntity.getName());
-        assetEntityInfo.setPrice(assetEntity.getPrice());
-        assetEntityInfo.setIsDefault(assetEntity.getIsDefault());
-
-        assetRepository.save(assetEntityInfo);
-
+        AssetUpdateRequestToEntityMapper.map(assetUpdateRequest, assetEntity);
+        assetRepository.save(assetEntity);
     }
 
 
