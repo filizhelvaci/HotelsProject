@@ -1,10 +1,11 @@
 package com.flz.controller;
 
-import com.flz.exception.ResourceNotFoundException;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
 import com.flz.service.AssetService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ class AssetController {
 
 
     @GetMapping("/asset/{id}")
-    public ResponseEntity<AssetResponse> findById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+    public ResponseEntity<AssetResponse> findById(@PathVariable(value = "id") Long id) {
         AssetResponse assetResponse = assetService.findById(id);
         return ResponseEntity.ok(assetResponse);
     }
@@ -45,8 +46,8 @@ class AssetController {
 
     @PutMapping("/asset/{id}")
     public ResponseEntity<Void> update(
-            @PathVariable(value = "id") Long id,
-            @RequestBody AssetUpdateRequest assetUpdateRequest) throws ResourceNotFoundException {
+            @PathVariable(value = "id") @Positive Long id,
+            @RequestBody @Valid AssetUpdateRequest assetUpdateRequest) {
 
         assetService.update(id, assetUpdateRequest);
         return ResponseEntity.ok().build();
@@ -54,7 +55,7 @@ class AssetController {
 
 
     @DeleteMapping("/asset/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
         assetService.delete(id);
         return ResponseEntity.ok().build();
     }

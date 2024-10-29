@@ -1,6 +1,6 @@
 package com.flz.service.impl;
 
-import com.flz.exception.ResourceNotFoundException;
+import com.flz.exception.AssetNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.mapper.AssetCreateRequestToEntityMapper;
 import com.flz.model.mapper.AssetEntityToResponseMapper;
@@ -20,7 +20,6 @@ class AssetServiceImpl implements AssetService {
     private final AssetRepository assetRepository;
 
     public AssetServiceImpl(AssetRepository assetRepository) {
-
         this.assetRepository = assetRepository;
     }
 
@@ -33,12 +32,10 @@ class AssetServiceImpl implements AssetService {
 
 
     @Override
-    public AssetResponse findById(Long id) throws ResourceNotFoundException {
+    public AssetResponse findById(Long id) {
         AssetEntity assetEntity = assetRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset not found ID: " + id));
-
+                .orElseThrow(() -> new AssetNotFoundException(id));
         return AssetEntityToResponseMapper.map(assetEntity);
-
     }
 
 
@@ -50,22 +47,21 @@ class AssetServiceImpl implements AssetService {
 
 
     @Override
-    public void update(Long id, AssetUpdateRequest assetUpdateRequest) throws ResourceNotFoundException {
+    public void update(Long id, AssetUpdateRequest assetUpdateRequest) {
         AssetEntity assetEntity = assetRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset not found ID: " + id));
+                .orElseThrow(() -> new AssetNotFoundException(id));
         AssetUpdateRequestToEntityMapper.map(assetUpdateRequest, assetEntity);
         assetRepository.save(assetEntity);
     }
 
 
     @Override
-    public void delete(Long id) throws ResourceNotFoundException {
+    public void delete(Long id) throws AssetNotFoundException {
         boolean exists = assetRepository.existsById(id);
         if (!exists) {
-            throw new ResourceNotFoundException("Asset not found ID:" + id);
+            throw new AssetNotFoundException(id);
         }
         assetRepository.deleteById(id);
     }
-
 
 }
