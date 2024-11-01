@@ -13,6 +13,4 @@ public final class AssetUpdateRequestToEntityMapper {
         assetEntity.setPrice(assetUpdateRequest.getPrice());
         assetEntity.setIsDefault(assetUpdateRequest.getIsDefault());
     }
-
-
 }
