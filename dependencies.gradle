@@ -8,7 +8,7 @@ ext {
             swaggerApi          : "2.3.0",
             jwt                 : "4.4.0",
             springCloudConfig   : "4.1.0",
-            //flyway              : "10.18.0"
+            flyway: "10.18.0"
     ]
      libs = [
             springBootWeb                   : "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
@@ -26,7 +26,7 @@ ext {
             springCloudStarterConfig        : "org.springframework.cloud:spring-cloud-starter-config:$versions.springCloudConfig",
             springCloudClient               : "org.springframework.cloud:spring-cloud-config-client:$versions.springCloudConfig",
             springCloudServer               : "org.springframework.cloud:spring-cloud-config-server:$versions.springCloudConfig",
-            //flywayCore                      : "org.flywaydb:flyway-core:$versions.flyway",
-            //flywayPostgres                   : "org.flywaydb:flyway-database-postgresql:$versions.flyway"
+            flywayCore    : "org.flywaydb:flyway-core:$versions.flyway",
+            flywayPostgres: "org.flywaydb:flyway-database-postgresql:$versions.flyway"
     ]
 }

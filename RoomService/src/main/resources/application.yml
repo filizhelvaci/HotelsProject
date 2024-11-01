@@ -3,12 +3,19 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/hotel_r?currentSchema=rooms
+    url: jdbc:postgresql://${DATABASE_IP:localhost}:${DATABASE_PORT:5432}/hotel_r
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:4321}
     driver-class-name: org.postgresql.Driver
   jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create
-    show-sql: true
-
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+  flyway:
+    baseline-on-migrate: true
+    locations: db/migration
+    enabled: true

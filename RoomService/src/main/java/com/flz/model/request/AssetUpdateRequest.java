@@ -22,5 +22,5 @@ public class AssetUpdateRequest {
     private BigDecimal price;
 
     @NotBlank
-    private String isDefault;
+    private Boolean isDefault;
 }

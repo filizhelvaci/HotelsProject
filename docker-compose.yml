@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres:latest
+    container_name: hotel_db
+    restart: always
+    environment:
+      POSTGRES_DB: hotel_r
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 4321
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./docker/postgresql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - gb_network
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: application
+    restart: on-failure
+    ports:
+      - "9090:9090"
+    environment:
+      - DATABASE_IP=host.docker.internal
+    depends_on:
+      - database
+    networks:
+      - gb_network
+networks:
+  gb_network:
+    driver: bridge

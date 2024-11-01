@@ -22,7 +22,7 @@ public class AssetCreateRequest {
     private BigDecimal price;
 
     @NotBlank
-    private String isDefault;
+    private Boolean isDefault;
 
 
 }

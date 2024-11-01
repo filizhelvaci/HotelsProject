@@ -1,4 +1,4 @@
-create table hotel_rooms.rs_room_type
+create table if not exists rs_room_type
 (
     id           bigint generated always as identity primary key,
     name         varchar(50)    not null unique,
@@ -12,7 +12,7 @@ create table hotel_rooms.rs_room_type
     updated_by   varchar(120)
 );
 
-create table hotel_rooms.rs_room
+create table if not exists rs_room
 (
     id         bigint generated always as identity primary key,
     number     smallint     not null,
@@ -25,22 +25,16 @@ create table hotel_rooms.rs_room
     updated_by varchar(120)
 );
 
-create table hotel_rooms.rs_asset
+create table if not exists rs_asset
 (
     id         bigint generated always as identity primary key,
     name       varchar(50)    not null,
     price      numeric(14, 4) not null,
-    is_default smallint       not null,
+    is_default boolean not null,
     created_at timestamp(0)   not null default current_timestamp,
     created_by varchar(120)   not null,
     updated_at timestamp(0),
     updated_by varchar(120)
 );
 
-create table hotel_rooms.rs_room_type_asset
-(
-    id           bigint generated always as identity primary key,
-    room_type_id bigint not null references rs_room_type (id),
-    asset_id     bigint not null references rs_asset (id)
 
-);

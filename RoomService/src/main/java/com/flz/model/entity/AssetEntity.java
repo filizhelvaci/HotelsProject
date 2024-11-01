@@ -26,6 +26,6 @@ public class AssetEntity {
     private BigDecimal price;
 
     @Column(name = "is_default")
-    private String isDefault;
+    private Boolean isDefault;
 
 }

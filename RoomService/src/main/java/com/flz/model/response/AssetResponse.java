@@ -12,5 +12,5 @@ public class AssetResponse {
     private Long id;
     private String name;
     private BigDecimal price;
-    private String isDefault;
+    private Boolean isDefault;
 }
