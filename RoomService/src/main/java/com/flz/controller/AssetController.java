@@ -38,7 +38,7 @@ class AssetController {
 
 
     @PostMapping("/asset")
-    public ResponseEntity<Void> create(@RequestBody AssetCreateRequest createRequest) {
+    public ResponseEntity<Void> create(@RequestBody @Valid AssetCreateRequest createRequest) {
         assetService.create(createRequest);
         return ResponseEntity.ok().build();
     }

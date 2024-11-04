@@ -31,8 +31,8 @@ create table if not exists rs_asset
     name       varchar(50)    not null,
     price      numeric(14, 4) not null,
     is_default boolean not null,
-    created_at timestamp(0)   not null default current_timestamp,
-    created_by varchar(120)   not null,
+    created_at timestamp(0) default current_timestamp,
+    created_by varchar(120),
     updated_at timestamp(0),
     updated_by varchar(120)
 );

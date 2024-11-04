@@ -21,6 +21,5 @@ public class AssetUpdateRequest {
     @Range(min = 0, max = 100)
     private BigDecimal price;
 
-    @NotBlank
     private Boolean isDefault;
 }
