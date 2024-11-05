@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://${DATABASE_IP:localhost}:${DATABASE_PORT:5432}/hotel_r
+    url: jdbc:postgresql://${DATABASE_IP:localhost}:${DATABASE_PORT:5433}/hotel_r
     username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:4321}
+    password: ${DATABASE_PASSWORD:654321}
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:

@@ -7,11 +7,22 @@ import java.time.LocalDateTime;
 @Getter
 public class ErrorResponse {
 
-    private LocalDateTime timestamp;
-    private String message;
+    private final LocalDateTime timestamp = LocalDateTime.now();
+    private final String message;
+    private String field;
+    private int code;
 
-    public ErrorResponse(LocalDateTime timestamp, String message) {
-        this.timestamp = timestamp;
+    public ErrorResponse(String message) {
         this.message = message;
+    }
+
+    public ErrorResponse(String message, String field) {
+        this.message = message;
+        this.field = field;
+    }
+
+    public ErrorResponse(String message, int code) {
+        this.message = message;
+        this.code = code;
     }
 }

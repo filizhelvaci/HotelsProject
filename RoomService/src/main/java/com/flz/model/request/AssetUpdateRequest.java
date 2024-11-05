@@ -18,8 +18,9 @@ public class AssetUpdateRequest {
     private String name;
 
     @NotNull
-    @Range(min = 0, max = 100)
+    @Range(min = 0, max = 10000)
     private BigDecimal price;
 
+    @NotNull
     private Boolean isDefault;
 }

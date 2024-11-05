@@ -8,14 +8,14 @@ services:
     environment:
       POSTGRES_DB: hotel_r
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 4321
-      POSTGRES_PORT: 5432
+      POSTGRES_PASSWORD: 654321
+      POSTGRES_PORT: 5433
     volumes:
       - ./docker/postgresql:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
-      - gb_network
+      - hotel_network
   application:
     build:
       context: .
@@ -23,13 +23,13 @@ services:
     container_name: application
     restart: on-failure
     ports:
-      - "9090:9090"
+      - "8082:8082"
     environment:
       - DATABASE_IP=host.docker.internal
     depends_on:
       - database
     networks:
-      - gb_network
+      - hotel_network
 networks:
   gb_network:
     driver: bridge

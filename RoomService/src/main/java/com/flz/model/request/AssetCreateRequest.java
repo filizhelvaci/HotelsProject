@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,14 +18,11 @@ public class AssetCreateRequest {
     private String name;
 
     @NotNull
-    @Range(min = 2, max = 200)
+    @Range(min = 0, max = 10000)
     private BigDecimal price;
 
+    @NotNull
     private Boolean isDefault;
-    private LocalDateTime createdAt;
-    private String createdBy;
-    private LocalDateTime updatedAt;
-    private String updatedBy;
 
 
 }
