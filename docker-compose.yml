@@ -3,7 +3,7 @@ version: "3.9"
 services:
   database:
     image: postgres:latest
-    container_name: hotel_db
+    container_name: database
     restart: always
     environment:
       POSTGRES_DB: hotel_r
@@ -11,11 +11,12 @@ services:
       POSTGRES_PASSWORD: 654321
       POSTGRES_PORT: 5433
     volumes:
-      - ./docker/postgresql:/var/lib/postgresql/data
+      - database_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
       - hotel_network
+
   application:
     build:
       context: .
@@ -31,5 +32,8 @@ services:
     networks:
       - hotel_network
 networks:
-  gb_network:
+  hotel_network:
     driver: bridge
+volumes:
+  database_data:
+    driver: local

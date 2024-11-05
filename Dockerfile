@@ -1,17 +1,14 @@
-FROM gradle:7.6.2-jdk17-alpine AS build
+# Uygulama için JDK gerekli
+FROM amazoncorretto:17
 
-COPY build.gradle.kts settings.gradle.kts dependencies.gradle.kts /home/gradle/app/
+WORKDIR /app
+# Bizim bu projemizdeki JAR dosyamızın, Docker içinde çalışacağı konumu
+ARG JAR_FILE=RoomService/build/libs/RoomService-v.0.0.1.jar
 
-COPY src /home/gradle/app/src
+# JAR dosyasını root klasörüne bu isimle kopyala
+COPY ${JAR_FILE} /app/hotel_r.jar
 
-WORKDIR /home/gradle/app
-
-RUN gradle clean build
-
-COPY --from=build /home/gradle/app/src/main/resources/serviceAccountKey.json /src/main/resources/serviceAccountKey.json
-
-COPY --from=build /home/gradle/app/build/libs/*.jar /app/hotel_r.jar
-
-EXPOSE 9090
+EXPOSE 8082
 
 ENTRYPOINT ["java", "-jar", "/app/hotel_r.jar"]
+
