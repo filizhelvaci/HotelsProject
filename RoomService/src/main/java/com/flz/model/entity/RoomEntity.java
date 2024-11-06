@@ -2,11 +2,17 @@ package com.flz.model.entity;
 
 import com.flz.model.enums.RoomStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "rs_room")
 public class RoomEntity extends BaseEntity {

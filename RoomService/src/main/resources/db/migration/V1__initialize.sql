@@ -1,7 +1,7 @@
 create table if not exists rs_room_type
 (
     id           bigint generated always as identity primary key,
-    name         varchar(50)    not null unique,
+    name varchar(100) not null unique,
     price        numeric(14, 4) not null,
     person_count smallint       not null,
     size         smallint       not null,
