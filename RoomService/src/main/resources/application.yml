@@ -19,3 +19,4 @@ spring:
     baseline-on-migrate: true
     locations: db/migration
     enabled: true
+    clean-disabled: false

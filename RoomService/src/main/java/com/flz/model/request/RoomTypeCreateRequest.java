@@ -30,7 +30,7 @@ public class RoomTypeCreateRequest {
     private Integer size;
 
     @NotBlank
-    @Size(min = 0, max = 10000)
+    @Size(min = 1, max = 10000)
     private String description;
 
 
