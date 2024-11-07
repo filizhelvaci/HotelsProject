@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface RoomTypeService {
 
-    //RoomTypeEntity -> request and response
-
     List<RoomTypeResponse> findAll();
 
     RoomTypeResponse findById(Long id);

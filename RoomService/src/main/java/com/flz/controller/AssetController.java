@@ -59,6 +59,4 @@ class AssetController {
         assetService.delete(id);
         return ResponseEntity.ok().build();
     }
-
-
 }
