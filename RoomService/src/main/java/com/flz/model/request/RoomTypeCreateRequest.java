@@ -14,11 +14,11 @@ import java.math.BigDecimal;
 public class RoomTypeCreateRequest {
 
     @NotBlank
-    @Size(min = 2, max = 100)
+    @Size(min = 2, max = 99)
     private String name;
 
     @NotNull
-    @Range(min = 0, max = 100000000)
+    @Range(min = 0, max = 10000000)
     private BigDecimal price;
 
     @NotNull
@@ -26,11 +26,11 @@ public class RoomTypeCreateRequest {
     private Integer personCount;
 
     @NotNull
-    @Range(min = 0, max = 10000)
+    @Range(min = 0, max = 1000)
     private Integer size;
 
     @NotBlank
-    @Size(min = 1, max = 10000)
+    @Size(min = 1, max = 1000)
     private String description;
 
 

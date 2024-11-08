@@ -21,7 +21,7 @@ create table if not exists rs_room_type
     size smallint not null,
     description varchar
 (
-    200
+    1000
 ) not null,
     created_at timestamp
 (
