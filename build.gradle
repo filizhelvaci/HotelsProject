@@ -14,7 +14,7 @@ allprojects {
 	apply from  :  "${rootDir}/dependencies.gradle"
 	apply plugin: 'application'
 	group = 'com.flz'
-    version = 'v.0.2'
+	version = '1.0.3'
 
 }
 

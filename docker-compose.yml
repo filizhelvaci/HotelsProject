@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-  database:
+  db:
     image: postgres:latest
-    container_name: database
+    container_name: db
     restart: always
     environment:
       POSTGRES_DB: hotel_r
@@ -17,20 +17,22 @@ services:
     networks:
       - hotel_network
 
-  application:
+  room-service:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: application
+      dockerfile: ./RoomService/Dockerfile
+    container_name: rooms
     restart: on-failure
     ports:
       - "8083:8082"
     environment:
       - DATABASE_IP=host.docker.internal
     depends_on:
-      - database
+      - db
     networks:
       - hotel_network
+
+
 networks:
   hotel_network:
     driver: bridge
