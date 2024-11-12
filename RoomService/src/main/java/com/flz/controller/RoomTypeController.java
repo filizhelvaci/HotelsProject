@@ -43,9 +43,7 @@ public class RoomTypeController {
 
 
     @PutMapping("/room-type/{id}")
-    public ResponseEntity<Void> update(
-            @PathVariable(value = "id") @Positive Long id,
-            @RequestBody @Valid RoomTypeUpdateRequest roomTypeUpdateRequest) {
+    public ResponseEntity<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid RoomTypeUpdateRequest roomTypeUpdateRequest) {
 
         roomTypeService.update(id, roomTypeUpdateRequest);
         return ResponseEntity.ok().build();

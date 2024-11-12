@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/v1")
 class AssetController {
@@ -29,13 +28,11 @@ class AssetController {
         return ResponseEntity.ok(assetResponses);
     }
 
-
     @GetMapping("/asset/{id}")
     public ResponseEntity<AssetResponse> findById(@PathVariable(value = "id") Long id) {
         AssetResponse assetResponse = assetService.findById(id);
         return ResponseEntity.ok(assetResponse);
     }
-
 
     @PostMapping("/asset")
     public ResponseEntity<Void> create(@RequestBody @Valid AssetCreateRequest createRequest) {
@@ -43,16 +40,11 @@ class AssetController {
         return ResponseEntity.ok().build();
     }
 
-
     @PutMapping("/asset/{id}")
-    public ResponseEntity<Void> update(
-            @PathVariable(value = "id") @Positive Long id,
-            @RequestBody @Valid AssetUpdateRequest assetUpdateRequest) {
-
+    public ResponseEntity<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid AssetUpdateRequest assetUpdateRequest) {
         assetService.update(id, assetUpdateRequest);
         return ResponseEntity.ok().build();
     }
-
 
     @DeleteMapping("/asset/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {

@@ -31,8 +31,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public RoomTypeResponse findById(Long id) {
-        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
-                .orElseThrow(() -> new RoomTypeNotFoundException(id));
+        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id).orElseThrow(() -> new RoomTypeNotFoundException(id));
         return RoomTypeEntityToResponseMapper.map(roomTypeEntity);
     }
 
@@ -44,8 +43,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public void update(Long id, RoomTypeUpdateRequest roomTypeUpdateRequest) {
-        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
-                .orElseThrow(() -> new RoomTypeNotFoundException(id));
+        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id).orElseThrow(() -> new RoomTypeNotFoundException(id));
         RoomTypeUpdateRequestToEntityMapper.map(roomTypeUpdateRequest, roomTypeEntity);
         roomTypeRepository.save(roomTypeEntity);
     }
