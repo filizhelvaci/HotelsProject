@@ -5,4 +5,8 @@ dependencies {
     implementation libs.flywayCore
     runtimeOnly libs.flywayPostgres
     implementation libs.swaggerApi
-    }
+}
+
+bootJar {
+    mainClass = 'com.flz.RoomApp' // TODO bunu kaldırırsak dosyayı nasıl çalıştıracağız kısmına bakılması lazım
+}
