@@ -8,5 +8,10 @@ dependencies {
 }
 
 bootJar {
-    mainClass = 'com.flz.RoomApp' // TODO bunu kaldırırsak dosyayı nasıl çalıştıracağız kısmına bakılması lazım
+    enabled = true
+    mainClass = 'com.flz.RoomApp'
+}
+
+jar {
+    enabled = false
 }
