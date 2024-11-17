@@ -6,12 +6,3 @@ dependencies {
     runtimeOnly libs.flywayPostgres
     implementation libs.swaggerApi
 }
-
-bootJar {
-    enabled = true
-    mainClass = 'com.flz.RoomApp'
-}
-
-jar {
-    enabled = false
-}

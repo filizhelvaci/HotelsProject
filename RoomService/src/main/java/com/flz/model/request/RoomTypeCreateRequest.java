@@ -33,5 +33,4 @@ public class RoomTypeCreateRequest {
     @Size(min = 1, max = 1000)
     private String description;
 
-
 }
