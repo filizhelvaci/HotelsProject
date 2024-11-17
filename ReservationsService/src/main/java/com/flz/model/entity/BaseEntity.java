@@ -2,9 +2,8 @@ package com.flz.model.entity;
 
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -12,13 +11,11 @@ import org.springframework.data.annotation.CreatedDate;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class BaseEntity {
 
     @CreatedDate()
     private Long createAt;
 
     private boolean state = true;
-
 }
