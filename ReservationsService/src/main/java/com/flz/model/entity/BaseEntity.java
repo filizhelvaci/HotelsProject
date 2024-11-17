@@ -1,14 +1,12 @@
 package com.flz.model.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDateTime;
+import org.springframework.data.annotation.CreatedDate;
 
 @MappedSuperclass
 @SuperBuilder
@@ -18,16 +16,9 @@ import java.time.LocalDateTime;
 @Setter
 public class BaseEntity {
 
-    @Column(name = "created_by")
-    protected String createdBy;
+    @CreatedDate()
+    private Long createAt;
 
-    @Column(name = "created_at")
-    protected LocalDateTime createdAt;
-
-    @Column(name = "updated_by")
-    protected String updatedBy;
-
-    @Column(name = "updated_at")
-    protected LocalDateTime updatedAt;
+    private boolean state = true;
 
 }
