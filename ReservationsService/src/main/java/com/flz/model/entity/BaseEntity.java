@@ -16,6 +16,7 @@ public class BaseEntity {
 
     @CreatedDate()
     private Long createAt;
-
-    private boolean state = true;
+    //@formatter:off
+    private boolean state=true;
+// @formatter:on
 }
