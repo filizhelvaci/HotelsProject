@@ -1,32 +1,28 @@
 ext {
-    versions = [
-            springBoot          : "3.2.2",
-            springCloud         : "4.1.0",
-            lombok              : "1.18.28",
-            mapStruct           : "1.5.5.Final",
-            postgreSql          : "42.7.1",
-            swaggerApi          : "2.3.0",
-            jwt                 : "4.4.0",
-            springCloudConfig   : "4.1.0",
-            flyway: "10.18.0"
-    ]
-     libs = [
-            springBootWeb                   : "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
-            springBootDataJpa               : "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
+    versions = [springBoot       : "3.2.2",
+                springCloud      : "4.1.0",
+                lombok           : "1.18.28",
+                mapStruct        : "1.5.5.Final",
+                postgreSql       : "42.7.1",
+                swaggerApi       : "2.3.0",
+                jwt              : "4.4.0",
+                springCloudConfig: "4.1.0",
+                flyway           : "10.18.0"]
+    libs = [springBootWeb           : "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
+            springBootDataJpa       : "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
 
-            springCloudOpenFeign            : "org.springframework.cloud:spring-cloud-starter-openfeign:$versions.springCloud",
+            springCloudOpenFeign    : "org.springframework.cloud:spring-cloud-starter-openfeign:$versions.springCloud",
 
-            postgreSql                      : "org.postgresql:postgresql:$versions.postgreSql",
-            lombok                          : "org.projectlombok:lombok:$versions.lombok",
-            mapStruct                       : "org.mapstruct:mapstruct:$versions.mapStruct",
-            mapStructProcessor              : "org.mapstruct:mapstruct-processor:$versions.mapStruct",
-            swaggerApi                      : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.swaggerApi",
-            jwt                             : "com.auth0:java-jwt:$versions.jwt",
+            postgreSql              : "org.postgresql:postgresql:$versions.postgreSql",
+            lombok                  : "org.projectlombok:lombok:$versions.lombok",
+            mapStruct               : "org.mapstruct:mapstruct:$versions.mapStruct",
+            mapStructProcessor      : "org.mapstruct:mapstruct-processor:$versions.mapStruct",
+            swaggerApi              : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.swaggerApi",
+            jwt                     : "com.auth0:java-jwt:$versions.jwt",
 
-            springCloudStarterConfig        : "org.springframework.cloud:spring-cloud-starter-config:$versions.springCloudConfig",
-            springCloudClient               : "org.springframework.cloud:spring-cloud-config-client:$versions.springCloudConfig",
-            springCloudServer               : "org.springframework.cloud:spring-cloud-config-server:$versions.springCloudConfig",
-            flywayCore    : "org.flywaydb:flyway-core:$versions.flyway",
-            flywayPostgres: "org.flywaydb:flyway-database-postgresql:$versions.flyway"
-    ]
+            springCloudStarterConfig: "org.springframework.cloud:spring-cloud-starter-config:$versions.springCloudConfig",
+            springCloudClient       : "org.springframework.cloud:spring-cloud-config-client:$versions.springCloudConfig",
+            springCloudServer       : "org.springframework.cloud:spring-cloud-config-server:$versions.springCloudConfig",
+            flywayCore              : "org.flywaydb:flyway-core:$versions.flyway",
+            flywayPostgres          : "org.flywaydb:flyway-database-postgresql:$versions.flyway"]
 }

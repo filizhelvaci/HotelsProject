@@ -2,4 +2,3 @@ rootProject.name = 'HotelsProject'
 include 'RoomService'
 include 'ReservationsService'
 include 'UserService'
-
