@@ -16,18 +16,24 @@ import java.sql.SQLException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    ErrorResponse handleException(Exception exception) {
+        log.error(exception.getMessage(), exception);
+        return new ErrorResponse(exception.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorResponse handleValidationErrors(final MethodArgumentNotValidException exception) {
         log.error(exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), exception.getObjectName());
-
+        return new ErrorResponse(exception.getMessage(), exception.getObjectName(), exception.getErrorCount());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorResponse handleValidationErrors(final MethodArgumentTypeMismatchException exception) {
-        log.error(exception.getMessage(), exception);
+        log.error(exception.getMessage(), exception.getErrorCode());
         return new ErrorResponse(exception.getMessage(), exception.getName());
     }
 

@@ -3,6 +3,7 @@ package com.flz.controller;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
+import com.flz.model.response.HotelResponse;
 import com.flz.service.AssetService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -35,20 +36,20 @@ class AssetController {
     }
 
     @PostMapping("/asset")
-    public ResponseEntity<Void> create(@RequestBody @Valid AssetCreateRequest createRequest) {
+    public HotelResponse<Void> create(@RequestBody @Valid AssetCreateRequest createRequest) {
         assetService.create(createRequest);
-        return ResponseEntity.ok().build();
+        return HotelResponse.success();
     }
 
     @PutMapping("/asset/{id}")
-    public ResponseEntity<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid AssetUpdateRequest assetUpdateRequest) {
+    public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid AssetUpdateRequest assetUpdateRequest) {
         assetService.update(id, assetUpdateRequest);
-        return ResponseEntity.ok().build();
+        return HotelResponse.success();
     }
 
     @DeleteMapping("/asset/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
+    public HotelResponse<Void> delete(@PathVariable(value = "id") Long id) {
         assetService.delete(id);
-        return ResponseEntity.ok().build();
+        return HotelResponse.success();
     }
 }
