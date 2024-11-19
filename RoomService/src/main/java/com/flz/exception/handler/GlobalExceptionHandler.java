@@ -11,17 +11,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ErrorResponse handleException(Exception exception) {
-        log.error(exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage());
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -48,7 +42,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ErrorResponse handleSQLError(final SQLException exception) {
         log.error(exception.getMessage(), exception);
-        return new ErrorResponse("Database Error", exception.getErrorCode());
+        return new ErrorResponse("Database Error");
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    ErrorResponse handleException(Exception exception) {
+        log.error(exception.getMessage(), exception);
+        return ErrorResponse.builder().message("Prepared for unpredictable errors.").timestamp(LocalDateTime.now()).isSuccess(false).build();
     }
 
 }
