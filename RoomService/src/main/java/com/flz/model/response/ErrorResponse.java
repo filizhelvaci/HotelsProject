@@ -26,21 +26,9 @@ public class ErrorResponse {
         this.message = message;
     }
 
-//    public ErrorResponse(LocalDateTime dateTime, Boolean isSuccess, String message) {
-//        this.message = message;
-//        this.isSuccess = isSuccess;
-//        this.timestamp = dateTime;
-//    }
-
     public ErrorResponse(String message, String field) {
         this.message = message;
         this.field = field;
-
-    }
-
-    public ErrorResponse(String message, int code) {
-        this.message = message;
-        this.code = code;
     }
 
     public ErrorResponse(String message, String field, int code) {

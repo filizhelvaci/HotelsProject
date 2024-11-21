@@ -10,6 +10,8 @@ public interface AssetService {
 
     List<AssetResponse> findAll();
 
+    List<AssetResponse> findAllById(List<Long> ids);
+
     AssetResponse findById(Long id);
 
     void create(AssetCreateRequest assetCreateRequest);

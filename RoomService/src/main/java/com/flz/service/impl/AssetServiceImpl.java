@@ -30,6 +30,11 @@ class AssetServiceImpl implements AssetService {
         return AssetEntityToResponseMapper.map(assetEntities);
     }
 
+    @Override
+    public List<AssetResponse> findAllById(List<Long> ids) {
+        List<AssetEntity> assetEntities = assetRepository.findAllById(ids);
+        return AssetEntityToResponseMapper.map(assetEntities);
+    }
 
     @Override
     public AssetResponse findById(Long id) {

@@ -2,13 +2,14 @@ package com.flz.service.impl;
 
 import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.entity.RoomTypeEntity;
-import com.flz.model.mapper.RoomTypeCreateRequestToEntityMapper;
-import com.flz.model.mapper.RoomTypeEntityToResponseMapper;
-import com.flz.model.mapper.RoomTypeUpdateRequestToEntityMapper;
+import com.flz.model.mapper.*;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
+import com.flz.model.response.AssetResponse;
+import com.flz.model.response.RoomTypeBasicResponse;
 import com.flz.model.response.RoomTypeResponse;
 import com.flz.repository.RoomTypeRepository;
+import com.flz.service.AssetService;
 import com.flz.service.RoomTypeService;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +20,17 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
     private final RoomTypeRepository roomTypeRepository;
 
-    RoomTypeServiceImpl(RoomTypeRepository roomTypeRepository) {
+    private final AssetService assetService;
+
+    RoomTypeServiceImpl(RoomTypeRepository roomTypeRepository, AssetService assetService) {
         this.roomTypeRepository = roomTypeRepository;
+        this.assetService = assetService;
     }
 
     @Override
-    public List<RoomTypeResponse> findAll() {
+    public List<RoomTypeBasicResponse> findAll() {
         List<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll();
-        return RoomTypeEntityToResponseMapper.map(roomTypeEntities);
+        return RoomTypeEntityToBasicResponseMapper.map(roomTypeEntities);
     }
 
     @Override
@@ -37,7 +41,10 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public void create(RoomTypeCreateRequest roomTypeCreateRequest) {
+
         RoomTypeEntity roomTypeEntity = RoomTypeCreateRequestToEntityMapper.map(roomTypeCreateRequest);
+        List<AssetResponse> assets = assetService.findAllById(roomTypeCreateRequest.getAssetIds());
+        roomTypeEntity.setAssets(AssetResponseToEntityMapper.map(assets));
         roomTypeRepository.save(roomTypeEntity);
     }
 

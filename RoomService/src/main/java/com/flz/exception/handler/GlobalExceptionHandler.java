@@ -49,7 +49,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ErrorResponse handleException(Exception exception) {
         log.error(exception.getMessage(), exception);
-        return ErrorResponse.builder().message("Prepared for unpredictable errors.").timestamp(LocalDateTime.now()).isSuccess(false).build();
+        return ErrorResponse.builder()
+                .message("Prepared for unpredictable errors.")
+                .timestamp(LocalDateTime.now())
+                .isSuccess(false)
+                .build();
     }
 
 }
