@@ -2,12 +2,15 @@ package com.flz.model.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-@Getter
 @Builder
-public class RoomTypeResponse {
+@Getter
+@Setter
+public class RoomTypeWithAssetResponse {
 
     private Long id;
     private String name;
@@ -15,5 +18,6 @@ public class RoomTypeResponse {
     private Integer personCount;
     private Integer size;
     private String description;
+    private List<String> assets;
 
 }

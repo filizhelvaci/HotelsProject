@@ -7,7 +7,7 @@ import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.AssetResponse;
 import com.flz.model.response.RoomTypeBasicResponse;
-import com.flz.model.response.RoomTypeResponse;
+import com.flz.model.response.RoomTypeWithAssetResponse;
 import com.flz.repository.RoomTypeRepository;
 import com.flz.service.AssetService;
 import com.flz.service.RoomTypeService;
@@ -34,14 +34,13 @@ class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse findById(Long id) {
+    public RoomTypeWithAssetResponse findById(Long id) {
         RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id).orElseThrow(() -> new RoomTypeNotFoundException(id));
-        return RoomTypeEntityToResponseMapper.map(roomTypeEntity);
+        return RoomTypeEntityWithAssetsToResponseMapper.map(roomTypeEntity);
     }
 
     @Override
     public void create(RoomTypeCreateRequest roomTypeCreateRequest) {
-
         RoomTypeEntity roomTypeEntity = RoomTypeCreateRequestToEntityMapper.map(roomTypeCreateRequest);
         List<AssetResponse> assets = assetService.findAllById(roomTypeCreateRequest.getAssetIds());
         roomTypeEntity.setAssets(AssetResponseToEntityMapper.map(assets));
