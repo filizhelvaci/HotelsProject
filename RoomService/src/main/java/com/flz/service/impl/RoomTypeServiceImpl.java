@@ -50,6 +50,8 @@ class RoomTypeServiceImpl implements RoomTypeService {
     @Override
     public void update(Long id, RoomTypeUpdateRequest roomTypeUpdateRequest) {
         RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id).orElseThrow(() -> new RoomTypeNotFoundException(id));
+        List<AssetResponse> assets = assetService.findAllById(roomTypeUpdateRequest.getAssetIds());
+        roomTypeEntity.setAssets(AssetResponseToEntityMapper.map(assets));
         RoomTypeUpdateRequestToEntityMapper.map(roomTypeUpdateRequest, roomTypeEntity);
         roomTypeRepository.save(roomTypeEntity);
     }

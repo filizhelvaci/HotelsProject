@@ -46,7 +46,6 @@ public class RoomTypeController {
 
     @PutMapping("/room-type/{id}")
     public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid RoomTypeUpdateRequest roomTypeUpdateRequest) {
-
         roomTypeService.update(id, roomTypeUpdateRequest);
         return HotelResponse.success();
     }
