@@ -8,7 +8,6 @@ import com.flz.model.response.RoomTypeWithAssetResponse;
 import com.flz.service.RoomTypeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,16 +23,16 @@ public class RoomTypeController {
     }
 
     @GetMapping("/room-types")
-    public ResponseEntity<List<RoomTypeBasicResponse>> findAll() {
+    public HotelResponse<List<RoomTypeBasicResponse>> findAll() {
         final List<RoomTypeBasicResponse> roomTypeBasicResponses = roomTypeService.findAll();
-        return ResponseEntity.ok(roomTypeBasicResponses);
+        return HotelResponse.successOf(roomTypeBasicResponses);
     }
 
 
     @GetMapping("/room-type/{id}")
-    public ResponseEntity<RoomTypeWithAssetResponse> findById(@PathVariable(value = "id") Long id) {
+    public HotelResponse<RoomTypeWithAssetResponse> findById(@PathVariable(value = "id") Long id) {
         RoomTypeWithAssetResponse roomTypeWithAssetResponse = roomTypeService.findById(id);
-        return ResponseEntity.ok(roomTypeWithAssetResponse);
+        return HotelResponse.successOf(roomTypeWithAssetResponse);
     }
 
 

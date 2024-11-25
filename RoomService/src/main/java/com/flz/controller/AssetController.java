@@ -7,7 +7,6 @@ import com.flz.model.response.HotelResponse;
 import com.flz.service.AssetService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,15 +23,15 @@ class AssetController {
 
 
     @GetMapping("/assets")
-    public ResponseEntity<List<AssetResponse>> findAll() {
+    public HotelResponse<List<AssetResponse>> findAll() {
         final List<AssetResponse> assetResponses = assetService.findAll();
-        return ResponseEntity.ok(assetResponses);
+        return HotelResponse.successOf(assetResponses);
     }
 
     @GetMapping("/asset/{id}")
-    public ResponseEntity<AssetResponse> findById(@PathVariable(value = "id") Long id) {
+    public HotelResponse<AssetResponse> findById(@PathVariable(value = "id") Long id) {
         AssetResponse assetResponse = assetService.findById(id);
-        return ResponseEntity.ok(assetResponse);
+        return HotelResponse.successOf(assetResponse);
     }
 
     @PostMapping("/asset")

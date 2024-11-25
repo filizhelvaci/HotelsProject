@@ -22,4 +22,11 @@ public class HotelResponse<T> {
         return HotelResponse.<T>builder().isSuccess(true).build();
     }
 
+    public static <T> HotelResponse<T> successOf(final T response) {
+        return HotelResponse.<T>builder()
+                .isSuccess(true)
+                .response(response).build();
+    }
+
+
 }
