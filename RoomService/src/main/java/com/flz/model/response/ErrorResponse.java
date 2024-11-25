@@ -11,16 +11,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ErrorResponse {
 
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private LocalDateTime time = LocalDateTime.now();
+
+    private Boolean isSuccess = false;
 
     private final String message;
 
     private String field;
 
     private int code;
-
-    @Builder.Default
-    private Boolean isSuccess = false;
 
     public ErrorResponse(String message) {
         this.message = message;
