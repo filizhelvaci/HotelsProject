@@ -4,7 +4,7 @@ import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.HotelResponse;
 import com.flz.model.response.RoomTypeBasicResponse;
-import com.flz.model.response.RoomTypeWithAssetResponse;
+import com.flz.model.response.RoomTypeResponse;
 import com.flz.service.RoomTypeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -30,9 +30,9 @@ public class RoomTypeController {
 
 
     @GetMapping("/room-type/{id}")
-    public HotelResponse<RoomTypeWithAssetResponse> findById(@PathVariable(value = "id") Long id) {
-        RoomTypeWithAssetResponse roomTypeWithAssetResponse = roomTypeService.findById(id);
-        return HotelResponse.successOf(roomTypeWithAssetResponse);
+    public HotelResponse<RoomTypeResponse> findById(@PathVariable(value = "id") Long id) {
+        RoomTypeResponse roomTypeResponse = roomTypeService.findById(id);
+        return HotelResponse.successOf(roomTypeResponse);
     }
 
 

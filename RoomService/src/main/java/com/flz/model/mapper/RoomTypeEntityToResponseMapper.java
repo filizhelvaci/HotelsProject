@@ -1,10 +1,8 @@
 package com.flz.model.mapper;
 
+import com.flz.model.entity.AssetEntity;
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.response.RoomTypeResponse;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class RoomTypeEntityToResponseMapper {
 
@@ -19,16 +17,8 @@ public final class RoomTypeEntityToResponseMapper {
                 .personCount(roomTypeEntity.getPersonCount())
                 .size(roomTypeEntity.getSize())
                 .description(roomTypeEntity.getDescription())
+                .assets(roomTypeEntity.getAssets().stream().map(AssetEntity::getName).toList())
                 .build();
-    }
-
-    public static List<RoomTypeResponse> map(List<RoomTypeEntity> roomTypeEntities) {
-        List<RoomTypeResponse> roomTypeResponses = new ArrayList<>();
-        for (RoomTypeEntity roomTypeEntity : roomTypeEntities) {
-            RoomTypeResponse roomTypeResponse = map(roomTypeEntity);
-            roomTypeResponses.add(roomTypeResponse);
-        }
-        return roomTypeResponses;
     }
 
 }
