@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ErrorResponse {
 
-    private LocalDateTime time = LocalDateTime.now();
+    private LocalDateTime time;
 
-    private Boolean isSuccess = false;
+    private Boolean isSuccess;
 
     private final String message;
 
@@ -21,18 +21,4 @@ public class ErrorResponse {
 
     private int code;
 
-    public ErrorResponse(String message) {
-        this.message = message;
-    }
-
-    public ErrorResponse(String message, String field) {
-        this.message = message;
-        this.field = field;
-    }
-
-    public ErrorResponse(String message, String field, int code) {
-        this.message = message;
-        this.field = field;
-        this.code = code;
-    }
 }

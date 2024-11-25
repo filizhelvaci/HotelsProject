@@ -21,28 +21,38 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorResponse handleValidationErrors(final MethodArgumentNotValidException exception) {
         log.error(exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), exception.getObjectName(), exception.getErrorCount());
+        return ErrorResponse.builder()
+                .message(exception.getMessage())
+                .field(exception.getObjectName())
+                .build();
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorResponse handleValidationErrors(final MethodArgumentTypeMismatchException exception) {
         log.error(exception.getMessage(), exception.getErrorCode());
-        return new ErrorResponse(exception.getMessage(), exception.getName());
+        return ErrorResponse.builder()
+                .message(exception.getMessage())
+                .field(exception.getName())
+                .build();
     }
 
     @ExceptionHandler(AbstractNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ErrorResponse handleNotExistError(final AbstractNotFoundException exception) {
         log.error(exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage());
+        return ErrorResponse.builder()
+                .message(exception.getMessage())
+                .build();
     }
 
     @ExceptionHandler(SQLException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ErrorResponse handleSQLError(final SQLException exception) {
         log.error(exception.getMessage(), exception);
-        return new ErrorResponse("Database Error");
+        return ErrorResponse.builder()
+                .message("Database Error")
+                .build();
     }
 
     @ExceptionHandler(Exception.class)
@@ -51,7 +61,7 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .message("Prepared for unpredictable errors.")
-                .timestamp(LocalDateTime.now())
+                .time(LocalDateTime.now())
                 .isSuccess(false)
                 .build();
     }
