@@ -4,10 +4,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+@Builder
 @Getter
 @Setter
-@Builder
-public class AssetRoomTypeResponse {
+public class AssetsSummaryResponse {
 
     private Long id;
     private String name;
