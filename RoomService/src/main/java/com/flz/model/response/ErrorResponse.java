@@ -20,5 +20,4 @@ public class ErrorResponse {
     private String field;
 
     private int code;
-
 }

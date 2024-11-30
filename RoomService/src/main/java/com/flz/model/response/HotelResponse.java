@@ -27,6 +27,4 @@ public class HotelResponse<T> {
                 .isSuccess(true)
                 .response(response).build();
     }
-
-
 }

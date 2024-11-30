@@ -1,5 +1,6 @@
 package com.flz.service.impl;
 
+import com.flz.exception.AssetAlreadyExistsException;
 import com.flz.exception.AssetNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.mapper.AssetCreateRequestToEntityMapper;
@@ -12,19 +13,16 @@ import com.flz.model.response.AssetResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.repository.AssetRepository;
 import com.flz.service.AssetService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 class AssetServiceImpl implements AssetService {
 
     private final AssetRepository assetRepository;
-
-    public AssetServiceImpl(AssetRepository assetRepository) {
-        this.assetRepository = assetRepository;
-    }
-
 
     @Override
     public List<AssetResponse> findAll() {
@@ -54,6 +52,8 @@ class AssetServiceImpl implements AssetService {
 
     @Override
     public void create(AssetCreateRequest assetCreateRequest) {
+        if (assetRepository.existsByName(assetCreateRequest.getName()))
+            throw new AssetAlreadyExistsException(assetCreateRequest.getName());
         AssetEntity assetEntity = AssetCreateRequestToEntityMapper.map(assetCreateRequest);
         assetRepository.save(assetEntity);
     }

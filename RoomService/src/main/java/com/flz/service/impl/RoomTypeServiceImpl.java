@@ -1,8 +1,13 @@
 package com.flz.service.impl;
 
+import com.flz.exception.RoomTypeAlreadyExistsException;
 import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.entity.RoomTypeEntity;
-import com.flz.model.mapper.*;
+import com.flz.model.mapper.AssetResponseToEntityMapper;
+import com.flz.model.mapper.RoomTypeCreateRequestToEntityMapper;
+import com.flz.model.mapper.RoomTypeEntityToBasicResponseMapper;
+import com.flz.model.mapper.RoomTypeEntityToResponseMapper;
+import com.flz.model.mapper.RoomTypeUpdateRequestToEntityMapper;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.AssetResponse;
@@ -11,21 +16,18 @@ import com.flz.model.response.RoomTypeResponse;
 import com.flz.repository.RoomTypeRepository;
 import com.flz.service.AssetService;
 import com.flz.service.RoomTypeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 class RoomTypeServiceImpl implements RoomTypeService {
 
     private final RoomTypeRepository roomTypeRepository;
 
     private final AssetService assetService;
-
-    RoomTypeServiceImpl(RoomTypeRepository roomTypeRepository, AssetService assetService) {
-        this.roomTypeRepository = roomTypeRepository;
-        this.assetService = assetService;
-    }
 
     @Override
     public List<RoomTypeBasicResponse> findAll() {
@@ -41,6 +43,8 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public void create(RoomTypeCreateRequest roomTypeCreateRequest) {
+        if (roomTypeRepository.existsByName(roomTypeCreateRequest.getName()))
+            throw new RoomTypeAlreadyExistsException(roomTypeCreateRequest.getName());
         RoomTypeEntity roomTypeEntity = RoomTypeCreateRequestToEntityMapper.map(roomTypeCreateRequest);
         List<AssetResponse> assets = assetService.findAllById(roomTypeCreateRequest.getAssetIds());
         roomTypeEntity.setAssets(AssetResponseToEntityMapper.map(assets));

@@ -55,6 +55,15 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(SQLException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ErrorResponse handleSQLConflictError(final SQLException exception) {
+        log.error(exception.getMessage(), exception);
+        return ErrorResponse.builder()
+                .message("Database Conflict Error")
+                .build();
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ErrorResponse handleException(Exception exception) {

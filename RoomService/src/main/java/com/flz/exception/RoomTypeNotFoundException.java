@@ -8,6 +8,6 @@ public class RoomTypeNotFoundException extends AbstractNotFoundException {
     private static final long serialVersionUID = 1458755075792352182L;
 
     public RoomTypeNotFoundException(Long id) {
-        super("Room Type not found ID" + id);
+        super("Room Type not found ID = " + id);
     }
 }
