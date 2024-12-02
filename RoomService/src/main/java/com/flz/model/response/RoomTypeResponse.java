@@ -18,6 +18,6 @@ public class RoomTypeResponse {
     private Integer personCount;
     private Integer size;
     private String description;
-    private List<String> assets;
+    private List<AssetsSummaryResponse> assets;
 
 }
