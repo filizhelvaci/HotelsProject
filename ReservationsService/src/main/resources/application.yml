@@ -1,6 +1,6 @@
 ##### port #####
 server:
-  port: 8081
+  port: 8085
 
 # RoomService
 ##### data postgresql #####
