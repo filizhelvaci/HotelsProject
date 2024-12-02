@@ -13,7 +13,8 @@ public class HotelResponse<T> {
     @Builder.Default
     private LocalDateTime time = LocalDateTime.now();
 
-    private Boolean isSuccess;
+    @Builder.Default
+    private Boolean isSuccess = true;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T response;
@@ -24,7 +25,6 @@ public class HotelResponse<T> {
 
     public static <T> HotelResponse<T> successOf(final T response) {
         return HotelResponse.<T>builder()
-                .isSuccess(true)
                 .response(response).build();
     }
 }

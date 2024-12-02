@@ -11,9 +11,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ErrorResponse {
 
-    private LocalDateTime time;
+    @Builder.Default
+    private LocalDateTime time = LocalDateTime.now();
 
-    private Boolean isSuccess;
+    @Builder.Default
+    private Boolean isSuccess = false;
 
     private final String message;
 

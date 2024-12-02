@@ -8,6 +8,6 @@ public final class AssetAlreadyExistsException extends AbstractAlreadyExistsExce
     private static final long serialVersionUID = 1L;
 
     public AssetAlreadyExistsException(String message) {
-        super("Asset already exists");
+        super(message + " -> this Asset already exists");
     }
 }
