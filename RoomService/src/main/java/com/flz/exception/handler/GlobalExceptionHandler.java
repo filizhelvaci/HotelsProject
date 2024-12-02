@@ -1,5 +1,6 @@
 package com.flz.exception.handler;
 
+import com.flz.exception.AbstractAlreadyExistsException;
 import com.flz.exception.AbstractNotFoundException;
 import com.flz.model.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +55,9 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler(SQLException.class)
+    @ExceptionHandler(AbstractAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    ErrorResponse handleSQLConflictError(final SQLException exception) {
+    ErrorResponse handleSQLConflictError(final AbstractAlreadyExistsException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .message("Database Conflict Error")

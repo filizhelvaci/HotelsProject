@@ -8,6 +8,6 @@ public abstract class AbstractAlreadyExistsException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     protected AbstractAlreadyExistsException(String message) {
-        super(message);
+        super(" - CONFLICT ERROR - " + message);
     }
 }
