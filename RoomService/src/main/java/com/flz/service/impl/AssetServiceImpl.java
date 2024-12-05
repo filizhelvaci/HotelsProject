@@ -14,6 +14,9 @@ import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.repository.AssetRepository;
 import com.flz.service.AssetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,10 +52,16 @@ class AssetServiceImpl implements AssetService {
         return AssetEntityToResponseMapper.map(assetEntity);
     }
 
+    @Override
+    public Page<AssetResponse> findAllByName(String name, int offset, int pageSize) {
+        Pageable pageable = PageRequest.of(offset, pageSize);
+        Page<AssetEntity> assetEntityPage = assetRepository.findByNameContaining(name, pageable);
+        return assetEntityPage.map(AssetEntityToResponseMapper::map);
+    }
 
     @Override
     public void create(AssetCreateRequest assetCreateRequest) {
-        if (assetRepository.existsByName(assetCreateRequest.getName()))
+        if (Boolean.TRUE.equals(assetRepository.existsByName(assetCreateRequest.getName())))
             throw new AssetAlreadyExistsException(assetCreateRequest.getName());
         AssetEntity assetEntity = AssetCreateRequestToEntityMapper.map(assetCreateRequest);
         assetRepository.save(assetEntity);
