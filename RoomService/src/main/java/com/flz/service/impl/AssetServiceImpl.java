@@ -17,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -53,10 +55,31 @@ class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Page<AssetResponse> findAllByName(String name, int offset, int pageSize) {
-        Pageable pageable = PageRequest.of(offset, pageSize);
-        Page<AssetEntity> assetEntityPage = assetRepository.findByNameContaining(name, pageable);
-        return assetEntityPage.map(AssetEntityToResponseMapper::map);
+    public Page<AssetResponse> searchAssets(
+            String name,
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            Boolean isDefault,
+            int page,
+            int size,
+            String sortBy,
+            String sortDirection
+    ) {
+        Sort sort = Sort.by(
+                sortDirection.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy)
+        );
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<AssetEntity> assetEntities = assetRepository.findByNameContainingAndPriceBetweenAndIsDefault(
+                name != null ? name : "",
+                minPrice != null ? minPrice : BigDecimal.ZERO,
+                maxPrice != null ? maxPrice : BigDecimal.valueOf(Long.MAX_VALUE),
+                isDefault,
+                pageable
+        );
+
+        return AssetEntityToResponseMapper.map(assetEntities);
     }
 
     @Override

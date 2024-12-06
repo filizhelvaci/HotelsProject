@@ -2,6 +2,7 @@ package com.flz.model.mapper;
 
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.response.AssetResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +28,9 @@ public final class AssetEntityToResponseMapper {
             assetResponses.add(assetResponse);
         }
         return assetResponses;
+    }
+
+    public static Page<AssetResponse> map(Page<AssetEntity> assetEntities) {
+        return assetEntities.map(AssetEntityToResponseMapper::map);
     }
 }

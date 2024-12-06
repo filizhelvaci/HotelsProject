@@ -6,6 +6,7 @@ import com.flz.model.response.AssetResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface AssetService {
@@ -16,7 +17,14 @@ public interface AssetService {
 
     List<AssetResponse> findAllById(List<Long> ids);
 
-    Page<AssetResponse> findAllByName(String name, int offset, int pageSize);
+    Page<AssetResponse> searchAssets(String name,
+                                     BigDecimal minPrice,
+                                     BigDecimal maxPrice,
+                                     Boolean isDefault,
+                                     int page,
+                                     int size,
+                                     String sortBy,
+                                     String sortDirection);
 
     AssetResponse findById(Long id);
 

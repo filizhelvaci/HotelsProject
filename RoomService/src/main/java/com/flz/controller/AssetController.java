@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -47,13 +48,18 @@ class AssetController {
         return HotelResponse.successOf(assetResponse);
     }
 
-    @GetMapping("/assets")
-    public Page<AssetResponse> findAllByName(
+    @GetMapping("/search")
+    public Page<AssetResponse> searchAssets(
             @RequestParam(required = false) String name,
-            @RequestParam int offset,
-            @RequestParam int pageSize
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean isDefault,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
     ) {
-        return assetService.findAllByName(name, offset, pageSize);
+        return assetService.searchAssets(name, minPrice, maxPrice, isDefault, page, size, sortBy, sortDirection);
     }
 
     @PostMapping("/asset")
