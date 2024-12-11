@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Repository
 public interface AssetRepository extends JpaRepository<AssetEntity, Long> {
 
-    Boolean existsByName(String name);
+    boolean existsByName(String name);
 
     Page<AssetEntity> findByNameContainingAndPriceBetweenAndIsDefault(
             String name,

@@ -31,41 +31,56 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public List<RoomTypeBasicResponse> findAll() {
+
         List<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll();
         return RoomTypeEntityToBasicResponseMapper.map(roomTypeEntities);
+
     }
 
     @Override
     public RoomTypeResponse findById(Long id) {
-        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id).orElseThrow(() -> new RoomTypeNotFoundException(id));
+
+        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
+                .orElseThrow(() -> new RoomTypeNotFoundException(id));
         return RoomTypeEntityToResponseMapper.map(roomTypeEntity);
+
     }
 
     @Override
     public void create(RoomTypeCreateRequest roomTypeCreateRequest) {
-        if (roomTypeRepository.existsByName(roomTypeCreateRequest.getName()))
+
+        boolean existsByName = roomTypeRepository.existsByName(roomTypeCreateRequest.getName());
+        if (existsByName) {
             throw new RoomTypeAlreadyExistsException(roomTypeCreateRequest.getName());
+        }
+
         RoomTypeEntity roomTypeEntity = RoomTypeCreateRequestToEntityMapper.map(roomTypeCreateRequest);
         List<AssetResponse> assets = assetService.findAllById(roomTypeCreateRequest.getAssetIds());
         roomTypeEntity.setAssets(AssetResponseToEntityMapper.map(assets));
         roomTypeRepository.save(roomTypeEntity);
+
     }
 
     @Override
     public void update(Long id, RoomTypeUpdateRequest roomTypeUpdateRequest) {
-        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id).orElseThrow(() -> new RoomTypeNotFoundException(id));
+
+        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
+                .orElseThrow(() -> new RoomTypeNotFoundException(id));
         List<AssetResponse> assets = assetService.findAllById(roomTypeUpdateRequest.getAssetIds());
         roomTypeEntity.setAssets(AssetResponseToEntityMapper.map(assets));
         RoomTypeUpdateRequestToEntityMapper.map(roomTypeUpdateRequest, roomTypeEntity);
         roomTypeRepository.save(roomTypeEntity);
+
     }
 
     @Override
     public void delete(Long id) throws RoomTypeNotFoundException {
+
         boolean exists = roomTypeRepository.existsById(id);
         if (!exists) {
             throw new RoomTypeNotFoundException(id);
         }
         roomTypeRepository.deleteById(id);
+
     }
 }
