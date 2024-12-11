@@ -8,6 +8,7 @@ public final class AssetNotFoundException extends AbstractNotFoundException {
     private static final long serialVersionUID = -5692997481627512574L;
 
     public AssetNotFoundException(Long id) {
-        super("Asset not found ID" + id);
+
+        super("This Asset not found ID = " + id);
     }
 }

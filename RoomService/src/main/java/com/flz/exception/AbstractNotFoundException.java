@@ -8,6 +8,7 @@ public abstract class AbstractNotFoundException extends RuntimeException {
     private static final long serialVersionUID = 1971229645656410132L;
 
     protected AbstractNotFoundException(String message) {
+
         super(" - NOT FOUND EXCEPTION - " + message);
     }
 }

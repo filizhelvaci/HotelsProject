@@ -9,6 +9,6 @@ public final class RoomTypeAlreadyExistsException extends AbstractAlreadyExistsE
 
     public RoomTypeAlreadyExistsException(String message) {
 
-        super("Room Type already exists ! ");
+        super(message + "  -> this Room Type already exists ! ");
     }
 }
