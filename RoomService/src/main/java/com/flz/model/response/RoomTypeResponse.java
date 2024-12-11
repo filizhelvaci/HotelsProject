@@ -18,6 +18,14 @@ public class RoomTypeResponse {
     private Integer personCount;
     private Integer size;
     private String description;
-    private List<AssetsSummaryResponse> assets;
+    private List<Asset> assets;
+
+    @Getter
+    @Builder
+    public static class Asset {
+        private Long id;
+        private String name;
+
+    }
 
 }

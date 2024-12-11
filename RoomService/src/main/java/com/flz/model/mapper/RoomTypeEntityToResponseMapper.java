@@ -1,7 +1,7 @@
 package com.flz.model.mapper;
 
+import com.flz.model.entity.AssetEntity;
 import com.flz.model.entity.RoomTypeEntity;
-import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.model.response.RoomTypeResponse;
 
 import java.util.ArrayList;
@@ -14,14 +14,14 @@ public final class RoomTypeEntityToResponseMapper {
 
     public static RoomTypeResponse map(RoomTypeEntity roomTypeEntity) {
 
-        List<AssetsSummaryResponse> assetList = new ArrayList<>();
+        List<RoomTypeResponse.Asset> assetList = new ArrayList<>();
 
-        for (int i = 0; i < roomTypeEntity.getAssets().size(); i++) {
-            AssetsSummaryResponse assetsSummaryResponse = AssetsSummaryResponse.builder()
-                    .id(roomTypeEntity.getAssets().get(i).getId())
-                    .name(roomTypeEntity.getAssets().get(i).getName())
+        for (AssetEntity assetEntity : roomTypeEntity.getAssets()) {
+            RoomTypeResponse.Asset asset = RoomTypeResponse.Asset.builder()
+                    .id(assetEntity.getId())
+                    .name(assetEntity.getName())
                     .build();
-            assetList.add(assetsSummaryResponse);
+            assetList.add(asset);
         }
 
         return RoomTypeResponse.builder()
