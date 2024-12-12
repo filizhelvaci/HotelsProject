@@ -3,6 +3,7 @@ package com.flz.service;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
+import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import org.springframework.data.domain.Page;
 
@@ -11,20 +12,18 @@ import java.util.List;
 
 public interface AssetService {
 
-    List<AssetResponse> findAll();
+    Page<AssetsResponse> findAll(String name,
+                                 BigDecimal minPrice,
+                                 BigDecimal maxPrice,
+                                 Boolean isDefault,
+                                 int page,
+                                 int size,
+                                 String sortBy,
+                                 String sortDirection);
 
     List<AssetsSummaryResponse> findSummaryAll();
 
     List<AssetResponse> findAllById(List<Long> ids);
-
-    Page<AssetResponse> searchAssets(String name,
-                                     BigDecimal minPrice,
-                                     BigDecimal maxPrice,
-                                     Boolean isDefault,
-                                     int page,
-                                     int size,
-                                     String sortBy,
-                                     String sortDirection);
 
     AssetResponse findById(Long id);
 

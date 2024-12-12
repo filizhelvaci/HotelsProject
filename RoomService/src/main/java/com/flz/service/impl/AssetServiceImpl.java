@@ -4,12 +4,14 @@ import com.flz.exception.AssetAlreadyExistsException;
 import com.flz.exception.AssetNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.mapper.AssetCreateRequestToEntityMapper;
+import com.flz.model.mapper.AssetEntityToPageResponseMapper;
 import com.flz.model.mapper.AssetEntityToResponseMapper;
 import com.flz.model.mapper.AssetEntityToSummaryResponseMapper;
 import com.flz.model.mapper.AssetUpdateRequestToEntityMapper;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
+import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.repository.AssetRepository;
 import com.flz.service.AssetService;
@@ -28,14 +30,6 @@ import java.util.List;
 class AssetServiceImpl implements AssetService {
 
     private final AssetRepository assetRepository;
-
-    @Override
-    public List<AssetResponse> findAll() {
-
-        List<AssetEntity> assetEntities = assetRepository.findAll();
-        return AssetEntityToResponseMapper.map(assetEntities);
-
-    }
 
     @Override
     public List<AssetsSummaryResponse> findSummaryAll() {
@@ -63,16 +57,14 @@ class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Page<AssetResponse> searchAssets(
-            String name,
-            BigDecimal minPrice,
-            BigDecimal maxPrice,
-            Boolean isDefault,
-            int page,
-            int size,
-            String sortBy,
-            String sortDirection
-    ) {
+    public Page<AssetsResponse> findAll(String name,
+                                        BigDecimal minPrice,
+                                        BigDecimal maxPrice,
+                                        Boolean isDefault,
+                                        int page,
+                                        int size,
+                                        String sortBy,
+                                        String sortDirection) {
 
         Sort sort = Sort.by(
                 sortDirection.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy)
@@ -88,8 +80,7 @@ class AssetServiceImpl implements AssetService {
                 pageable
         );
 
-        return AssetEntityToResponseMapper.map(assetEntities);
-
+        return AssetEntityToPageResponseMapper.map(assetEntities);
     }
 
     @Override

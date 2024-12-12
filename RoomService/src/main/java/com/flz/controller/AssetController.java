@@ -3,6 +3,7 @@ package com.flz.controller;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
+import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.model.response.HotelResponse;
 import com.flz.service.AssetService;
@@ -30,12 +31,6 @@ class AssetController {
 
     private final AssetService assetService;
 
-    @GetMapping("/assets")
-    public HotelResponse<List<AssetResponse>> findAll() {
-        final List<AssetResponse> assetResponses = assetService.findAll();
-        return HotelResponse.successOf(assetResponses);
-    }
-
     @GetMapping("/asset")
     public HotelResponse<List<AssetsSummaryResponse>> findSummaryAll() {
         final List<AssetsSummaryResponse> assetsSummaryResponse = assetService.findSummaryAll();
@@ -48,18 +43,18 @@ class AssetController {
         return HotelResponse.successOf(assetResponse);
     }
 
-    @GetMapping("/search")
-    public Page<AssetResponse> searchAssets(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice,
-            @RequestParam(required = false) Boolean isDefault,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDirection
-    ) {
-        return assetService.searchAssets(name, minPrice, maxPrice, isDefault, page, size, sortBy, sortDirection);
+
+    @GetMapping("/assets")
+    public HotelResponse<Page<AssetsResponse>> findAll(@RequestParam(required = false) String name,
+                                                       @RequestParam(required = false) BigDecimal minPrice,
+                                                       @RequestParam(required = false) BigDecimal maxPrice,
+                                                       @RequestParam(required = false) Boolean isDefault,
+                                                       @RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "10") int size,
+                                                       @RequestParam(defaultValue = "id") String sortBy,
+                                                       @RequestParam(defaultValue = "asc") String sortDirection) {
+        final Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, isDefault, page, size, sortBy, sortDirection);
+        return HotelResponse.successOf(assetsResponses);
     }
 
     @PostMapping("/asset")
