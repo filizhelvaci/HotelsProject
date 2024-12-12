@@ -5,7 +5,7 @@ import java.io.Serial;
 public final class RoomTypeAlreadyExistsException extends AbstractAlreadyExistsException {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6332098600699563568L;
 
     public RoomTypeAlreadyExistsException(String message) {
 
