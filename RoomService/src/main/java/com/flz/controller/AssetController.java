@@ -43,17 +43,15 @@ class AssetController {
         return HotelResponse.successOf(assetResponse);
     }
 
-
-    @GetMapping("/assets")
+    @PostMapping("/assets")
     public HotelResponse<Page<AssetsResponse>> findAll(@RequestParam(required = false) String name,
                                                        @RequestParam(required = false) BigDecimal minPrice,
                                                        @RequestParam(required = false) BigDecimal maxPrice,
-                                                       @RequestParam(required = false) Boolean isDefault,
                                                        @RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "10") int size,
                                                        @RequestParam(defaultValue = "id") String sortBy,
                                                        @RequestParam(defaultValue = "asc") String sortDirection) {
-        final Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, isDefault, page, size, sortBy, sortDirection);
+        final Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, page, size, sortBy, sortDirection);
         return HotelResponse.successOf(assetsResponses);
     }
 

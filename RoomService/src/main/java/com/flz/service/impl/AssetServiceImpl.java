@@ -60,7 +60,6 @@ class AssetServiceImpl implements AssetService {
     public Page<AssetsResponse> findAll(String name,
                                         BigDecimal minPrice,
                                         BigDecimal maxPrice,
-                                        Boolean isDefault,
                                         int page,
                                         int size,
                                         String sortBy,
@@ -72,11 +71,10 @@ class AssetServiceImpl implements AssetService {
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<AssetEntity> assetEntities = assetRepository.findByNameContainingAndPriceBetweenAndIsDefault(
+        Page<AssetEntity> assetEntities = assetRepository.findByNameContainingAndPriceBetween(
                 name != null ? name : "",
                 minPrice != null ? minPrice : BigDecimal.ZERO,
                 maxPrice != null ? maxPrice : BigDecimal.valueOf(Long.MAX_VALUE),
-                isDefault,
                 pageable
         );
 

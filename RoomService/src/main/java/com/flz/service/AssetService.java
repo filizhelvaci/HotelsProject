@@ -15,7 +15,6 @@ public interface AssetService {
     Page<AssetsResponse> findAll(String name,
                                  BigDecimal minPrice,
                                  BigDecimal maxPrice,
-                                 Boolean isDefault,
                                  int page,
                                  int size,
                                  String sortBy,

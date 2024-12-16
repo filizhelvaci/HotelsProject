@@ -13,11 +13,10 @@ public interface AssetRepository extends JpaRepository<AssetEntity, Long> {
 
     boolean existsByName(String name);
 
-    Page<AssetEntity> findByNameContainingAndPriceBetweenAndIsDefault(
+    Page<AssetEntity> findByNameContainingAndPriceBetween(
             String name,
             BigDecimal minPrice,
             BigDecimal maxPrice,
-            Boolean isDefault,
             Pageable pageable
     );
 }
