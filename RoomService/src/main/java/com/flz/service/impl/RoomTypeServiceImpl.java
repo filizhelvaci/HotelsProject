@@ -5,7 +5,7 @@ import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.mapper.AssetResponseToEntityMapper;
 import com.flz.model.mapper.RoomTypeCreateRequestToEntityMapper;
-import com.flz.model.mapper.RoomTypeEntityToBasicResponseMapper;
+import com.flz.model.mapper.RoomTypeEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomTypeEntityToResponseMapper;
 import com.flz.model.mapper.RoomTypeEntityToSummaryResponseMapper;
 import com.flz.model.mapper.RoomTypeUpdateRequestToEntityMapper;
@@ -19,8 +19,13 @@ import com.flz.repository.RoomTypeRepository;
 import com.flz.service.AssetService;
 import com.flz.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -30,13 +35,6 @@ class RoomTypeServiceImpl implements RoomTypeService {
     private final RoomTypeRepository roomTypeRepository;
     private final AssetService assetService;
 
-    @Override
-    public List<RoomTypeResponse> findAll() {
-
-        List<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll();
-        return RoomTypeEntityToBasicResponseMapper.map(roomTypeEntities);
-
-    }
 
     @Override
     public List<RoomTypesSummaryResponse> findSummaryAll() {
@@ -47,13 +45,39 @@ class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypesResponse findById(Long id) {
+    public RoomTypeResponse findById(Long id) {
 
         RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new RoomTypeNotFoundException(id));
         return RoomTypeEntityToResponseMapper.map(roomTypeEntity);
 
     }
+
+    @Override
+    public Page<RoomTypesResponse> findAll(String name,
+                                           BigDecimal minPrice,
+                                           BigDecimal maxPrice,
+                                           int page,
+                                           int size,
+                                           String sortBy,
+                                           String sortDirection) {
+
+        Sort sort = Sort.by(
+                sortDirection.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy)
+        );
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findByNameContainingAndPriceBetween(
+                name != null ? name : "",
+                minPrice != null ? minPrice : BigDecimal.ZERO,
+                maxPrice != null ? maxPrice : BigDecimal.valueOf(Long.MAX_VALUE),
+                pageable
+        );
+
+        return RoomTypeEntityToPageResponseMapper.map(roomTypeEntities);
+    }
+
 
     @Override
     public void create(RoomTypeCreateRequest roomTypeCreateRequest) {

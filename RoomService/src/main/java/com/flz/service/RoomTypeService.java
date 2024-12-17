@@ -5,16 +5,24 @@ import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.RoomTypeResponse;
 import com.flz.model.response.RoomTypesResponse;
 import com.flz.model.response.RoomTypesSummaryResponse;
+import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface RoomTypeService {
 
-    List<RoomTypeResponse> findAll();
+    Page<RoomTypesResponse> findAll(String name,
+                                    BigDecimal minPrice,
+                                    BigDecimal maxPrice,
+                                    int page,
+                                    int size,
+                                    String sortBy,
+                                    String sortDirection);
 
     List<RoomTypesSummaryResponse> findSummaryAll();
 
-    RoomTypesResponse findById(Long id);
+    RoomTypeResponse findById(Long id);
 
     void create(RoomTypeCreateRequest roomTypeCreateRequest);
 
