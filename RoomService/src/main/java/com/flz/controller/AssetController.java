@@ -31,7 +31,7 @@ class AssetController {
 
     private final AssetService assetService;
 
-    @GetMapping("/asset")
+    @GetMapping("/assets/summary")
     public HotelResponse<List<AssetsSummaryResponse>> findSummaryAll() {
         final List<AssetsSummaryResponse> assetsSummaryResponse = assetService.findSummaryAll();
         return HotelResponse.successOf(assetsSummaryResponse);

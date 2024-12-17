@@ -5,6 +5,7 @@ import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.HotelResponse;
 import com.flz.model.response.RoomTypeBasicResponse;
 import com.flz.model.response.RoomTypeResponse;
+import com.flz.model.response.RoomTypesSummaryResponse;
 import com.flz.service.RoomTypeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -26,6 +27,13 @@ import java.util.List;
 public class RoomTypeController {
 
     private final RoomTypeService roomTypeService;
+
+    @GetMapping("/assets/summary")
+    public HotelResponse<List<RoomTypesSummaryResponse>> findSummaryAll() {
+        final List<RoomTypesSummaryResponse> roomTypesSummaryResponses = roomTypeService.findSummaryAll();
+        return HotelResponse.successOf(roomTypesSummaryResponses);
+    }
+
 
     @GetMapping("/room-types")
     public HotelResponse<List<RoomTypeBasicResponse>> findAll() {

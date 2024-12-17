@@ -7,12 +7,14 @@ import com.flz.model.mapper.AssetResponseToEntityMapper;
 import com.flz.model.mapper.RoomTypeCreateRequestToEntityMapper;
 import com.flz.model.mapper.RoomTypeEntityToBasicResponseMapper;
 import com.flz.model.mapper.RoomTypeEntityToResponseMapper;
+import com.flz.model.mapper.RoomTypeEntityToSummaryResponseMapper;
 import com.flz.model.mapper.RoomTypeUpdateRequestToEntityMapper;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.AssetResponse;
 import com.flz.model.response.RoomTypeBasicResponse;
 import com.flz.model.response.RoomTypeResponse;
+import com.flz.model.response.RoomTypesSummaryResponse;
 import com.flz.repository.RoomTypeRepository;
 import com.flz.service.AssetService;
 import com.flz.service.RoomTypeService;
@@ -26,7 +28,6 @@ import java.util.List;
 class RoomTypeServiceImpl implements RoomTypeService {
 
     private final RoomTypeRepository roomTypeRepository;
-
     private final AssetService assetService;
 
     @Override
@@ -34,6 +35,14 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
         List<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll();
         return RoomTypeEntityToBasicResponseMapper.map(roomTypeEntities);
+
+    }
+
+    @Override
+    public List<RoomTypesSummaryResponse> findSummaryAll() {
+
+        List<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll();
+        return RoomTypeEntityToSummaryResponseMapper.map(roomTypeEntities);
 
     }
 
