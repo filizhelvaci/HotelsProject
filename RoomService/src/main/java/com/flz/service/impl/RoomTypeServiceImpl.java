@@ -12,8 +12,8 @@ import com.flz.model.mapper.RoomTypeUpdateRequestToEntityMapper;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.AssetResponse;
-import com.flz.model.response.RoomTypeBasicResponse;
 import com.flz.model.response.RoomTypeResponse;
+import com.flz.model.response.RoomTypesResponse;
 import com.flz.model.response.RoomTypesSummaryResponse;
 import com.flz.repository.RoomTypeRepository;
 import com.flz.service.AssetService;
@@ -31,7 +31,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
     private final AssetService assetService;
 
     @Override
-    public List<RoomTypeBasicResponse> findAll() {
+    public List<RoomTypeResponse> findAll() {
 
         List<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll();
         return RoomTypeEntityToBasicResponseMapper.map(roomTypeEntities);
@@ -47,7 +47,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeResponse findById(Long id) {
+    public RoomTypesResponse findById(Long id) {
 
         RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new RoomTypeNotFoundException(id));
