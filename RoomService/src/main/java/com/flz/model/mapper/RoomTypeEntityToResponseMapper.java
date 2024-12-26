@@ -14,14 +14,14 @@ public final class RoomTypeEntityToResponseMapper {
 
     public static RoomTypeResponse map(RoomTypeEntity roomTypeEntity) {
 
-        List<RoomTypeResponse.Asset> assetList = new ArrayList<>();
+        List<RoomTypeResponse.Asset> assets = new ArrayList<>();
 
         for (AssetEntity assetEntity : roomTypeEntity.getAssets()) {
             RoomTypeResponse.Asset asset = RoomTypeResponse.Asset.builder()
                     .id(assetEntity.getId())
                     .name(assetEntity.getName())
                     .build();
-            assetList.add(asset);
+            assets.add(asset);
         }
 
         return RoomTypeResponse.builder()
@@ -31,7 +31,7 @@ public final class RoomTypeEntityToResponseMapper {
                 .personCount(roomTypeEntity.getPersonCount())
                 .size(roomTypeEntity.getSize())
                 .description(roomTypeEntity.getDescription())
-                .assets(assetList)
+                .assets(assets)
                 .build();
     }
 
