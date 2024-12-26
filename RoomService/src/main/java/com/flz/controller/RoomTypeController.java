@@ -31,7 +31,7 @@ public class RoomTypeController {
 
     private final RoomTypeService roomTypeService;
 
-    @GetMapping("/assets/summary")
+    @GetMapping("/room-types/summary")
     public HotelResponse<List<RoomTypesSummaryResponse>> findSummaryAll() {
         final List<RoomTypesSummaryResponse> roomTypesSummaryResponses = roomTypeService.findSummaryAll();
         return HotelResponse.successOf(roomTypesSummaryResponses);
@@ -43,7 +43,7 @@ public class RoomTypeController {
         return HotelResponse.successOf(roomTypeResponse);
     }
 
-    @PostMapping("/assets")
+    @PostMapping("/room-types")
     public HotelResponse<Page<RoomTypesResponse>> findAll(@RequestParam(required = false) String name,
                                                           @RequestParam(required = false) BigDecimal minPrice,
                                                           @RequestParam(required = false) BigDecimal maxPrice,
