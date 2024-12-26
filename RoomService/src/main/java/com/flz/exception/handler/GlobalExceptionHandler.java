@@ -4,6 +4,7 @@ import com.flz.exception.AbstractAlreadyExistsException;
 import com.flz.exception.AbstractNotFoundException;
 import com.flz.model.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,6 +53,16 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .message("Database Error")
+                .build();
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ErrorResponse handleSQLUseError(DataIntegrityViolationException exception) {
+        log.error(exception.getMessage(), exception);
+        return ErrorResponse.builder()
+                .message("This value is used elsewhere.")
+                .code(exception.hashCode())
                 .build();
     }
 
