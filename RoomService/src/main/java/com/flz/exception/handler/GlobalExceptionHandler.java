@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     ErrorResponse handleSQLConflictError(final AbstractAlreadyExistsException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
-                .message("Database Conflict Error")
+                .message(exception.getMessage())
                 .build();
     }
 

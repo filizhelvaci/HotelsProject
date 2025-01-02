@@ -9,6 +9,6 @@ public abstract class AbstractAlreadyExistsException extends RuntimeException {
 
     protected AbstractAlreadyExistsException(String message) {
 
-        super(" - CONFLICT ERROR - " + message);
+        super(message);
     }
 }
