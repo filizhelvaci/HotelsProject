@@ -1,3 +1,14 @@
+plugins {
+    id 'org.flywaydb.flyway' version '10.18.0'
+}
+flyway {
+    url = 'jdbc:postgresql://localhost:5433/hotel_r'
+    user = 'postgres'
+    password = '654321'
+    cleanDisabled = false
+    schemas = ['public']
+    locations = ['filesystem:src/main/resources/db/migration']
+}
 dependencies {
     implementation libs.postgreSql
     implementation libs.springBootDataJpa
