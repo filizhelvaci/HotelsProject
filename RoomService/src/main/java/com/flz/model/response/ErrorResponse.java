@@ -1,5 +1,6 @@
 package com.flz.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,7 +18,7 @@ public class ErrorResponse {
 
     private String message;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String field;
 
-    private int code;
 }

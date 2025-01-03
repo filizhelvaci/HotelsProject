@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     ErrorResponse handleValidationErrors(final MethodArgumentNotValidException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
-                .message(exception.getMessage())
+                .message("This field cannot contain null values.")
                 .field(exception.getObjectName())
                 .build();
     }
@@ -62,7 +62,6 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .message("This value is used elsewhere.")
-                .code(exception.hashCode())
                 .build();
     }
 
