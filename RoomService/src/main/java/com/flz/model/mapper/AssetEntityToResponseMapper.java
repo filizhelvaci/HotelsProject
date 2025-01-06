@@ -28,4 +28,5 @@ public final class AssetEntityToResponseMapper {
         }
         return assetResponses;
     }
+
 }

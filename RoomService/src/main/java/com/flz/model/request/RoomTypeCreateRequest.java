@@ -1,6 +1,7 @@
 package com.flz.model.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,4 +35,6 @@ public class RoomTypeCreateRequest {
     @Size(min = 1, max = 1000)
     private String description;
 
+    @NotEmpty
+    private List<Long> assetIds;
 }

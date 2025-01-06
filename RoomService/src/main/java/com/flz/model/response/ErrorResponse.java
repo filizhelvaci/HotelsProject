@@ -1,28 +1,24 @@
 package com.flz.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Getter
 public class ErrorResponse {
 
-    private final LocalDateTime timestamp = LocalDateTime.now();
-    private final String message;
+    @Builder.Default
+    private LocalDateTime time = LocalDateTime.now();
+
+    @Builder.Default
+    private Boolean isSuccess = false;
+
+    private String message;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String field;
-    private int code;
 
-    public ErrorResponse(String message) {
-        this.message = message;
-    }
-
-    public ErrorResponse(String message, String field) {
-        this.message = message;
-        this.field = field;
-    }
-
-    public ErrorResponse(String message, int code) {
-        this.message = message;
-        this.code = code;
-    }
 }

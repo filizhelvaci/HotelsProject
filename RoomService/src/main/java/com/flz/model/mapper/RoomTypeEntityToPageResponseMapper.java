@@ -2,13 +2,14 @@ package com.flz.model.mapper;
 
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.response.RoomTypesResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class RoomTypeEntityToBasicResponseMapper {
+public class RoomTypeEntityToPageResponseMapper {
 
-    private RoomTypeEntityToBasicResponseMapper() {
+    private RoomTypeEntityToPageResponseMapper() {
     }
 
     public static RoomTypesResponse map(RoomTypeEntity roomTypeEntity) {
@@ -22,11 +23,15 @@ public final class RoomTypeEntityToBasicResponseMapper {
     }
 
     public static List<RoomTypesResponse> map(List<RoomTypeEntity> roomTypeEntities) {
-        List<RoomTypesResponse> roomTypeRespons = new ArrayList<>();
+        List<RoomTypesResponse> roomTypesResponse = new ArrayList<>();
         for (RoomTypeEntity roomTypeEntity : roomTypeEntities) {
-            RoomTypesResponse roomTypesResponse = map(roomTypeEntity);
-            roomTypeRespons.add(roomTypesResponse);
+            RoomTypesResponse roomTypeResponse = map(roomTypeEntity);
+            roomTypesResponse.add(roomTypeResponse);
         }
-        return roomTypeRespons;
+        return roomTypesResponse;
+    }
+
+    public static Page<RoomTypesResponse> map(Page<RoomTypeEntity> roomTypeEntities) {
+        return roomTypeEntities.map(RoomTypeEntityToPageResponseMapper::map);
     }
 }
