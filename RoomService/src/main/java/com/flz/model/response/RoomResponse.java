@@ -12,5 +12,13 @@ public class RoomResponse {
     private Integer number;
     private Integer floor;
     private RoomStatus status;
+    private RoomType roomType;
+
+    @Getter
+    @Builder
+    public static class RoomType {
+        private Long id;
+        private String name;
+    }
 
 }
