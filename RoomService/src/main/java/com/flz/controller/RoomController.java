@@ -39,18 +39,6 @@ class RoomController {
         return HotelResponse.successOf(roomResponse);
     }
 
-//    @PostMapping("/assets")
-//    public HotelResponse<Page<AssetsResponse>> findAll(@RequestParam(required = false) String name,
-//                                                       @RequestParam(required = false) BigDecimal minPrice,
-//                                                       @RequestParam(required = false) BigDecimal maxPrice,
-//                                                       @RequestParam(defaultValue = "0") int page,
-//                                                       @RequestParam(defaultValue = "10") int size,
-//                                                       @RequestParam(defaultValue = "id") String sortBy,
-//                                                       @RequestParam(defaultValue = "asc") String sortDirection) {
-//        final Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, page, size, sortBy, sortDirection);
-//        return HotelResponse.successOf(assetsResponses);
-//    }
-
     @PostMapping("/room")
     public HotelResponse<Void> create(@RequestBody @Valid RoomCreateRequest createRequest) {
         roomService.create(createRequest);
@@ -63,7 +51,7 @@ class RoomController {
         return HotelResponse.success();
     }
 
-    @DeleteMapping("/asset/{id}")
+    @DeleteMapping("/room/{id}")
     public HotelResponse<Void> delete(@PathVariable(value = "id") Long id) {
         roomService.delete(id);
         return HotelResponse.success();
