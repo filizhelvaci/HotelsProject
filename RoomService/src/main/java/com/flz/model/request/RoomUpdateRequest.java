@@ -21,4 +21,8 @@ public class RoomUpdateRequest {
     @NotNull
     private RoomStatus status;
 
+    @NotNull
+    @Range(min = 0, max = 500)
+    private Long roomTypeId;
+
 }
