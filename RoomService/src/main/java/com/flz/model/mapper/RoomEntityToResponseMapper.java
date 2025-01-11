@@ -12,11 +12,18 @@ public class RoomEntityToResponseMapper {
     }
 
     public static RoomResponse map(RoomEntity roomEntity) {
+
+        RoomResponse.RoomType roomType = RoomResponse.RoomType.builder()
+                .id(roomEntity.getType().getId())
+                .name(roomEntity.getType().getName())
+                .build();
+
         return RoomResponse.builder()
                 .id(roomEntity.getId())
                 .number(roomEntity.getNumber())
                 .floor(roomEntity.getFloor())
                 .status(roomEntity.getStatus())
+                .roomType(roomType)
                 .build();
     }
 
