@@ -21,4 +21,7 @@ public class RoomCreateRequest {
     @NotNull
     private RoomStatus status;
 
+    @NotNull
+    private Long roomTypeId;
+
 }
