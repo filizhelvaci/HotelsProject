@@ -1,5 +1,6 @@
 package com.flz.controller;
 
+import com.flz.model.enums.RoomStatus;
 import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.HotelResponse;
@@ -9,6 +10,10 @@ import com.flz.service.RoomService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -37,6 +43,21 @@ class RoomController {
     public HotelResponse<RoomResponse> findById(@PathVariable(value = "id") Long id) {
         RoomResponse roomResponse = roomService.findById(id);
         return HotelResponse.successOf(roomResponse);
+    }
+
+    @GetMapping
+    public HotelResponse<Page<RoomResponse>> getRooms(
+            @RequestParam(required = false) Integer number,
+            @RequestParam(required = false) Integer floor,
+            @RequestParam(required = false) RoomStatus status,
+            @RequestParam(required = false) Long typeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "number,asc") String[] sort) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(sort[0]).with(Sort.Direction.fromString(sort[1]))));
+        final Page<RoomResponse> roomsResponses = roomService.getFilteredRooms(number, floor, status, typeId, pageable);
+        return HotelResponse.successOf(roomsResponses);
     }
 
     @PostMapping("/room")
