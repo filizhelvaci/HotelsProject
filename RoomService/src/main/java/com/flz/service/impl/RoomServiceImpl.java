@@ -3,7 +3,9 @@ package com.flz.service.impl;
 import com.flz.exception.RoomAlreadyExistsException;
 import com.flz.exception.RoomNotFoundException;
 import com.flz.model.entity.RoomEntity;
+import com.flz.model.enums.RoomStatus;
 import com.flz.model.mapper.RoomCreateRequestToEntityMapper;
+import com.flz.model.mapper.RoomEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomEntityToResponseMapper;
 import com.flz.model.mapper.RoomEntityToSummaryResponseMapper;
 import com.flz.model.mapper.RoomTypeResponseToEntityMapper;
@@ -16,7 +18,11 @@ import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.service.RoomService;
 import com.flz.service.RoomTypeService;
+import com.flz.specification.RoomSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,6 +50,20 @@ class RoomServiceImpl implements RoomService {
         return RoomEntityToResponseMapper.map(roomEntity);
 
     }
+
+    @Override
+    public Page<RoomResponse> getFilteredRooms(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable) {
+
+        Specification<RoomEntity> spec = Specification.where(RoomSpecification.hasNumber(number))
+                .and(RoomSpecification.hasFloor(floor))
+                .and(RoomSpecification.hasStatus(status))
+                .and(RoomSpecification.hasRoomTypeId(typeId));
+
+        Page<RoomEntity> roomEntities = roomRepository.findAll(spec, pageable);
+
+        return RoomEntityToPageResponseMapper.map(roomEntities);
+    }
+
 
     @Override
     public void create(RoomCreateRequest roomCreateRequest) {
