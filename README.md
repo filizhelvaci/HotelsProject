@@ -38,7 +38,7 @@ _*APIs Interaction Platform*_
 For other information, you can check [Wiki](https://github.com/filizhelvaci/HotelsProject/wiki) Page.
 
 ## Postman
-[Documentation](https://documenter.getpostman.com/view/32358530/2sAYJ7exws) & [Workspace]([https://elements.getpostman.com/redirect?entityId=32358530-aacf40d8-de31-40f8-9021-32b5d15849e9&entityType=collection](https://www.postman.com/filizkh/workspace/hotel-reserve))
+[Documentation](https://documenter.getpostman.com/view/32358530/2sAYJ7exws) & [Workspace](https://www.postman.com/filizkh/workspace/hotel-reserve)
 
 ## Running All Components as Container on Docker
 
