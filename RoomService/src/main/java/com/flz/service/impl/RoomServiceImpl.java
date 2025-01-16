@@ -18,7 +18,6 @@ import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.service.RoomService;
 import com.flz.service.RoomTypeService;
-import com.flz.specification.RoomSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,10 +53,7 @@ class RoomServiceImpl implements RoomService {
     @Override
     public Page<RoomResponse> getFilteredRooms(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable) {
 
-        Specification<RoomEntity> spec = Specification.where(RoomSpecification.hasNumber(number))
-                .and(RoomSpecification.hasFloor(floor))
-                .and(RoomSpecification.hasStatus(status))
-                .and(RoomSpecification.hasRoomTypeId(typeId));
+        Specification<RoomEntity> spec = RoomEntity.generateSpecification(number, floor, status, typeId);
 
         Page<RoomEntity> roomEntities = roomRepository.findAll(spec, pageable);
 
