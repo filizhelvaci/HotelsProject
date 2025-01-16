@@ -59,7 +59,6 @@ class RoomController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
         Page<RoomResponse> roomsResponses = roomService.getFilteredRooms(number, floor, status, typeId, pageable);
         return HotelResponse.successOf(roomsResponses);
-
     }
 
     @PostMapping("/room")
