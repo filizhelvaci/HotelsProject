@@ -17,9 +17,8 @@ import com.flz.repository.AssetRepository;
 import com.flz.service.AssetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -57,26 +56,11 @@ class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Page<AssetsResponse> findAll(String name,
-                                        BigDecimal minPrice,
-                                        BigDecimal maxPrice,
-                                        int page,
-                                        int size,
-                                        String sortBy,
-                                        String sortDirection) {
+    public Page<AssetsResponse> getFilteredAssets(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, Pageable pageable) {
 
-        Sort sort = Sort.by(
-                sortDirection.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy)
-        );
+        Specification<AssetEntity> spec = AssetEntity.generateSpecification(name, minPrice, maxPrice, isDefault);
 
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        Page<AssetEntity> assetEntities = assetRepository.findByNameContainingAndPriceBetween(
-                name != null ? name : "",
-                minPrice != null ? minPrice : BigDecimal.ZERO,
-                maxPrice != null ? maxPrice : BigDecimal.valueOf(Long.MAX_VALUE),
-                pageable
-        );
+        Page<AssetEntity> assetEntities = assetRepository.findAll(spec, pageable);
 
         return AssetEntityToPageResponseMapper.map(assetEntities);
     }
