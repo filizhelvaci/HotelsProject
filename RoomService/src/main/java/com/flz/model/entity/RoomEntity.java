@@ -5,7 +5,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.jpa.domain.Specification;
 
 @Getter
 @Setter
@@ -46,9 +46,39 @@ public class RoomEntity extends BaseEntity {
       RoomEntity      RoomTypeEntity
           1                 1
     */
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "room_type_id")
     private RoomTypeEntity type;
 
 
+    public static Specification<RoomEntity> generateSpecification(Integer number,
+                                                                  Integer floor,
+                                                                  RoomStatus status,
+                                                                  Long typeId) {
+
+        return Specification.where(hasNumber(number))
+                .and(hasFloor(floor))
+                .and(hasStatus(status))
+                .and(hasRoomTypeId(typeId));
+    }
+
+    private static Specification<RoomEntity> hasNumber(Integer number) {
+        return (root, query, criteriaBuilder) ->
+                number == null ? null : criteriaBuilder.equal(root.get("number"), number);
+    }
+
+    private static Specification<RoomEntity> hasFloor(Integer floor) {
+        return (root, query, criteriaBuilder) ->
+                floor == null ? null : criteriaBuilder.equal(root.get("floor"), floor);
+    }
+
+    private static Specification<RoomEntity> hasStatus(RoomStatus status) {
+        return (root, query, criteriaBuilder) ->
+                status == null ? null : criteriaBuilder.equal(root.get("status"), status);
+    }
+
+    private static Specification<RoomEntity> hasRoomTypeId(Long typeId) {
+        return (root, query, criteriaBuilder) ->
+                typeId == null ? null : criteriaBuilder.equal(root.join("type").get("id"), typeId);
+    }
 }

@@ -51,24 +51,15 @@ class RoomController {
             @RequestParam(required = false) Integer floor,
             @RequestParam(required = false) RoomStatus status,
             @RequestParam(required = false) Long typeId,
-            @RequestParam(required = true) int page,
-            @RequestParam(required = true) int size,
-            @RequestParam(required = true) String[] sort) {
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String property,
+            @RequestParam Sort.Direction direction) {
 
-        if (sort.length != 2) {
-            throw new IllegalArgumentException("Sort parameter must have exactly two elements: field and direction (asc/desc).");
-        }
-
-        Sort.Direction direction;
-        try {
-            direction = Sort.Direction.fromString(sort[1]);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Sort direction must be 'asc' or 'desc'.", e);
-        }
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(sort[0]).with(direction)));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
         Page<RoomResponse> roomsResponses = roomService.getFilteredRooms(number, floor, status, typeId, pageable);
         return HotelResponse.successOf(roomsResponses);
+
     }
 
     @PostMapping("/room")
