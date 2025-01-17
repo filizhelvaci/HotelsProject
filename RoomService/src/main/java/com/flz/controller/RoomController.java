@@ -46,7 +46,7 @@ class RoomController {
     }
 
     @PostMapping("/rooms")
-    public HotelResponse<Page<RoomResponse>> getRooms(
+    public HotelResponse<Page<RoomResponse>> findAll(
             @RequestParam(required = false) Integer number,
             @RequestParam(required = false) Integer floor,
             @RequestParam(required = false) RoomStatus status,
