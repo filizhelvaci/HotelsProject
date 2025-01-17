@@ -20,9 +20,8 @@ import com.flz.service.AssetService;
 import com.flz.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -54,30 +53,14 @@ class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public Page<RoomTypesResponse> findAll(String name,
-                                           BigDecimal minPrice,
-                                           BigDecimal maxPrice,
-                                           int page,
-                                           int size,
-                                           String sortBy,
-                                           String sortDirection) {
+    public Page<RoomTypesResponse> getFilteredRoomsTypes(String name, BigDecimal minPrice, BigDecimal maxPrice, Integer personCount, Integer size, Pageable pageable) {
 
-        Sort sort = Sort.by(
-                sortDirection.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy)
-        );
+        Specification<RoomTypeEntity> spec = RoomTypeEntity.generateSpecification(name, minPrice, maxPrice, personCount, size);
 
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        Page<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findByNameContainingAndPriceBetween(
-                name != null ? name : "",
-                minPrice != null ? minPrice : BigDecimal.ZERO,
-                maxPrice != null ? maxPrice : BigDecimal.valueOf(Long.MAX_VALUE),
-                pageable
-        );
+        Page<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll(spec, pageable);
 
         return RoomTypeEntityToPageResponseMapper.map(roomTypeEntities);
     }
-
 
     @Override
     public void create(RoomTypeCreateRequest roomTypeCreateRequest) {
