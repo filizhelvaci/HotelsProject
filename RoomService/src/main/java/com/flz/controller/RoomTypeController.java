@@ -11,6 +11,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,11 +50,15 @@ public class RoomTypeController {
     public HotelResponse<Page<RoomTypesResponse>> findAll(@RequestParam(required = false) String name,
                                                           @RequestParam(required = false) BigDecimal minPrice,
                                                           @RequestParam(required = false) BigDecimal maxPrice,
-                                                          @RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "10") int size,
-                                                          @RequestParam(defaultValue = "id") String sortBy,
-                                                          @RequestParam(defaultValue = "asc") String sortDirection) {
-        final Page<RoomTypesResponse> roomTypesResponses = roomTypeService.findAll(name, minPrice, maxPrice, page, size, sortBy, sortDirection);
+                                                          @RequestParam(required = false) Integer personCount,
+                                                          @RequestParam(required = false) Integer size,
+                                                          @RequestParam int page,
+                                                          @RequestParam int pageSize,
+                                                          @RequestParam String property,
+                                                          @RequestParam Sort.Direction direction) {
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Order.by(property).with(direction)));
+        Page<RoomTypesResponse> roomTypesResponses = roomTypeService.getFilteredRoomsTypes(name, minPrice, maxPrice, personCount, size, pageable);
         return HotelResponse.successOf(roomTypesResponses);
     }
 
