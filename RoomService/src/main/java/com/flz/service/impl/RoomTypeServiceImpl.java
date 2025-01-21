@@ -53,7 +53,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public Page<RoomTypesResponse> getFilteredRoomsTypes(String name, BigDecimal minPrice, BigDecimal maxPrice, Integer personCount, Integer size, Pageable pageable) {
+    public Page<RoomTypesResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Integer personCount, Integer size, Pageable pageable) {
 
         Specification<RoomTypeEntity> spec = RoomTypeEntity.generateSpecification(name, minPrice, maxPrice, personCount, size);
 
