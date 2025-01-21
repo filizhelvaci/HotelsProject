@@ -34,19 +34,7 @@ public class RoomTypeController {
 
     private final RoomTypeService roomTypeService;
 
-    @GetMapping("/room-types/summary")
-    public HotelResponse<List<RoomTypesSummaryResponse>> findSummaryAll() {
-        final List<RoomTypesSummaryResponse> roomTypesSummaryResponses = roomTypeService.findSummaryAll();
-        return HotelResponse.successOf(roomTypesSummaryResponses);
-    }
-
-    @GetMapping("/room-type/{id}")
-    public HotelResponse<RoomTypeResponse> findById(@PathVariable(value = "id") Long id) {
-        RoomTypeResponse roomTypeResponse = roomTypeService.findById(id);
-        return HotelResponse.successOf(roomTypeResponse);
-    }
-
-    @PostMapping("/room-types")
+    @GetMapping("/room-types")
     public HotelResponse<Page<RoomTypesResponse>> findAll(@RequestParam(required = false) String name,
                                                           @RequestParam(required = false) BigDecimal minPrice,
                                                           @RequestParam(required = false) BigDecimal maxPrice,
@@ -60,6 +48,18 @@ public class RoomTypeController {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Order.by(property).with(direction)));
         Page<RoomTypesResponse> roomTypesResponses = roomTypeService.findAll(name, minPrice, maxPrice, personCount, size, pageable);
         return HotelResponse.successOf(roomTypesResponses);
+    }
+
+    @GetMapping("/room-types/summary")
+    public HotelResponse<List<RoomTypesSummaryResponse>> findSummaryAll() {
+        final List<RoomTypesSummaryResponse> roomTypesSummaryResponses = roomTypeService.findSummaryAll();
+        return HotelResponse.successOf(roomTypesSummaryResponses);
+    }
+
+    @GetMapping("/room-type/{id}")
+    public HotelResponse<RoomTypeResponse> findById(@PathVariable(value = "id") Long id) {
+        RoomTypeResponse roomTypeResponse = roomTypeService.findById(id);
+        return HotelResponse.successOf(roomTypeResponse);
     }
 
     @PostMapping("/room-type")
