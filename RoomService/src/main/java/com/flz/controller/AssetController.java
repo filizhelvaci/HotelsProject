@@ -34,19 +34,7 @@ class AssetController {
 
     private final AssetService assetService;
 
-    @GetMapping("/assets/summary")
-    public HotelResponse<List<AssetsSummaryResponse>> findSummaryAll() {
-        final List<AssetsSummaryResponse> assetsSummaryResponse = assetService.findSummaryAll();
-        return HotelResponse.successOf(assetsSummaryResponse);
-    }
-
-    @GetMapping("/asset/{id}")
-    public HotelResponse<AssetResponse> findById(@PathVariable(value = "id") Long id) {
-        AssetResponse assetResponse = assetService.findById(id);
-        return HotelResponse.successOf(assetResponse);
-    }
-
-    @PostMapping("/assets")
+    @GetMapping("/assets")
     public HotelResponse<Page<AssetsResponse>> findAll(@RequestParam(required = false) String name,
                                                        @RequestParam(required = false) BigDecimal minPrice,
                                                        @RequestParam(required = false) BigDecimal maxPrice,
@@ -59,6 +47,18 @@ class AssetController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
         Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, isDefault, pageable);
         return HotelResponse.successOf(assetsResponses);
+    }
+
+    @GetMapping("/assets/summary")
+    public HotelResponse<List<AssetsSummaryResponse>> findSummaryAll() {
+        final List<AssetsSummaryResponse> assetsSummaryResponse = assetService.findSummaryAll();
+        return HotelResponse.successOf(assetsSummaryResponse);
+    }
+
+    @GetMapping("/asset/{id}")
+    public HotelResponse<AssetResponse> findById(@PathVariable(value = "id") Long id) {
+        AssetResponse assetResponse = assetService.findById(id);
+        return HotelResponse.successOf(assetResponse);
     }
 
     @PostMapping("/asset")

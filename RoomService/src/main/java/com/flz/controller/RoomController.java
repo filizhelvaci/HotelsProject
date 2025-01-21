@@ -34,19 +34,7 @@ class RoomController {
 
     private final RoomService roomService;
 
-    @GetMapping("/rooms/summary")
-    public HotelResponse<List<RoomsSummaryResponse>> findSummaryAll() {
-        final List<RoomsSummaryResponse> roomsSummaryResponse = roomService.findSummaryAll();
-        return HotelResponse.successOf(roomsSummaryResponse);
-    }
-
-    @GetMapping("/room/{id}")
-    public HotelResponse<RoomResponse> findById(@PathVariable(value = "id") Long id) {
-        RoomResponse roomResponse = roomService.findById(id);
-        return HotelResponse.successOf(roomResponse);
-    }
-
-    @PostMapping("/rooms")
+    @GetMapping("/rooms")
     public HotelResponse<Page<RoomsResponse>> findAll(
             @RequestParam(required = false) Integer number,
             @RequestParam(required = false) Integer floor,
@@ -60,6 +48,18 @@ class RoomController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
         Page<RoomsResponse> roomsResponses = roomService.findAll(number, floor, status, typeId, pageable);
         return HotelResponse.successOf(roomsResponses);
+    }
+
+    @GetMapping("/rooms/summary")
+    public HotelResponse<List<RoomsSummaryResponse>> findSummaryAll() {
+        final List<RoomsSummaryResponse> roomsSummaryResponse = roomService.findSummaryAll();
+        return HotelResponse.successOf(roomsSummaryResponse);
+    }
+
+    @GetMapping("/room/{id}")
+    public HotelResponse<RoomResponse> findById(@PathVariable(value = "id") Long id) {
+        RoomResponse roomResponse = roomService.findById(id);
+        return HotelResponse.successOf(roomResponse);
     }
 
     @PostMapping("/room")

@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.criteria.Expression;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,30 +49,46 @@ public class AssetEntity extends BaseEntity {
     }
 
     private static Specification<AssetEntity> hasName(String name) {
+
+        if (name == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                name == null ? null : criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
     private static Specification<AssetEntity> hasPriceBetween(BigDecimal minPrice, BigDecimal maxPrice) {
 
-        final String PRICE = "price";
+        if (minPrice == null && maxPrice == null) {
+            return null;
+        }
 
         return (root, query, criteriaBuilder) -> {
-            if (minPrice == null && maxPrice == null) {
-                return null;
-            } else if (minPrice != null && maxPrice != null) {
-                return criteriaBuilder.between(root.get(PRICE), minPrice, maxPrice);
-            } else if (minPrice != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(root.get(PRICE), minPrice);
-            } else {
-                return criteriaBuilder.lessThanOrEqualTo(root.get(PRICE), maxPrice);
+
+            Expression<BigDecimal> expression = root.get("price");
+
+            if (minPrice != null && maxPrice != null) {
+                return criteriaBuilder.between(expression, minPrice, maxPrice);
             }
+
+            if (minPrice != null) {
+                return criteriaBuilder.greaterThanOrEqualTo(expression, minPrice);
+            }
+
+            return criteriaBuilder.lessThanOrEqualTo(expression, maxPrice);
+
         };
     }
 
     private static Specification<AssetEntity> hasIsDefault(Boolean isDefault) {
+
+        if (isDefault == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                isDefault == null ? null : criteriaBuilder.equal(root.get("isDefault"), isDefault);
+                criteriaBuilder.equal(root.get("isDefault"), isDefault);
     }
 }
 
