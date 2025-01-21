@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.criteria.Expression;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -75,35 +76,55 @@ public class RoomTypeEntity extends BaseEntity {
     }
 
     private static Specification<RoomTypeEntity> hasName(String name) {
+
+        if (name == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                name == null ? null : criteriaBuilder.like(root.get("name"), "%" + name + "%");
+                criteriaBuilder.like(root.get("name"), "%" + name + "%");
     }
 
     private static Specification<RoomTypeEntity> hasRoomTypePriceBetween(BigDecimal minPrice, BigDecimal maxPrice) {
 
-        final String PRC = "price";
+        if (minPrice == null && maxPrice == null) {
+            return null;
+        }
 
         return (root, query, criteriaBuilder) -> {
-            if (minPrice == null && maxPrice == null) {
-                return null;
-            } else if (minPrice != null && maxPrice != null) {
-                return criteriaBuilder.between(root.get(PRC), minPrice, maxPrice);
-            } else if (minPrice != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(root.get(PRC), minPrice);
-            } else {
-                return criteriaBuilder.lessThanOrEqualTo(root.get(PRC), maxPrice);
+
+            Expression<BigDecimal> expression = root.get("price");
+
+            if (minPrice != null && maxPrice != null) {
+                return criteriaBuilder.between(expression, minPrice, maxPrice);
             }
+
+            if (minPrice != null) {
+                return criteriaBuilder.greaterThanOrEqualTo(expression, minPrice);
+            }
+
+            return criteriaBuilder.lessThanOrEqualTo(expression, maxPrice);
         };
     }
 
     private static Specification<RoomTypeEntity> hasPersonCount(Integer personCount) {
+
+        if (personCount == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                personCount == null ? null : criteriaBuilder.equal(root.get("personCount"), personCount);
+                criteriaBuilder.equal(root.get("personCount"), personCount);
     }
 
     private static Specification<RoomTypeEntity> hasSize(Integer size) {
+
+        if (size == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                size == null ? null : criteriaBuilder.equal(root.get("size"), size);
+                criteriaBuilder.equal(root.get("size"), size);
     }
 
 }
