@@ -57,7 +57,7 @@ class AssetController {
                                                        @RequestParam Sort.Direction direction) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
-        Page<AssetsResponse> assetsResponses = assetService.getFilteredAssets(name, minPrice, maxPrice, isDefault, pageable);
+        Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, isDefault, pageable);
         return HotelResponse.successOf(assetsResponses);
     }
 
