@@ -16,7 +16,7 @@ public interface RoomService {
 
     RoomResponse findById(Long id);
 
-    Page<RoomResponse> getFilteredRooms(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable);
+    Page<RoomResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable);
 
     void create(RoomCreateRequest roomCreateRequest);
 

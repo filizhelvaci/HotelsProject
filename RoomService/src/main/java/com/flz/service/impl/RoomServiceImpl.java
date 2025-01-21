@@ -51,7 +51,7 @@ class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Page<RoomResponse> getFilteredRooms(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable) {
+    public Page<RoomResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable) {
 
         Specification<RoomEntity> spec = RoomEntity.generateSpecification(number, floor, status, typeId);
 

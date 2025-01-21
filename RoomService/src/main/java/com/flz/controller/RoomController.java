@@ -57,7 +57,7 @@ class RoomController {
             @RequestParam Sort.Direction direction) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
-        Page<RoomResponse> roomsResponses = roomService.getFilteredRooms(number, floor, status, typeId, pageable);
+        Page<RoomResponse> roomsResponses = roomService.findAll(number, floor, status, typeId, pageable);
         return HotelResponse.successOf(roomsResponses);
     }
 
