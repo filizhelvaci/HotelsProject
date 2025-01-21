@@ -4,6 +4,7 @@ import com.flz.model.enums.RoomStatus;
 import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.RoomResponse;
+import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ public interface RoomService {
 
     RoomResponse findById(Long id);
 
-    Page<RoomResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable);
+    Page<RoomsResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable);
 
     void create(RoomCreateRequest roomCreateRequest);
 
