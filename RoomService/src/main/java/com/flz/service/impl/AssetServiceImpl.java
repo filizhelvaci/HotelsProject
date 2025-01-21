@@ -56,7 +56,7 @@ class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Page<AssetsResponse> getFilteredAssets(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, Pageable pageable) {
+    public Page<AssetsResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, Pageable pageable) {
 
         Specification<AssetEntity> spec = AssetEntity.generateSpecification(name, minPrice, maxPrice, isDefault);
 

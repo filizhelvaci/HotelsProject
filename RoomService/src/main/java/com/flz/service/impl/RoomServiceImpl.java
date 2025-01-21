@@ -14,6 +14,7 @@ import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomTypeResponse;
+import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.service.RoomService;
@@ -51,7 +52,7 @@ class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Page<RoomResponse> getFilteredRooms(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable) {
+    public Page<RoomsResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable) {
 
         Specification<RoomEntity> spec = RoomEntity.generateSpecification(number, floor, status, typeId);
 

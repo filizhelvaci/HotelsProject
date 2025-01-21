@@ -5,6 +5,7 @@ import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.HotelResponse;
 import com.flz.model.response.RoomResponse;
+import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.service.RoomService;
 import jakarta.validation.Valid;
@@ -46,7 +47,7 @@ class RoomController {
     }
 
     @PostMapping("/rooms")
-    public HotelResponse<Page<RoomResponse>> findAll(
+    public HotelResponse<Page<RoomsResponse>> findAll(
             @RequestParam(required = false) Integer number,
             @RequestParam(required = false) Integer floor,
             @RequestParam(required = false) RoomStatus status,
@@ -57,7 +58,7 @@ class RoomController {
             @RequestParam Sort.Direction direction) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
-        Page<RoomResponse> roomsResponses = roomService.getFilteredRooms(number, floor, status, typeId, pageable);
+        Page<RoomsResponse> roomsResponses = roomService.findAll(number, floor, status, typeId, pageable);
         return HotelResponse.successOf(roomsResponses);
     }
 

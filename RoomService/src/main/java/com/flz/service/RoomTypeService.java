@@ -17,7 +17,7 @@ public interface RoomTypeService {
 
     RoomTypeResponse findById(Long id);
 
-    Page<RoomTypesResponse> getFilteredRoomsTypes(String name, BigDecimal minPrice, BigDecimal maxPrice, Integer personCount, Integer size, Pageable pageable);
+    Page<RoomTypesResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Integer personCount, Integer size, Pageable pageable);
 
     void create(RoomTypeCreateRequest roomTypeCreateRequest);
 

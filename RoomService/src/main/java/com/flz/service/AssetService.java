@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface AssetService {
 
-    Page<AssetsResponse> getFilteredAssets(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, Pageable pageable);
+    Page<AssetsResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, Pageable pageable);
 
     List<AssetsSummaryResponse> findSummaryAll();
 
