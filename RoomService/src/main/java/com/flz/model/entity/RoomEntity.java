@@ -42,10 +42,11 @@ public class RoomEntity extends BaseEntity {
     @Column(name = "status")
     private RoomStatus status;
 
-    /**----------------------------------------------------------------
-      RoomEntity      RoomTypeEntity
-          1                 1
-    */
+    /**
+     * ----------------------------------------------------------------
+     * RoomEntity      RoomTypeEntity
+     * 1                 1
+     */
     @OneToOne
     @JoinColumn(name = "room_type_id")
     private RoomTypeEntity type;
@@ -63,22 +64,42 @@ public class RoomEntity extends BaseEntity {
     }
 
     private static Specification<RoomEntity> hasNumber(Integer number) {
+
+        if (number == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                number == null ? null : criteriaBuilder.equal(root.get("number"), number);
+                criteriaBuilder.equal(root.get("number"), number);
     }
 
     private static Specification<RoomEntity> hasFloor(Integer floor) {
+
+        if (floor == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                floor == null ? null : criteriaBuilder.equal(root.get("floor"), floor);
+                criteriaBuilder.equal(root.get("floor"), floor);
     }
 
     private static Specification<RoomEntity> hasStatus(RoomStatus status) {
+
+        if (status == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                status == null ? null : criteriaBuilder.equal(root.get("status"), status);
+                criteriaBuilder.equal(root.get("status"), status);
     }
 
     private static Specification<RoomEntity> hasRoomTypeId(Long typeId) {
+
+        if (typeId == null) {
+            return null;
+        }
+
         return (root, query, criteriaBuilder) ->
-                typeId == null ? null : criteriaBuilder.equal(root.join("type").get("id"), typeId);
+                criteriaBuilder.equal(root.join("type").get("id"), typeId);
     }
 }
