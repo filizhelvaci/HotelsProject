@@ -20,7 +20,7 @@ public class RoomTypeCreateRequest {
     private String name;
 
     @NotNull
-    @Range(min = 0, max = 10000000)
+    @Range(min = 0, max = 10_000_000)
     private BigDecimal price;
 
     @NotNull

@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @MappedSuperclass
 public abstract class BaseEntity {
 

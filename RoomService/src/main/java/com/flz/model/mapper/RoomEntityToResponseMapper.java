@@ -6,7 +6,7 @@ import com.flz.model.response.RoomResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoomEntityToResponseMapper {
+public final class RoomEntityToResponseMapper {
 
     private RoomEntityToResponseMapper() {
     }

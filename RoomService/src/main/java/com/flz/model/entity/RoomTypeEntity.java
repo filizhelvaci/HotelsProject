@@ -9,7 +9,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -81,7 +84,7 @@ public class RoomTypeEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
+        return (Root<RoomTypeEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
@@ -91,7 +94,7 @@ public class RoomTypeEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) -> {
+        return (Root<RoomTypeEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
 
             Expression<BigDecimal> expression = root.get("price");
 
@@ -113,7 +116,7 @@ public class RoomTypeEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
+        return (Root<RoomTypeEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("personCount"), personCount);
     }
 
@@ -123,7 +126,7 @@ public class RoomTypeEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
+        return (Root<RoomTypeEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("size"), size);
     }
 

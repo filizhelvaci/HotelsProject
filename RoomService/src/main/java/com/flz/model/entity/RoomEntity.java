@@ -11,6 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,7 +72,7 @@ public class RoomEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
+        return (Root<RoomEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("number"), number);
     }
 
@@ -79,7 +82,7 @@ public class RoomEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
+        return (Root<RoomEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("floor"), floor);
     }
 
@@ -89,7 +92,7 @@ public class RoomEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
+        return (Root<RoomEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("status"), status);
     }
 
@@ -99,7 +102,7 @@ public class RoomEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
+        return (Root<RoomEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
                 criteriaBuilder.equal(root.join("type").get("id"), typeId);
     }
 }
