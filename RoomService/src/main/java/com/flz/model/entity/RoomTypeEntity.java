@@ -82,7 +82,7 @@ public class RoomTypeEntity extends BaseEntity {
         }
 
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("name"), "%" + name + "%");
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
     private static Specification<RoomTypeEntity> hasRoomTypePriceBetween(BigDecimal minPrice, BigDecimal maxPrice) {
