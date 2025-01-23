@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,6 +18,7 @@ import java.sql.SQLException;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -33,8 +35,26 @@ public class GlobalExceptionHandler {
     ErrorResponse handleValidationErrors(final MethodArgumentTypeMismatchException exception) {
         log.error(exception.getMessage(), exception.getErrorCode());
         return ErrorResponse.builder()
-                .message(exception.getMessage())
+                .message("This field is required to be filled.")
                 .field(exception.getName())
+                .build();
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorResponse handleMissingParamsException(final MissingServletRequestParameterException exception) {
+        log.error(exception.getMessage(), exception.getCause());
+        return ErrorResponse.builder()
+                .message("Missing or invalid parameter:" + exception.getParameterName())
+                .build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorResponse handleIllegalArgumentException(final IllegalArgumentException exception) {
+        log.error(exception.getMessage(), exception.getCause());
+        return ErrorResponse.builder()
+                .message("This field must not be null or empty")
                 .build();
     }
 
