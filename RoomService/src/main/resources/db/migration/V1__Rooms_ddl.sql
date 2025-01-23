@@ -28,8 +28,8 @@ create table if not exists rs_room
 create table if not exists rs_asset
 (
     id         bigint generated always as identity primary key,
-    name varchar(50) not null unique,
-    price      numeric(14, 4) not null,
+    name  varchar(50)    not null unique,
+    price numeric(14, 2) not null,
     is_default boolean        not null,
     created_at timestamp(0)   not null default current_timestamp,
     created_by varchar(120)   not null,
