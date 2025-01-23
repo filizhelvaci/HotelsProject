@@ -3,7 +3,7 @@ package com.flz.model.mapper;
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.response.RoomTypeResponse;
 
-public class RoomTypeResponseToEntityMapper {
+public final class RoomTypeResponseToEntityMapper {
 
     private RoomTypeResponseToEntityMapper() {
     }

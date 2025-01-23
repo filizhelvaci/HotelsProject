@@ -6,7 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +18,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 @Getter
 @Setter
@@ -54,8 +58,8 @@ public class AssetEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+        return (Root<AssetEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase(Locale.ROOT) + "%");
     }
 
     private static Specification<AssetEntity> hasPriceBetween(BigDecimal minPrice, BigDecimal maxPrice) {
@@ -64,7 +68,7 @@ public class AssetEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) -> {
+        return (Root<AssetEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
 
             Expression<BigDecimal> expression = root.get("price");
 
@@ -87,7 +91,7 @@ public class AssetEntity extends BaseEntity {
             return null;
         }
 
-        return (root, query, criteriaBuilder) ->
+        return (Root<AssetEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("isDefault"), isDefault);
     }
 }

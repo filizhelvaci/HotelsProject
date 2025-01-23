@@ -20,7 +20,7 @@ public class RoomTypeUpdateRequest {
     private String name;
 
     @NotNull
-    @Range(min = 0, max = 100000000)
+    @Range(min = 0, max = 100_000_000)
     private BigDecimal price;
 
     @NotNull
@@ -32,7 +32,7 @@ public class RoomTypeUpdateRequest {
     private Integer size;
 
     @NotBlank
-    @Size(min = 0, max = 10000)
+    @Size(max = 10_000)
     private String description;
 
     @NotEmpty

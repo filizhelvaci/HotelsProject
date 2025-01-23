@@ -6,7 +6,7 @@ import com.flz.model.response.RoomTypesSummaryResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoomTypeEntityToSummaryResponseMapper {
+public final class RoomTypeEntityToSummaryResponseMapper {
 
     private RoomTypeEntityToSummaryResponseMapper() {
     }
