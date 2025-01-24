@@ -23,6 +23,6 @@ public class CustomerResponse {
     public static class Room {
         private Long id;
         private Integer number;
-        private RoomStatus status; // empty, full, reserve
+        private RoomStatus status;
     }
 }
