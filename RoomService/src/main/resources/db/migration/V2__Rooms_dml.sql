@@ -1,46 +1,46 @@
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('kahvaltı seti', '500', false, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('expresso makinesi', '500', false, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('ızgara seti', '1000', false, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('yılbaşı seti', '2000', false, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('misafir seti', '1000', true, 'agit');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('çift kişilik yatak', '2500', true, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('tek kişilik yatak', '1500', true, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('klima', '0', true, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('TV', '1000', true, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('mini bar', '500', true, 'agit');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('masa - sandalye takımı', '2500', true, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('mutfak seti', '1500', true, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('koltuk', '0', true, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('buzdolabı', '1000', true, 'flz');
 
-insert into public.rs_asset (name, price, is_default, created_by)
+insert into rs_asset (name, price, is_default, created_by)
 values ('extra-aydınlatma', '500', true, 'agit');
 
 

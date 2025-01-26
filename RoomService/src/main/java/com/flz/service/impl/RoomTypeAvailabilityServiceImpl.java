@@ -2,7 +2,6 @@ package com.flz.service.impl;
 
 import com.flz.model.entity.RoomEntity;
 import com.flz.model.entity.RoomTypeEntity;
-import com.flz.model.enums.RoomStatus;
 import com.flz.model.mapper.RoomRoomTypeEntityToCustomerResponseMapper;
 import com.flz.model.response.RoomTypeAvailabilityResponse;
 import com.flz.repository.RoomRepository;
@@ -29,19 +28,27 @@ class RoomTypeAvailabilityServiceImpl implements RoomTypeAvailabilityService {
 
         List<RoomTypeAvailabilityResponse> roomTypeAvailabilityResponses = new ArrayList<>();
 
-
         for (RoomTypeEntity roomType : roomTypeEntities) {
 
-            boolean isAvailability = roomEntities.stream()
-                    .filter(roomEntity -> roomEntity.getType().getId().equals(roomType.getId()))
-                    .anyMatch(roomEntity -> roomEntity.getStatus() == RoomStatus.EMPTY);
+            boolean isAvailable = false;
 
-            RoomTypeAvailabilityResponse response = RoomRoomTypeEntityToCustomerResponseMapper.map(roomType, isAvailability);
+            for (RoomEntity room : roomEntities) {
+
+                if (!room.getType().getId().equals(roomType.getId())) {
+                    continue;
+                }
+
+                if (!room.getStatus().toString().equals("EMPTY")) {
+                    continue;
+                }
+                isAvailable = true;
+            }
+
+            RoomTypeAvailabilityResponse response = RoomRoomTypeEntityToCustomerResponseMapper.map(roomType, isAvailable);
             roomTypeAvailabilityResponses.add(response);
         }
 
         return roomTypeAvailabilityResponses;
     }
-
 
 }
