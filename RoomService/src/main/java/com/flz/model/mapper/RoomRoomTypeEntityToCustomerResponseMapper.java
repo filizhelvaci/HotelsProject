@@ -1,38 +1,23 @@
 package com.flz.model.mapper;
 
 import com.flz.model.entity.RoomTypeEntity;
-import com.flz.model.response.CustomerResponse;
-import com.flz.model.response.ForCustomerRoomResponse;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.flz.model.response.RoomTypeAvailabilityResponse;
 
 public final class RoomRoomTypeEntityToCustomerResponseMapper {
 
     private RoomRoomTypeEntityToCustomerResponseMapper() {
     }
 
-    public static CustomerResponse map(RoomTypeEntity roomType, List<ForCustomerRoomResponse> rooms) {
+    public static RoomTypeAvailabilityResponse map(RoomTypeEntity roomType, Boolean isAvailability) {
 
 
-        List<CustomerResponse.Room> roomResponses = new ArrayList<>();
-
-        for (ForCustomerRoomResponse forCustomerRoomResponse : rooms) {
-            CustomerResponse.Room room = CustomerResponse.Room.builder()
-                    .id(forCustomerRoomResponse.getId())
-                    .number(forCustomerRoomResponse.getNumber())
-                    .status(forCustomerRoomResponse.getStatus())
-                    .build();
-            roomResponses.add(room);
-        }
-
-        return CustomerResponse.builder()
-                .roomTypeId(roomType.getId())
-                .roomTypeName(roomType.getName())
+        return RoomTypeAvailabilityResponse.builder()
+                .id(roomType.getId())
+                .name(roomType.getName())
                 .price(roomType.getPrice())
                 .personCount(roomType.getPersonCount())
                 .size(roomType.getSize())
-                .rooms(roomResponses)
+                .isAvailability(isAvailability)
                 .build();
     }
 }
