@@ -5,7 +5,6 @@ import com.flz.exception.RoomNotFoundException;
 import com.flz.model.entity.RoomEntity;
 import com.flz.model.enums.RoomStatus;
 import com.flz.model.mapper.RoomCreateRequestToEntityMapper;
-import com.flz.model.mapper.RoomEntityToCustomerResponseMapper;
 import com.flz.model.mapper.RoomEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomEntityToResponseMapper;
 import com.flz.model.mapper.RoomEntityToSummaryResponseMapper;
@@ -13,7 +12,6 @@ import com.flz.model.mapper.RoomTypeResponseToEntityMapper;
 import com.flz.model.mapper.RoomUpdateRequestToEntityMapper;
 import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
-import com.flz.model.response.ForCustomerRoomResponse;
 import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomTypeResponse;
 import com.flz.model.response.RoomsResponse;
@@ -102,11 +100,5 @@ class RoomServiceImpl implements RoomService {
 
     }
 
-    @Override
-    public List<ForCustomerRoomResponse> findRoomsByRoomTypeId(Long roomTypeId) {
 
-        List<RoomEntity> roomEntities = roomRepository.findByType_Id(roomTypeId);
-
-        return RoomEntityToCustomerResponseMapper.map(roomEntities);
-    }
 }
