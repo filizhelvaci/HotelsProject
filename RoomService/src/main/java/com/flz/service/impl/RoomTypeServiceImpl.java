@@ -99,9 +99,4 @@ class RoomTypeServiceImpl implements RoomTypeService {
         roomTypeRepository.deleteById(id);
 
     }
-
-    @Override
-    public List<RoomTypeEntity> findAll() {
-        return roomTypeRepository.findAll();
-    }
 }

@@ -3,7 +3,6 @@ package com.flz.service;
 import com.flz.model.enums.RoomStatus;
 import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
-import com.flz.model.response.ForCustomerRoomResponse;
 import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
@@ -19,8 +18,6 @@ public interface RoomService {
     List<RoomsSummaryResponse> findSummaryAll();
 
     RoomResponse findById(Long id);
-
-    List<ForCustomerRoomResponse> findRoomsByRoomTypeId(Long roomTypeId);
 
     void create(RoomCreateRequest roomCreateRequest);
 
