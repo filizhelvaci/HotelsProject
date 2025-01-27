@@ -10,14 +10,6 @@ public final class RoomRoomTypeEntityToCustomerResponseMapper {
 
     public static RoomTypeAvailabilityResponse map(RoomTypeEntity roomType, Boolean isAvailability) {
 
-
-        return RoomTypeAvailabilityResponse.builder()
-                .id(roomType.getId())
-                .name(roomType.getName())
-                .price(roomType.getPrice())
-                .personCount(roomType.getPersonCount())
-                .size(roomType.getSize())
-                .isAvailability(isAvailability)
-                .build();
+        return RoomTypeMapper.INSTANCE.toRoomTypeAvailabilityResponse(roomType, isAvailability);
     }
 }
