@@ -12,12 +12,7 @@ public final class AssetResponseToEntityMapper {
     }
 
     public static AssetEntity map(AssetResponse assetResponse) {
-        return AssetEntity.builder()
-                .id(assetResponse.getId())
-                .name(assetResponse.getName())
-                .price(assetResponse.getPrice())
-                .isDefault(assetResponse.getIsDefault())
-                .build();
+        return AssetMapper.INSTANCE.toAssetEntityFromAssetResponse(assetResponse);
     }
 
     public static List<AssetEntity> map(List<AssetResponse> assetResponses) {
