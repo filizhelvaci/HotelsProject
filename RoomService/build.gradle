@@ -17,4 +17,6 @@ dependencies {
     implementation libs.flywayCore
     runtimeOnly libs.flywayPostgres
     implementation libs.swaggerApi
+    implementation libs.mapStruct
+    implementation libs.mapStructProcessor
 }
