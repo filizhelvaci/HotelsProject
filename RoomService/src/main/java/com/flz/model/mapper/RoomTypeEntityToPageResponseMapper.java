@@ -12,14 +12,10 @@ public final class RoomTypeEntityToPageResponseMapper {
     private RoomTypeEntityToPageResponseMapper() {
     }
 
+
     public static RoomTypesResponse map(RoomTypeEntity roomTypeEntity) {
-        return RoomTypesResponse.builder()
-                .id(roomTypeEntity.getId())
-                .name(roomTypeEntity.getName())
-                .price(roomTypeEntity.getPrice())
-                .personCount(roomTypeEntity.getPersonCount())
-                .size(roomTypeEntity.getSize())
-                .build();
+
+        return RoomTypeMapper.INSTANCE.toRoomTypesResponse(roomTypeEntity);
     }
 
     public static List<RoomTypesResponse> map(List<RoomTypeEntity> roomTypeEntities) {
