@@ -12,10 +12,7 @@ public final class RoomEntityToSummaryResponseMapper {
     }
 
     public static RoomsSummaryResponse map(RoomEntity roomEntity) {
-        return RoomsSummaryResponse.builder()
-                .id(roomEntity.getId())
-                .number(roomEntity.getNumber())
-                .build();
+        return RoomMapper.INSTANCE.toRoomsSummaryResponse(roomEntity);
     }
 
     public static List<RoomsSummaryResponse> map(List<RoomEntity> roomEntities) {
