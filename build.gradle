@@ -51,7 +51,7 @@ allprojects {
         compileOnly libs.lombok
         annotationProcessor libs.lombok
         implementation libs.mapStruct
-        annotationProcessor libs.mapStructProcessor
+        implementation libs.mapStructProcessor
         implementation libs.swaggerApi
         implementation libs.postgreSql
         implementation libs.jwt
