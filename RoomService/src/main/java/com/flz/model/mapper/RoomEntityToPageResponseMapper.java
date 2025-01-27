@@ -14,18 +14,8 @@ public final class RoomEntityToPageResponseMapper {
 
     public static RoomsResponse map(RoomEntity entity) {
 
-        RoomsResponse.RoomType roomType = RoomsResponse.RoomType.builder()
-                .id(entity.getType().getId())
-                .name(entity.getType().getName())
-                .build();
+        return RoomMapper.INSTANCE.toRoomsResponse(entity);
 
-        return RoomsResponse.builder()
-                .id(entity.getId())
-                .floor(entity.getFloor())
-                .number(entity.getNumber())
-                .status(entity.getStatus())
-                .roomType(roomType)
-                .build();
     }
 
     public static List<RoomsResponse> map(List<RoomEntity> entities) {
