@@ -18,13 +18,10 @@ public final class RoomEntityToResponseMapper {
                 .name(roomEntity.getType().getName())
                 .build();
 
-        return RoomResponse.builder()
-                .id(roomEntity.getId())
-                .number(roomEntity.getNumber())
-                .floor(roomEntity.getFloor())
-                .status(roomEntity.getStatus())
-                .roomType(roomType)
-                .build();
+        RoomResponse roomResponse = RoomMapper.INSTANCE.toRoomResponse(roomEntity);
+        roomResponse.setRoomType(roomType);
+        return roomResponse;
+
     }
 
     public static List<RoomResponse> map(List<RoomEntity> roomEntities) {

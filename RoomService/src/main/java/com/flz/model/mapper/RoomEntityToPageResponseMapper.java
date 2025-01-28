@@ -12,20 +12,17 @@ public final class RoomEntityToPageResponseMapper {
     private RoomEntityToPageResponseMapper() {
     }
 
-    public static RoomsResponse map(RoomEntity entity) {
+    public static RoomsResponse map(RoomEntity roomEntity) {
 
         RoomsResponse.RoomType roomType = RoomsResponse.RoomType.builder()
-                .id(entity.getType().getId())
-                .name(entity.getType().getName())
+                .id(roomEntity.getType().getId())
+                .name(roomEntity.getType().getName())
                 .build();
 
-        return RoomsResponse.builder()
-                .id(entity.getId())
-                .floor(entity.getFloor())
-                .number(entity.getNumber())
-                .status(entity.getStatus())
-                .roomType(roomType)
-                .build();
+        RoomsResponse roomsResponse = RoomMapper.INSTANCE.toRoomsResponse(roomEntity);
+        roomsResponse.setRoomType(roomType);
+        return roomsResponse;
+
     }
 
     public static List<RoomsResponse> map(List<RoomEntity> entities) {

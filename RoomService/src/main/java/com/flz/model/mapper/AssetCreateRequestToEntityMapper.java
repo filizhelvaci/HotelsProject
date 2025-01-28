@@ -10,13 +10,10 @@ public final class AssetCreateRequestToEntityMapper {
     private AssetCreateRequestToEntityMapper() {
     }
 
-    public static AssetEntity map(AssetCreateRequest createRequest) {
-        return AssetEntity.builder()
-                .name(createRequest.getName())
-                .price(createRequest.getPrice())
-                .isDefault(createRequest.getIsDefault())
-                .createdAt(LocalDateTime.now())
-                .createdBy("system")
-                .build();
+    public static AssetEntity map(AssetCreateRequest assetcreateRequest) {
+        AssetEntity assetEntity = AssetMapper.INSTANCE.toAssetEntity(assetcreateRequest);
+        assetEntity.setCreatedAt(LocalDateTime.now());
+        assetEntity.setCreatedBy("admin");
+        return assetEntity;
     }
 }

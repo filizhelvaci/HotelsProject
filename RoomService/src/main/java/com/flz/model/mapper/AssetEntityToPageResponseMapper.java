@@ -13,12 +13,7 @@ public final class AssetEntityToPageResponseMapper {
     }
 
     public static AssetsResponse map(AssetEntity assetEntity) {
-        return AssetsResponse.builder()
-                .id(assetEntity.getId())
-                .name(assetEntity.getName())
-                .price(assetEntity.getPrice())
-                .isDefault(assetEntity.getIsDefault())
-                .build();
+        return AssetMapper.INSTANCE.toAssetsResponse(assetEntity);
     }
 
     public static List<AssetsResponse> map(List<AssetEntity> assetEntities) {

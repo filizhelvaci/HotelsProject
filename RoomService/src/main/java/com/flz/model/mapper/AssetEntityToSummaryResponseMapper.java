@@ -12,10 +12,7 @@ public final class AssetEntityToSummaryResponseMapper {
     }
 
     public static AssetsSummaryResponse map(AssetEntity assetEntity) {
-        return AssetsSummaryResponse.builder()
-                .id(assetEntity.getId())
-                .name(assetEntity.getName())
-                .build();
+        return AssetMapper.INSTANCE.toAssetsSummaryResponse(assetEntity);
     }
 
     public static List<AssetsSummaryResponse> map(List<AssetEntity> assetEntities) {

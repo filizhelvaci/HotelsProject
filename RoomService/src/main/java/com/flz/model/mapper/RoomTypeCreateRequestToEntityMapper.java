@@ -11,15 +11,9 @@ public final class RoomTypeCreateRequestToEntityMapper {
     }
 
     public static RoomTypeEntity map(RoomTypeCreateRequest roomTypeCreateRequest) {
-        return RoomTypeEntity.builder()
-                .name(roomTypeCreateRequest.getName())
-                .price(roomTypeCreateRequest.getPrice())
-                .personCount(roomTypeCreateRequest.getPersonCount())
-                .size(roomTypeCreateRequest.getSize())
-                .description(roomTypeCreateRequest.getDescription())
-                .createdAt(LocalDateTime.now())
-                .createdBy("system")
-                .build();
-
+        RoomTypeEntity roomTypeEntity = RoomTypeMapper.INSTANCE.toRoomTypeEntity(roomTypeCreateRequest);
+        roomTypeEntity.setCreatedAt(LocalDateTime.now());
+        roomTypeEntity.setCreatedBy("admin");
+        return roomTypeEntity;
     }
 }

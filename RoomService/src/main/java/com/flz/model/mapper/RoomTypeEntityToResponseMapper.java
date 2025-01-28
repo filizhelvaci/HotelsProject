@@ -24,15 +24,8 @@ public final class RoomTypeEntityToResponseMapper {
             assets.add(asset);
         }
 
-        return RoomTypeResponse.builder()
-                .id(roomTypeEntity.getId())
-                .name(roomTypeEntity.getName())
-                .price(roomTypeEntity.getPrice())
-                .personCount(roomTypeEntity.getPersonCount())
-                .size(roomTypeEntity.getSize())
-                .description(roomTypeEntity.getDescription())
-                .assets(assets)
-                .build();
+        RoomTypeResponse roomTypeResponse = RoomTypeMapper.INSTANCE.toRoomTypeResponse(roomTypeEntity);
+        roomTypeResponse.setAssets(assets);
+        return roomTypeResponse;
     }
-
 }

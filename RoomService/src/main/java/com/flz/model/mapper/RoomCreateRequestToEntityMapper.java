@@ -11,12 +11,11 @@ public final class RoomCreateRequestToEntityMapper {
     }
 
     public static RoomEntity map(RoomCreateRequest createRequest) {
-        return RoomEntity.builder()
-                .number(createRequest.getNumber())
-                .floor(createRequest.getFloor())
-                .status(createRequest.getStatus())
-                .createdAt(LocalDateTime.now())
-                .createdBy("hotel-system")
-                .build();
+
+        RoomEntity roomEntity = RoomMapper.INSTANCE.toRoomEntity(createRequest);
+        roomEntity.setCreatedAt(LocalDateTime.now());
+        roomEntity.setCreatedBy("admin");
+        return roomEntity;
     }
+
 }
