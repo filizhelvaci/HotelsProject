@@ -13,7 +13,14 @@ public final class RoomEntityToResponseMapper {
 
     public static RoomResponse map(RoomEntity roomEntity) {
 
-        return RoomMapper.INSTANCE.toRoomResponse(roomEntity);
+        RoomResponse.RoomType roomType = RoomResponse.RoomType.builder()
+                .id(roomEntity.getType().getId())
+                .name(roomEntity.getType().getName())
+                .build();
+
+        RoomResponse roomResponse = RoomMapper.INSTANCE.toRoomResponse(roomEntity);
+        roomResponse.setRoomType(roomType);
+        return roomResponse;
 
     }
 
