@@ -18,5 +18,5 @@ dependencies {
     runtimeOnly libs.flywayPostgres
     implementation libs.swaggerApi
     implementation libs.mapStruct
-    implementation libs.mapStructProcessor
+    annotationProcessor libs.mapStructProcessor
 }
