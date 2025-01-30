@@ -2,18 +2,11 @@ package com.flz.model.mapper;
 
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.request.RoomTypeCreateRequest;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-import java.time.LocalDateTime;
+@Mapper
+public interface RoomTypeCreateRequestToEntityMapper extends BaseMapper<RoomTypeCreateRequest, RoomTypeEntity> {
 
-public final class RoomTypeCreateRequestToEntityMapper {
-
-    private RoomTypeCreateRequestToEntityMapper() {
-    }
-
-    public static RoomTypeEntity map(RoomTypeCreateRequest roomTypeCreateRequest) {
-        RoomTypeEntity roomTypeEntity = RoomTypeMapper.INSTANCE.toRoomTypeEntity(roomTypeCreateRequest);
-        roomTypeEntity.setCreatedAt(LocalDateTime.now());
-        roomTypeEntity.setCreatedBy("admin");
-        return roomTypeEntity;
-    }
+    RoomTypeCreateRequestToEntityMapper INSTANCE = Mappers.getMapper(RoomTypeCreateRequestToEntityMapper.class);
 }

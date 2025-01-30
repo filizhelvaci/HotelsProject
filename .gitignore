@@ -3,7 +3,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+RoomService/docker/database_data/
 
 ### STS ###
 .apt_generated

@@ -54,6 +54,12 @@ public class RoomEntity extends BaseEntity {
     @JoinColumn(name = "room_type_id")
     private RoomTypeEntity type;
 
+    public void update(Integer number, Integer floor, RoomStatus status) {
+        this.number = number;
+        this.floor = floor;
+        this.status = status;
+    }
+
 
     public static Specification<RoomEntity> generateSpecification(Integer number,
                                                                   Integer floor,

@@ -2,15 +2,12 @@ package com.flz.model.mapper;
 
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.response.RoomTypeResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-public final class RoomTypeResponseToEntityMapper {
+@Mapper
+public interface RoomTypeResponseToEntityMapper extends BaseMapper<RoomTypeResponse, RoomTypeEntity> {
 
-    private RoomTypeResponseToEntityMapper() {
-    }
-
-    public static RoomTypeEntity map(RoomTypeResponse roomTypeResponse) {
-
-        return RoomTypeMapper.INSTANCE.toRoomTypeEntityFromResponse(roomTypeResponse);
-    }
+    RoomTypeResponseToEntityMapper INSTANCE = Mappers.getMapper(RoomTypeResponseToEntityMapper.class);
 
 }

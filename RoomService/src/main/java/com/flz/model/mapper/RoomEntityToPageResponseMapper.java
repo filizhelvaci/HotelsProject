@@ -2,39 +2,19 @@ package com.flz.model.mapper;
 
 import com.flz.model.entity.RoomEntity;
 import com.flz.model.response.RoomsResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
-import java.util.List;
+@Mapper
+public interface RoomEntityToPageResponseMapper extends BaseMapper<RoomEntity, RoomsResponse> {
 
-public final class RoomEntityToPageResponseMapper {
+    RoomEntityToPageResponseMapper INSTANCE = Mappers.getMapper(RoomEntityToPageResponseMapper.class);
 
-    private RoomEntityToPageResponseMapper() {
+    RoomsResponse map(RoomEntity roomEntity);
+
+    default Page<RoomsResponse> map(Page<RoomEntity> roomEntities) {
+        return roomEntities.map(this::map);
     }
 
-    public static RoomsResponse map(RoomEntity roomEntity) {
-
-        RoomsResponse.RoomType roomType = RoomsResponse.RoomType.builder()
-                .id(roomEntity.getType().getId())
-                .name(roomEntity.getType().getName())
-                .build();
-
-        RoomsResponse roomsResponse = RoomMapper.INSTANCE.toRoomsResponse(roomEntity);
-        roomsResponse.setRoomType(roomType);
-        return roomsResponse;
-
-    }
-
-    public static List<RoomsResponse> map(List<RoomEntity> entities) {
-        List<RoomsResponse> responses = new ArrayList<>();
-        for (RoomEntity entity : entities) {
-            RoomsResponse roomsResponse = map(entity);
-            responses.add(roomsResponse);
-        }
-        return responses;
-    }
-
-    public static Page<RoomsResponse> map(Page<RoomEntity> roomEntities) {
-        return roomEntities.map(RoomEntityToPageResponseMapper::map);
-    }
 }

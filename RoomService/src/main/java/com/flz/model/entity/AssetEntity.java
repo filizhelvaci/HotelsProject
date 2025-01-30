@@ -43,6 +43,13 @@ public class AssetEntity extends BaseEntity {
     @Column(name = "is_default")
     private Boolean isDefault;
 
+
+    public void update(String name, BigDecimal price, Boolean isDefault) {
+        this.name = name;
+        this.price = price;
+        this.isDefault = isDefault;
+    }
+
     public static Specification<AssetEntity> generateSpecification(String name,
                                                                    BigDecimal minPrice,
                                                                    BigDecimal maxPrice,
