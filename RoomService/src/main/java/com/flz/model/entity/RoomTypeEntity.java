@@ -65,6 +65,14 @@ public class RoomTypeEntity extends BaseEntity {
     )
     private List<AssetEntity> assets;
 
+    public void update(String name, BigDecimal price, Integer personCount, Integer size, String description) {
+        this.name = name;
+        this.price = price;
+        this.personCount = personCount;
+        this.size = size;
+        this.description = description;
+    }
+
 
     public static Specification<RoomTypeEntity> generateSpecification(String name,
                                                                       BigDecimal minPrice,
