@@ -8,8 +8,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface RoomTypeEntityToAvailabilityResponseMapper extends BaseMapper<RoomTypeEntity, RoomTypeAvailabilityResponse> {
 
-    RoomTypeEntityToAvailabilityResponseMapper INSTANCE = Mappers.getMapper(RoomTypeEntityToAvailabilityResponseMapper.class);
+     RoomTypeEntityToAvailabilityResponseMapper INSTANCE = Mappers.getMapper(RoomTypeEntityToAvailabilityResponseMapper.class);
 
-    RoomTypeAvailabilityResponse toAvailability(RoomTypeEntity roomTypeEntity, Boolean availability);
 
 }
