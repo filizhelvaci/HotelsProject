@@ -2,25 +2,12 @@ package com.flz.model.mapper;
 
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.response.AssetsSummaryResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-import java.util.ArrayList;
-import java.util.List;
+@Mapper
+public interface AssetEntityToSummaryResponseMapper extends BaseMapper<AssetEntity, AssetsSummaryResponse> {
 
-public final class AssetEntityToSummaryResponseMapper {
+    AssetEntityToSummaryResponseMapper INSTANCE = Mappers.getMapper(AssetEntityToSummaryResponseMapper.class);
 
-    private AssetEntityToSummaryResponseMapper() {
-    }
-
-    public static AssetsSummaryResponse map(AssetEntity assetEntity) {
-        return AssetMapper.INSTANCE.toAssetsSummaryResponse(assetEntity);
-    }
-
-    public static List<AssetsSummaryResponse> map(List<AssetEntity> assetEntities) {
-        List<AssetsSummaryResponse> assetsSummaryResponses = new ArrayList<>();
-        for (AssetEntity assetEntity : assetEntities) {
-            AssetsSummaryResponse assetSummaryResponse = map(assetEntity);
-            assetsSummaryResponses.add(assetSummaryResponse);
-        }
-        return assetsSummaryResponses;
-    }
 }
