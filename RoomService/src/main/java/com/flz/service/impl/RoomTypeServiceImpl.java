@@ -8,7 +8,6 @@ import com.flz.model.mapper.RoomTypeCreateRequestToEntityMapper;
 import com.flz.model.mapper.RoomTypeEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomTypeEntityToResponseMapper;
 import com.flz.model.mapper.RoomTypeEntityToSummaryResponseMapper;
-import com.flz.model.mapper.RoomTypeUpdateRequestToEntityMapper;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.AssetResponse;
@@ -39,7 +38,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
     public List<RoomTypesSummaryResponse> findSummaryAll() {
 
         List<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll();
-        return RoomTypeEntityToSummaryResponseMapper.map(roomTypeEntities);
+        return RoomTypeEntityToSummaryResponseMapper.INSTANCE.map(roomTypeEntities);
 
     }
 
@@ -48,7 +47,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
         RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new RoomTypeNotFoundException(id));
-        return RoomTypeEntityToResponseMapper.map(roomTypeEntity);
+        return RoomTypeEntityToResponseMapper.INSTANCE.map(roomTypeEntity);
 
     }
 
@@ -59,7 +58,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
         Page<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll(spec, pageable);
 
-        return RoomTypeEntityToPageResponseMapper.map(roomTypeEntities);
+        return RoomTypeEntityToPageResponseMapper.INSTANCE.map(roomTypeEntities);
     }
 
     @Override
@@ -70,9 +69,9 @@ class RoomTypeServiceImpl implements RoomTypeService {
             throw new RoomTypeAlreadyExistsException(roomTypeCreateRequest.getName());
         }
 
-        RoomTypeEntity roomTypeEntity = RoomTypeCreateRequestToEntityMapper.map(roomTypeCreateRequest);
+        RoomTypeEntity roomTypeEntity = RoomTypeCreateRequestToEntityMapper.INSTANCE.map(roomTypeCreateRequest);
         List<AssetResponse> assets = assetService.findAllById(roomTypeCreateRequest.getAssetIds());
-        roomTypeEntity.setAssets(AssetResponseToEntityMapper.map(assets));
+        roomTypeEntity.setAssets(AssetResponseToEntityMapper.INSTANCE.map(assets));
         roomTypeRepository.save(roomTypeEntity);
 
     }
@@ -83,8 +82,14 @@ class RoomTypeServiceImpl implements RoomTypeService {
         RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new RoomTypeNotFoundException(id));
         List<AssetResponse> assets = assetService.findAllById(roomTypeUpdateRequest.getAssetIds());
-        roomTypeEntity.setAssets(AssetResponseToEntityMapper.map(assets));
-        RoomTypeUpdateRequestToEntityMapper.map(roomTypeUpdateRequest, roomTypeEntity);
+        roomTypeEntity.setAssets(AssetResponseToEntityMapper.INSTANCE.map(assets));
+
+        roomTypeEntity.update(roomTypeUpdateRequest.getName(),
+                roomTypeUpdateRequest.getPrice(),
+                roomTypeUpdateRequest.getPersonCount(),
+                roomTypeUpdateRequest.getSize(),
+                roomTypeUpdateRequest.getDescription());
+
         roomTypeRepository.save(roomTypeEntity);
 
     }
