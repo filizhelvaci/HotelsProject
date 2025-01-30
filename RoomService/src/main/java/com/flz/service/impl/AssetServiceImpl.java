@@ -7,7 +7,6 @@ import com.flz.model.mapper.AssetCreateRequestToEntityMapper;
 import com.flz.model.mapper.AssetEntityToPageResponseMapper;
 import com.flz.model.mapper.AssetEntityToResponseMapper;
 import com.flz.model.mapper.AssetEntityToSummaryResponseMapper;
-import com.flz.model.mapper.AssetUpdateRequestToEntityMapper;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
@@ -34,7 +33,7 @@ class AssetServiceImpl implements AssetService {
     public List<AssetsSummaryResponse> findSummaryAll() {
 
         List<AssetEntity> assetEntities = assetRepository.findAll();
-        return AssetEntityToSummaryResponseMapper.map(assetEntities);
+        return AssetEntityToSummaryResponseMapper.INSTANCE.map(assetEntities);
 
     }
 
@@ -42,7 +41,7 @@ class AssetServiceImpl implements AssetService {
     public List<AssetResponse> findAllById(List<Long> ids) {
 
         List<AssetEntity> assetEntities = assetRepository.findAllById(ids);
-        return AssetEntityToResponseMapper.map(assetEntities);
+        return AssetEntityToResponseMapper.INSTANCE.map(assetEntities);
 
     }
 
@@ -51,7 +50,7 @@ class AssetServiceImpl implements AssetService {
 
         AssetEntity assetEntity = assetRepository.findById(id)
                 .orElseThrow(() -> new AssetNotFoundException(id));
-        return AssetEntityToResponseMapper.map(assetEntity);
+        return AssetEntityToResponseMapper.INSTANCE.map(assetEntity);
 
     }
 
@@ -62,7 +61,7 @@ class AssetServiceImpl implements AssetService {
 
         Page<AssetEntity> assetEntities = assetRepository.findAll(spec, pageable);
 
-        return AssetEntityToPageResponseMapper.map(assetEntities);
+        return AssetEntityToPageResponseMapper.INSTANCE.map(assetEntities);
     }
 
     @Override
@@ -72,7 +71,7 @@ class AssetServiceImpl implements AssetService {
         if (existsByName) {
             throw new AssetAlreadyExistsException(assetCreateRequest.getName());
         }
-        AssetEntity assetEntity = AssetCreateRequestToEntityMapper.map(assetCreateRequest);
+        AssetEntity assetEntity = AssetCreateRequestToEntityMapper.INSTANCE.map(assetCreateRequest);
         assetRepository.save(assetEntity);
 
     }
@@ -83,7 +82,13 @@ class AssetServiceImpl implements AssetService {
 
         AssetEntity assetEntity = assetRepository.findById(id)
                 .orElseThrow(() -> new AssetNotFoundException(id));
-        AssetUpdateRequestToEntityMapper.map(assetUpdateRequest, assetEntity);
+
+        assetEntity.update(
+                assetUpdateRequest.getName(),
+                assetUpdateRequest.getPrice(),
+                assetUpdateRequest.getIsDefault()
+        );
+
         assetRepository.save(assetEntity);
 
     }
