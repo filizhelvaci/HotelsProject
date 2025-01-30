@@ -2,7 +2,8 @@ package com.flz.service.impl;
 
 import com.flz.model.entity.RoomEntity;
 import com.flz.model.entity.RoomTypeEntity;
-import com.flz.model.mapper.RoomRoomTypeEntityToCustomerResponseMapper;
+import com.flz.model.enums.RoomStatus;
+import com.flz.model.mapper.RoomTypeEntityToAvailabilityResponseMapper;
 import com.flz.model.response.RoomTypeAvailabilityResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.repository.RoomTypeRepository;
@@ -38,13 +39,14 @@ class RoomTypeAvailabilityServiceImpl implements RoomTypeAvailabilityService {
                     continue;
                 }
 
-                if (!room.getStatus().toString().equals("EMPTY")) {
+                if (RoomStatus.EMPTY != room.getStatus()) {
                     continue;
                 }
                 isAvailable = true;
             }
 
-            RoomTypeAvailabilityResponse response = RoomRoomTypeEntityToCustomerResponseMapper.map(roomType, isAvailable);
+            RoomTypeAvailabilityResponse response = RoomTypeEntityToAvailabilityResponseMapper.INSTANCE.toAvailability(roomType, isAvailable);
+
             roomTypeAvailabilityResponses.add(response);
         }
 
