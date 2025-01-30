@@ -2,25 +2,12 @@ package com.flz.model.mapper;
 
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.response.RoomTypesSummaryResponse;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-import java.util.ArrayList;
-import java.util.List;
+@Mapper
+public interface RoomTypeEntityToSummaryResponseMapper extends BaseMapper<RoomTypeEntity, RoomTypesSummaryResponse> {
 
-public final class RoomTypeEntityToSummaryResponseMapper {
+    RoomTypeEntityToSummaryResponseMapper INSTANCE = Mappers.getMapper(RoomTypeEntityToSummaryResponseMapper.class);
 
-    private RoomTypeEntityToSummaryResponseMapper() {
-    }
-
-    public static RoomTypesSummaryResponse map(RoomTypeEntity roomTypeEntity) {
-        return RoomTypeMapper.INSTANCE.toRoomTypesSummaryResponse(roomTypeEntity);
-    }
-
-    public static List<RoomTypesSummaryResponse> map(List<RoomTypeEntity> roomTypeEntities) {
-        List<RoomTypesSummaryResponse> roomTypesSummaryResponses = new ArrayList<>();
-        for (RoomTypeEntity roomTypeEntity : roomTypeEntities) {
-            RoomTypesSummaryResponse roomTypesSummaryResponse = map(roomTypeEntity);
-            roomTypesSummaryResponses.add(roomTypesSummaryResponse);
-        }
-        return roomTypesSummaryResponses;
-    }
 }
