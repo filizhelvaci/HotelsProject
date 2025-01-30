@@ -9,7 +9,6 @@ import com.flz.model.mapper.RoomEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomEntityToResponseMapper;
 import com.flz.model.mapper.RoomEntityToSummaryResponseMapper;
 import com.flz.model.mapper.RoomTypeResponseToEntityMapper;
-import com.flz.model.mapper.RoomUpdateRequestToEntityMapper;
 import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.RoomResponse;
@@ -38,7 +37,7 @@ class RoomServiceImpl implements RoomService {
     public List<RoomsSummaryResponse> findSummaryAll() {
 
         List<RoomEntity> roomEntities = roomRepository.findAll();
-        return RoomEntityToSummaryResponseMapper.map(roomEntities);
+        return RoomEntityToSummaryResponseMapper.INSTANCE.map(roomEntities);
 
     }
 
@@ -47,7 +46,7 @@ class RoomServiceImpl implements RoomService {
 
         RoomEntity roomEntity = roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException(id));
-        return RoomEntityToResponseMapper.map(roomEntity);
+        return RoomEntityToResponseMapper.INSTANCE.map(roomEntity);
 
     }
 
@@ -58,7 +57,7 @@ class RoomServiceImpl implements RoomService {
 
         Page<RoomEntity> roomEntities = roomRepository.findAll(spec, pageable);
 
-        return RoomEntityToPageResponseMapper.map(roomEntities);
+        return RoomEntityToPageResponseMapper.INSTANCE.map(roomEntities);
     }
 
 
@@ -69,9 +68,10 @@ class RoomServiceImpl implements RoomService {
         if (existsByNumber) {
             throw new RoomAlreadyExistsException(roomCreateRequest.getNumber().toString());
         }
-        RoomEntity roomEntity = RoomCreateRequestToEntityMapper.map(roomCreateRequest);
+        RoomEntity roomEntity = RoomCreateRequestToEntityMapper.INSTANCE.map(roomCreateRequest);
+
         RoomTypeResponse roomTypeResponse = roomTypeService.findById(roomCreateRequest.getRoomTypeId());
-        roomEntity.setType(RoomTypeResponseToEntityMapper.map(roomTypeResponse));
+        roomEntity.setType(RoomTypeResponseToEntityMapper.INSTANCE.map(roomTypeResponse));
         roomRepository.save(roomEntity);
 
     }
@@ -83,8 +83,14 @@ class RoomServiceImpl implements RoomService {
                 .orElseThrow(() -> new RoomNotFoundException(id));
 
         RoomTypeResponse roomTypeResponse = roomTypeService.findById(roomUpdateRequest.getRoomTypeId());
-        roomEntity.setType(RoomTypeResponseToEntityMapper.map(roomTypeResponse));
-        RoomUpdateRequestToEntityMapper.map(roomUpdateRequest, roomEntity);
+        roomEntity.setType(RoomTypeResponseToEntityMapper.INSTANCE.map(roomTypeResponse));
+
+        roomEntity.update(
+                roomUpdateRequest.getNumber(),
+                roomUpdateRequest.getFloor(),
+                roomUpdateRequest.getStatus()
+        );
+
         roomRepository.save(roomEntity);
 
     }
