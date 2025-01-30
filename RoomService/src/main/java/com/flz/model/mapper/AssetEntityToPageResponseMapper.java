@@ -6,8 +6,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 @Mapper
 public interface AssetEntityToPageResponseMapper extends BaseMapper<AssetEntity, AssetsResponse> {
 
@@ -15,11 +13,7 @@ public interface AssetEntityToPageResponseMapper extends BaseMapper<AssetEntity,
 
     AssetsResponse map(AssetEntity assetEntity);
 
-    List<AssetsResponse> map(List<AssetEntity> assetEntities);
-
     default Page<AssetsResponse> map(Page<AssetEntity> assetEntities) {
         return assetEntities.map(this::map);
     }
-
-
 }
