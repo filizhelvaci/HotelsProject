@@ -45,8 +45,8 @@ class RoomTypeAvailabilityServiceImpl implements RoomTypeAvailabilityService {
                 isAvailable = true;
             }
 
-            RoomTypeAvailabilityResponse response = RoomTypeEntityToAvailabilityResponseMapper.INSTANCE.toAvailability(roomType, isAvailable);
-
+            RoomTypeAvailabilityResponse response = RoomTypeEntityToAvailabilityResponseMapper.INSTANCE.map(roomType);
+            response.setIsAvailability(isAvailable);
             roomTypeAvailabilityResponses.add(response);
         }
 
