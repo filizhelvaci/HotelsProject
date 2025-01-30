@@ -14,11 +14,11 @@ public class RoomsResponse {
     private Integer number;
     private Integer floor;
     private RoomStatus status;
-    private RoomType roomType;
+    private Type type;
 
     @Getter
     @Builder
-    public static class RoomType {
+    public static class Type {
         private Long id;
         private String name;
     }
