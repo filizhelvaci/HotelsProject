@@ -2,7 +2,6 @@ FROM gradle:8.11-jdk17 AS build
 
 WORKDIR /app
 
-COPY dependencies.gradle .
 COPY build.gradle .
 COPY settings.gradle .
 COPY RoomService/build.gradle ./RoomService/
