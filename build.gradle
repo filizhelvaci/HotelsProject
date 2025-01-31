@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.2'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.springframework.boot' version '3.2.2' apply(false)
+    id 'io.spring.dependency-management' version '1.1.4' apply(false)
     id 'application'
     id 'java-library'
 }
@@ -10,57 +10,53 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
 allprojects {
-    apply from: "${rootDir}/dependencies.gradle"
-    apply plugin: 'application'
     group = 'com.flz'
     version = '1.0.3'
-
 }
 
 subprojects {
-    tasks.withType(JavaCompile).tap {
-        configureEach {
-            options.encoding = 'UTF-8'
-        }
-    }
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java-library'
 
-    buildscript {
-        dependencies {
-            classpath("org.springframework.boot:spring-boot-gradle-plugin:${versions.springBoot}")
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.0"
+            mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.3'
         }
     }
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter:3.2.2'
+        compileOnly 'org.projectlombok:lombok:1.18.30'
+        annotationProcessor 'org.projectlombok:lombok:1.18.30'
+        implementation 'org.mapstruct:mapstruct:1.6.2'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
+        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+        implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
+        implementation 'com.auth0:java-jwt:4.4.0'
+        implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.2'
+        implementation 'org.springframework.cloud:spring-cloud-starter-config:4.1.2'
+        implementation 'org.springframework.cloud:spring-cloud-config-client:4.1.2'
+        implementation 'org.springframework.cloud:spring-cloud-config-server:4.1.2'
+        implementation 'org.flywaydb:flyway-core:10.20.0'
+        runtimeOnly 'org.flywaydb:flyway-database-postgresql:10.20.0'
+        testImplementation 'org.mockito:mockito-junit-jupiter:5.14.2'
+        testImplementation 'org.mockito:mockito-core:5.14.2'
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.2'
+    }
 }
-
 allprojects {
     repositories {
         google()
         mavenCentral()
-    }
-    buildscript {
-        repositories {
-            mavenCentral()
-        }
-    }
-    dependencies {
-        implementation libs.springBootWeb
-        compileOnly libs.lombok
-        annotationProcessor libs.lombok
-        implementation libs.mapStruct
-        annotationProcessor libs.mapStructProcessor
-        implementation libs.swaggerApi
-        implementation libs.postgreSql
-        implementation libs.jwt
-        implementation libs.springCloudOpenFeign
-        implementation libs.springCloudStarterConfig
-        implementation libs.springCloudClient
-        implementation libs.springCloudServer
-        implementation libs.flywayCore
-        runtimeOnly libs.flywayPostgres
     }
 }
 
