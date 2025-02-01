@@ -11,8 +11,6 @@ public interface AssetEntityToPageResponseMapper extends BaseMapper<AssetEntity,
 
     AssetEntityToPageResponseMapper INSTANCE = Mappers.getMapper(AssetEntityToPageResponseMapper.class);
 
-    AssetsResponse map(AssetEntity assetEntity);
-
     default Page<AssetsResponse> map(Page<AssetEntity> assetEntities) {
         return assetEntities.map(this::map);
     }
