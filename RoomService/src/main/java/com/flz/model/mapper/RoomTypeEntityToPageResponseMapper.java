@@ -11,8 +11,6 @@ public interface RoomTypeEntityToPageResponseMapper extends BaseMapper<RoomTypeE
 
     RoomTypeEntityToPageResponseMapper INSTANCE = Mappers.getMapper(RoomTypeEntityToPageResponseMapper.class);
 
-    RoomTypesResponse map(RoomTypeEntity roomTypeEntity);
-
     default Page<RoomTypesResponse> map(Page<RoomTypeEntity> roomTypeEntities) {
         return roomTypeEntities.map(this::map);
     }
