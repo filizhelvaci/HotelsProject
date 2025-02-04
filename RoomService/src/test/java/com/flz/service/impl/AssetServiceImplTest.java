@@ -3,6 +3,7 @@ package com.flz.service.impl;
 import com.flz.exception.AssetAlreadyExistsException;
 import com.flz.exception.AssetNotFoundException;
 import com.flz.model.entity.AssetEntity;
+import com.flz.model.mapper.AssetCreateRequestToEntityMapper;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
@@ -227,7 +228,7 @@ class AssetServiceImplTest {
     }
 
     @Test
-    public void Should_Return_ThrowException_When_AssetAlreadyExists() {
+    public void givenAssetCreateRequest_whenAssetByNameAlreadyExists_thenThrowAssetAlreadyExistsException() {
 
         AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
         assetCreateRequest.setName("testAsset");
@@ -240,27 +241,69 @@ class AssetServiceImplTest {
 
     }
 
-//    @Test
-//    public void WhenSaveAssetCreateRequest__ShouldBeAssetEntity() {
-//        // arrange
-//        AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
-//        assetCreateRequest.setName("testAsset");
-//        assetCreateRequest.setPrice(BigDecimal.valueOf(1000));
-//        assetCreateRequest.setIsDefault(true);
-//
-//        when(assetRepository.existsByName(assetCreateRequest.getName())).thenReturn(false);
-//
-//        when(assetCreateRequestToEntityMapper.map(assetCreateRequest))
-//                .thenReturn(AssetEntity.builder()
-//                        .name("testAsset")
-//                        .price(BigDecimal.valueOf(1000))
-//                        .isDefault(true)
-//                        .build());
-//        // act
-//        assetService.create(assetCreateRequest);
-//
-//        // assert
-//        verify(assetRepository).save(any(AssetEntity.class));
-//    }
+    @Test
+    public void givenValidAssetCreateRequest_whenAssetCreateWithAssetCreateRequest_thenShouldBeSaveAssetEntity() {
+
+        //Given
+        AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
+        assetCreateRequest.setName("testAsset");
+        assetCreateRequest.setPrice(BigDecimal.valueOf(1000));
+        assetCreateRequest.setIsDefault(true);
+
+        //When
+        when(assetRepository.existsByName(assetCreateRequest.getName())).thenReturn(false);
+
+        AssetEntity assetEntity = AssetCreateRequestToEntityMapper.INSTANCE.map(assetCreateRequest);
+        when(assetRepository.save(assetEntity)).thenReturn(null);
+
+
+        //Then
+        assetService.create(assetCreateRequest);
+
+        Assertions.assertNotNull(assetEntity);
+        Assertions.assertEquals(assetCreateRequest.getName(), assetEntity.getName());
+        verify(assetRepository).existsByName(assetCreateRequest.getName());
+        verify(assetRepository).save(any(AssetEntity.class));
+    }
+
+    @Test
+    public void givenValidId_whenAssetEntityFoundById_thenDeleteAssetEntity() {
+
+        //Given
+        Long mockId = 10L;
+
+        AssetEntity assetEntity = AssetEntity.builder()
+                .id(mockId)
+                .name("testAsset")
+                .price(BigDecimal.valueOf(1000))
+                .isDefault(true)
+                .build();
+
+        //When
+        Mockito.when(assetRepository.existsById(mockId)).thenReturn(true);
+
+        assetService.delete(mockId);
+
+        //Then
+        Assertions.assertNotNull(assetEntity);
+        Assertions.assertEquals(mockId, assetEntity.getId());
+        Mockito.verify(assetRepository).existsById(mockId);
+        Mockito.verify(assetRepository).deleteById(mockId);
+
+    }
+
+    @Test
+    public void givenValidId_whenAssetEntityNotFoundById_thenThrowAssetNotFoundException() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        when(assetRepository.existsById(mockId)).thenReturn(false);
+
+        //Then
+        Assertions.assertThrows(AssetNotFoundException.class, () -> assetService.delete(mockId));
+
+    }
 
 }
