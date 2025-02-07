@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -59,8 +61,8 @@ class AssetServiceImplTest {
         AssetResponse assetResponse = assetService.findById(mockId);
 
         //Then
-        Assertions.assertNotNull(assetResponse);
-        Assertions.assertEquals(mockId, assetResponse.getId());
+        assertNotNull(assetResponse);
+        assertEquals(mockId, assetResponse.getId());
         Mockito.verify(assetRepository).findById(mockId);
     }
 
@@ -123,7 +125,7 @@ class AssetServiceImplTest {
         List<AssetsSummaryResponse> result = assetService.findSummaryAll();
 
         //Then
-        Assertions.assertEquals(assetsSummaryResponses, result);
+        assertEquals(assetsSummaryResponses, result);
 
         Mockito.verify(assetRepository).findAll();
 
@@ -163,15 +165,9 @@ class AssetServiceImplTest {
         List<AssetResponse> mockAssetResponses = assetService.findAllById(mockIds);
 
         //Then
-        Assertions.assertNotNull(mockAssetResponses);
-        Assertions.assertEquals(mockAssetResponses.get(1).getName(), mockAssetEntities.get(1).getName());
+        assertNotNull(mockAssetResponses);
+        assertEquals(mockAssetResponses.get(1).getName(), mockAssetEntities.get(1).getName());
         Mockito.verify(assetRepository).findAllById(mockIds);
-    }
-
-    @Test
-    public void givenValidAssetProperty__whenAssetEntitiesFoundAccordingToThatProperties_thenReturnAssetsResponseList() {
-
-
     }
 
     @Test
@@ -260,8 +256,8 @@ class AssetServiceImplTest {
         //Then
         assetService.create(assetCreateRequest);
 
-        Assertions.assertNotNull(assetEntity);
-        Assertions.assertEquals(assetCreateRequest.getName(), assetEntity.getName());
+        assertNotNull(assetEntity);
+        assertEquals(assetCreateRequest.getName(), assetEntity.getName());
         verify(assetRepository).existsByName(assetCreateRequest.getName());
         verify(assetRepository).save(any(AssetEntity.class));
     }
@@ -285,8 +281,8 @@ class AssetServiceImplTest {
         assetService.delete(mockId);
 
         //Then
-        Assertions.assertNotNull(assetEntity);
-        Assertions.assertEquals(mockId, assetEntity.getId());
+        assertNotNull(assetEntity);
+        assertEquals(mockId, assetEntity.getId());
         Mockito.verify(assetRepository).existsById(mockId);
         Mockito.verify(assetRepository).deleteById(mockId);
 
