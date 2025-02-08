@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 
 
 class AssetServiceImplTest extends BaseTest {
@@ -38,7 +37,7 @@ class AssetServiceImplTest extends BaseTest {
     @Test
     public void whenCalledAllSummaryAsset_thenReturnListOfAssetsSummaryResponse() {
 
-        //Given
+        //When
         List<AssetEntity> assetEntities = List.of(
                 AssetEntity.builder()
                         .id(10L)
@@ -60,32 +59,16 @@ class AssetServiceImplTest extends BaseTest {
                         .build()
         );
 
-        List<AssetsSummaryResponse> assetsSummaryResponses = List.of(
-                AssetsSummaryResponse.builder()
-                        .id(10L)
-                        .name("testAsset1")
-                        .build(),
-                AssetsSummaryResponse.builder()
-                        .id(11L)
-                        .name("testAsset2")
-                        .build(),
-                AssetsSummaryResponse.builder()
-                        .id(12L)
-                        .name("testAsset3")
-                        .build()
-        );
-
-        //When
         Mockito.when(assetRepository.findAll())
                 .thenReturn(assetEntities);
 
         List<AssetsSummaryResponse> result = assetService.findSummaryAll();
 
         //Then
-        Assertions.assertEquals(assetsSummaryResponses, result);
+        Assertions.assertEquals(assetEntities, result);
 
         //Verify
-        Mockito.verify(assetRepository).findAll();
+        Mockito.verify(assetRepository, Mockito.times(1)).findAll();
 
     }
 
@@ -130,7 +113,8 @@ class AssetServiceImplTest extends BaseTest {
         Assertions.assertEquals(mockAssetResponses.get(1).getName(), mockAssetEntities.get(1).getName());
 
         //Verify
-        Mockito.verify(assetRepository).findAllById(mockIds);
+        Mockito.verify(assetRepository, Mockito.times(1)).findAllById(mockIds);
+
     }
 
     /**
@@ -160,7 +144,8 @@ class AssetServiceImplTest extends BaseTest {
         Assertions.assertEquals(mockId, assetResponse.getId());
 
         //Verify
-        Mockito.verify(assetRepository).findById(mockId);
+        Mockito.verify(assetRepository, Mockito.times(1)).findById(mockId);
+
     }
 
     /**
@@ -181,6 +166,8 @@ class AssetServiceImplTest extends BaseTest {
                 () -> assetService.findById(mockId));
 
         //Verify
+        Mockito.verify(assetRepository, Mockito.times(1)).findById(mockId);
+
     }
 
     /**
@@ -210,8 +197,8 @@ class AssetServiceImplTest extends BaseTest {
         Assertions.assertEquals(assetCreateRequest.getName(), assetEntity.getName());
 
         //Verify
-        Mockito.verify(assetRepository).existsByName(assetCreateRequest.getName());
-        Mockito.verify(assetRepository).save(any(AssetEntity.class));
+        Mockito.verify(assetRepository, Mockito.times(1)).existsByName(assetCreateRequest.getName());
+        Mockito.verify(assetRepository, Mockito.times(1)).save(assetEntity);
     }
 
     /**
@@ -233,7 +220,9 @@ class AssetServiceImplTest extends BaseTest {
                 () -> assetService.create(assetCreateRequest));
 
         //Verify
-        Mockito.verify(assetRepository, never()).save(any());
+        Mockito.verify(assetRepository, Mockito.times(1))
+                .existsByName(assetCreateRequest.getName());
+        Mockito.verify(assetRepository, Mockito.never()).save(any());
 
     }
 
@@ -271,9 +260,8 @@ class AssetServiceImplTest extends BaseTest {
         //Then
 
         //Verify
-        Mockito.verify(assetRepository).findById(mockId);
-        assert mockAssetEntity != null;
-        Mockito.verify(assetRepository).save(mockAssetEntity);
+        Mockito.verify(assetRepository, Mockito.times(1)).findById(mockId);
+        Mockito.verify(assetRepository, Mockito.times(1)).save(mockAssetEntity);
 
     }
 
@@ -299,6 +287,9 @@ class AssetServiceImplTest extends BaseTest {
         Assertions.assertThrows(AssetNotFoundException.class,
                 () -> assetService.update(mockId, mockAssetUpdateRequest));
 
+        //Verify
+        Mockito.verify(assetRepository, Mockito.times(1)).findById(mockId);
+        Mockito.verify(assetRepository, Mockito.never()).save(any());
     }
 
     /**
@@ -328,8 +319,8 @@ class AssetServiceImplTest extends BaseTest {
         Assertions.assertEquals(mockId, assetEntity.getId());
 
         //Verify
-        Mockito.verify(assetRepository).existsById(mockId);
-        Mockito.verify(assetRepository).deleteById(mockId);
+        Mockito.verify(assetRepository, Mockito.times(1)).existsById(mockId);
+        Mockito.verify(assetRepository, Mockito.times(1)).deleteById(mockId);
 
     }
 
@@ -351,6 +342,8 @@ class AssetServiceImplTest extends BaseTest {
                 () -> assetService.delete(mockId));
 
         //Verify
+        Mockito.verify(assetRepository, Mockito.times(1)).existsById(mockId);
+        Mockito.verify(assetRepository, Mockito.never()).deleteById(mockId);
     }
 
 }
