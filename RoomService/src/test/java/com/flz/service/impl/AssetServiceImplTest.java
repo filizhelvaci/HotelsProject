@@ -125,7 +125,7 @@ class AssetServiceImplTest extends BaseTest {
      * findById
      */
     @Test
-    public void givenValidId_whenAssetEntityFoundAccordingToThatId_thenReturnAssetResponse() {
+    public void givenValidId_whenAssetEntityFoundAccordingById_thenReturnAssetResponse() {
 
         //Given
         Long mockId = 1L;
@@ -181,7 +181,7 @@ class AssetServiceImplTest extends BaseTest {
      * create
      */
     @Test
-    public void givenValidAssetCreateRequest_whenAssetCreateWithAssetCreateRequest_thenShouldBeSaveAssetEntity() {
+    public void givenAssetCreateRequest_whenAssetByNameIsNotInTheDatabase_thenCreateAndSaveAssetEntity() {
 
         //Given
         AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
@@ -241,7 +241,7 @@ class AssetServiceImplTest extends BaseTest {
      * update
      */
     @Test
-    public void givenValidAssetIdAndAssetUpdateRequest_whenAssetEntityFoundAccordingToThatId_thenThatAssetEntityUpdate() {
+    public void givenValidAssetIdAndAssetUpdateRequest_whenAssetEntityFoundById_thenThatAssetEntityUpdate() {
 
         //Given
         Long mockId = 10L;
@@ -355,7 +355,7 @@ class AssetServiceImplTest extends BaseTest {
      * delete-exception
      */
     @Test
-    public void givenValidId_whenAssetEntityNotFoundById_thenThrowAssetNotFoundException() {
+    public void givenValidId_whenAssetEntityNotFoundById_thenReturnThrowAssetNotFoundException() {
 
         //Given
         Long mockId = 10L;
