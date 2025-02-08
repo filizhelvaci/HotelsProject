@@ -76,7 +76,8 @@ class AssetServiceImplTest extends BaseTest {
         );
 
         //When
-        Mockito.when(assetRepository.findAll()).thenReturn(assetEntities);
+        Mockito.when(assetRepository.findAll())
+                .thenReturn(assetEntities);
 
         List<AssetsSummaryResponse> result = assetService.findSummaryAll();
 
@@ -119,7 +120,8 @@ class AssetServiceImplTest extends BaseTest {
         );
 
         //When
-        Mockito.when(assetRepository.findAllById(mockIds)).thenReturn(mockAssetEntities);
+        Mockito.when(assetRepository.findAllById(mockIds))
+                .thenReturn(mockAssetEntities);
 
         List<AssetResponse> mockAssetResponses = assetService.findAllById(mockIds);
 
@@ -148,7 +150,8 @@ class AssetServiceImplTest extends BaseTest {
                 .isDefault(true)
                 .build());
 
-        Mockito.when(assetRepository.findById(mockId)).thenReturn(mockAssetEntity);
+        Mockito.when(assetRepository.findById(mockId))
+                .thenReturn(mockAssetEntity);
 
         AssetResponse assetResponse = assetService.findById(mockId);
 
@@ -170,10 +173,12 @@ class AssetServiceImplTest extends BaseTest {
         Long mockId = 10L;
 
         //When
-        Mockito.when(assetRepository.findById(mockId)).thenReturn(Optional.empty());
+        Mockito.when(assetRepository.findById(mockId))
+                .thenReturn(Optional.empty());
 
         //Then
-        Assertions.assertThrows(AssetNotFoundException.class, () -> assetService.findById(mockId));
+        Assertions.assertThrows(AssetNotFoundException.class,
+                () -> assetService.findById(mockId));
 
         //Verify
     }
@@ -191,10 +196,12 @@ class AssetServiceImplTest extends BaseTest {
         assetCreateRequest.setIsDefault(true);
 
         //When
-        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName())).thenReturn(false);
+        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName()))
+                .thenReturn(false);
 
         AssetEntity assetEntity = AssetCreateRequestToEntityMapper.INSTANCE.map(assetCreateRequest);
-        Mockito.when(assetRepository.save(assetEntity)).thenReturn(null);
+        Mockito.when(assetRepository.save(assetEntity))
+                .thenReturn(null);
 
         assetService.create(assetCreateRequest);
 
@@ -218,10 +225,12 @@ class AssetServiceImplTest extends BaseTest {
         assetCreateRequest.setName("testAsset");
 
         //When
-        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName())).thenReturn(true);
+        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName()))
+                .thenReturn(true);
 
         //Then
-        Assertions.assertThrows(AssetAlreadyExistsException.class, () -> assetService.create(assetCreateRequest));
+        Assertions.assertThrows(AssetAlreadyExistsException.class,
+                () -> assetService.create(assetCreateRequest));
 
         //Verify
         Mockito.verify(assetRepository, never()).save(any());
@@ -250,7 +259,8 @@ class AssetServiceImplTest extends BaseTest {
         mockAssetUpdateRequest.setIsDefault(false);
 
         //When
-        Mockito.when(assetRepository.findById(mockId)).thenReturn(Optional.ofNullable(mockAssetEntity));
+        Mockito.when(assetRepository.findById(mockId))
+                .thenReturn(Optional.ofNullable(mockAssetEntity));
         if (mockAssetEntity != null) {
             mockAssetEntity.update(mockAssetUpdateRequest.getName(), mockAssetUpdateRequest.getPrice(), mockAssetUpdateRequest.getIsDefault());
             Mockito.when(assetRepository.save(mockAssetEntity)).thenReturn(null);
@@ -282,10 +292,12 @@ class AssetServiceImplTest extends BaseTest {
         mockAssetUpdateRequest.setIsDefault(false);
 
         //When
-        Mockito.when(assetRepository.findById(mockId)).thenReturn(Optional.empty());
+        Mockito.when(assetRepository.findById(mockId))
+                .thenReturn(Optional.empty());
 
         //Then
-        Assertions.assertThrows(AssetNotFoundException.class, () -> assetService.update(mockId, mockAssetUpdateRequest));
+        Assertions.assertThrows(AssetNotFoundException.class,
+                () -> assetService.update(mockId, mockAssetUpdateRequest));
 
     }
 
@@ -306,7 +318,8 @@ class AssetServiceImplTest extends BaseTest {
                 .build();
 
         //When
-        Mockito.when(assetRepository.existsById(mockId)).thenReturn(true);
+        Mockito.when(assetRepository.existsById(mockId))
+                .thenReturn(true);
 
         assetService.delete(mockId);
 
@@ -330,10 +343,12 @@ class AssetServiceImplTest extends BaseTest {
         Long mockId = 10L;
 
         //When
-        Mockito.when(assetRepository.existsById(mockId)).thenReturn(false);
+        Mockito.when(assetRepository.existsById(mockId))
+                .thenReturn(false);
 
         //Then
-        Assertions.assertThrows(AssetNotFoundException.class, () -> assetService.delete(mockId));
+        Assertions.assertThrows(AssetNotFoundException.class,
+                () -> assetService.delete(mockId));
 
         //Verify
     }
