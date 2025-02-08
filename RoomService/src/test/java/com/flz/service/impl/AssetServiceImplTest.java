@@ -32,47 +32,9 @@ class AssetServiceImplTest extends BaseTest {
     @InjectMocks
     AssetServiceImpl assetService;
 
-    @Test
-    public void givenValidId_whenAssetEntityFoundAccordingToThatId_thenReturnAssetResponse() {
-
-        //Given
-        Long mockId = 1L;
-
-        //When
-        Optional<AssetEntity> mockAssetEntity = Optional.of(AssetEntity.builder()
-                .id(1L)
-                .name("testAsset")
-                .price(BigDecimal.valueOf(1000))
-                .isDefault(true)
-                .build());
-
-        Mockito.when(assetRepository.findById(mockId)).thenReturn(mockAssetEntity);
-
-        AssetResponse assetResponse = assetService.findById(mockId);
-
-        //Then
-        Assertions.assertNotNull(assetResponse);
-        Assertions.assertEquals(mockId, assetResponse.getId());
-
-        //Verify
-        Mockito.verify(assetRepository).findById(mockId);
-    }
-
-    @Test
-    public void givenValidId_whenAssetEntityNotFoundById_throwsAssetNotFoundException() {
-
-        //Given
-        Long mockId = 10L;
-
-        //When
-        Mockito.when(assetRepository.findById(mockId)).thenReturn(Optional.empty());
-
-        //Then
-        Assertions.assertThrows(AssetNotFoundException.class, () -> assetService.findById(mockId));
-
-        //Verify
-    }
-
+    /**
+     * findSummaryAll()
+     */
     @Test
     public void whenCalledAllSummaryAsset_thenReturnListOfAssetsSummaryResponse() {
 
@@ -126,7 +88,9 @@ class AssetServiceImplTest extends BaseTest {
 
     }
 
-
+    /**
+     * findAllById
+     */
     @Test
     public void givenValidAssetIdList__whenAssetEntitiesFoundAccordingToThatIdList_thenReturnAssetResponseList() {
 
@@ -167,6 +131,106 @@ class AssetServiceImplTest extends BaseTest {
         Mockito.verify(assetRepository).findAllById(mockIds);
     }
 
+    /**
+     * findById
+     */
+    @Test
+    public void givenValidId_whenAssetEntityFoundAccordingToThatId_thenReturnAssetResponse() {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Optional<AssetEntity> mockAssetEntity = Optional.of(AssetEntity.builder()
+                .id(1L)
+                .name("testAsset")
+                .price(BigDecimal.valueOf(1000))
+                .isDefault(true)
+                .build());
+
+        Mockito.when(assetRepository.findById(mockId)).thenReturn(mockAssetEntity);
+
+        AssetResponse assetResponse = assetService.findById(mockId);
+
+        //Then
+        Assertions.assertNotNull(assetResponse);
+        Assertions.assertEquals(mockId, assetResponse.getId());
+
+        //Verify
+        Mockito.verify(assetRepository).findById(mockId);
+    }
+
+    /**
+     * findById-Exception
+     */
+    @Test
+    public void givenValidId_whenAssetEntityNotFoundById_throwsAssetNotFoundException() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(assetRepository.findById(mockId)).thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(AssetNotFoundException.class, () -> assetService.findById(mockId));
+
+        //Verify
+    }
+
+    /**
+     * create
+     */
+    @Test
+    public void givenValidAssetCreateRequest_whenAssetCreateWithAssetCreateRequest_thenShouldBeSaveAssetEntity() {
+
+        //Given
+        AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
+        assetCreateRequest.setName("testAsset");
+        assetCreateRequest.setPrice(BigDecimal.valueOf(1000));
+        assetCreateRequest.setIsDefault(true);
+
+        //When
+        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName())).thenReturn(false);
+
+        AssetEntity assetEntity = AssetCreateRequestToEntityMapper.INSTANCE.map(assetCreateRequest);
+        Mockito.when(assetRepository.save(assetEntity)).thenReturn(null);
+
+        assetService.create(assetCreateRequest);
+
+        //Then
+        Assertions.assertNotNull(assetEntity);
+        Assertions.assertEquals(assetCreateRequest.getName(), assetEntity.getName());
+
+        //Verify
+        Mockito.verify(assetRepository).existsByName(assetCreateRequest.getName());
+        Mockito.verify(assetRepository).save(any(AssetEntity.class));
+    }
+
+    /**
+     *  create-exception
+     */
+    @Test
+    public void givenAssetCreateRequest_whenAssetByNameAlreadyExists_thenThrowAssetAlreadyExistsException() {
+
+        //Given
+        AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
+        assetCreateRequest.setName("testAsset");
+
+        //When
+        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName())).thenReturn(true);
+
+        //Then
+        Assertions.assertThrows(AssetAlreadyExistsException.class, () -> assetService.create(assetCreateRequest));
+
+        //Verify
+        Mockito.verify(assetRepository, never()).save(any());
+
+    }
+
+    /**
+     *  update
+     */
     @Test
     public void givenValidAssetIdAndAssetUpdateRequest_whenAssetEntityFoundAccordingToThatId_thenThatAssetEntityUpdate() {
 
@@ -203,6 +267,9 @@ class AssetServiceImplTest extends BaseTest {
 
     }
 
+    /**
+     *  update-exception
+     */
     @Test
     public void givenValidIdAndAssetUpdateRequest_whenAssetEntityNotFoundById_throwsAssetNotFoundException() {
 
@@ -222,50 +289,9 @@ class AssetServiceImplTest extends BaseTest {
 
     }
 
-    @Test
-    public void givenAssetCreateRequest_whenAssetByNameAlreadyExists_thenThrowAssetAlreadyExistsException() {
-
-        //Given
-        AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
-        assetCreateRequest.setName("testAsset");
-
-        //When
-        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName())).thenReturn(true);
-
-        //Then
-        Assertions.assertThrows(AssetAlreadyExistsException.class, () -> assetService.create(assetCreateRequest));
-
-        //Verify
-        Mockito.verify(assetRepository, never()).save(any());
-
-    }
-
-    @Test
-    public void givenValidAssetCreateRequest_whenAssetCreateWithAssetCreateRequest_thenShouldBeSaveAssetEntity() {
-
-        //Given
-        AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
-        assetCreateRequest.setName("testAsset");
-        assetCreateRequest.setPrice(BigDecimal.valueOf(1000));
-        assetCreateRequest.setIsDefault(true);
-
-        //When
-        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName())).thenReturn(false);
-
-        AssetEntity assetEntity = AssetCreateRequestToEntityMapper.INSTANCE.map(assetCreateRequest);
-        Mockito.when(assetRepository.save(assetEntity)).thenReturn(null);
-
-        assetService.create(assetCreateRequest);
-
-        //Then
-        Assertions.assertNotNull(assetEntity);
-        Assertions.assertEquals(assetCreateRequest.getName(), assetEntity.getName());
-
-        //Verify
-        Mockito.verify(assetRepository).existsByName(assetCreateRequest.getName());
-        Mockito.verify(assetRepository).save(any(AssetEntity.class));
-    }
-
+    /**
+     *  delete
+     */
     @Test
     public void givenValidId_whenAssetEntityFoundById_thenDeleteAssetEntity() {
 
@@ -294,6 +320,9 @@ class AssetServiceImplTest extends BaseTest {
 
     }
 
+    /**
+     *  delete-exception
+     */
     @Test
     public void givenValidId_whenAssetEntityNotFoundById_thenThrowAssetNotFoundException() {
 
