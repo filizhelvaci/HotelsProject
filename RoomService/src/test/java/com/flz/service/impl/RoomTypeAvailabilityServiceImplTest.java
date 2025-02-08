@@ -7,23 +7,18 @@ import com.flz.model.enums.RoomStatus;
 import com.flz.model.response.RoomTypeAvailabilityResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.repository.RoomTypeRepository;
+import com.flz.service.impl.com.flz.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
-class RoomTypeAvailabilityServiceImplTest {
+class RoomTypeAvailabilityServiceImplTest extends BaseTest {
 
     @Mock
     RoomRepository roomRepository;
