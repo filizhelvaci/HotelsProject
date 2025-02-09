@@ -1,5 +1,6 @@
 package com.flz.service.impl;
 
+import com.flz.exception.RoomTypeAlreadyExistsException;
 import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.entity.RoomTypeEntity;
@@ -239,7 +240,7 @@ class RoomTypeServiceImplTest extends BaseTest {
      * create
      */
     @Test
-    public void givenAssetCreateRequest_whenAssetByNameIsNotInTheDatabase_thenCreateAndSaveAssetEntity() {
+    public void givenRoomTypeCreateRequest_whenRoomTypeByNameIsNotInTheDatabase_thenCreateAndSaveRoomTypeEntity() {
 
         //Given
         List<AssetEntity> mockAssetList = List.of(
@@ -295,6 +296,30 @@ class RoomTypeServiceImplTest extends BaseTest {
 /**
  *  create - exception
  */
+@Test
+public void givenRoomTypeCreateRequest_whenRoomTypeByNameAlreadyExists_thenThrowRoomTypeAlreadyExistsException() {
+
+    //Given
+    RoomTypeCreateRequest roomTypeCreateRequest = new RoomTypeCreateRequest();
+    roomTypeCreateRequest.setName("testNewRoomType");
+
+    //When
+    Mockito.when(roomTypeRepository.existsByName(roomTypeCreateRequest.getName()))
+            .thenReturn(true);
+
+    //Then
+    Assertions.assertThrows(RoomTypeAlreadyExistsException.class,
+            () -> roomTypeService.create(roomTypeCreateRequest));
+
+    //Verify
+    Mockito.verify(roomTypeRepository, Mockito.times(1))
+            .existsByName(roomTypeCreateRequest.getName());
+    Mockito.verify(roomTypeRepository, Mockito.never())
+            .save(any());
+
+}
+
+
 
 /**
  *  update
