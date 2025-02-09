@@ -32,8 +32,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-
 class RoomTypeServiceImplTest extends BaseTest {
 
     @Mock
@@ -219,7 +217,7 @@ class RoomTypeServiceImplTest extends BaseTest {
         );
         Page<RoomTypeEntity> mockRoomTypePageEntities = new PageImpl<>(mockRoomTypeEntities);
 
-        Mockito.when(roomTypeRepository.findAll(any(Specification.class), any(Pageable.class)))
+        Mockito.when(roomTypeRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
                 .thenReturn(mockRoomTypePageEntities);
 
         Page<RoomTypesResponse> mockRoomTypesResponses =
@@ -233,7 +231,7 @@ class RoomTypeServiceImplTest extends BaseTest {
         Assertions.assertNotNull(mockRoomTypesResponses.getContent());
 
         //Verify
-        Mockito.verify(roomTypeRepository).findAll(any(Specification.class), any(Pageable.class));
+        Mockito.verify(roomTypeRepository).findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
 
     }
 
@@ -283,7 +281,7 @@ class RoomTypeServiceImplTest extends BaseTest {
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .existsByName(mockRoomTypeCreateRequest.getName());
         Mockito.verify(roomTypeRepository, Mockito.times(1))
-                .save(any());
+                .save(Mockito.any());
     }
 
     /**
@@ -308,7 +306,7 @@ class RoomTypeServiceImplTest extends BaseTest {
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .existsByName(roomTypeCreateRequest.getName());
         Mockito.verify(roomTypeRepository, Mockito.never())
-                .save(any());
+                .save(Mockito.any());
 
     }
 
@@ -420,9 +418,9 @@ class RoomTypeServiceImplTest extends BaseTest {
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .findById(mockId);
         Mockito.verify(assetService, Mockito.never())
-                .findAllById(any());
+                .findAllById(Mockito.any());
         Mockito.verify(roomTypeRepository, Mockito.never())
-                .save(any());
+                .save(Mockito.any());
     }
 
     /**
