@@ -1,10 +1,12 @@
 package com.flz.service.impl;
 
+import com.flz.exception.RoomNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.entity.RoomEntity;
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.enums.RoomStatus;
 import com.flz.model.mapper.RoomEntityToSummaryResponseMapper;
+import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.service.RoomTypeService;
@@ -17,6 +19,7 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 class RoomServiceImplTest extends BaseTest {
 
@@ -97,14 +100,83 @@ class RoomServiceImplTest extends BaseTest {
     /**
      * findById
      */
+    @Test
+    public void givenValidId_whenRoomEntityFoundAccordingById_thenReturnRoomResponse() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        List<AssetEntity> mockAssets = List.of(
+                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
+                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        );
+        RoomTypeEntity mockRoomTypeEntity1 = RoomTypeEntity.builder()
+                .id(1L)
+                .name("Standart Oda")
+                .price(BigDecimal.valueOf(2000))
+                .size(30)
+                .personCount(2)
+                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
+                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
+                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
+                        "ve WiFi erişimini kapsamaktadır.")
+                .assets(mockAssets)
+                .build();
+        Optional<RoomEntity> mockRoomEntity = Optional.of(RoomEntity.builder()
+                .id(10L)
+                .number(201)
+                .floor(2)
+                .status(RoomStatus.EMPTY)
+                .type(mockRoomTypeEntity1)
+                .build());
+
+        Mockito.when(roomRepository.findById(mockId))
+                .thenReturn(mockRoomEntity);
+        RoomResponse roomResponse = roomService.findById(mockId);
+
+        //Then
+        Assertions.assertNotNull(roomResponse);
+        Assertions.assertEquals(mockRoomEntity.get().getNumber(), roomResponse.getNumber());
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
+
 
     /**
      * findById-Exception
      */
+    @Test
+    public void givenValidId_whenAssetEntityNotFoundById_throwsAssetNotFoundException() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(roomRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(
+                RoomNotFoundException.class,
+                () -> roomService.findById(mockId),
+                "This Room not found ID = " + mockId);
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
 
     /**
      * findAll
      */
+
 
     /**
      * create
