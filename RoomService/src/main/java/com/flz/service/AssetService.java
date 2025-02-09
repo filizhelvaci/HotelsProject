@@ -6,14 +6,14 @@ import com.flz.model.response.AssetResponse;
 import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface AssetService {
 
-    Page<AssetsResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, Pageable pageable);
+    Page<AssetsResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, int page, int size, String property, Sort.Direction direction);
 
     List<AssetsSummaryResponse> findSummaryAll();
 

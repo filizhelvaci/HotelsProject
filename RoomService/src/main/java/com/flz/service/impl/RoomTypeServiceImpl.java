@@ -30,6 +30,12 @@ import java.util.List;
 @RequiredArgsConstructor
 class RoomTypeServiceImpl implements RoomTypeService {
 
+    private final RoomTypeEntityToSummaryResponseMapper roomTypeEntityToSummaryResponseMapper = RoomTypeEntityToSummaryResponseMapper.INSTANCE;
+    private final RoomTypeEntityToPageResponseMapper roomTypeEntityToPageResponseMapper = RoomTypeEntityToPageResponseMapper.INSTANCE;
+    private final RoomTypeCreateRequestToEntityMapper roomTypeCreateRequestToEntityMapper = RoomTypeCreateRequestToEntityMapper.INSTANCE;
+    private final RoomTypeEntityToResponseMapper roomTypeEntityToResponseMapper = RoomTypeEntityToResponseMapper.INSTANCE;
+    private final AssetResponseToEntityMapper assetResponseToEntityMapper = AssetResponseToEntityMapper.INSTANCE;
+
     private final RoomTypeRepository roomTypeRepository;
     private final AssetService assetService;
 
@@ -38,7 +44,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
     public List<RoomTypesSummaryResponse> findSummaryAll() {
 
         List<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll();
-        return RoomTypeEntityToSummaryResponseMapper.INSTANCE.map(roomTypeEntities);
+        return roomTypeEntityToSummaryResponseMapper.map(roomTypeEntities);
 
     }
 
@@ -47,7 +53,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
         RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new RoomTypeNotFoundException(id));
-        return RoomTypeEntityToResponseMapper.INSTANCE.map(roomTypeEntity);
+        return roomTypeEntityToResponseMapper.map(roomTypeEntity);
 
     }
 
@@ -58,7 +64,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
 
         Page<RoomTypeEntity> roomTypeEntities = roomTypeRepository.findAll(spec, pageable);
 
-        return RoomTypeEntityToPageResponseMapper.INSTANCE.map(roomTypeEntities);
+        return roomTypeEntityToPageResponseMapper.map(roomTypeEntities);
     }
 
     @Override
@@ -69,9 +75,9 @@ class RoomTypeServiceImpl implements RoomTypeService {
             throw new RoomTypeAlreadyExistsException(roomTypeCreateRequest.getName());
         }
 
-        RoomTypeEntity roomTypeEntity = RoomTypeCreateRequestToEntityMapper.INSTANCE.map(roomTypeCreateRequest);
+        RoomTypeEntity roomTypeEntity = roomTypeCreateRequestToEntityMapper.map(roomTypeCreateRequest);
         List<AssetResponse> assets = assetService.findAllById(roomTypeCreateRequest.getAssetIds());
-        roomTypeEntity.setAssets(AssetResponseToEntityMapper.INSTANCE.map(assets));
+        roomTypeEntity.setAssets(assetResponseToEntityMapper.map(assets));
         roomTypeRepository.save(roomTypeEntity);
 
     }
@@ -82,7 +88,7 @@ class RoomTypeServiceImpl implements RoomTypeService {
         RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new RoomTypeNotFoundException(id));
         List<AssetResponse> assets = assetService.findAllById(roomTypeUpdateRequest.getAssetIds());
-        roomTypeEntity.setAssets(AssetResponseToEntityMapper.INSTANCE.map(assets));
+        roomTypeEntity.setAssets(assetResponseToEntityMapper.map(assets));
 
         roomTypeEntity.update(roomTypeUpdateRequest.getName(),
                 roomTypeUpdateRequest.getPrice(),

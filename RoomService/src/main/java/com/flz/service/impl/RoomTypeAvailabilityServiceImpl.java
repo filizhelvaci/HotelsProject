@@ -18,6 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 class RoomTypeAvailabilityServiceImpl implements RoomTypeAvailabilityService {
 
+    RoomTypeEntityToAvailabilityResponseMapper roomTypeEntityToAvailabilityResponseMapper = RoomTypeEntityToAvailabilityResponseMapper.INSTANCE;
+
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
 
@@ -45,7 +47,7 @@ class RoomTypeAvailabilityServiceImpl implements RoomTypeAvailabilityService {
                 isAvailable = true;
             }
 
-            RoomTypeAvailabilityResponse response = RoomTypeEntityToAvailabilityResponseMapper.INSTANCE.map(roomType);
+            RoomTypeAvailabilityResponse response = roomTypeEntityToAvailabilityResponseMapper.map(roomType);
             response.setIsAvailability(isAvailable);
             roomTypeAvailabilityResponses.add(response);
         }

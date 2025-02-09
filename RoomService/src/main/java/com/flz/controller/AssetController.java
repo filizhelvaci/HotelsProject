@@ -11,8 +11,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,8 +42,7 @@ class AssetController {
                                                        @RequestParam String property,
                                                        @RequestParam Sort.Direction direction) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
-        Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, isDefault, pageable);
+        Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, isDefault, page, size, property, direction);
         return HotelResponse.successOf(assetsResponses);
     }
 

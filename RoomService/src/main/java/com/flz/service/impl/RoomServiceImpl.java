@@ -30,6 +30,12 @@ import java.util.List;
 @RequiredArgsConstructor
 class RoomServiceImpl implements RoomService {
 
+    private final RoomEntityToResponseMapper roomEntityToResponseMapper = RoomEntityToResponseMapper.INSTANCE;
+    private final RoomEntityToSummaryResponseMapper roomEntityToSummaryResponseMapper = RoomEntityToSummaryResponseMapper.INSTANCE;
+    private final RoomCreateRequestToEntityMapper roomCreateRequestToEntityMapper = RoomCreateRequestToEntityMapper.INSTANCE;
+    private final RoomEntityToPageResponseMapper roomEntityToPageResponseMapper = RoomEntityToPageResponseMapper.INSTANCE;
+    private final RoomTypeResponseToEntityMapper roomTypeResponseToEntityMapper = RoomTypeResponseToEntityMapper.INSTANCE;
+
     private final RoomRepository roomRepository;
     private final RoomTypeService roomTypeService;
 
@@ -37,7 +43,7 @@ class RoomServiceImpl implements RoomService {
     public List<RoomsSummaryResponse> findSummaryAll() {
 
         List<RoomEntity> roomEntities = roomRepository.findAll();
-        return RoomEntityToSummaryResponseMapper.INSTANCE.map(roomEntities);
+        return roomEntityToSummaryResponseMapper.map(roomEntities);
 
     }
 
@@ -46,7 +52,7 @@ class RoomServiceImpl implements RoomService {
 
         RoomEntity roomEntity = roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException(id));
-        return RoomEntityToResponseMapper.INSTANCE.map(roomEntity);
+        return roomEntityToResponseMapper.map(roomEntity);
 
     }
 
@@ -57,7 +63,7 @@ class RoomServiceImpl implements RoomService {
 
         Page<RoomEntity> roomEntities = roomRepository.findAll(spec, pageable);
 
-        return RoomEntityToPageResponseMapper.INSTANCE.map(roomEntities);
+        return roomEntityToPageResponseMapper.map(roomEntities);
     }
 
 
@@ -68,10 +74,10 @@ class RoomServiceImpl implements RoomService {
         if (existsByNumber) {
             throw new RoomAlreadyExistsException(roomCreateRequest.getNumber().toString());
         }
-        RoomEntity roomEntity = RoomCreateRequestToEntityMapper.INSTANCE.map(roomCreateRequest);
+        RoomEntity roomEntity = roomCreateRequestToEntityMapper.map(roomCreateRequest);
 
         RoomTypeResponse roomTypeResponse = roomTypeService.findById(roomCreateRequest.getRoomTypeId());
-        roomEntity.setType(RoomTypeResponseToEntityMapper.INSTANCE.map(roomTypeResponse));
+        roomEntity.setType(roomTypeResponseToEntityMapper.map(roomTypeResponse));
         roomRepository.save(roomEntity);
 
     }
@@ -83,7 +89,7 @@ class RoomServiceImpl implements RoomService {
                 .orElseThrow(() -> new RoomNotFoundException(id));
 
         RoomTypeResponse roomTypeResponse = roomTypeService.findById(roomUpdateRequest.getRoomTypeId());
-        roomEntity.setType(RoomTypeResponseToEntityMapper.INSTANCE.map(roomTypeResponse));
+        roomEntity.setType(roomTypeResponseToEntityMapper.map(roomTypeResponse));
 
         roomEntity.update(
                 roomUpdateRequest.getNumber(),

@@ -16,7 +16,9 @@ import com.flz.repository.AssetRepository;
 import com.flz.service.AssetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +29,18 @@ import java.util.List;
 @RequiredArgsConstructor
 class AssetServiceImpl implements AssetService {
 
+    private final AssetEntityToResponseMapper assetEntityToResponseMapper = AssetEntityToResponseMapper.INSTANCE;
+    private final AssetEntityToSummaryResponseMapper assetEntityToSummaryResponseMapper = AssetEntityToSummaryResponseMapper.INSTANCE;
+    private final AssetCreateRequestToEntityMapper assetCreateRequestToEntityMapper = AssetCreateRequestToEntityMapper.INSTANCE;
+    private final AssetEntityToPageResponseMapper assetEntityToPageResponseMapper = AssetEntityToPageResponseMapper.INSTANCE;
+
     private final AssetRepository assetRepository;
 
     @Override
     public List<AssetsSummaryResponse> findSummaryAll() {
 
         List<AssetEntity> assetEntities = assetRepository.findAll();
-        return AssetEntityToSummaryResponseMapper.INSTANCE.map(assetEntities);
+        return assetEntityToSummaryResponseMapper.map(assetEntities);
 
     }
 
@@ -41,7 +48,7 @@ class AssetServiceImpl implements AssetService {
     public List<AssetResponse> findAllById(List<Long> ids) {
 
         List<AssetEntity> assetEntities = assetRepository.findAllById(ids);
-        return AssetEntityToResponseMapper.INSTANCE.map(assetEntities);
+        return assetEntityToResponseMapper.map(assetEntities);
 
     }
 
@@ -50,18 +57,20 @@ class AssetServiceImpl implements AssetService {
 
         AssetEntity assetEntity = assetRepository.findById(id)
                 .orElseThrow(() -> new AssetNotFoundException(id));
-        return AssetEntityToResponseMapper.INSTANCE.map(assetEntity);
+        return assetEntityToResponseMapper.map(assetEntity);
 
     }
 
     @Override
-    public Page<AssetsResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, Pageable pageable) {
+    public Page<AssetsResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, int page, int size, String property, Sort.Direction direction) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
 
         Specification<AssetEntity> spec = AssetEntity.generateSpecification(name, minPrice, maxPrice, isDefault);
 
         Page<AssetEntity> assetEntities = assetRepository.findAll(spec, pageable);
 
-        return AssetEntityToPageResponseMapper.INSTANCE.map(assetEntities);
+        return assetEntityToPageResponseMapper.map(assetEntities);
     }
 
     @Override
@@ -71,7 +80,7 @@ class AssetServiceImpl implements AssetService {
         if (existsByName) {
             throw new AssetAlreadyExistsException(assetCreateRequest.getName());
         }
-        AssetEntity assetEntity = AssetCreateRequestToEntityMapper.INSTANCE.map(assetCreateRequest);
+        AssetEntity assetEntity = assetCreateRequestToEntityMapper.map(assetCreateRequest);
         assetRepository.save(assetEntity);
 
     }
