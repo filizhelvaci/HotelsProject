@@ -4,11 +4,13 @@ import com.flz.exception.AssetAlreadyExistsException;
 import com.flz.exception.AssetNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.mapper.AssetCreateRequestToEntityMapper;
+import com.flz.model.mapper.AssetEntityToPageResponseMapper;
 import com.flz.model.mapper.AssetEntityToResponseMapper;
 import com.flz.model.mapper.AssetEntityToSummaryResponseMapper;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
+import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.repository.AssetRepository;
 import com.flz.service.impl.com.flz.BaseTest;
@@ -17,6 +19,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -174,6 +181,62 @@ class AssetServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(assetRepository, Mockito.times(1))
                 .findById(mockId);
+
+    }
+
+    /**
+     * findAll
+     */
+    @Test
+    public void givenFilterParameters_whenAssetEntityFoundByFilterParameters_thenReturnAssetsResponseList() {
+
+        //Given
+        String name = "test";
+        BigDecimal minPrice = BigDecimal.valueOf(100);
+        BigDecimal maxPrice = BigDecimal.valueOf(2000);
+        Boolean isDefault = true;
+        int page = 0;
+        int size = 5;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        List<AssetEntity> assetEntities = List.of(
+                AssetEntity.builder()
+                        .id(10L)
+                        .name("test Asset1")
+                        .price(BigDecimal.valueOf(1100))
+                        .isDefault(true)
+                        .build(),
+                AssetEntity.builder()
+                        .id(11L)
+                        .name("test Asset2")
+                        .price(BigDecimal.valueOf(1200))
+                        .isDefault(true)
+                        .build(),
+                AssetEntity.builder()
+                        .id(12L)
+                        .name("test Asset3")
+                        .price(BigDecimal.valueOf(1300))
+                        .isDefault(true)
+                        .build()
+        );
+
+        Page<AssetEntity> assetPageEntities = new PageImpl<>(assetEntities);
+
+        Mockito.when(assetRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(assetPageEntities);
+
+        Page<AssetsResponse> mockAssetsResponses = AssetEntityToPageResponseMapper.INSTANCE.map(assetPageEntities);
+
+        Page<AssetsResponse> result = assetService.findAll(name, minPrice, maxPrice, isDefault, page, size, property, direction);
+
+        //Then
+        Assertions.assertNotNull(assetPageEntities);
+        Assertions.assertNotNull(mockAssetsResponses);
+        Assertions.assertEquals(result, mockAssetsResponses);
+
+        //Verify
+        Mockito.verify(assetRepository).findAll(any(Specification.class), any(Pageable.class));
 
     }
 
