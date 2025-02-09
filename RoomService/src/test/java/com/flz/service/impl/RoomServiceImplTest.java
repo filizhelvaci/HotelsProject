@@ -1,5 +1,6 @@
 package com.flz.service.impl;
 
+import com.flz.exception.RoomAlreadyExistsException;
 import com.flz.exception.RoomNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.entity.RoomEntity;
@@ -301,6 +302,28 @@ class RoomServiceImplTest extends BaseTest {
     /**
      * create-exception
      */
+    @Test
+    public void givenRoomCreateRequest_whenRoomByNumberAlreadyExists_thenThrowRoomAlreadyExistsException() {
+
+        //Given
+        RoomCreateRequest mockRoomCreateRequest = new RoomCreateRequest();
+        mockRoomCreateRequest.setNumber(205);
+
+        //When
+        Mockito.when(roomRepository.existsByNumber(mockRoomCreateRequest.getNumber()))
+                .thenReturn(true);
+
+        //Then
+        Assertions.assertThrows(RoomAlreadyExistsException.class,
+                () -> roomService.create(mockRoomCreateRequest));
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .existsByNumber(mockRoomCreateRequest.getNumber());
+        Mockito.verify(roomRepository, Mockito.never())
+                .save(Mockito.any());
+
+    }
 
     /**
      * update
