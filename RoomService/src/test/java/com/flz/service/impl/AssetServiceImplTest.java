@@ -70,7 +70,8 @@ class AssetServiceImplTest extends BaseTest {
 
         Mockito.when(assetRepository.findAll())
                 .thenReturn(assetEntities);
-        List<AssetsSummaryResponse> assetsSummaryResponses = AssetEntityToSummaryResponseMapper.INSTANCE.map(assetEntities);
+        List<AssetsSummaryResponse> assetsSummaryResponses =
+                AssetEntityToSummaryResponseMapper.INSTANCE.map(assetEntities);
         List<AssetsSummaryResponse> result = assetService.findSummaryAll();
 
         //Then
@@ -115,7 +116,8 @@ class AssetServiceImplTest extends BaseTest {
         Mockito.when(assetRepository.findAllById(mockIds))
                 .thenReturn(mockAssetEntities);
 
-        List<AssetResponse> mockAssetResponses = AssetEntityToResponseMapper.INSTANCE.map(mockAssetEntities);
+        List<AssetResponse> mockAssetResponses =
+                AssetEntityToResponseMapper.INSTANCE.map(mockAssetEntities);
         List<AssetResponse> assetResponses = assetService.findAllById(mockIds);
 
         //Then
@@ -201,7 +203,7 @@ class AssetServiceImplTest extends BaseTest {
         Sort.Direction direction = Sort.Direction.ASC;
 
         //When
-        List<AssetEntity> assetEntities = List.of(
+        List<AssetEntity> mockAssetEntities = List.of(
                 AssetEntity.builder()
                         .id(10L)
                         .name("test Asset1")
@@ -222,16 +224,19 @@ class AssetServiceImplTest extends BaseTest {
                         .build()
         );
 
-        Page<AssetEntity> assetPageEntities = new PageImpl<>(assetEntities);
+        Page<AssetEntity> mockAssetPageEntities = new PageImpl<>(mockAssetEntities);
 
-        Mockito.when(assetRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(assetPageEntities);
+        Mockito.when(assetRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(mockAssetPageEntities);
 
-        Page<AssetsResponse> mockAssetsResponses = AssetEntityToPageResponseMapper.INSTANCE.map(assetPageEntities);
+        Page<AssetsResponse> mockAssetsResponses =
+                AssetEntityToPageResponseMapper.INSTANCE.map(mockAssetPageEntities);
 
-        Page<AssetsResponse> result = assetService.findAll(name, minPrice, maxPrice, isDefault, page, size, property, direction);
+        Page<AssetsResponse> result = assetService
+                .findAll(name, minPrice, maxPrice, isDefault, page, size, property, direction);
 
         //Then
-        Assertions.assertNotNull(assetPageEntities);
+        Assertions.assertNotNull(mockAssetPageEntities);
         Assertions.assertNotNull(mockAssetsResponses);
         Assertions.assertEquals(result, mockAssetsResponses);
 
@@ -247,29 +252,30 @@ class AssetServiceImplTest extends BaseTest {
     public void givenAssetCreateRequest_whenAssetByNameIsNotInTheDatabase_thenCreateAndSaveAssetEntity() {
 
         //Given
-        AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
-        assetCreateRequest.setName("testAsset");
-        assetCreateRequest.setPrice(BigDecimal.valueOf(1000));
-        assetCreateRequest.setIsDefault(true);
+        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
+        mockAssetCreateRequest.setName("testAsset");
+        mockAssetCreateRequest.setPrice(BigDecimal.valueOf(1000));
+        mockAssetCreateRequest.setIsDefault(true);
 
         //When
-        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName()))
+        Mockito.when(assetRepository.existsByName(mockAssetCreateRequest.getName()))
                 .thenReturn(false);
 
-        AssetEntity mockAssetEntity = AssetCreateRequestToEntityMapper.INSTANCE.map(assetCreateRequest);
+        AssetEntity mockAssetEntity =
+                AssetCreateRequestToEntityMapper.INSTANCE.map(mockAssetCreateRequest);
 
         Mockito.when(assetRepository.save(mockAssetEntity))
                 .thenReturn(mockAssetEntity);
 
-        assetService.create(assetCreateRequest);
+        assetService.create(mockAssetCreateRequest);
 
         //Then
         Assertions.assertNotNull(mockAssetEntity);
-        Assertions.assertEquals(assetCreateRequest.getName(), mockAssetEntity.getName());
+        Assertions.assertEquals(mockAssetCreateRequest.getName(), mockAssetEntity.getName());
 
         //Verify
         Mockito.verify(assetRepository, Mockito.times(1))
-                .existsByName(assetCreateRequest.getName());
+                .existsByName(mockAssetCreateRequest.getName());
         Mockito.verify(assetRepository, Mockito.times(1))
                 .save(any());
     }
@@ -281,20 +287,20 @@ class AssetServiceImplTest extends BaseTest {
     public void givenAssetCreateRequest_whenAssetByNameAlreadyExists_thenThrowAssetAlreadyExistsException() {
 
         //Given
-        AssetCreateRequest assetCreateRequest = new AssetCreateRequest();
-        assetCreateRequest.setName("testAsset");
+        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
+        mockAssetCreateRequest.setName("testAsset");
 
         //When
-        Mockito.when(assetRepository.existsByName(assetCreateRequest.getName()))
+        Mockito.when(assetRepository.existsByName(mockAssetCreateRequest.getName()))
                 .thenReturn(true);
 
         //Then
         Assertions.assertThrows(AssetAlreadyExistsException.class,
-                () -> assetService.create(assetCreateRequest));
+                () -> assetService.create(mockAssetCreateRequest));
 
         //Verify
         Mockito.verify(assetRepository, Mockito.times(1))
-                .existsByName(assetCreateRequest.getName());
+                .existsByName(mockAssetCreateRequest.getName());
         Mockito.verify(assetRepository, Mockito.never())
                 .save(any());
 
@@ -386,7 +392,7 @@ class AssetServiceImplTest extends BaseTest {
         //Given
         Long mockId = 10L;
 
-        AssetEntity assetEntity = AssetEntity.builder()
+        AssetEntity mockAssetEntity = AssetEntity.builder()
                 .id(mockId)
                 .name("testAsset")
                 .price(BigDecimal.valueOf(1000))
@@ -403,8 +409,8 @@ class AssetServiceImplTest extends BaseTest {
         assetService.delete(mockId);
 
         //Then
-        Assertions.assertNotNull(assetEntity);
-        Assertions.assertEquals(mockId, assetEntity.getId());
+        Assertions.assertNotNull(mockAssetEntity);
+        Assertions.assertEquals(mockId, mockAssetEntity.getId());
 
         //Verify
         Mockito.verify(assetRepository, Mockito.times(1))

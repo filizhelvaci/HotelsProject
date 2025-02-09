@@ -19,7 +19,9 @@ import com.flz.service.AssetService;
 import com.flz.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +60,9 @@ class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public Page<RoomTypesResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Integer personCount, Integer size, Pageable pageable) {
+    public Page<RoomTypesResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Integer personCount, Integer size, int page, int pageSize, String property, Sort.Direction direction) {
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Order.by(property).with(direction)));
 
         Specification<RoomTypeEntity> spec = RoomTypeEntity.generateSpecification(name, minPrice, maxPrice, personCount, size);
 
