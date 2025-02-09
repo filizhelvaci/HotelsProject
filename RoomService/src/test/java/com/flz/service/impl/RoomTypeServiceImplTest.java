@@ -424,10 +424,56 @@ class RoomTypeServiceImplTest extends BaseTest {
         Mockito.verify(roomTypeRepository, Mockito.never())
                 .save(any());
     }
-/**
- *  delete
- */
 
+    /**
+     * delete
+     */
+    @Test
+    public void givenValidId_whenRoomTypeEntityFoundById_thenDeleteRoomTypeEntity() {
+
+        //Given
+        Long mockId = 10L;
+
+        List<AssetEntity> mockAssets = List.of(
+                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
+                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        );
+
+        RoomTypeEntity mockRoomTypeEntity = RoomTypeEntity.builder()
+                .id(1L)
+                .name("Standart Oda")
+                .price(BigDecimal.valueOf(2000))
+                .size(30)
+                .personCount(2)
+                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
+                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
+                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
+                        "ve WiFi erişimini kapsamaktadır.")
+                .assets(mockAssets)
+                .build();
+
+        //When
+        Mockito.when(roomTypeRepository.existsById(mockId))
+                .thenReturn(true);
+
+        Mockito.doNothing().when(roomTypeRepository)
+                .deleteById(mockId);
+
+        roomTypeService.delete(mockId);
+
+        //Then
+        Assertions.assertNotNull(mockRoomTypeEntity);
+        Assertions.assertEquals(mockId, mockRoomTypeEntity.getId());
+
+        //Verify
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .existsById(mockId);
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .deleteById(mockId);
+
+    }
 /**
  *  delete - exception
  */
