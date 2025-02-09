@@ -9,6 +9,7 @@ import com.flz.model.mapper.RoomTypeCreateRequestToEntityMapper;
 import com.flz.model.mapper.RoomTypeEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomTypeEntityToSummaryResponseMapper;
 import com.flz.model.request.RoomTypeCreateRequest;
+import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.AssetResponse;
 import com.flz.model.response.RoomTypeResponse;
 import com.flz.model.response.RoomTypesResponse;
@@ -243,13 +244,6 @@ class RoomTypeServiceImplTest extends BaseTest {
     public void givenRoomTypeCreateRequest_whenRoomTypeByNameIsNotInTheDatabase_thenCreateAndSaveRoomTypeEntity() {
 
         //Given
-        List<AssetEntity> mockAssetList = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
-
         RoomTypeCreateRequest mockRoomTypeCreateRequest = new RoomTypeCreateRequest();
         mockRoomTypeCreateRequest.setName("testNewRoomType");
         mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
@@ -259,7 +253,6 @@ class RoomTypeServiceImplTest extends BaseTest {
         mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 2L, 3L, 4L));
 
         //When
-
         List<AssetResponse> mockAssetsResponse = List.of(
                 AssetResponse.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
                 AssetResponse.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
@@ -293,37 +286,111 @@ class RoomTypeServiceImplTest extends BaseTest {
                 .save(any());
     }
 
-/**
- *  create - exception
- */
-@Test
-public void givenRoomTypeCreateRequest_whenRoomTypeByNameAlreadyExists_thenThrowRoomTypeAlreadyExistsException() {
+    /**
+     * create - exception
+     */
+    @Test
+    public void givenRoomTypeCreateRequest_whenRoomTypeByNameAlreadyExists_thenThrowRoomTypeAlreadyExistsException() {
 
-    //Given
-    RoomTypeCreateRequest roomTypeCreateRequest = new RoomTypeCreateRequest();
-    roomTypeCreateRequest.setName("testNewRoomType");
+        //Given
+        RoomTypeCreateRequest roomTypeCreateRequest = new RoomTypeCreateRequest();
+        roomTypeCreateRequest.setName("testNewRoomType");
 
-    //When
-    Mockito.when(roomTypeRepository.existsByName(roomTypeCreateRequest.getName()))
-            .thenReturn(true);
+        //When
+        Mockito.when(roomTypeRepository.existsByName(roomTypeCreateRequest.getName()))
+                .thenReturn(true);
 
-    //Then
-    Assertions.assertThrows(RoomTypeAlreadyExistsException.class,
-            () -> roomTypeService.create(roomTypeCreateRequest));
+        //Then
+        Assertions.assertThrows(RoomTypeAlreadyExistsException.class,
+                () -> roomTypeService.create(roomTypeCreateRequest));
 
-    //Verify
-    Mockito.verify(roomTypeRepository, Mockito.times(1))
-            .existsByName(roomTypeCreateRequest.getName());
-    Mockito.verify(roomTypeRepository, Mockito.never())
-            .save(any());
+        //Verify
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .existsByName(roomTypeCreateRequest.getName());
+        Mockito.verify(roomTypeRepository, Mockito.never())
+                .save(any());
 
-}
+    }
 
 
+    /**
+     * update
+     */
 
-/**
- *  update
- */
+    @Test
+    public void givenValidRoomTypeIdAndRoomTypeUpdateRequest_whenRoomTypeEntityFoundById_thenThatRoomTypeEntityUpdate() {
+
+        //Given
+        Long mockId = 1L;
+
+        List<AssetResponse> mockAssetsResponse = List.of(
+                AssetResponse.builder().id(5L).name("Nevresim Seti").price(BigDecimal.valueOf(10)).isDefault(false).build(),
+                AssetResponse.builder().id(6L).name("65 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetResponse.builder().id(7L).name("Kahvaltı Seti").price(BigDecimal.valueOf(250)).isDefault(false).build(),
+                AssetResponse.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        );
+
+        RoomTypeUpdateRequest mockRoomTypeUpdateRequest = new RoomTypeUpdateRequest();
+        mockRoomTypeUpdateRequest.setName("update Room Type Name");
+        mockRoomTypeUpdateRequest.setPrice(BigDecimal.valueOf(5000));
+        mockRoomTypeUpdateRequest.setPersonCount(10);
+        mockRoomTypeUpdateRequest.setSize(140);
+        mockRoomTypeUpdateRequest.setDescription("update Room Type Description");
+        mockRoomTypeUpdateRequest.setAssetIds(List.of(5L, 6L, 7L, 4L));
+
+        //When
+        List<AssetEntity> mockAssets = List.of(
+                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
+                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        );
+
+        RoomTypeEntity mockRoomTypeEntity = RoomTypeEntity.builder()
+                .id(1L)
+                .name("Standart Oda")
+                .price(BigDecimal.valueOf(2000))
+                .size(30)
+                .personCount(2)
+                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
+                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
+                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
+                        "ve WiFi erişimini kapsamaktadır.")
+                .assets(mockAssets)
+                .build();
+
+        Mockito.when(roomTypeRepository.findById(mockId))
+                .thenReturn(Optional.of(mockRoomTypeEntity));
+
+        Mockito.when(assetService.findAllById(mockRoomTypeUpdateRequest.getAssetIds()))
+                .thenReturn(mockAssetsResponse);
+
+        mockRoomTypeEntity.setAssets(AssetResponseToEntityMapper.INSTANCE.map(mockAssetsResponse));
+
+        mockRoomTypeEntity.update(
+                mockRoomTypeUpdateRequest.getName(),
+                mockRoomTypeUpdateRequest.getPrice(),
+                mockRoomTypeUpdateRequest.getPersonCount(),
+                mockRoomTypeUpdateRequest.getSize(),
+                mockRoomTypeUpdateRequest.getDescription()
+        );
+
+        Mockito.when(roomTypeRepository.save(mockRoomTypeEntity))
+                .thenReturn(mockRoomTypeEntity);
+
+        roomTypeService.update(mockId, mockRoomTypeUpdateRequest);
+
+        //Then
+        Assertions.assertNotNull(mockRoomTypeEntity);
+
+        //Verify
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(assetService, Mockito.times(1))
+                .findAllById(mockRoomTypeUpdateRequest.getAssetIds());
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .save(mockRoomTypeEntity);
+    }
 
 /**
  *  update - exception
