@@ -442,7 +442,7 @@ class RoomTypeServiceImplTest extends BaseTest {
         );
 
         RoomTypeEntity mockRoomTypeEntity = RoomTypeEntity.builder()
-                .id(1L)
+                .id(10L)
                 .name("Standart Oda")
                 .price(BigDecimal.valueOf(2000))
                 .size(30)
@@ -474,8 +474,29 @@ class RoomTypeServiceImplTest extends BaseTest {
                 .deleteById(mockId);
 
     }
-/**
- *  delete - exception
- */
+
+    /**
+     * delete - exception
+     */
+    @Test
+    public void givenValidId_whenRoomTypeEntityNotFoundById_thenReturnThrowRoomTypeNotFoundException() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(roomTypeRepository.existsById(mockId))
+                .thenReturn(false);
+
+        //Then
+        Assertions.assertThrows(RoomTypeNotFoundException.class,
+                () -> roomTypeService.delete(mockId));
+
+        //Verify
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .existsById(mockId);
+        Mockito.verify(roomTypeRepository, Mockito.never())
+                .deleteById(mockId);
+    }
 
 }
