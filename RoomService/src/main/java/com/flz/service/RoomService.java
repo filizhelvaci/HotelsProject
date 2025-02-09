@@ -7,13 +7,13 @@ import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 public interface RoomService {
 
-    Page<RoomsResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable);
+    Page<RoomsResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, int page, int size, String property, Sort.Direction direction);
 
     List<RoomsSummaryResponse> findSummaryAll();
 
