@@ -5,8 +5,12 @@ import com.flz.model.entity.AssetEntity;
 import com.flz.model.entity.RoomEntity;
 import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.enums.RoomStatus;
+import com.flz.model.mapper.RoomCreateRequestToEntityMapper;
+import com.flz.model.mapper.RoomEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomEntityToSummaryResponseMapper;
+import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.response.RoomResponse;
+import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.service.RoomTypeService;
@@ -16,6 +20,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -176,11 +185,118 @@ class RoomServiceImplTest extends BaseTest {
     /**
      * findAll
      */
+    @Test
+    public void givenFilterParameters_whenRoomEntityFoundByFilterParameters_thenReturnRoomsResponseList() {
 
+        //Given
+        Integer number = 102;
+        Integer floor = 2;
+        RoomStatus status = RoomStatus.EMPTY;
+        Long typeId = 10L;
+        int page = 0;
+        int size = 5;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        List<AssetEntity> mockAssets = List.of(
+                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
+                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        );
+        RoomTypeEntity mockRoomTypeEntity1 = RoomTypeEntity.builder()
+                .id(1L)
+                .name("Standart Oda")
+                .price(BigDecimal.valueOf(2000))
+                .size(30)
+                .personCount(2)
+                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
+                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
+                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
+                        "ve WiFi erişimini kapsamaktadır.")
+                .assets(mockAssets)
+                .build();
+
+        List<RoomEntity> mockRoomEntities = List.of(
+                RoomEntity.builder()
+                        .id(10L)
+                        .number(201)
+                        .floor(2)
+                        .status(RoomStatus.EMPTY)
+                        .type(mockRoomTypeEntity1)
+                        .build(),
+                RoomEntity.builder()
+                        .id(10L)
+                        .number(201)
+                        .floor(2)
+                        .status(RoomStatus.EMPTY)
+                        .type(mockRoomTypeEntity1)
+                        .build(),
+                RoomEntity.builder()
+                        .id(10L)
+                        .number(201)
+                        .floor(2)
+                        .status(RoomStatus.EMPTY)
+                        .type(mockRoomTypeEntity1)
+                        .build()
+        );
+        Page<RoomEntity> mockRoomPageEntities = new PageImpl<>(mockRoomEntities);
+
+        Mockito.when(roomRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
+                .thenReturn(mockRoomPageEntities);
+
+        Page<RoomsResponse> mockRoomsResponses =
+                RoomEntityToPageResponseMapper.INSTANCE.map(mockRoomPageEntities);
+
+        Page<RoomsResponse> result = roomService
+                .findAll(number, floor, status, typeId, page, size, property, direction);
+
+        //Then
+        Assertions.assertNotNull(mockRoomPageEntities);
+        Assertions.assertNotNull(mockRoomsResponses);
+        Assertions.assertEquals(3, result.getContent().size());
+
+        //Verify
+        Mockito.verify(roomRepository).findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
+
+    }
 
     /**
      * create
      */
+    @Test
+    public void givenRoomCreateRequest_whenRoomByNameIsNotInTheDatabase_thenCreateAndSaveRoomEntity() {
+
+        //Given
+        RoomCreateRequest mockRoomCreateRequest = new RoomCreateRequest();
+        mockRoomCreateRequest.setNumber(301);
+        mockRoomCreateRequest.setFloor(3);
+        mockRoomCreateRequest.setStatus(RoomStatus.EMPTY);
+        mockRoomCreateRequest.setRoomTypeId(1L);
+
+        //When
+        Mockito.when(roomRepository.existsByNumber(mockRoomCreateRequest.getNumber()))
+                .thenReturn(false);
+
+        RoomEntity mockRoomEntity =
+                RoomCreateRequestToEntityMapper.INSTANCE.map(mockRoomCreateRequest);
+
+        Mockito.when(roomRepository.save(mockRoomEntity))
+                .thenReturn(mockRoomEntity);
+
+        roomService.create(mockRoomCreateRequest);
+
+        //Then
+        Assertions.assertNotNull(mockRoomEntity);
+        Assertions.assertEquals(mockRoomCreateRequest.getNumber(), mockRoomEntity.getNumber());
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .existsByNumber(mockRoomCreateRequest.getNumber());
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .save(Mockito.any());
+    }
 
     /**
      * create-exception
