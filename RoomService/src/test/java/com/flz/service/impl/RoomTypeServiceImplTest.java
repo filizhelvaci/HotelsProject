@@ -316,7 +316,6 @@ class RoomTypeServiceImplTest extends BaseTest {
     /**
      * update
      */
-
     @Test
     public void givenValidRoomTypeIdAndRoomTypeUpdateRequest_whenRoomTypeEntityFoundById_thenThatRoomTypeEntityUpdate() {
 
@@ -392,10 +391,39 @@ class RoomTypeServiceImplTest extends BaseTest {
                 .save(mockRoomTypeEntity);
     }
 
-/**
- *  update - exception
- */
+    /**
+     * update - exception
+     */
+    @Test
+    public void givenValidIdAndRoomTypeUpdateRequest_whenRoomTypeEntityNotFoundById_throwsRoomTypeNotFoundException() {
 
+        //Given
+        Long mockId = 10L;
+
+        RoomTypeUpdateRequest mockRoomTypeUpdateRequest = new RoomTypeUpdateRequest();
+        mockRoomTypeUpdateRequest.setName("update Room Type Name");
+        mockRoomTypeUpdateRequest.setPrice(BigDecimal.valueOf(5000));
+        mockRoomTypeUpdateRequest.setPersonCount(10);
+        mockRoomTypeUpdateRequest.setSize(140);
+        mockRoomTypeUpdateRequest.setDescription("update Room Type Description");
+        mockRoomTypeUpdateRequest.setAssetIds(List.of(5L, 6L, 7L, 4L));
+
+        //When
+        Mockito.when(roomTypeRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(RoomTypeNotFoundException.class,
+                () -> roomTypeService.update(mockId, mockRoomTypeUpdateRequest));
+
+        //Verify
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(assetService, Mockito.never())
+                .findAllById(any());
+        Mockito.verify(roomTypeRepository, Mockito.never())
+                .save(any());
+    }
 /**
  *  delete
  */
