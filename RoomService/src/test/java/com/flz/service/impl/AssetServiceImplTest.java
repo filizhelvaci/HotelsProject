@@ -39,7 +39,7 @@ class AssetServiceImplTest extends BaseTest {
     AssetServiceImpl assetService;
 
     /**
-     * findSummaryAll()
+     * {@link AssetServiceImpl#findSummaryAll()}
      */
     @Test
     public void whenCalledAllSummaryAsset_thenReturnListOfAssetsSummaryResponse() {
@@ -81,7 +81,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * findAllById
+     * {@link AssetServiceImpl#findAllById(List)}
      */
     @Test
     public void givenValidAssetIdList__whenAssetEntitiesFoundAccordingToThatIdList_thenReturnAssetResponseList() {
@@ -129,7 +129,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * findById
+     *  {@link AssetServiceImpl#findById(Long)}
      */
     @Test
     public void givenValidId_whenAssetEntityFoundAccordingById_thenReturnAssetResponse() {
@@ -160,7 +160,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * findById-Exception
+     * {@link AssetServiceImpl#findById}
      */
     @Test
     public void givenValidId_whenAssetEntityNotFoundById_throwsAssetNotFoundException() {
@@ -185,7 +185,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * findAll
+     * {@link AssetServiceImpl#findAll(String, BigDecimal, BigDecimal, Boolean, int, int, String, Sort.Direction)}
      */
     @Test
     public void givenFilterParameters_whenAssetEntityFoundByFilterParameters_thenReturnAssetsResponseList() {
@@ -244,7 +244,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * create
+     *  {@link AssetServiceImpl#create(AssetCreateRequest)}
      */
     @Test
     public void givenAssetCreateRequest_whenAssetByNameIsNotInTheDatabase_thenCreateAndSaveAssetEntity() {
@@ -279,7 +279,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * create-exception
+     * {@link AssetServiceImpl#create(AssetCreateRequest)}
      */
     @Test
     public void givenAssetCreateRequest_whenAssetByNameAlreadyExists_thenThrowAssetAlreadyExistsException() {
@@ -305,7 +305,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * update
+     * {@link AssetServiceImpl#update(Long, AssetUpdateRequest)}
      */
     @Test
     public void givenValidAssetIdAndAssetUpdateRequest_whenAssetEntityFoundById_thenThatAssetEntityUpdate() {
@@ -353,7 +353,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * update-exception
+     * {@link AssetServiceImpl#update(Long, AssetUpdateRequest)}
      */
     @Test
     public void givenValidIdAndAssetUpdateRequest_whenAssetEntityNotFoundById_throwsAssetNotFoundException() {
@@ -382,7 +382,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * delete
+     * {@link AssetServiceImpl#delete(Long)}
      */
     @Test
     public void givenValidId_whenAssetEntityFoundById_thenDeleteAssetEntity() {
@@ -419,7 +419,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * delete-exception
+     * {@link AssetServiceImpl#delete(Long)}
      */
     @Test
     public void givenValidId_whenAssetEntityNotFoundById_thenReturnThrowAssetNotFoundException() {
