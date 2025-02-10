@@ -35,12 +35,11 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
     @Test
     public void whenTheCustomerWantsToSeeTheRooms_thenListRoomTypesAndAvailability() {
 
-        //Given
+        //When
         List<AssetEntity> assets = getAssets();
         List<RoomTypeEntity> roomTypeEntities = getRoomTypes(assets);
         List<RoomEntity> roomEntities = getRooms(roomTypeEntities);
 
-        //When
         Mockito.when(roomRepository.findAll()).thenReturn(roomEntities);
         Mockito.when(roomTypeRepository.findAll()).thenReturn(roomTypeEntities);
 
@@ -49,6 +48,8 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
         //Then
         Assertions.assertNotNull(roomTypeAvailabilityResponses);
         Assertions.assertEquals(roomTypeEntities.size(), roomTypeAvailabilityResponses.size());
+
+        //Verify
         Mockito.verify(roomTypeRepository, Mockito.times(1)).findAll();
         Mockito.verify(roomRepository, Mockito.times(1)).findAll();
 
@@ -56,15 +57,14 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
 
 
     @Test
-    public void givenTheCustomerWantsToSeeTheRooms_whenAllRoomsStatusAreFull_thenReturnRoomTypeUnavailability() {
+    public void whenCalledAllRoomsButAllRoomsStatusAreFull_thenReturnRoomTypeUnavailability() {
 
-        //Given
+        //When
         List<AssetEntity> assets = getAssets();
         List<RoomTypeEntity> roomTypeEntities = getRoomTypes(assets);
 
         List<RoomEntity> roomEntities = getRooms(roomTypeEntities);
 
-        //When
         Mockito.when(roomRepository.findAll()).thenReturn(roomEntities);
         Mockito.when(roomTypeRepository.findAll()).thenReturn(roomTypeEntities);
 
@@ -73,13 +73,15 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
         //Then
         Assertions.assertNotNull(roomTypeAvailabilityResponses);
         Assertions.assertFalse(roomTypeAvailabilityResponses.get(0).getIsAvailability());
+
+        //Verify
         Mockito.verify(roomTypeRepository, Mockito.times(1)).findAll();
         Mockito.verify(roomRepository, Mockito.times(1)).findAll();
 
     }
 
     @Test
-    public void whenTheCustomerWantsToSeeTheRoomsIfRoomTypeEntitiesIsEmpty_thenReturnEmptyList() {
+    public void whenCalledAllRoomsIfAllRoomTypeEntitiesIsEmpty_thenReturnEmptyList() {
 
         //When
         Mockito.when(roomTypeRepository.findAll()).thenReturn(Collections.emptyList());
@@ -90,10 +92,13 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
         Assertions.assertNotNull(roomTypeAvailabilityResponses);
         Assertions.assertTrue(roomTypeAvailabilityResponses.isEmpty());
 
+        //Verify
+        Mockito.verify(roomTypeRepository, Mockito.times(1)).findAll();
+
     }
 
     @Test
-    public void whenTheCustomerWantsToSeeTheRoomsIfRoomEntitiesIsEmpty_thenReturnEmptyList() {
+    public void whenCalledAllRoomsIfRoomEntitiesIsEmpty_thenReturnEmptyList() {
 
         //When
         Mockito.when(roomRepository.findAll()).thenReturn(Collections.emptyList());
@@ -103,6 +108,9 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
         //Then
         Assertions.assertNotNull(roomTypeAvailabilityResponses);
         Assertions.assertTrue(roomTypeAvailabilityResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1)).findAll();
 
     }
 
