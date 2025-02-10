@@ -297,6 +297,32 @@ class RoomServiceImplTest extends BaseTest {
     /**
      * update-exception
      */
+    @Test
+    public void givenValidIdAndRoomUpdateRequest_whenRoomEntityNotFoundById_throwsRoomNotFoundException() {
+
+        //Given
+        Long mockId = 10L;
+
+        RoomUpdateRequest mockRoomUpdateRequest = new RoomUpdateRequest();
+        mockRoomUpdateRequest.setNumber(205);
+        mockRoomUpdateRequest.setFloor(2);
+        mockRoomUpdateRequest.setStatus(RoomStatus.FULL);
+        mockRoomUpdateRequest.setRoomTypeId(1L);
+
+        //When
+        Mockito.when(roomRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(RoomNotFoundException.class,
+                () -> roomService.update(mockId, mockRoomUpdateRequest));
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(roomRepository, Mockito.never())
+                .save(Mockito.any());
+    }
 
     /**
      * delete
