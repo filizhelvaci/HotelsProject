@@ -20,7 +20,9 @@ import com.flz.service.RoomService;
 import com.flz.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +59,9 @@ class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Page<RoomsResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, Pageable pageable) {
+    public Page<RoomsResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, int page, int size, String property, Sort.Direction direction) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.by(property).with(direction)));
 
         Specification<RoomEntity> spec = RoomEntity.generateSpecification(number, floor, status, typeId);
 

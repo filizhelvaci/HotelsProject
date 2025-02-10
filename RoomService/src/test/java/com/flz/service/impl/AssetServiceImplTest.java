@@ -29,8 +29,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-
 
 class AssetServiceImplTest extends BaseTest {
 
@@ -226,7 +224,7 @@ class AssetServiceImplTest extends BaseTest {
 
         Page<AssetEntity> mockAssetPageEntities = new PageImpl<>(mockAssetEntities);
 
-        Mockito.when(assetRepository.findAll(any(Specification.class), any(Pageable.class)))
+        Mockito.when(assetRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
                 .thenReturn(mockAssetPageEntities);
 
         Page<AssetsResponse> mockAssetsResponses =
@@ -241,7 +239,7 @@ class AssetServiceImplTest extends BaseTest {
         Assertions.assertEquals(result, mockAssetsResponses);
 
         //Verify
-        Mockito.verify(assetRepository).findAll(any(Specification.class), any(Pageable.class));
+        Mockito.verify(assetRepository).findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
 
     }
 
@@ -277,7 +275,7 @@ class AssetServiceImplTest extends BaseTest {
         Mockito.verify(assetRepository, Mockito.times(1))
                 .existsByName(mockAssetCreateRequest.getName());
         Mockito.verify(assetRepository, Mockito.times(1))
-                .save(any());
+                .save(Mockito.any());
     }
 
     /**
@@ -302,7 +300,7 @@ class AssetServiceImplTest extends BaseTest {
         Mockito.verify(assetRepository, Mockito.times(1))
                 .existsByName(mockAssetCreateRequest.getName());
         Mockito.verify(assetRepository, Mockito.never())
-                .save(any());
+                .save(Mockito.any());
 
     }
 
@@ -380,7 +378,7 @@ class AssetServiceImplTest extends BaseTest {
         Mockito.verify(assetRepository, Mockito.times(1))
                 .findById(mockId);
         Mockito.verify(assetRepository, Mockito.never())
-                .save(any());
+                .save(Mockito.any());
     }
 
     /**
