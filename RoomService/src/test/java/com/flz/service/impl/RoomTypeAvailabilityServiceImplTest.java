@@ -86,7 +86,8 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
         //When
         Mockito.when(roomTypeRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<RoomTypeAvailabilityResponse> roomTypeAvailabilityResponses = roomTypeAvailabilityServiceImpl.findRoomTypesAvailability();
+        List<RoomTypeAvailabilityResponse> roomTypeAvailabilityResponses
+                = roomTypeAvailabilityServiceImpl.findRoomTypesAvailability();
 
         //Then
         Assertions.assertNotNull(roomTypeAvailabilityResponses);
@@ -103,7 +104,8 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
         //When
         Mockito.when(roomRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<RoomTypeAvailabilityResponse> roomTypeAvailabilityResponses = roomTypeAvailabilityServiceImpl.findRoomTypesAvailability();
+        List<RoomTypeAvailabilityResponse> roomTypeAvailabilityResponses
+                = roomTypeAvailabilityServiceImpl.findRoomTypesAvailability();
 
         //Then
         Assertions.assertNotNull(roomTypeAvailabilityResponses);
