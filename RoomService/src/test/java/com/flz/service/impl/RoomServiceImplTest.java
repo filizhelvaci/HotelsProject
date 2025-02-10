@@ -46,7 +46,7 @@ class RoomServiceImplTest extends BaseTest {
     RoomServiceImpl roomService;
 
     /**
-     * findSummaryAll()
+     * {@link RoomServiceImpl#findSummaryAll()}
      */
     @Test
     public void whenCalledAllSummaryRooms_thenReturnListOfRoomsSummaryResponse() {
@@ -73,7 +73,7 @@ class RoomServiceImplTest extends BaseTest {
 
 
     /**
-     * findById
+     * {@link RoomServiceImpl#findById(Long)}
      */
     @Test
     public void givenValidId_whenRoomEntityFoundAccordingById_thenReturnRoomResponse() {
@@ -101,7 +101,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * findById-Exception
+     * {@link RoomServiceImpl#findById(Long)}
      */
     @Test
     public void givenValidId_whenAssetEntityNotFoundById_throwsAssetNotFoundException() {
@@ -126,7 +126,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * findAll
+     * {@link RoomServiceImpl#findAll(Integer, Integer, RoomStatus, Long, int, int, String, Sort.Direction)}
      */
     @Test
     public void givenFilterParameters_whenRoomEntityFoundByFilterParameters_thenReturnRoomsResponseList() {
@@ -168,7 +168,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * create
+     * {@link RoomServiceImpl#create(RoomCreateRequest)}
      */
     @Test
     public void givenRoomCreateRequest_whenRoomByNameIsNotInTheDatabase_thenCreateAndSaveRoomEntity() {
@@ -204,7 +204,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * create-exception
+     * {@link RoomServiceImpl#create(RoomCreateRequest)}
      */
     @Test
     public void givenRoomCreateRequest_whenRoomByNumberAlreadyExists_thenThrowRoomAlreadyExistsException() {
@@ -230,10 +230,10 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * update
+     * {@link RoomServiceImpl#update(Long, RoomUpdateRequest)}
      */
     @Test
-    public void givenValidRoomIdAndAssetUpdateRequest_whenRoomEntityFoundById_thenThatRoomEntityUpdate() {
+    public void givenValidRoomIdAndRoomUpdateRequest_whenRoomEntityFoundById_thenThatRoomEntityUpdate() {
 
         //Given
         Long mockId = 10L;
@@ -295,7 +295,7 @@ class RoomServiceImplTest extends BaseTest {
 
 
     /**
-     * update-exception
+     * {@link RoomServiceImpl#update(Long, RoomUpdateRequest)}
      */
     @Test
     public void givenValidIdAndRoomUpdateRequest_whenRoomEntityNotFoundById_throwsRoomNotFoundException() {
@@ -325,7 +325,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * delete
+     * {@link RoomServiceImpl#update(Long, RoomUpdateRequest)}
      */
     @Test
     public void givenValidId_whenRoomEntityFoundById_thenDeleteRoomEntity() {
@@ -359,7 +359,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * delete-exception
+     * {@link RoomServiceImpl#delete(Long)}
      */
     @Test
     public void givenValidId_whenRoomEntityNotFoundById_thenReturnThrowRoomNotFoundException() {
@@ -382,6 +382,9 @@ class RoomServiceImplTest extends BaseTest {
                 .deleteById(mockId);
     }
 
+    /**
+     * @return
+     */
     private static List<AssetEntity> getAssetEntities() {
         return List.of(
                 AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
