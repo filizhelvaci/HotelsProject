@@ -44,7 +44,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     RoomTypeServiceImpl roomTypeService;
 
     /**
-     * findSummaryAll
+     * {@link RoomTypeServiceImpl#findSummaryAll()}
      */
     @Test
     public void whenCalledAllSummaryRoomType_thenReturnListOfRoomTypesSummaryResponse() {
@@ -98,7 +98,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * findById
+     * {@link RoomTypeServiceImpl#findById(Long)}
      */
     @Test
     public void givenValidId_whenRoomTypeEntityFoundAccordingById_thenReturnRoomTypeResponse() {
@@ -141,7 +141,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * findById - Exception
+     * {@link RoomTypeServiceImpl#findById(Long)}
      */
     @Test
     public void givenValidId_whenRoomTypeEntityNotFoundById_throwsRoomTypeNotFoundException() {
@@ -166,7 +166,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * findAll
+     * {@link RoomTypeServiceImpl#findAll(String, BigDecimal, BigDecimal, Integer, Integer, int, int, String, Sort.Direction)}
      */
     @Test
     public void givenFilterParameters_whenAssetEntityFoundByFilterParameters_thenReturnAssetsResponseList() {
@@ -236,7 +236,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * create
+     * {@link RoomTypeServiceImpl#create(RoomTypeCreateRequest)}
      */
     @Test
     public void givenRoomTypeCreateRequest_whenRoomTypeByNameIsNotInTheDatabase_thenCreateAndSaveRoomTypeEntity() {
@@ -285,7 +285,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * create - exception
+     * {@link RoomTypeServiceImpl#create(RoomTypeCreateRequest)}
      */
     @Test
     public void givenRoomTypeCreateRequest_whenRoomTypeByNameAlreadyExists_thenThrowRoomTypeAlreadyExistsException() {
@@ -312,7 +312,7 @@ class RoomTypeServiceImplTest extends BaseTest {
 
 
     /**
-     * update
+     * {@link RoomTypeServiceImpl#update(Long, RoomTypeUpdateRequest)}
      */
     @Test
     public void givenValidRoomTypeIdAndRoomTypeUpdateRequest_whenRoomTypeEntityFoundById_thenThatRoomTypeEntityUpdate() {
@@ -390,7 +390,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * update - exception
+     * {@link RoomTypeServiceImpl#update(Long, RoomTypeUpdateRequest)}
      */
     @Test
     public void givenValidIdAndRoomTypeUpdateRequest_whenRoomTypeEntityNotFoundById_throwsRoomTypeNotFoundException() {
@@ -424,7 +424,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * delete
+     * {@link RoomTypeServiceImpl#delete(Long)}
      */
     @Test
     public void givenValidId_whenRoomTypeEntityFoundById_thenDeleteRoomTypeEntity() {
@@ -474,7 +474,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * delete - exception
+     * {@link RoomTypeServiceImpl#delete(Long)}
      */
     @Test
     public void givenValidId_whenRoomTypeEntityNotFoundById_thenReturnThrowRoomTypeNotFoundException() {
