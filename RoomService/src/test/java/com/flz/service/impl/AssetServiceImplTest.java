@@ -1,5 +1,6 @@
 package com.flz.service.impl;
 
+import com.flz.BaseTest;
 import com.flz.exception.AssetAlreadyExistsException;
 import com.flz.exception.AssetNotFoundException;
 import com.flz.model.entity.AssetEntity;
@@ -13,7 +14,6 @@ import com.flz.model.response.AssetResponse;
 import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.repository.AssetRepository;
-import com.flz.service.impl.com.flz.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

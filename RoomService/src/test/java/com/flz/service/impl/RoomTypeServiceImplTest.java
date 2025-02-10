@@ -1,5 +1,6 @@
 package com.flz.service.impl;
 
+import com.flz.BaseTest;
 import com.flz.exception.RoomTypeAlreadyExistsException;
 import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.entity.AssetEntity;
@@ -16,7 +17,6 @@ import com.flz.model.response.RoomTypesResponse;
 import com.flz.model.response.RoomTypesSummaryResponse;
 import com.flz.repository.RoomTypeRepository;
 import com.flz.service.AssetService;
-import com.flz.service.impl.com.flz.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

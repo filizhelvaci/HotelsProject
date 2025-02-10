@@ -1,5 +1,6 @@
 package com.flz.service.impl;
 
+import com.flz.BaseTest;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.entity.RoomEntity;
 import com.flz.model.entity.RoomTypeEntity;
@@ -7,7 +8,6 @@ import com.flz.model.enums.RoomStatus;
 import com.flz.model.response.RoomTypeAvailabilityResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.repository.RoomTypeRepository;
-import com.flz.service.impl.com.flz.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
