@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +63,27 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
+     * {@link AssetServiceImpl#findSummaryAll()}
+     */
+    @Test
+    public void whenCalledAllSummaryAssetIfAllAssetEntitiesIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(assetRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<AssetsSummaryResponse> assetSummaryResponses = assetService.findSummaryAll();
+
+        //Then
+        Assertions.assertNotNull(assetRepository);
+        Assertions.assertEquals(0, assetRepository.count());
+        Assertions.assertTrue(assetSummaryResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(assetRepository, Mockito.times(1)).findAll();
+
+    }
+
+    /**
      * {@link AssetServiceImpl#findAllById(List)}
      */
     @Test
@@ -87,6 +109,27 @@ class AssetServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(assetRepository, Mockito.times(1))
                 .findAllById(mockIds);
+
+    }
+
+    /**
+     * {@link AssetServiceImpl#findAllById(List)}
+     */
+    @Test
+    public void whenCalledAssetListByIdListIfAssetEntitiesIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(assetRepository.findAllById(List.of(1L, 2L, 3L))).thenReturn(Collections.emptyList());
+
+        List<AssetResponse> assetResponses = assetService.findAllById(List.of(1L, 2L, 3L));
+
+        //Then
+        Assertions.assertNotNull(assetRepository);
+        Assertions.assertEquals(0, assetRepository.count());
+        Assertions.assertTrue(assetResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(assetRepository, Mockito.times(1)).findAllById(List.of(1L, 2L, 3L));
 
     }
 
@@ -178,6 +221,28 @@ class AssetServiceImplTest extends BaseTest {
 
         //Verify
         Mockito.verify(assetRepository).findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
+
+    }
+
+    /**
+     * {@link AssetServiceImpl#findAll(String, BigDecimal, BigDecimal, Boolean, int, int, String, Sort.Direction)}
+     */
+    @Test
+    public void whenCalledFilteredAssetListIfAssetEntitiesIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(assetRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
+                .thenReturn(Page.empty());
+
+        List<AssetResponse> assetResponses = assetService.findAllById(List.of(1L, 2L, 3L));
+
+        //Then
+        Assertions.assertNotNull(assetRepository);
+        Assertions.assertEquals(0, assetRepository.count());
+        Assertions.assertTrue(assetResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(assetRepository, Mockito.times(1)).findAllById(List.of(1L, 2L, 3L));
 
     }
 
