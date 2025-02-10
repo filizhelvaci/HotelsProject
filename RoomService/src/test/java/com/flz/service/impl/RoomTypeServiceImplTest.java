@@ -29,6 +29,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +68,26 @@ class RoomTypeServiceImplTest extends BaseTest {
 
     }
 
+    /**
+     * {@link RoomTypeServiceImpl#findSummaryAll()}
+     */
+    @Test
+    public void whenCalledAllSummaryRoomTypeListIfAllRoomTypeListIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(roomTypeRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<RoomTypesSummaryResponse> roomTypeSummaryResponses = roomTypeService.findSummaryAll();
+
+        //Then
+        Assertions.assertNotNull(roomTypeRepository);
+        Assertions.assertEquals(0, roomTypeRepository.count());
+        Assertions.assertTrue(roomTypeSummaryResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(roomTypeRepository, Mockito.times(1)).findAll();
+
+    }
 
     /**
      * {@link RoomTypeServiceImpl#findById(Long)}
@@ -158,6 +179,41 @@ class RoomTypeServiceImplTest extends BaseTest {
 
         //Verify
         Mockito.verify(roomTypeRepository).findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
+
+    }
+
+    /**
+     * {@link RoomTypeServiceImpl#findAll(String, BigDecimal, BigDecimal, Integer, Integer, int, int, String, Sort.Direction)}
+     */
+    @Test
+    public void whenCalledFilteredRoomTypeListIfRoomTypeListIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        String name = "test";
+        BigDecimal minPrice = BigDecimal.valueOf(100);
+        BigDecimal maxPrice = BigDecimal.valueOf(2000);
+        Integer personCount = 2;
+        Integer size = 50;
+        int page = 0;
+        int pageSize = 5;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Mockito.when(roomTypeRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
+                .thenReturn(Page.empty());
+
+        Page<RoomTypesResponse> roomTypeResponses
+                = roomTypeService.findAll(name, minPrice, maxPrice, personCount, size, page, pageSize, property, direction);
+
+        //Then
+        Assertions.assertNotNull(roomTypeRepository);
+        Assertions.assertEquals(0, roomTypeRepository.count());
+        Assertions.assertTrue(roomTypeResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
 
     }
 
