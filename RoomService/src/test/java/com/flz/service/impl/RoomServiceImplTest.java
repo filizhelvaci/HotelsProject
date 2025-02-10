@@ -361,7 +361,26 @@ class RoomServiceImplTest extends BaseTest {
     /**
      * delete-exception
      */
+    @Test
+    public void givenValidId_whenRoomEntityNotFoundById_thenReturnThrowRoomNotFoundException() {
 
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(roomRepository.existsById(mockId))
+                .thenReturn(false);
+
+        //Then
+        Assertions.assertThrows(RoomNotFoundException.class,
+                () -> roomService.delete(mockId));
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .existsById(mockId);
+        Mockito.verify(roomRepository, Mockito.never())
+                .deleteById(mockId);
+    }
 
     private static List<AssetEntity> getAssetEntities() {
         return List.of(
