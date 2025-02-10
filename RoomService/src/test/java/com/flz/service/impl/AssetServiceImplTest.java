@@ -45,26 +45,7 @@ class AssetServiceImplTest extends BaseTest {
     public void whenCalledAllSummaryAsset_thenReturnListOfAssetsSummaryResponse() {
 
         //When
-        List<AssetEntity> assetEntities = List.of(
-                AssetEntity.builder()
-                        .id(10L)
-                        .name("testAsset1")
-                        .price(BigDecimal.valueOf(1100))
-                        .isDefault(true)
-                        .build(),
-                AssetEntity.builder()
-                        .id(11L)
-                        .name("testAsset2")
-                        .price(BigDecimal.valueOf(1200))
-                        .isDefault(false)
-                        .build(),
-                AssetEntity.builder()
-                        .id(12L)
-                        .name("testAsset3")
-                        .price(BigDecimal.valueOf(1300))
-                        .isDefault(true)
-                        .build()
-        );
+        List<AssetEntity> assetEntities = getAssets();
 
         Mockito.when(assetRepository.findAll())
                 .thenReturn(assetEntities);
@@ -90,26 +71,7 @@ class AssetServiceImplTest extends BaseTest {
         List<Long> mockIds = List.of(10L, 11L, 12L);
 
         //When
-        List<AssetEntity> mockAssetEntities = List.of(
-                AssetEntity.builder()
-                        .id(10L)
-                        .name("testAsset1")
-                        .price(BigDecimal.valueOf(1100))
-                        .isDefault(true)
-                        .build(),
-                AssetEntity.builder()
-                        .id(11L)
-                        .name("testAsset2")
-                        .price(BigDecimal.valueOf(1200))
-                        .isDefault(false)
-                        .build(),
-                AssetEntity.builder()
-                        .id(12L)
-                        .name("testAsset3")
-                        .price(BigDecimal.valueOf(1300))
-                        .isDefault(true)
-                        .build()
-        );
+        List<AssetEntity> mockAssetEntities = getAssets();
 
         Mockito.when(assetRepository.findAllById(mockIds))
                 .thenReturn(mockAssetEntities);
@@ -129,7 +91,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     *  {@link AssetServiceImpl#findById(Long)}
+     * {@link AssetServiceImpl#findById(Long)}
      */
     @Test
     public void givenValidId_whenAssetEntityFoundAccordingById_thenReturnAssetResponse() {
@@ -138,12 +100,7 @@ class AssetServiceImplTest extends BaseTest {
         Long mockId = 1L;
 
         //When
-        Optional<AssetEntity> mockAssetEntity = Optional.of(AssetEntity.builder()
-                .id(1L)
-                .name("testAsset")
-                .price(BigDecimal.valueOf(1000))
-                .isDefault(true)
-                .build());
+        Optional<AssetEntity> mockAssetEntity = Optional.of(getAsset());
 
         Mockito.when(assetRepository.findById(mockId))
                 .thenReturn(mockAssetEntity);
@@ -201,26 +158,7 @@ class AssetServiceImplTest extends BaseTest {
         Sort.Direction direction = Sort.Direction.ASC;
 
         //When
-        List<AssetEntity> mockAssetEntities = List.of(
-                AssetEntity.builder()
-                        .id(10L)
-                        .name("test Asset1")
-                        .price(BigDecimal.valueOf(1100))
-                        .isDefault(true)
-                        .build(),
-                AssetEntity.builder()
-                        .id(11L)
-                        .name("test Asset2")
-                        .price(BigDecimal.valueOf(1200))
-                        .isDefault(true)
-                        .build(),
-                AssetEntity.builder()
-                        .id(12L)
-                        .name("test Asset3")
-                        .price(BigDecimal.valueOf(1300))
-                        .isDefault(true)
-                        .build()
-        );
+        List<AssetEntity> mockAssetEntities = getAssets();
 
         Page<AssetEntity> mockAssetPageEntities = new PageImpl<>(mockAssetEntities);
 
@@ -244,7 +182,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     *  {@link AssetServiceImpl#create(AssetCreateRequest)}
+     * {@link AssetServiceImpl#create(AssetCreateRequest)}
      */
     @Test
     public void givenAssetCreateRequest_whenAssetByNameIsNotInTheDatabase_thenCreateAndSaveAssetEntity() {
@@ -319,12 +257,7 @@ class AssetServiceImplTest extends BaseTest {
         mockAssetUpdateRequest.setIsDefault(false);
 
         //When
-        AssetEntity mockAssetEntity = AssetEntity.builder()
-                .id(mockId)
-                .name("testAsset")
-                .price(BigDecimal.valueOf(1000))
-                .isDefault(true)
-                .build();
+        AssetEntity mockAssetEntity = getAsset();
 
         Mockito.when(assetRepository.findById(mockId))
                 .thenReturn(Optional.of(mockAssetEntity));
@@ -390,12 +323,7 @@ class AssetServiceImplTest extends BaseTest {
         //Given
         Long mockId = 10L;
 
-        AssetEntity mockAssetEntity = AssetEntity.builder()
-                .id(mockId)
-                .name("testAsset")
-                .price(BigDecimal.valueOf(1000))
-                .isDefault(true)
-                .build();
+        AssetEntity mockAssetEntity = getAsset();
 
         //When
         Mockito.when(assetRepository.existsById(mockId))
@@ -442,4 +370,38 @@ class AssetServiceImplTest extends BaseTest {
                 .deleteById(mockId);
     }
 
+    /**
+     * @return
+     */
+    private static List<AssetEntity> getAssets() {
+        return List.of(
+                AssetEntity.builder()
+                        .id(10L)
+                        .name("testAsset1")
+                        .price(BigDecimal.valueOf(1100))
+                        .isDefault(true)
+                        .build(),
+                AssetEntity.builder()
+                        .id(11L)
+                        .name("testAsset2")
+                        .price(BigDecimal.valueOf(1200))
+                        .isDefault(false)
+                        .build(),
+                AssetEntity.builder()
+                        .id(12L)
+                        .name("testAsset3")
+                        .price(BigDecimal.valueOf(1300))
+                        .isDefault(true)
+                        .build()
+        );
+    }
+
+    private static AssetEntity getAsset() {
+        return AssetEntity.builder()
+                .id(1L)
+                .name("testAsset")
+                .price(BigDecimal.valueOf(1000))
+                .isDefault(true)
+                .build();
+    }
 }
