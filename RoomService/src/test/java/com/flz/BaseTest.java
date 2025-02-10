@@ -1,4 +1,4 @@
-package com.flz.service.impl.com.flz;
+package com.flz;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

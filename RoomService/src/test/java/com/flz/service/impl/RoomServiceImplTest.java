@@ -1,5 +1,6 @@
 package com.flz.service.impl;
 
+import com.flz.BaseTest;
 import com.flz.exception.RoomAlreadyExistsException;
 import com.flz.exception.RoomNotFoundException;
 import com.flz.model.entity.AssetEntity;
@@ -18,7 +19,6 @@ import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
 import com.flz.service.RoomTypeService;
-import com.flz.service.impl.com.flz.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,6 +31,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ class RoomServiceImplTest extends BaseTest {
     RoomServiceImpl roomService;
 
     /**
-     * findSummaryAll()
+     * {@link RoomServiceImpl#findSummaryAll()}
      */
     @Test
     public void whenCalledAllSummaryRooms_thenReturnListOfRoomsSummaryResponse() {
@@ -71,9 +72,29 @@ class RoomServiceImplTest extends BaseTest {
 
     }
 
+    /**
+     * {@link RoomServiceImpl#findSummaryAll()}
+     */
+    @Test
+    public void whenCalledAllSummaryRoomIfRoomListIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(roomRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<RoomsSummaryResponse> roomsSummaryResponses = roomService.findSummaryAll();
+
+        //Then
+        Assertions.assertNotNull(roomRepository);
+        Assertions.assertEquals(0, roomRepository.count());
+        Assertions.assertTrue(roomsSummaryResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1)).findAll();
+
+    }
 
     /**
-     * findById
+     * {@link RoomServiceImpl#findById(Long)}
      */
     @Test
     public void givenValidId_whenRoomEntityFoundAccordingById_thenReturnRoomResponse() {
@@ -101,7 +122,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * findById-Exception
+     * {@link RoomServiceImpl#findById(Long)}
      */
     @Test
     public void givenValidId_whenAssetEntityNotFoundById_throwsAssetNotFoundException() {
@@ -126,7 +147,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * findAll
+     * {@link RoomServiceImpl#findAll(Integer, Integer, RoomStatus, Long, int, int, String, Sort.Direction)}
      */
     @Test
     public void givenFilterParameters_whenRoomEntityFoundByFilterParameters_thenReturnRoomsResponseList() {
@@ -168,7 +189,42 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * create
+     * {@link RoomServiceImpl#findAll(Integer, Integer, RoomStatus, Long, int, int, String, Sort.Direction)}
+     */
+    @Test
+    public void whenCalledFilteredRoomListIfRoomListIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        Integer number = 102;
+        Integer floor = 2;
+        RoomStatus status = RoomStatus.EMPTY;
+        Long typeId = 10L;
+        int page = 0;
+        int size = 5;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Mockito.when(roomRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
+                .thenReturn(Page.empty());
+
+        Page<RoomsResponse> roomsResponses
+                = roomService.findAll(number, floor, status, typeId, page, size, property, direction);
+
+        //Then
+        Assertions.assertNotNull(roomRepository);
+        Assertions.assertEquals(0, roomRepository.count());
+        Assertions.assertTrue(roomsResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
+
+    }
+
+
+    /**
+     * {@link RoomServiceImpl#create(RoomCreateRequest)}
      */
     @Test
     public void givenRoomCreateRequest_whenRoomByNameIsNotInTheDatabase_thenCreateAndSaveRoomEntity() {
@@ -204,7 +260,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * create-exception
+     * {@link RoomServiceImpl#create(RoomCreateRequest)}
      */
     @Test
     public void givenRoomCreateRequest_whenRoomByNumberAlreadyExists_thenThrowRoomAlreadyExistsException() {
@@ -230,10 +286,10 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * update
+     * {@link RoomServiceImpl#update(Long, RoomUpdateRequest)}
      */
     @Test
-    public void givenValidRoomIdAndAssetUpdateRequest_whenRoomEntityFoundById_thenThatRoomEntityUpdate() {
+    public void givenValidRoomIdAndRoomUpdateRequest_whenRoomEntityFoundById_thenThatRoomEntityUpdate() {
 
         //Given
         Long mockId = 10L;
@@ -295,7 +351,7 @@ class RoomServiceImplTest extends BaseTest {
 
 
     /**
-     * update-exception
+     * {@link RoomServiceImpl#update(Long, RoomUpdateRequest)}
      */
     @Test
     public void givenValidIdAndRoomUpdateRequest_whenRoomEntityNotFoundById_throwsRoomNotFoundException() {
@@ -325,7 +381,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * delete
+     * {@link RoomServiceImpl#update(Long, RoomUpdateRequest)}
      */
     @Test
     public void givenValidId_whenRoomEntityFoundById_thenDeleteRoomEntity() {
@@ -359,7 +415,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * delete-exception
+     * {@link RoomServiceImpl#delete(Long)}
      */
     @Test
     public void givenValidId_whenRoomEntityNotFoundById_thenReturnThrowRoomNotFoundException() {
@@ -382,6 +438,9 @@ class RoomServiceImplTest extends BaseTest {
                 .deleteById(mockId);
     }
 
+    /**
+     * @return
+     */
     private static List<AssetEntity> getAssetEntities() {
         return List.of(
                 AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
