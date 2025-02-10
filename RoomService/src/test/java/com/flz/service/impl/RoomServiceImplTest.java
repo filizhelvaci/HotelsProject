@@ -9,8 +9,11 @@ import com.flz.model.enums.RoomStatus;
 import com.flz.model.mapper.RoomCreateRequestToEntityMapper;
 import com.flz.model.mapper.RoomEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomEntityToSummaryResponseMapper;
+import com.flz.model.mapper.RoomTypeResponseToEntityMapper;
 import com.flz.model.request.RoomCreateRequest;
+import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.RoomResponse;
+import com.flz.model.response.RoomTypeResponse;
 import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
@@ -49,48 +52,9 @@ class RoomServiceImplTest extends BaseTest {
     public void whenCalledAllSummaryRooms_thenReturnListOfRoomsSummaryResponse() {
 
         //When
-        List<AssetEntity> mockAssets = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
-        RoomTypeEntity mockRoomTypeEntity1 = RoomTypeEntity.builder()
-                .id(1L)
-                .name("Standart Oda")
-                .price(BigDecimal.valueOf(2000))
-                .size(30)
-                .personCount(2)
-                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
-                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
-                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
-                        "ve WiFi erişimini kapsamaktadır.")
-                .assets(mockAssets)
-                .build();
-
-        List<RoomEntity> mockRoomEntities = List.of(
-                RoomEntity.builder()
-                        .id(10L)
-                        .number(201)
-                        .floor(2)
-                        .status(RoomStatus.EMPTY)
-                        .type(mockRoomTypeEntity1)
-                        .build(),
-                RoomEntity.builder()
-                        .id(10L)
-                        .number(201)
-                        .floor(2)
-                        .status(RoomStatus.EMPTY)
-                        .type(mockRoomTypeEntity1)
-                        .build(),
-                RoomEntity.builder()
-                        .id(10L)
-                        .number(201)
-                        .floor(2)
-                        .status(RoomStatus.EMPTY)
-                        .type(mockRoomTypeEntity1)
-                        .build()
-        );
+        List<AssetEntity> mockAssets = getAssetEntities();
+        RoomTypeEntity mockRoomTypeEntity1 = getRoomType(mockAssets);
+        List<RoomEntity> mockRoomEntities = getRoomEntities(mockRoomTypeEntity1);
 
         Mockito.when(roomRepository.findAll())
                 .thenReturn(mockRoomEntities);
@@ -107,6 +71,7 @@ class RoomServiceImplTest extends BaseTest {
 
     }
 
+
     /**
      * findById
      */
@@ -117,31 +82,9 @@ class RoomServiceImplTest extends BaseTest {
         Long mockId = 10L;
 
         //When
-        List<AssetEntity> mockAssets = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
-        RoomTypeEntity mockRoomTypeEntity1 = RoomTypeEntity.builder()
-                .id(1L)
-                .name("Standart Oda")
-                .price(BigDecimal.valueOf(2000))
-                .size(30)
-                .personCount(2)
-                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
-                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
-                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
-                        "ve WiFi erişimini kapsamaktadır.")
-                .assets(mockAssets)
-                .build();
-        Optional<RoomEntity> mockRoomEntity = Optional.of(RoomEntity.builder()
-                .id(10L)
-                .number(201)
-                .floor(2)
-                .status(RoomStatus.EMPTY)
-                .type(mockRoomTypeEntity1)
-                .build());
+        List<AssetEntity> mockAssets = getAssetEntities();
+        RoomTypeEntity mockRoomTypeEntity1 = getRoomType(mockAssets);
+        Optional<RoomEntity> mockRoomEntity = Optional.of(getRoomEntity(mockRoomTypeEntity1));
 
         Mockito.when(roomRepository.findById(mockId))
                 .thenReturn(mockRoomEntity);
@@ -156,7 +99,6 @@ class RoomServiceImplTest extends BaseTest {
                 .findById(mockId);
 
     }
-
 
     /**
      * findById-Exception
@@ -200,48 +142,10 @@ class RoomServiceImplTest extends BaseTest {
         Sort.Direction direction = Sort.Direction.ASC;
 
         //When
-        List<AssetEntity> mockAssets = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
-        RoomTypeEntity mockRoomTypeEntity1 = RoomTypeEntity.builder()
-                .id(1L)
-                .name("Standart Oda")
-                .price(BigDecimal.valueOf(2000))
-                .size(30)
-                .personCount(2)
-                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
-                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
-                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
-                        "ve WiFi erişimini kapsamaktadır.")
-                .assets(mockAssets)
-                .build();
+        List<AssetEntity> mockAssets = getAssetEntities();
+        RoomTypeEntity mockRoomTypeEntity1 = getRoomType(mockAssets);
+        List<RoomEntity> mockRoomEntities = getRoomEntities(mockRoomTypeEntity1);
 
-        List<RoomEntity> mockRoomEntities = List.of(
-                RoomEntity.builder()
-                        .id(10L)
-                        .number(201)
-                        .floor(2)
-                        .status(RoomStatus.EMPTY)
-                        .type(mockRoomTypeEntity1)
-                        .build(),
-                RoomEntity.builder()
-                        .id(10L)
-                        .number(201)
-                        .floor(2)
-                        .status(RoomStatus.EMPTY)
-                        .type(mockRoomTypeEntity1)
-                        .build(),
-                RoomEntity.builder()
-                        .id(10L)
-                        .number(201)
-                        .floor(2)
-                        .status(RoomStatus.EMPTY)
-                        .type(mockRoomTypeEntity1)
-                        .build()
-        );
         Page<RoomEntity> mockRoomPageEntities = new PageImpl<>(mockRoomEntities);
 
         Mockito.when(roomRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
@@ -328,6 +232,67 @@ class RoomServiceImplTest extends BaseTest {
     /**
      * update
      */
+    @Test
+    public void givenValidRoomIdAndAssetUpdateRequest_whenRoomEntityFoundById_thenThatRoomEntityUpdate() {
+
+        //Given
+        Long mockId = 10L;
+
+        RoomUpdateRequest mockRoomUpdateRequest = new RoomUpdateRequest();
+        mockRoomUpdateRequest.setNumber(205);
+        mockRoomUpdateRequest.setFloor(2);
+        mockRoomUpdateRequest.setStatus(RoomStatus.FULL);
+        mockRoomUpdateRequest.setRoomTypeId(1L);
+
+        //When
+        List<AssetEntity> mockAssets = getAssetEntities();
+        RoomTypeEntity mockRoomTypeEntity1 = getRoomType(mockAssets);
+        RoomEntity mockRoomEntity = getRoomEntity(mockRoomTypeEntity1);
+
+        Mockito.when(roomRepository.findById(mockId))
+                .thenReturn(Optional.of(mockRoomEntity));
+
+        List<RoomTypeResponse.Asset> mockAssetList = List.of(
+                RoomTypeResponse.Asset.builder().id(1L).name("Yatak Seti").build(),
+                RoomTypeResponse.Asset.builder().id(3L).name("Wifi").build()
+        );
+        RoomTypeResponse mockRoomTypeResponse = RoomTypeResponse.builder()
+                .id(2L)
+                .name("Standart Oda")
+                .price(BigDecimal.valueOf(2000))
+                .size(30)
+                .personCount(2)
+                .description("Bu mock response test için hazırlanmıştır ")
+                .assets(mockAssetList)
+                .build();
+
+        Mockito.when(roomTypeService.findById(mockRoomUpdateRequest.getRoomTypeId()))
+                .thenReturn(mockRoomTypeResponse);
+        mockRoomEntity.setType(RoomTypeResponseToEntityMapper.INSTANCE.map(mockRoomTypeResponse));
+
+        mockRoomEntity.update(
+                mockRoomUpdateRequest.getNumber(),
+                mockRoomUpdateRequest.getFloor(),
+                mockRoomUpdateRequest.getStatus()
+        );
+
+        Mockito.when(roomRepository.save(mockRoomEntity))
+                .thenReturn(mockRoomEntity);
+
+        roomService.update(mockId, mockRoomUpdateRequest);
+
+        //Then
+        Assertions.assertNotNull(mockRoomEntity);
+        Assertions.assertEquals(mockId, mockRoomEntity.getId());
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .save(mockRoomEntity);
+
+    }
+
 
     /**
      * update-exception
@@ -339,6 +304,49 @@ class RoomServiceImplTest extends BaseTest {
     /**
      * delete-exception
      */
+
+    private static List<AssetEntity> getAssetEntities() {
+        return List.of(
+                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
+                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        );
+    }
+
+    private static RoomTypeEntity getRoomType(List<AssetEntity> mockAssets) {
+        return RoomTypeEntity.builder()
+                .id(1L)
+                .name("Standart Oda")
+                .price(BigDecimal.valueOf(2000))
+                .size(30)
+                .personCount(2)
+                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
+                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
+                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
+                        "ve WiFi erişimini kapsamaktadır.")
+                .assets(mockAssets)
+                .build();
+    }
+
+    private static RoomEntity getRoomEntity(RoomTypeEntity roomTypeEntity) {
+        return RoomEntity.builder()
+                .id(10L)
+                .number(201)
+                .floor(2)
+                .status(RoomStatus.EMPTY)
+                .type(roomTypeEntity)
+                .build();
+    }
+
+    private List<RoomEntity> getRoomEntities(RoomTypeEntity mockRoomTypeEntity1) {
+        return List.of(
+                getRoomEntity(mockRoomTypeEntity1),
+                getRoomEntity(mockRoomTypeEntity1),
+                getRoomEntity(mockRoomTypeEntity1)
+        );
+    }
+
 
 }
 
