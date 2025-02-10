@@ -31,6 +31,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +72,26 @@ class RoomServiceImplTest extends BaseTest {
 
     }
 
+    /**
+     * {@link RoomServiceImpl#findSummaryAll()}
+     */
+    @Test
+    public void whenCalledAllSummaryRoomIfRoomListIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(roomRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<RoomsSummaryResponse> roomsSummaryResponses = roomService.findSummaryAll();
+
+        //Then
+        Assertions.assertNotNull(roomRepository);
+        Assertions.assertEquals(0, roomRepository.count());
+        Assertions.assertTrue(roomsSummaryResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1)).findAll();
+
+    }
 
     /**
      * {@link RoomServiceImpl#findById(Long)}
@@ -166,6 +187,41 @@ class RoomServiceImplTest extends BaseTest {
         Mockito.verify(roomRepository).findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
 
     }
+
+    /**
+     * {@link RoomServiceImpl#findAll(Integer, Integer, RoomStatus, Long, int, int, String, Sort.Direction)}
+     */
+    @Test
+    public void whenCalledFilteredRoomListIfRoomListIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        Integer number = 102;
+        Integer floor = 2;
+        RoomStatus status = RoomStatus.EMPTY;
+        Long typeId = 10L;
+        int page = 0;
+        int size = 5;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Mockito.when(roomRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
+                .thenReturn(Page.empty());
+
+        Page<RoomsResponse> roomsResponses
+                = roomService.findAll(number, floor, status, typeId, page, size, property, direction);
+
+        //Then
+        Assertions.assertNotNull(roomRepository);
+        Assertions.assertEquals(0, roomRepository.count());
+        Assertions.assertTrue(roomsResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(roomRepository, Mockito.times(1))
+                .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
+
+    }
+
 
     /**
      * {@link RoomServiceImpl#create(RoomCreateRequest)}
