@@ -50,38 +50,8 @@ class RoomTypeServiceImplTest extends BaseTest {
     public void whenCalledAllSummaryRoomType_thenReturnListOfRoomTypesSummaryResponse() {
 
         //When
-        List<AssetEntity> mockAssets = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
-        List<RoomTypeEntity> mockRoomTypeEntities = List.of(RoomTypeEntity.builder()
-                        .id(1L)
-                        .name("Standart Oda")
-                        .price(BigDecimal.valueOf(2000))
-                        .size(30)
-                        .personCount(2)
-                        .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
-                                "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
-                                "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
-                                "ve WiFi erişimini kapsamaktadır.")
-                        .assets(mockAssets)
-                        .build(),
-                RoomTypeEntity.builder()
-                        .id(2L)
-                        .name("Lux Oda")
-                        .price(BigDecimal.valueOf(4000))
-                        .size(50)
-                        .personCount(3)
-                        .description("Bahçe manzarası, balkon, küvet, duş ve ayrı tuvalet, 55-inç TV, WiFi, " +
-                                "50 metrekarelik bu konforlu ve ferah bahçe manzaralı odada bir king yatak, balkon, " +
-                                "kanepe veya koltuk, küvetli banyo, duş ve ayrı tuvalet bulunmaktadır. " +
-                                "55-inç LCD televizyonda bir programın veya MP3 çalar radyo-çalar saatte müziğin keyfini çıkarın." +
-                                "Diğer hizmetler arasında WiFi ve çay/kahve yapma olanakları yer almaktadır.")
-                        .assets(mockAssets)
-                        .build()
-        );
+        List<AssetEntity> mockAssets = getAssets();
+        List<RoomTypeEntity> mockRoomTypeEntities = getRoomTypes(mockAssets);
         Mockito.when(roomTypeRepository.findAll())
                 .thenReturn(mockRoomTypeEntities);
         List<RoomTypesSummaryResponse> mockRoomTypesSummaryResponses =
@@ -97,6 +67,7 @@ class RoomTypeServiceImplTest extends BaseTest {
 
     }
 
+
     /**
      * {@link RoomTypeServiceImpl#findById(Long)}
      */
@@ -107,25 +78,9 @@ class RoomTypeServiceImplTest extends BaseTest {
         Long mockId = 1L;
 
         //When
-        List<AssetEntity> mockAssets = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
+        List<AssetEntity> mockAssets = getAssets();
 
-        Optional<RoomTypeEntity> mockRoomTypeEntity = Optional.of(RoomTypeEntity.builder()
-                .id(1L)
-                .name("Standart Oda")
-                .price(BigDecimal.valueOf(2000))
-                .size(30)
-                .personCount(2)
-                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
-                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
-                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
-                        "ve WiFi erişimini kapsamaktadır.")
-                .assets(mockAssets)
-                .build());
+        Optional<RoomTypeEntity> mockRoomTypeEntity = Optional.of(getRoomType(mockAssets));
 
         Mockito.when(roomTypeRepository.findById(mockId))
                 .thenReturn(mockRoomTypeEntity);
@@ -183,38 +138,8 @@ class RoomTypeServiceImplTest extends BaseTest {
         Sort.Direction direction = Sort.Direction.ASC;
 
         //When
-        List<AssetEntity> mockAssets = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
-        List<RoomTypeEntity> mockRoomTypeEntities = List.of(RoomTypeEntity.builder()
-                        .id(1L)
-                        .name("Standart Oda")
-                        .price(BigDecimal.valueOf(2000))
-                        .size(30)
-                        .personCount(2)
-                        .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
-                                "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
-                                "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
-                                "ve WiFi erişimini kapsamaktadır.")
-                        .assets(mockAssets)
-                        .build(),
-                RoomTypeEntity.builder()
-                        .id(2L)
-                        .name("Lux Oda")
-                        .price(BigDecimal.valueOf(4000))
-                        .size(50)
-                        .personCount(3)
-                        .description("Bahçe manzarası, balkon, küvet, duş ve ayrı tuvalet, 55-inç TV, WiFi, " +
-                                "50 metrekarelik bu konforlu ve ferah bahçe manzaralı odada bir king yatak, balkon, " +
-                                "kanepe veya koltuk, küvetli banyo, duş ve ayrı tuvalet bulunmaktadır. " +
-                                "55-inç LCD televizyonda bir programın veya MP3 çalar radyo-çalar saatte müziğin keyfini çıkarın." +
-                                "Diğer hizmetler arasında WiFi ve çay/kahve yapma olanakları yer almaktadır.")
-                        .assets(mockAssets)
-                        .build()
-        );
+        List<AssetEntity> mockAssets = getAssets();
+        List<RoomTypeEntity> mockRoomTypeEntities = getRoomTypes(mockAssets);
         Page<RoomTypeEntity> mockRoomTypePageEntities = new PageImpl<>(mockRoomTypeEntities);
 
         Mockito.when(roomTypeRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
@@ -228,6 +153,7 @@ class RoomTypeServiceImplTest extends BaseTest {
 
         //Then
         Assertions.assertNotNull(mockRoomTypesResponses);
+        Assertions.assertEquals(result, mockRoomTypesResponses);
         Assertions.assertNotNull(mockRoomTypesResponses.getContent());
 
         //Verify
@@ -336,25 +262,9 @@ class RoomTypeServiceImplTest extends BaseTest {
         mockRoomTypeUpdateRequest.setAssetIds(List.of(5L, 6L, 7L, 4L));
 
         //When
-        List<AssetEntity> mockAssets = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
+        List<AssetEntity> mockAssets = getAssets();
 
-        RoomTypeEntity mockRoomTypeEntity = RoomTypeEntity.builder()
-                .id(1L)
-                .name("Standart Oda")
-                .price(BigDecimal.valueOf(2000))
-                .size(30)
-                .personCount(2)
-                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
-                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
-                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
-                        "ve WiFi erişimini kapsamaktadır.")
-                .assets(mockAssets)
-                .build();
+        RoomTypeEntity mockRoomTypeEntity = getRoomType(mockAssets);
 
         Mockito.when(roomTypeRepository.findById(mockId))
                 .thenReturn(Optional.of(mockRoomTypeEntity));
@@ -432,25 +342,9 @@ class RoomTypeServiceImplTest extends BaseTest {
         //Given
         Long mockId = 10L;
 
-        List<AssetEntity> mockAssets = List.of(
-                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
-        );
+        List<AssetEntity> mockAssets = getAssets();
 
-        RoomTypeEntity mockRoomTypeEntity = RoomTypeEntity.builder()
-                .id(10L)
-                .name("Standart Oda")
-                .price(BigDecimal.valueOf(2000))
-                .size(30)
-                .personCount(2)
-                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
-                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
-                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
-                        "ve WiFi erişimini kapsamaktadır.")
-                .assets(mockAssets)
-                .build();
+        RoomTypeEntity mockRoomTypeEntity = getRoomType(mockAssets);
 
         //When
         Mockito.when(roomTypeRepository.existsById(mockId))
@@ -496,5 +390,51 @@ class RoomTypeServiceImplTest extends BaseTest {
         Mockito.verify(roomTypeRepository, Mockito.never())
                 .deleteById(mockId);
     }
+
+    /**
+     * @return
+     */
+    private static List<RoomTypeEntity> getRoomTypes(List<AssetEntity> mockAssets) {
+        return List.of(getRoomType(mockAssets),
+                RoomTypeEntity.builder()
+                        .id(2L)
+                        .name("Lux Oda")
+                        .price(BigDecimal.valueOf(4000))
+                        .size(50)
+                        .personCount(3)
+                        .description("Bahçe manzarası, balkon, küvet, duş ve ayrı tuvalet, 55-inç TV, WiFi, " +
+                                "50 metrekarelik bu konforlu ve ferah bahçe manzaralı odada bir king yatak, balkon, " +
+                                "kanepe veya koltuk, küvetli banyo, duş ve ayrı tuvalet bulunmaktadır. " +
+                                "55-inç LCD televizyonda bir programın veya MP3 çalar radyo-çalar saatte müziğin keyfini çıkarın." +
+                                "Diğer hizmetler arasında WiFi ve çay/kahve yapma olanakları yer almaktadır.")
+                        .assets(mockAssets)
+                        .build()
+        );
+    }
+
+    private static RoomTypeEntity getRoomType(List<AssetEntity> mockAssets) {
+        return RoomTypeEntity.builder()
+                .id(1L)
+                .name("Standart Oda")
+                .price(BigDecimal.valueOf(2000))
+                .size(30)
+                .personCount(2)
+                .description("Bahçe manzaralı bu oda standart şekilde tasarlanmıştır ve bir yatak odası bulunmaktadır. " +
+                        "Bir kanepe/koltuk bulunur ve tuvaleti olan bir banyo sunmaktadır. " +
+                        "Ayrıca WiFi, 55 inç LCD TV, MP3 çalar/radyo/çalar saat, çay/kahve yapma olanaklarını " +
+                        "ve WiFi erişimini kapsamaktadır.")
+                .assets(mockAssets)
+                .build();
+    }
+
+    private static List<AssetEntity> getAssets() {
+        return List.of(
+                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
+                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        );
+    }
+
 
 }
