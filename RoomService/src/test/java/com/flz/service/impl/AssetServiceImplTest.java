@@ -230,11 +230,22 @@ class AssetServiceImplTest extends BaseTest {
     @Test
     public void whenCalledFilteredAssetListIfAssetEntitiesIsEmpty_thenReturnEmptyList() {
 
+        //Given
+        String name = "test";
+        BigDecimal minPrice = BigDecimal.valueOf(100);
+        BigDecimal maxPrice = BigDecimal.valueOf(2000);
+        Boolean isDefault = true;
+        int page = 0;
+        int size = 5;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
         //When
         Mockito.when(assetRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
                 .thenReturn(Page.empty());
 
-        List<AssetResponse> assetResponses = assetService.findAllById(List.of(1L, 2L, 3L));
+        Page<AssetsResponse> assetResponses
+                = assetService.findAll(name, minPrice, maxPrice, isDefault, page, size, property, direction);
 
         //Then
         Assertions.assertNotNull(assetRepository);
@@ -242,7 +253,8 @@ class AssetServiceImplTest extends BaseTest {
         Assertions.assertTrue(assetResponses.isEmpty());
 
         //Verify
-        Mockito.verify(assetRepository, Mockito.times(1)).findAllById(List.of(1L, 2L, 3L));
+        Mockito.verify(assetRepository, Mockito.times(1))
+                .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
 
     }
 
