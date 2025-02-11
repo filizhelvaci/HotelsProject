@@ -161,4 +161,22 @@ class AssetControllerTest extends BaseTest {
         //Verify
         Mockito.verify(assetService, Mockito.never()).findById(Mockito.any());
     }
+
+    @Test
+    public void givenServerError_whenFindById_thenReturnInternalServerError() throws Exception {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Mockito.when(assetService.findById(mockId))
+                .thenThrow(new RuntimeException("Unexpected error"));
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/asset/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+
+    }
+
 }
