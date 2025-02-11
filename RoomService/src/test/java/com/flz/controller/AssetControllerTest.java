@@ -138,13 +138,27 @@ class AssetControllerTest extends BaseTest {
         Mockito.when(assetService.findById(nonAssetId))
                 .thenThrow(new AssetNotFoundException(nonAssetId));
 
-        // Then
+        //Then
         mockMvc.perform(get(BASE_PATH + "/asset/{id}", nonAssetId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 
-        // Verify
+        //Verify
         Mockito.verify(assetService, Mockito.times(1)).findById(nonAssetId);
     }
 
+    @Test
+    public void givenInvalidAssetId_whenNotFoundById_thenReturnBadRequest() throws Exception {
+
+        //Given
+        String invalidAssetId = "ukhd-3521";
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/asset/{id}", invalidAssetId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.never()).findById(Mockito.any());
+    }
 }
