@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -210,11 +211,34 @@ class AssetControllerTest extends BaseTest {
         mockMvc.perform(get(BASE_PATH + "/assets/summary")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.response").isArray())
                 .andDo(print());
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1)).findSummaryAll();
 
+    }
+
+    @Test
+    public void givenNonAssets_whenNotFoundSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //Given
+        List<AssetsSummaryResponse> emptyList = Collections.emptyList();
+
+        //When
+        Mockito.when(assetService.findSummaryAll()).thenReturn(emptyList);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.response").isArray())
+                .andExpect(jsonPath("$.response").isEmpty());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1)).findSummaryAll();
     }
 
 }
