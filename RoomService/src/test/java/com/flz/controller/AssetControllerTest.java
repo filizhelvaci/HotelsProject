@@ -5,6 +5,7 @@ import com.flz.BaseTest;
 import com.flz.exception.AssetNotFoundException;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.response.AssetResponse;
+import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.service.AssetService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -176,6 +178,42 @@ class AssetControllerTest extends BaseTest {
         mockMvc.perform(get(BASE_PATH + "/asset/{id}", mockId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
+
+    }
+
+    /**
+     * findSummaryAll()
+     * {@link AssetService#findSummaryAll()}
+     */
+    @Test
+    public void whenCallAllSummaryAsset_thenReturnAssetsSummaryResponse() throws Exception {
+
+        //Given
+        List<AssetsSummaryResponse> mockAssetsSummaryResponse = List.of(AssetsSummaryResponse.builder()
+                        .id(11L)
+                        .name("test1")
+                        .build(),
+                AssetsSummaryResponse.builder()
+                        .id(12L)
+                        .name("test2")
+                        .build(),
+                AssetsSummaryResponse.builder()
+                        .id(13L)
+                        .name("test3")
+                        .build()
+        );
+
+        //When
+        Mockito.when(assetService.findSummaryAll()).thenReturn(mockAssetsSummaryResponse);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1)).findSummaryAll();
 
     }
 
