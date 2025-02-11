@@ -59,7 +59,8 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(status().isOk());
 
         //Verify
-        Mockito.verify(assetService, Mockito.times(1)).create(Mockito.any(AssetCreateRequest.class));
+        Mockito.verify(assetService, Mockito.times(1))
+                .create(Mockito.any(AssetCreateRequest.class));
 
     }
 
@@ -147,7 +148,8 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(status().isNotFound());
 
         //Verify
-        Mockito.verify(assetService, Mockito.times(1)).findById(nonAssetId);
+        Mockito.verify(assetService, Mockito.times(1))
+                .findById(nonAssetId);
     }
 
     @Test
@@ -162,7 +164,8 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(status().isBadRequest());
 
         //Verify
-        Mockito.verify(assetService, Mockito.never()).findById(Mockito.any());
+        Mockito.verify(assetService, Mockito.never())
+                .findById(Mockito.any());
     }
 
     @Test
@@ -190,7 +193,8 @@ class AssetControllerTest extends BaseTest {
     public void whenCallAllSummaryAsset_thenReturnAssetsSummaryResponse() throws Exception {
 
         //Given
-        List<AssetsSummaryResponse> mockAssetsSummaryResponse = List.of(AssetsSummaryResponse.builder()
+        List<AssetsSummaryResponse> mockAssetsSummaryResponse =
+                List.of(AssetsSummaryResponse.builder()
                         .id(11L)
                         .name("test1")
                         .build(),
@@ -227,7 +231,8 @@ class AssetControllerTest extends BaseTest {
         List<AssetsSummaryResponse> emptyList = Collections.emptyList();
 
         //When
-        Mockito.when(assetService.findSummaryAll()).thenReturn(emptyList);
+        Mockito.when(assetService.findSummaryAll())
+                .thenReturn(emptyList);
 
         //Then
         mockMvc.perform(get(BASE_PATH + "/assets/summary")
@@ -238,7 +243,27 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.response").isEmpty());
 
         //Verify
-        Mockito.verify(assetService, Mockito.times(1)).findSummaryAll();
+        Mockito.verify(assetService, Mockito.times(1))
+                .findSummaryAll();
+    }
+
+    @Test
+    public void whenFindSummaryAllIsCalledAndTheServiceFails_henReturnInternalServerError() throws Exception {
+
+        //When
+        Mockito.when(assetService.findSummaryAll())
+                .thenThrow(new RuntimeException("Beklenmeyen bir hata oluştu"));
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.isSuccess").value(false));
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .findSummaryAll();
+
     }
 
 }
