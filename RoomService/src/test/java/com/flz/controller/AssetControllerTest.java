@@ -2,6 +2,7 @@ package com.flz.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
+import com.flz.exception.AssetNotFoundException;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.response.AssetResponse;
 import com.flz.service.AssetService;
@@ -127,5 +128,23 @@ class AssetControllerTest extends BaseTest {
         Mockito.verify(assetService, Mockito.times(1)).findById(mockId);
     }
 
+    @Test
+    public void givenNonAssetId_whenNotFoundById_thenReturnNotFoundException() throws Exception {
+
+        //Given
+        Long nonAssetId = 999L;
+
+        //When
+        Mockito.when(assetService.findById(nonAssetId))
+                .thenThrow(new AssetNotFoundException(nonAssetId));
+
+        // Then
+        mockMvc.perform(get(BASE_PATH + "/asset/{id}", nonAssetId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        // Verify
+        Mockito.verify(assetService, Mockito.times(1)).findById(nonAssetId);
+    }
 
 }
