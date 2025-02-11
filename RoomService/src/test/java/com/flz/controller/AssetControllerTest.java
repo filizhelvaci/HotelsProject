@@ -3,6 +3,7 @@ package com.flz.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
 import com.flz.model.request.AssetCreateRequest;
+import com.flz.model.response.AssetResponse;
 import com.flz.service.AssetService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,7 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AssetController.class)
@@ -88,5 +92,40 @@ class AssetControllerTest extends BaseTest {
                         .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest)))
                 .andExpect(status().isInternalServerError());
     }
+
+    /**
+     * findById
+     * {@link AssetController#findById(Long)}
+     */
+    @Test
+    public void givenValidId_whenFindAssetById_thenReturnAssetResponse() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        AssetResponse mockAssetResponse = AssetResponse.builder()
+                .id(10L)
+                .name("test")
+                .price(BigDecimal.valueOf(250))
+                .isDefault(true)
+                .build();
+
+        Mockito.when(assetService.findById(mockId)).thenReturn(mockAssetResponse);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/asset/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.id").value(mockId))
+                .andExpect(jsonPath("$.response.name").value("test"))
+                .andExpect(jsonPath("$.response.price").value(250))
+                .andExpect(jsonPath("$.response.isDefault").value(true));
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1)).findById(mockId);
+    }
+
 
 }
