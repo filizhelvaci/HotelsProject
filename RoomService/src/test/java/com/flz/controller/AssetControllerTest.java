@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -460,6 +461,20 @@ class AssetControllerTest extends BaseTest {
 
     }
 
+    @Test
+    void givenValidId_whenCalledDelete_thenDeleteSuccessfully() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.doNothing().when(assetService).delete(mockId);
+
+        //Then
+        mockMvc.perform(delete(BASE_PATH + "/asset/{id}", mockId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true));
+    }
 
     private static List<AssetsResponse> getAssetsResponse() {
         return List.of(AssetsResponse.builder()
