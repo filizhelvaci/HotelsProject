@@ -483,11 +483,21 @@ class AssetControllerTest extends BaseTest {
         Long mockId = 99L;
 
         //When
-        Mockito.doThrow(new AssetNotFoundException(mockId)).when(assetService).delete(mockId);
+        Mockito.doThrow(new AssetNotFoundException(mockId))
+                .when(assetService).delete(mockId);
 
         //Then
         mockMvc.perform(delete(BASE_PATH + "/asset/{id}", mockId))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testDeleteAsset_BadRequest() throws Exception {
+
+        //Then
+        mockMvc.perform(delete(BASE_PATH + "/asset/{id}", "lkjhg"))
+                .andExpect(status().isBadRequest());
+
     }
 
     private static List<AssetsResponse> getAssetsResponse() {
