@@ -355,6 +355,48 @@ class AssetControllerTest extends BaseTest {
                         Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
     }
 
+    @Test
+    public void givenPriceRangeFilter_whenFindAll_thenReturnFilteredAssetsAsBetweenMinPriceAndMaxPrice() throws Exception {
+
+        //Given
+        int page = 0;
+        int size = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
+
+        Page<AssetsResponse> mockAssetsPage =
+                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
+
+        Mockito.when(assetService.findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(250)),
+                        Mockito.eq(BigDecimal.valueOf(1000)), Mockito.any(), Mockito.anyInt(),
+                        Mockito.anyInt(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockAssetsPage);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets")
+                        .param("minPrice", "250")
+                        .param("maxPrice", "1000")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("property", "name")
+                        .param("direction", "ASC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.content[0].price").value(300));
+
+        // Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(250)), Mockito.eq(BigDecimal.valueOf(1000)),
+                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+
+    }
+
     private static List<AssetsResponse> getAssetsResponse() {
         return List.of(AssetsResponse.builder()
                         .id(10L)
