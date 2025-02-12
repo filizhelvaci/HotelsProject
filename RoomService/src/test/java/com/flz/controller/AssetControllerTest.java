@@ -431,6 +431,35 @@ class AssetControllerTest extends BaseTest {
 
     }
 
+    @Test
+    void givenNonValidId_whenCalledAssetWithNonById_thenReturnsAssetNotFoundException() throws Exception {
+
+        //Given
+        Long mockNonId = 999L;
+
+        AssetUpdateRequest mockRequest = new AssetUpdateRequest();
+        mockRequest.setName("updateAsset");
+        mockRequest.setPrice(BigDecimal.valueOf(2000));
+        mockRequest.setIsDefault(false);
+
+        //When
+        Mockito.doThrow(new AssetNotFoundException(mockNonId))
+                .when(assetService).update(mockNonId, mockRequest);
+
+        //Then
+        mockMvc.perform(put(BASE_PATH + "/asset/{id}", mockNonId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(AssetUpdateRequest.class));
+
+    }
+
 
     private static List<AssetsResponse> getAssetsResponse() {
         return List.of(AssetsResponse.builder()
