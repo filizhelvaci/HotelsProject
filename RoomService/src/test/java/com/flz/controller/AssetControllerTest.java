@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
 import com.flz.exception.AssetNotFoundException;
 import com.flz.model.request.AssetCreateRequest;
+import com.flz.model.request.AssetUpdateRequest;
 import com.flz.model.response.AssetResponse;
 import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -396,6 +398,39 @@ class AssetControllerTest extends BaseTest {
                         Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
 
     }
+
+    /**
+     * Update
+     * {@link AssetController#update(Long, AssetUpdateRequest)}
+     */
+    @Test
+    public void givenValidIdAndAssetRequest_whenFindAssetById_thenUpdateAssetSuccessfully() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        AssetUpdateRequest mockAssetUpdateRequest = new AssetUpdateRequest();
+        mockAssetUpdateRequest.setName("updateAsset");
+        mockAssetUpdateRequest.setPrice(BigDecimal.valueOf(2000));
+        mockAssetUpdateRequest.setIsDefault(false);
+
+        //When
+        Mockito.doNothing().when(assetService).update(mockId, mockAssetUpdateRequest);
+
+        //Then
+        mockMvc.perform(put(BASE_PATH + "/asset/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockAssetUpdateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(AssetUpdateRequest.class));
+
+    }
+
 
     private static List<AssetsResponse> getAssetsResponse() {
         return List.of(AssetsResponse.builder()
