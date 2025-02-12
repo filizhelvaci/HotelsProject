@@ -476,6 +476,20 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.isSuccess").value(true));
     }
 
+    @Test
+    void givenNonAssetId_whenCalledDeleteAssetService_thenReturnAssetNotFoundException() throws Exception {
+
+        //Given
+        Long mockId = 99L;
+
+        //When
+        Mockito.doThrow(new AssetNotFoundException(mockId)).when(assetService).delete(mockId);
+
+        //Then
+        mockMvc.perform(delete(BASE_PATH + "/asset/{id}", mockId))
+                .andExpect(status().isNotFound());
+    }
+
     private static List<AssetsResponse> getAssetsResponse() {
         return List.of(AssetsResponse.builder()
                         .id(10L)
