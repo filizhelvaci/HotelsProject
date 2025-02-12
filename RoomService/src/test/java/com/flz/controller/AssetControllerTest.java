@@ -5,6 +5,7 @@ import com.flz.BaseTest;
 import com.flz.exception.AssetNotFoundException;
 import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.response.AssetResponse;
+import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.service.AssetService;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -195,18 +200,18 @@ class AssetControllerTest extends BaseTest {
         //Given
         List<AssetsSummaryResponse> mockAssetsSummaryResponse =
                 List.of(AssetsSummaryResponse.builder()
-                        .id(11L)
-                        .name("test1")
-                        .build(),
-                AssetsSummaryResponse.builder()
-                        .id(12L)
-                        .name("test2")
-                        .build(),
-                AssetsSummaryResponse.builder()
-                        .id(13L)
-                        .name("test3")
-                        .build()
-        );
+                                .id(11L)
+                                .name("test1")
+                                .build(),
+                        AssetsSummaryResponse.builder()
+                                .id(12L)
+                                .name("test2")
+                                .build(),
+                        AssetsSummaryResponse.builder()
+                                .id(13L)
+                                .name("test3")
+                                .build()
+                );
 
         //When
         Mockito.when(assetService.findSummaryAll()).thenReturn(mockAssetsSummaryResponse);
@@ -264,6 +269,67 @@ class AssetControllerTest extends BaseTest {
         Mockito.verify(assetService, Mockito.times(1))
                 .findSummaryAll();
 
+    }
+
+    /**
+     * findAll()
+     * {@link AssetController#findAll(String, BigDecimal, BigDecimal, Boolean, int, int, String, Sort.Direction)}
+     */
+    @Test
+    public void givenFilteringParameters_whenCalledService_thenReturnFilteredAssetsResponseSuccessfully() throws Exception {
+
+        //Given
+        int page = 0;
+        int size = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        List<AssetsResponse> mockAssetsResponse = List.of(AssetsResponse.builder()
+                        .id(10L)
+                        .name("test1")
+                        .price(BigDecimal.valueOf(300))
+                        .isDefault(true)
+                        .build(),
+                AssetsResponse.builder()
+                        .id(11L)
+                        .name("test2")
+                        .price(BigDecimal.valueOf(500))
+                        .isDefault(true)
+                        .build(),
+                AssetsResponse.builder()
+                        .id(12L)
+                        .name("test3")
+                        .price(BigDecimal.valueOf(800))
+                        .isDefault(true)
+                        .build()
+        );
+
+        Page<AssetsResponse> mockAssetsPage =
+                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
+
+        Mockito.when(assetService.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockAssetsPage);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("property", "name")
+                        .param("direction", Sort.Direction.ASC.name())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
     }
 
 }
