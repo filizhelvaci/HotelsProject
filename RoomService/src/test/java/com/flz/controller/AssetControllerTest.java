@@ -8,6 +8,7 @@ import com.flz.model.response.AssetResponse;
 import com.flz.model.response.AssetsResponse;
 import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.service.AssetService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -284,29 +285,11 @@ class AssetControllerTest extends BaseTest {
         String property = "name";
         Sort.Direction direction = Sort.Direction.ASC;
 
-        //
+        //When
         Sort sort = Sort.by(direction, property);
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        List<AssetsResponse> mockAssetsResponse = List.of(AssetsResponse.builder()
-                        .id(10L)
-                        .name("test1")
-                        .price(BigDecimal.valueOf(300))
-                        .isDefault(true)
-                        .build(),
-                AssetsResponse.builder()
-                        .id(11L)
-                        .name("test2")
-                        .price(BigDecimal.valueOf(500))
-                        .isDefault(true)
-                        .build(),
-                AssetsResponse.builder()
-                        .id(12L)
-                        .name("test3")
-                        .price(BigDecimal.valueOf(800))
-                        .isDefault(true)
-                        .build()
-        );
+        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
 
         Page<AssetsResponse> mockAssetsPage =
                 new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
@@ -330,6 +313,68 @@ class AssetControllerTest extends BaseTest {
         Mockito.verify(assetService, Mockito.times(1))
                 .findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
                         Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    public void givenNameFilter_whenFindAll_thenReturnFilteredAssetsAsNameField() throws Exception {
+
+        //Given
+        int page = 0;
+        int size = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
+
+        Page<AssetsResponse> mockAssetsPage =
+                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
+
+        Mockito.when(assetService.findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(),
+                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockAssetsPage);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets")
+                        .param("name", "test")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("property", "name")
+                        .param("direction", "ASC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")));
+
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(),
+                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+    }
+
+    private static List<AssetsResponse> getAssetsResponse() {
+        return List.of(AssetsResponse.builder()
+                        .id(10L)
+                        .name("test1")
+                        .price(BigDecimal.valueOf(300))
+                        .isDefault(true)
+                        .build(),
+                AssetsResponse.builder()
+                        .id(11L)
+                        .name("test2")
+                        .price(BigDecimal.valueOf(500))
+                        .isDefault(true)
+                        .build(),
+                AssetsResponse.builder()
+                        .id(12L)
+                        .name("test3")
+                        .price(BigDecimal.valueOf(800))
+                        .isDefault(true)
+                        .build()
+        );
     }
 
 }
