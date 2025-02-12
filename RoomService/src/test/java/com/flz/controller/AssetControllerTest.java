@@ -500,6 +500,9 @@ class AssetControllerTest extends BaseTest {
 
     }
 
+    /**
+     * @return
+     */
     private static List<AssetsResponse> getAssetsResponse() {
         return List.of(AssetsResponse.builder()
                         .id(10L)
