@@ -114,6 +114,21 @@ class RoomTypeControllerTest extends BaseTest {
                 .findById(nonRoomTypeId);
     }
 
+    @Test
+    public void givenInvalidRoomTypeId_whenNotFoundById_thenReturnBadRequest() throws Exception {
+
+        //Given
+        String invalidId = "ukhd-3521";
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room-type/{id}", invalidId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        //Verify
+        Mockito.verify(roomTypeService, Mockito.never())
+                .findById(Mockito.any());
+    }
 
     /**
      * /room-type
