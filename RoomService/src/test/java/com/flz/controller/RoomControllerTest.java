@@ -1,6 +1,8 @@
 package com.flz.controller;
 
 import com.flz.BaseTest;
+import com.flz.model.enums.RoomStatus;
+import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.service.RoomService;
 import org.junit.jupiter.api.Test;
@@ -108,6 +110,42 @@ class RoomControllerTest extends BaseTest {
         Mockito.verify(roomService, Mockito.times(1))
                 .findSummaryAll();
 
+    }
+
+    /**
+     * findById()
+     * {@link RoomController#findById(Long)}
+     */
+    @Test
+    public void givenValidId_whenFindRoomById_thenReturnRoomResponse() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        RoomResponse.Type roomType = RoomResponse.Type.builder().id(10L).name("Standart Room").build();
+
+        RoomResponse mockRoomResponse = RoomResponse.builder()
+                .id(10L)
+                .number(105)
+                .floor(1)
+                .status(RoomStatus.EMPTY)
+                .type(roomType)
+                .build();
+
+        Mockito.when(roomService.findById(mockId)).thenReturn(mockRoomResponse);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.id").value(10L))
+                .andExpect(jsonPath("$.response.number").value(105))
+                .andExpect(jsonPath("$.response.status").value("EMPTY"));
+
+        //Verify
+        Mockito.verify(roomService, Mockito.times(1)).findById(mockId);
     }
 
 }
