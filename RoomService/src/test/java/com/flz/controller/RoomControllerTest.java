@@ -64,21 +64,7 @@ class RoomControllerTest extends BaseTest {
 
         RoomsResponse.Type roomType = RoomsResponse.Type.builder().id(10L).name("Standart Room").build();
 
-        List<RoomsResponse> mockRoomsResponse = List.of(RoomsResponse.builder()
-                        .id(10L)
-                        .number(101)
-                        .floor(1)
-                        .status(RoomStatus.EMPTY)
-                        .type(roomType)
-                        .build(),
-                RoomsResponse.builder()
-                        .id(11L)
-                        .number(102)
-                        .floor(1)
-                        .status(RoomStatus.FULL)
-                        .type(roomType)
-                        .build()
-        );
+        List<RoomsResponse> mockRoomsResponse = getRoomsResponse(roomType);
 
         Page<RoomsResponse> mockRoomsPage = new PageImpl<>(mockRoomsResponse, pageRequest, mockRoomsResponse.size());
 
@@ -103,22 +89,8 @@ class RoomControllerTest extends BaseTest {
                         Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
     }
 
-    @Test
-    public void givenFloorFilter_whenFindAllRoomAsFilter_thenReturnRoomsResponse() throws Exception {
-
-        //Given
-        int page = 0;
-        int size = 10;
-        String property = "id";
-        Sort.Direction direction = Sort.Direction.ASC;
-
-        //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        RoomsResponse.Type roomType = RoomsResponse.Type.builder().id(20L).name("Standart Room").build();
-
-        List<RoomsResponse> mockRoomsResponse = List.of(RoomsResponse.builder()
+    private static List<RoomsResponse> getRoomsResponse(RoomsResponse.Type roomType) {
+        return List.of(RoomsResponse.builder()
                         .id(10L)
                         .number(101)
                         .floor(1)
@@ -133,6 +105,25 @@ class RoomControllerTest extends BaseTest {
                         .type(roomType)
                         .build()
         );
+    }
+
+    @Test
+    public void givenFloorFilter_whenFindAllRoomAsFilter_thenReturnRoomsResponse() throws Exception {
+
+        //Given
+        int page = 0;
+        int size = 10;
+        String property = "id";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        RoomsResponse.Type roomType =
+                RoomsResponse.Type.builder().id(20L).name("Standart Room").build();
+
+        List<RoomsResponse> mockRoomsResponse = getRoomsResponse(roomType);
 
         Page<RoomsResponse> mockRoomsPage =
                 new PageImpl<>(mockRoomsResponse, pageRequest, mockRoomsResponse.size());
