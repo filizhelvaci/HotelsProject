@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -333,6 +334,26 @@ class RoomControllerTest extends BaseTest {
                 .update(Mockito.any(), Mockito.any(RoomUpdateRequest.class));
 
     }
+
+    /**
+     * delete()
+     * {@link RoomController#delete(Long)}
+     */
+    @Test
+    void givenValidId_whenCalledDeleteRoom_thenDeleteSuccessfully() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.doNothing().when(roomService).delete(mockId);
+
+        //Then
+        mockMvc.perform(delete(BASE_PATH + "/room/{id}", mockId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true));
+    }
+
 
 
 }
