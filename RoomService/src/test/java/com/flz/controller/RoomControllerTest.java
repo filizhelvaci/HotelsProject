@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
 import com.flz.exception.RoomNotFoundException;
 import com.flz.model.enums.RoomStatus;
-import com.flz.model.request.AssetCreateRequest;
 import com.flz.model.request.RoomCreateRequest;
+import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.service.RoomService;
@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -208,7 +209,7 @@ class RoomControllerTest extends BaseTest {
 
     /**
      * Create()
-     * {@link AssetController#create(AssetCreateRequest)}
+     * {@link RoomController#create(RoomCreateRequest)}
      */
     @Test
     public void givenValidRoomCreateRequest_whenRoomCreated_thenSuccessRoomResponse() throws Exception {
@@ -268,6 +269,39 @@ class RoomControllerTest extends BaseTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest)))
                 .andExpect(status().isInternalServerError());
+    }
+
+    /**
+     * Update()
+     * {@link RoomController#update(Long, RoomUpdateRequest)}
+     */
+    @Test
+    public void givenValidIdAndRoomUpdateRequest_whenFindRoomById_thenUpdateRoomSuccessfully() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        RoomUpdateRequest mockRoomUpdateRequest = new RoomUpdateRequest();
+        mockRoomUpdateRequest.setNumber(302);
+        mockRoomUpdateRequest.setFloor(3);
+        mockRoomUpdateRequest.setRoomTypeId(2L);
+        mockRoomUpdateRequest.setStatus(RoomStatus.FULL);
+
+        //When
+        Mockito.doNothing().when(roomService).update(mockId, mockRoomUpdateRequest);
+
+        //Then
+        mockMvc.perform(put(BASE_PATH + "/room/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockRoomUpdateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(roomService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(RoomUpdateRequest.class));
+
     }
 
 
