@@ -169,4 +169,20 @@ class RoomControllerTest extends BaseTest {
                 .findById(nonId);
     }
 
+    @Test
+    public void givenInvalidRoomId_whenNotFoundRoomById_thenReturnBadRequest() throws Exception {
+
+        //Given
+        String invalidId = "ukhd21";
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room/{id}", invalidId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        //Verify
+        Mockito.verify(roomService, Mockito.never())
+                .findById(Mockito.any());
+    }
+
 }
