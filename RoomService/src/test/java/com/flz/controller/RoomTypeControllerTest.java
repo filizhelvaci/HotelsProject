@@ -95,6 +95,28 @@ class RoomTypeControllerTest extends BaseTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void givenRoomTypeServiceThrowsException_whenCreateRoomType_thenInternalServerErrorResponse() throws Exception {
+
+        //Given
+        RoomTypeCreateRequest mockRoomTypeCreateRequest = new RoomTypeCreateRequest();
+        mockRoomTypeCreateRequest.setName("testRoomType");
+        mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
+        mockRoomTypeCreateRequest.setSize(50);
+        mockRoomTypeCreateRequest.setPersonCount(2);
+        mockRoomTypeCreateRequest.setDescription("This description for Test was written !");
+        mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 2L, 3L));
+
+        //When
+        Mockito.doThrow(new RuntimeException("Unexpected Error")).when(roomTypeService)
+                .create(Mockito.any(RoomTypeCreateRequest.class));
+
+        //Then
+        mockMvc.perform(post(BASE_PATH + "/room-type")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest)))
+                .andExpect(status().isInternalServerError());
+    }
 
     /**
      * /room-type/{id}
