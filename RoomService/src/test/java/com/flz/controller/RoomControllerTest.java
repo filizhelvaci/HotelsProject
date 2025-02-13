@@ -1,6 +1,7 @@
 package com.flz.controller;
 
 import com.flz.BaseTest;
+import com.flz.exception.RoomNotFoundException;
 import com.flz.model.enums.RoomStatus;
 import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomsSummaryResponse;
@@ -146,6 +147,26 @@ class RoomControllerTest extends BaseTest {
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1)).findById(mockId);
+    }
+
+    @Test
+    public void givenNonRoomId_whenNotFoundRoomById_thenReturnRoomNotFoundException() throws Exception {
+
+        //Given
+        Long nonId = 999L;
+
+        //When
+        Mockito.when(roomService.findById(nonId))
+                .thenThrow(new RoomNotFoundException(nonId));
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room/{id}", nonId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        //Verify
+        Mockito.verify(roomService, Mockito.times(1))
+                .findById(nonId);
     }
 
 }
