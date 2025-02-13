@@ -7,6 +7,7 @@ import com.flz.model.enums.RoomStatus;
 import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.RoomResponse;
+import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.service.RoomService;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,6 +44,64 @@ class RoomControllerTest extends BaseTest {
     private MockMvc mockMvc;
 
     private static final String BASE_PATH = "/api/v1";
+
+    /**
+     * findAll()
+     * {@link AssetController#findAll(String, BigDecimal, BigDecimal, Boolean, int, int, String, Sort.Direction)}
+     */
+    @Test
+    public void givenFilteringParameters_whenCalledService_thenReturnFilteredAssetsResponseSuccessfully() throws Exception {
+
+        //Given
+        int page = 0;
+        int size = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        RoomsResponse.Type roomType = RoomsResponse.Type.builder().id(10L).name("Standart Room").build();
+
+        List<RoomsResponse> mockRoomsResponse = List.of(RoomsResponse.builder()
+                        .id(10L)
+                        .number(101)
+                        .floor(1)
+                        .status(RoomStatus.EMPTY)
+                        .type(roomType)
+                        .build(),
+                RoomsResponse.builder()
+                        .id(11L)
+                        .number(102)
+                        .floor(1)
+                        .status(RoomStatus.FULL)
+                        .type(roomType)
+                        .build()
+        );
+
+        Page<RoomsResponse> mockRoomsPage = new PageImpl<>(mockRoomsResponse, pageRequest, mockRoomsResponse.size());
+
+        Mockito.when(roomService.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockRoomsPage);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/rooms")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("property", "name")
+                        .param("direction", Sort.Direction.ASC.name())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(roomService, Mockito.times(1))
+                .findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+    }
 
     /**
      * findSummaryAll()
