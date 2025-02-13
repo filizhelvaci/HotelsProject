@@ -2,6 +2,7 @@ package com.flz.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
+import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.RoomTypeResponse;
@@ -92,6 +93,27 @@ class RoomTypeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1)).findById(mockId);
     }
+
+    @Test
+    public void givenNonRoomTypeId_whenNotFoundById_thenReturnNotFoundException() throws Exception {
+
+        //Given
+        Long nonRoomTypeId = 999L;
+
+        //When
+        Mockito.when(roomTypeService.findById(nonRoomTypeId))
+                .thenThrow(new RoomTypeNotFoundException(nonRoomTypeId));
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room-type/{id}", nonRoomTypeId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        //Verify
+        Mockito.verify(roomTypeService, Mockito.times(1))
+                .findById(nonRoomTypeId);
+    }
+
 
     /**
      * /room-type
