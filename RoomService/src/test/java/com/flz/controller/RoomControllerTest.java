@@ -185,4 +185,22 @@ class RoomControllerTest extends BaseTest {
                 .findById(Mockito.any());
     }
 
+    @Test
+    public void givenValidId_whenTakeServiceError_thenReturnInternalServerError() throws Exception {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Mockito.when(roomService.findById(mockId))
+                .thenThrow(new RuntimeException("Unexpected error"));
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+
+    }
+
+
 }
