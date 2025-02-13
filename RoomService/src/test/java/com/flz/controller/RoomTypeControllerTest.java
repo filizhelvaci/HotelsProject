@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
+import com.flz.model.response.RoomTypeResponse;
 import com.flz.service.RoomTypeService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,7 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RoomTypeController.class)
@@ -48,6 +52,46 @@ class RoomTypeControllerTest extends BaseTest {
      * findById()
      * {@link RoomTypeController#findById(Long)}
      */
+    @Test
+    public void givenValidId_whenFindRoomTypeById_thenReturnRoomTypeResponse() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        List<RoomTypeResponse.Asset> mockAssets = List.of(
+                RoomTypeResponse.Asset.builder().id(1L).name("Yatak Seti").build(),
+                RoomTypeResponse.Asset.builder().id(2L).name("55 inç LCD TV").build(),
+                RoomTypeResponse.Asset.builder().id(3L).name("Wifi").build(),
+                RoomTypeResponse.Asset.builder().id(4L).name("Çay/kahve makinesi").build()
+        );
+
+        RoomTypeResponse mockRoomTypeResponse = RoomTypeResponse.builder()
+                .id(10L)
+                .name("testRoomType")
+                .price(BigDecimal.valueOf(2500))
+                .size(50)
+                .personCount(2)
+                .description("this is a description")
+                .assets(mockAssets)
+                .build();
+
+        Mockito.when(roomTypeService.findById(mockId)).thenReturn(mockRoomTypeResponse);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room-type/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.id").value(mockId))
+                .andExpect(jsonPath("$.response.name").value("testRoomType"))
+                .andExpect(jsonPath("$.response.price").value(2500))
+                .andExpect(jsonPath("$.response.size").value(50))
+                .andExpect(jsonPath("$.response.personCount").value(2));
+
+        //Verify
+        Mockito.verify(roomTypeService, Mockito.times(1)).findById(mockId);
+    }
 
     /**
      * /room-type
