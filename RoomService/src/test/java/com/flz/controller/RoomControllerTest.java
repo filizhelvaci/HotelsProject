@@ -304,5 +304,35 @@ class RoomControllerTest extends BaseTest {
 
     }
 
+    @Test
+    void givenNonId_whenCalledRoomWithNonById_thenReturnsRoomNotFoundException() throws Exception {
+
+        //Given
+        Long NonId = 999L;
+
+        RoomUpdateRequest mockRoomUpdateRequest = new RoomUpdateRequest();
+        mockRoomUpdateRequest.setNumber(302);
+        mockRoomUpdateRequest.setFloor(3);
+        mockRoomUpdateRequest.setRoomTypeId(2L);
+        mockRoomUpdateRequest.setStatus(RoomStatus.FULL);
+
+        //When
+        Mockito.doThrow(new RoomNotFoundException(NonId))
+                .when(roomService).update(NonId, mockRoomUpdateRequest);
+
+        //Then
+        mockMvc.perform(put(BASE_PATH + "/room/{id}", NonId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockRoomUpdateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(roomService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(RoomUpdateRequest.class));
+
+    }
+
 
 }
