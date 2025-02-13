@@ -46,65 +46,208 @@ class AssetControllerTest extends BaseTest {
     private static final String BASE_PATH = "/api/v1";
 
     /**
-     * Create()
-     * {@link AssetController#create(AssetCreateRequest)}
+     * findAll()
+     * {@link AssetController#findAll(String, BigDecimal, BigDecimal, Boolean, int, int, String, Sort.Direction)}
      */
     @Test
-    public void givenValidAssetCreateRequest_whenAssetCreated_thenSuccessResponse() throws Exception {
+    public void givenFilteringParameters_whenCalledService_thenReturnFilteredAssetsResponseSuccessfully() throws Exception {
 
         //Given
-        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
-        mockAssetCreateRequest.setName("test");
-        mockAssetCreateRequest.setPrice(BigDecimal.valueOf(250));
-        mockAssetCreateRequest.setIsDefault(true);
+        int page = 0;
+        int size = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
 
         //When
-        Mockito.doNothing().when(assetService).create(Mockito.any(AssetCreateRequest.class));
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
+
+        Page<AssetsResponse> mockAssetsPage =
+                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
+
+        Mockito.when(assetService.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockAssetsPage);
 
         //Then
-        mockMvc.perform(post(BASE_PATH + "/asset")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest)))
-                .andExpect(status().isOk());
+        mockMvc.perform(get(BASE_PATH + "/assets")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("property", "name")
+                        .param("direction", Sort.Direction.ASC.name())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
-                .create(Mockito.any(AssetCreateRequest.class));
-
+                .findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
     }
 
     @Test
-    public void givenAssetCreateRequestWithMissingFields_whenCreateAsset_thenBadRequestResponse() throws Exception {
+    public void givenNameFilter_whenFindAll_thenReturnFilteredAssetsAsNameField() throws Exception {
 
         //Given
-        AssetCreateRequest invalidRequest = new AssetCreateRequest();
-        invalidRequest.setName("");
+        int page = 0;
+        int size = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
 
         //When
-        mockMvc.perform(post(BASE_PATH + "/asset")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(invalidRequest)))
-                .andExpect(status().isBadRequest());
-    }
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-    @Test
-    public void givenAssetServiceThrowsException_whenCreateAsset_thenInternalServerErrorResponse() throws Exception {
+        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
 
-        //Given
-        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
-        mockAssetCreateRequest.setName("test");
-        mockAssetCreateRequest.setPrice(BigDecimal.valueOf(250));
-        mockAssetCreateRequest.setIsDefault(true);
+        Page<AssetsResponse> mockAssetsPage =
+                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
 
-        //When
-        Mockito.doThrow(new RuntimeException("Unexpected Error")).when(assetService)
-                .create(Mockito.any(AssetCreateRequest.class));
+        Mockito.when(assetService.findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(),
+                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockAssetsPage);
 
         //Then
-        mockMvc.perform(post(BASE_PATH + "/asset")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest)))
-                .andExpect(status().isInternalServerError());
+        mockMvc.perform(get(BASE_PATH + "/assets")
+                        .param("name", "test")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("property", "name")
+                        .param("direction", "ASC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(),
+                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    public void givenPriceRangeFilter_whenFindAll_thenReturnFilteredAssetsAsBetweenMinPriceAndMaxPrice() throws Exception {
+
+        //Given
+        int page = 0;
+        int size = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
+
+        Page<AssetsResponse> mockAssetsPage =
+                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
+
+        Mockito.when(assetService.findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(250)),
+                        Mockito.eq(BigDecimal.valueOf(1000)), Mockito.any(), Mockito.anyInt(),
+                        Mockito.anyInt(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockAssetsPage);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets")
+                        .param("minPrice", "250")
+                        .param("maxPrice", "1000")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("property", "name")
+                        .param("direction", "ASC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.content[0].price").value(300));
+
+        // Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(250)), Mockito.eq(BigDecimal.valueOf(1000)),
+                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+
+    }
+
+    /**
+     * findSummaryAll()
+     * {@link AssetService#findSummaryAll()}
+     */
+    @Test
+    public void whenCallAllSummaryAsset_thenReturnAssetsSummaryResponse() throws Exception {
+
+        //Given
+        List<AssetsSummaryResponse> mockAssetsSummaryResponse =
+                List.of(AssetsSummaryResponse.builder()
+                                .id(11L)
+                                .name("test1")
+                                .build(),
+                        AssetsSummaryResponse.builder()
+                                .id(12L)
+                                .name("test2")
+                                .build(),
+                        AssetsSummaryResponse.builder()
+                                .id(13L)
+                                .name("test3")
+                                .build()
+                );
+
+        //When
+        Mockito.when(assetService.findSummaryAll()).thenReturn(mockAssetsSummaryResponse);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.response").isArray())
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1)).findSummaryAll();
+
+    }
+
+    @Test
+    public void givenNonAssets_whenNotFoundSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //When
+        List<AssetsSummaryResponse> emptyList = Collections.emptyList();
+
+        Mockito.when(assetService.findSummaryAll())
+                .thenReturn(emptyList);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.response").isArray())
+                .andExpect(jsonPath("$.response").isEmpty());
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .findSummaryAll();
+    }
+
+    @Test
+    public void whenFindSummaryAllIsCalledAndTheServiceFails_thenReturnInternalServerError() throws Exception {
+
+        //When
+        Mockito.when(assetService.findSummaryAll())
+                .thenThrow(new RuntimeException("An unexpected error occurred"));
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/assets/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.isSuccess").value(false));
+
+        //Verify
+        Mockito.verify(assetService, Mockito.times(1))
+                .findSummaryAll();
+
     }
 
     /**
@@ -195,208 +338,65 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * findSummaryAll()
-     * {@link AssetService#findSummaryAll()}
+     * Create()
+     * {@link AssetController#create(AssetCreateRequest)}
      */
     @Test
-    public void whenCallAllSummaryAsset_thenReturnAssetsSummaryResponse() throws Exception {
+    public void givenValidAssetCreateRequest_whenAssetCreated_thenSuccessResponse() throws Exception {
 
         //Given
-        List<AssetsSummaryResponse> mockAssetsSummaryResponse =
-                List.of(AssetsSummaryResponse.builder()
-                                .id(11L)
-                                .name("test1")
-                                .build(),
-                        AssetsSummaryResponse.builder()
-                                .id(12L)
-                                .name("test2")
-                                .build(),
-                        AssetsSummaryResponse.builder()
-                                .id(13L)
-                                .name("test3")
-                                .build()
-                );
+        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
+        mockAssetCreateRequest.setName("test");
+        mockAssetCreateRequest.setPrice(BigDecimal.valueOf(250));
+        mockAssetCreateRequest.setIsDefault(true);
 
         //When
-        Mockito.when(assetService.findSummaryAll()).thenReturn(mockAssetsSummaryResponse);
+        Mockito.doNothing().when(assetService).create(Mockito.any(AssetCreateRequest.class));
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/assets/summary")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response").isArray())
-                .andDo(print());
-
-        //Verify
-        Mockito.verify(assetService, Mockito.times(1)).findSummaryAll();
-
-    }
-
-    @Test
-    public void givenNonAssets_whenNotFoundSummaryAll_thenReturnEmptyList() throws Exception {
-
-        //When
-        List<AssetsSummaryResponse> emptyList = Collections.emptyList();
-
-        Mockito.when(assetService.findSummaryAll())
-                .thenReturn(emptyList);
-
-        //Then
-        mockMvc.perform(get(BASE_PATH + "/assets/summary")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response").isArray())
-                .andExpect(jsonPath("$.response").isEmpty());
+        mockMvc.perform(post(BASE_PATH + "/asset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest)))
+                .andExpect(status().isOk());
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
-                .findSummaryAll();
-    }
-
-    @Test
-    public void whenFindSummaryAllIsCalledAndTheServiceFails_thenReturnInternalServerError() throws Exception {
-
-        //When
-        Mockito.when(assetService.findSummaryAll())
-                .thenThrow(new RuntimeException("An unexpected error occurred"));
-
-        //Then
-        mockMvc.perform(get(BASE_PATH + "/assets/summary")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.isSuccess").value(false));
-
-        //Verify
-        Mockito.verify(assetService, Mockito.times(1))
-                .findSummaryAll();
+                .create(Mockito.any(AssetCreateRequest.class));
 
     }
 
-    /**
-     * findAll()
-     * {@link AssetController#findAll(String, BigDecimal, BigDecimal, Boolean, int, int, String, Sort.Direction)}
-     */
     @Test
-    public void givenFilteringParameters_whenCalledService_thenReturnFilteredAssetsResponseSuccessfully() throws Exception {
+    public void givenAssetCreateRequestWithMissingFields_whenCreateAsset_thenBadRequestResponse() throws Exception {
 
         //Given
-        int page = 0;
-        int size = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        AssetCreateRequest invalidRequest = new AssetCreateRequest();
+        invalidRequest.setName("");
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
-
-        Page<AssetsResponse> mockAssetsPage =
-                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
-
-        Mockito.when(assetService.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
-                .thenReturn(mockAssetsPage);
-
-        //Then
-        mockMvc.perform(get(BASE_PATH + "/assets")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("property", "name")
-                        .param("direction", Sort.Direction.ASC.name())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andDo(print());
-
-        //Verify
-        Mockito.verify(assetService, Mockito.times(1))
-                .findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+        mockMvc.perform(post(BASE_PATH + "/asset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenNameFilter_whenFindAll_thenReturnFilteredAssetsAsNameField() throws Exception {
+    public void givenAssetCreateRequest_whenAssetServiceTakeError_thenReturnInternalServerError() throws Exception {
 
         //Given
-        int page = 0;
-        int size = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
+        mockAssetCreateRequest.setName("test");
+        mockAssetCreateRequest.setPrice(BigDecimal.valueOf(250));
+        mockAssetCreateRequest.setIsDefault(true);
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
-
-        Page<AssetsResponse> mockAssetsPage =
-                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
-
-        Mockito.when(assetService.findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
-                .thenReturn(mockAssetsPage);
+        Mockito.doThrow(new RuntimeException("Unexpected Error")).when(assetService)
+                .create(Mockito.any(AssetCreateRequest.class));
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/assets")
-                        .param("name", "test")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("property", "name")
-                        .param("direction", "ASC")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")));
-
-
-        //Verify
-        Mockito.verify(assetService, Mockito.times(1))
-                .findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
-    }
-
-    @Test
-    public void givenPriceRangeFilter_whenFindAll_thenReturnFilteredAssetsAsBetweenMinPriceAndMaxPrice() throws Exception {
-
-        //Given
-        int page = 0;
-        int size = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
-
-        //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
-
-        Page<AssetsResponse> mockAssetsPage =
-                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
-
-        Mockito.when(assetService.findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(250)),
-                        Mockito.eq(BigDecimal.valueOf(1000)), Mockito.any(), Mockito.anyInt(),
-                        Mockito.anyInt(), Mockito.any(), Mockito.any()))
-                .thenReturn(mockAssetsPage);
-
-        //Then
-        mockMvc.perform(get(BASE_PATH + "/assets")
-                        .param("minPrice", "250")
-                        .param("maxPrice", "1000")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("property", "name")
-                        .param("direction", "ASC")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.content[0].price").value(300));
-
-        // Verify
-        Mockito.verify(assetService, Mockito.times(1))
-                .findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(250)), Mockito.eq(BigDecimal.valueOf(1000)),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
-
+        mockMvc.perform(post(BASE_PATH + "/asset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest)))
+                .andExpect(status().isInternalServerError());
     }
 
     /**
@@ -504,7 +504,7 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     *  # Methodized Objects
+     * # Methodized Objects
      */
     private static List<AssetsResponse> getAssetsResponse() {
         return List.of(AssetsResponse.builder()
