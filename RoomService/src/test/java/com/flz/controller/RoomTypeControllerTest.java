@@ -153,6 +153,62 @@ class RoomTypeControllerTest extends BaseTest {
                         Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
     }
 
+    @Test
+    public void givenPriceRangeFilter_whenFindAllMethodCalled_thenReturnFilteredRoomTypesAsBetweenMinPriceAndMaxPrice() throws Exception {
+
+        //Given
+        int page = 0;
+        int pageSize = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+
+        List<RoomTypesResponse> mockRoomTypesResponse = List.of(RoomTypesResponse.builder()
+                        .id(10L)
+                        .name("test1 Room Type")
+                        .size(50)
+                        .personCount(2)
+                        .price(BigDecimal.valueOf(2000))
+                        .build(),
+                RoomTypesResponse.builder()
+                        .id(11L)
+                        .name("test2 Room Type")
+                        .size(60)
+                        .personCount(3)
+                        .price(BigDecimal.valueOf(3000))
+                        .build()
+        );
+
+        Page<RoomTypesResponse> mockRoomTypesPage =
+                new PageImpl<>(mockRoomTypesResponse, pageRequest, mockRoomTypesResponse.size());
+
+        Mockito.when(roomTypeService.findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(1000)),
+                        Mockito.eq(BigDecimal.valueOf(5000)), Mockito.any(), Mockito.any(), Mockito.anyInt(),
+                        Mockito.anyInt(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockRoomTypesPage);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room-types")
+                        .param("minPrice", "1000")
+                        .param("maxPrice", "5000")
+                        .param("page", "0")
+                        .param("pageSize", "10")
+                        .param("property", "name")
+                        .param("direction", "ASC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response.content[0].price").value(2000));
+
+        // Verify
+        Mockito.verify(roomTypeService, Mockito.times(1))
+                .findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(1000)), Mockito.eq(BigDecimal.valueOf(5000)),
+                        Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+
+    }
+
     /**
      * /room-types/summary
      * findSummaryAll()
