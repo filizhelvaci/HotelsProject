@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -66,6 +67,28 @@ class RoomControllerTest extends BaseTest {
         //Verify
         Mockito.verify(roomService, Mockito.times(1)).findSummaryAll();
 
+    }
+
+    @Test
+    public void givenNonRooms_whenNotFoundRoomsSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //When
+        List<RoomsSummaryResponse> emptyList = Collections.emptyList();
+
+        Mockito.when(roomService.findSummaryAll())
+                .thenReturn(emptyList);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/rooms/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.response").isArray())
+                .andExpect(jsonPath("$.response").isEmpty());
+
+        //Verify
+        Mockito.verify(roomService, Mockito.times(1))
+                .findSummaryAll();
     }
 
 }
