@@ -63,21 +63,7 @@ class RoomTypeControllerTest extends BaseTest {
         Sort sort = Sort.by(direction, property);
         PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
 
-        List<RoomTypesResponse> mockRoomTypeResponse = List.of(RoomTypesResponse.builder()
-                        .id(10L)
-                        .name("test1 Room Type")
-                        .size(50)
-                        .personCount(2)
-                        .price(BigDecimal.valueOf(2000))
-                        .build(),
-                RoomTypesResponse.builder()
-                        .id(11L)
-                        .name("test2 Room Type")
-                        .size(60)
-                        .personCount(3)
-                        .price(BigDecimal.valueOf(3000))
-                        .build()
-        );
+        List<RoomTypesResponse> mockRoomTypeResponse = getRoomTypes();
 
         Page<RoomTypesResponse> mockRoomTypePage = new PageImpl<>(mockRoomTypeResponse, pageRequest, 2);
 
@@ -114,21 +100,7 @@ class RoomTypeControllerTest extends BaseTest {
         Sort sort = Sort.by(direction, property);
         PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
 
-        List<RoomTypesResponse> mockRoomTypesResponse = List.of(RoomTypesResponse.builder()
-                        .id(10L)
-                        .name("test1 Room Type")
-                        .size(50)
-                        .personCount(2)
-                        .price(BigDecimal.valueOf(2000))
-                        .build(),
-                RoomTypesResponse.builder()
-                        .id(11L)
-                        .name("test2 Room Type")
-                        .size(60)
-                        .personCount(3)
-                        .price(BigDecimal.valueOf(3000))
-                        .build()
-        );
+        List<RoomTypesResponse> mockRoomTypesResponse = getRoomTypes();
 
         Page<RoomTypesResponse> mockRoomTypesPage =
                 new PageImpl<>(mockRoomTypesResponse, pageRequest, mockRoomTypesResponse.size());
@@ -168,21 +140,7 @@ class RoomTypeControllerTest extends BaseTest {
         Sort sort = Sort.by(direction, property);
         PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
 
-        List<RoomTypesResponse> mockRoomTypesResponse = List.of(RoomTypesResponse.builder()
-                        .id(10L)
-                        .name("test1 Room Type")
-                        .size(50)
-                        .personCount(2)
-                        .price(BigDecimal.valueOf(2000))
-                        .build(),
-                RoomTypesResponse.builder()
-                        .id(11L)
-                        .name("test2 Room Type")
-                        .size(60)
-                        .personCount(3)
-                        .price(BigDecimal.valueOf(3000))
-                        .build()
-        );
+        List<RoomTypesResponse> mockRoomTypesResponse = getRoomTypes();
 
         Page<RoomTypesResponse> mockRoomTypesPage =
                 new PageImpl<>(mockRoomTypesResponse, pageRequest, mockRoomTypesResponse.size());
@@ -400,12 +358,7 @@ class RoomTypeControllerTest extends BaseTest {
 
         //Given
         RoomTypeCreateRequest mockRoomTypeCreateRequest = new RoomTypeCreateRequest();
-        mockRoomTypeCreateRequest.setName("testRoomType");
-        mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
-        mockRoomTypeCreateRequest.setSize(50);
-        mockRoomTypeCreateRequest.setPersonCount(2);
-        mockRoomTypeCreateRequest.setDescription("This description for Test was written !");
-        mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 2L, 3L));
+        roomTypeCreate(mockRoomTypeCreateRequest);
 
         //When
         Mockito.doNothing().when(roomTypeService).create(mockRoomTypeCreateRequest);
@@ -441,12 +394,7 @@ class RoomTypeControllerTest extends BaseTest {
 
         //Given
         RoomTypeCreateRequest mockRoomTypeCreateRequest = new RoomTypeCreateRequest();
-        mockRoomTypeCreateRequest.setName("testRoomType");
-        mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
-        mockRoomTypeCreateRequest.setSize(50);
-        mockRoomTypeCreateRequest.setPersonCount(2);
-        mockRoomTypeCreateRequest.setDescription("This description for Test was written !");
-        mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 2L, 3L));
+        roomTypeCreate(mockRoomTypeCreateRequest);
 
         //When
         Mockito.doThrow(new RuntimeException("Unexpected Error")).when(roomTypeService)
@@ -471,12 +419,7 @@ class RoomTypeControllerTest extends BaseTest {
         Long mockId = 10L;
 
         RoomTypeUpdateRequest mockroomTypeUpdateRequest = new RoomTypeUpdateRequest();
-        mockroomTypeUpdateRequest.setName("testUpdateRoomType");
-        mockroomTypeUpdateRequest.setPrice(BigDecimal.valueOf(1500));
-        mockroomTypeUpdateRequest.setSize(35);
-        mockroomTypeUpdateRequest.setPersonCount(2);
-        mockroomTypeUpdateRequest.setDescription("This description for Test was written !");
-        mockroomTypeUpdateRequest.setAssetIds(List.of(1L, 2L, 3L));
+        roomTypeUpdate(mockroomTypeUpdateRequest);
 
         //When
         Mockito.doNothing().when(roomTypeService).update(mockId, mockroomTypeUpdateRequest);
@@ -502,12 +445,7 @@ class RoomTypeControllerTest extends BaseTest {
         Long mockNonId = 999L;
 
         RoomTypeUpdateRequest mockroomTypeUpdateRequest = new RoomTypeUpdateRequest();
-        mockroomTypeUpdateRequest.setName("testUpdateRoomType");
-        mockroomTypeUpdateRequest.setPrice(BigDecimal.valueOf(1500));
-        mockroomTypeUpdateRequest.setSize(35);
-        mockroomTypeUpdateRequest.setPersonCount(2);
-        mockroomTypeUpdateRequest.setDescription("This description for Test was written !");
-        mockroomTypeUpdateRequest.setAssetIds(List.of(1L, 2L, 3L));
+        roomTypeUpdate(mockroomTypeUpdateRequest);
 
         //When
         Mockito.doThrow(new RoomTypeNotFoundException(mockNonId))
@@ -569,6 +507,42 @@ class RoomTypeControllerTest extends BaseTest {
         mockMvc.perform(delete(BASE_PATH + "/room-type/{id}", "hahahah"))
                 .andExpect(status().isBadRequest());
 
+    }
+
+    private static void roomTypeCreate(RoomTypeCreateRequest mockRoomTypeCreateRequest) {
+        mockRoomTypeCreateRequest.setName("testRoomType");
+        mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
+        mockRoomTypeCreateRequest.setSize(50);
+        mockRoomTypeCreateRequest.setPersonCount(2);
+        mockRoomTypeCreateRequest.setDescription("This description for Test was written !");
+        mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 2L, 3L));
+    }
+
+    private static void roomTypeUpdate(RoomTypeUpdateRequest mockroomTypeUpdateRequest) {
+        mockroomTypeUpdateRequest.setName("testUpdateRoomType");
+        mockroomTypeUpdateRequest.setPrice(BigDecimal.valueOf(1500));
+        mockroomTypeUpdateRequest.setSize(35);
+        mockroomTypeUpdateRequest.setPersonCount(2);
+        mockroomTypeUpdateRequest.setDescription("This description for Test was written !");
+        mockroomTypeUpdateRequest.setAssetIds(List.of(1L, 2L, 3L));
+    }
+
+    private static List<RoomTypesResponse> getRoomTypes() {
+        return List.of(RoomTypesResponse.builder()
+                        .id(10L)
+                        .name("test1 Room Type")
+                        .size(50)
+                        .personCount(2)
+                        .price(BigDecimal.valueOf(2000))
+                        .build(),
+                RoomTypesResponse.builder()
+                        .id(11L)
+                        .name("test2 Room Type")
+                        .size(60)
+                        .personCount(3)
+                        .price(BigDecimal.valueOf(3000))
+                        .build()
+        );
     }
 
 
