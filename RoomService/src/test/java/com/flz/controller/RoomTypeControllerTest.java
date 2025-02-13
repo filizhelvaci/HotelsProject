@@ -81,6 +81,21 @@ class RoomTypeControllerTest extends BaseTest {
 
     }
 
+    @Test
+    public void givenRoomTypeCreateRequestWithMissingFields_whenCreateRoomType_thenBadRequestResponse() throws Exception {
+
+        //Given
+        RoomTypeCreateRequest invalidRequest = new RoomTypeCreateRequest();
+        invalidRequest.setName("");
+
+        //Then
+        mockMvc.perform(post(BASE_PATH + "/room-type")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+
     /**
      * /room-type/{id}
      * update()
