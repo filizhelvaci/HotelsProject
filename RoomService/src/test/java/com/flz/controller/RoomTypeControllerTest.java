@@ -6,6 +6,7 @@ import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.RoomTypeResponse;
+import com.flz.model.response.RoomTypesSummaryResponse;
 import com.flz.service.RoomTypeService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -43,10 +44,45 @@ class RoomTypeControllerTest extends BaseTest {
      */
 
     /**
-     *  /room-types/summary
-     *  findSummaryAll()
-     *  {@link RoomTypeController#findSummaryAll()}
+     * /room-types/summary
+     * findSummaryAll()
+     * {@link RoomTypeController#findSummaryAll()}
      */
+    @Test
+    public void whenCallAllSummaryRoomType_thenReturnRoomTypesSummaryResponse() throws Exception {
+
+        //Given
+        List<RoomTypesSummaryResponse> mockRoomTypesSummaryResponse =
+                List.of(RoomTypesSummaryResponse.builder()
+                                .id(11L)
+                                .name("test1")
+                                .build(),
+                        RoomTypesSummaryResponse.builder()
+                                .id(12L)
+                                .name("test2")
+                                .build(),
+                        RoomTypesSummaryResponse.builder()
+                                .id(13L)
+                                .name("test3")
+                                .build()
+                );
+
+        //When
+        Mockito.when(roomTypeService.findSummaryAll()).thenReturn(mockRoomTypesSummaryResponse);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room-types/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.response").isArray())
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(roomTypeService, Mockito.times(1)).findSummaryAll();
+
+    }
+
 
     /**
      * /room-type/{id}
