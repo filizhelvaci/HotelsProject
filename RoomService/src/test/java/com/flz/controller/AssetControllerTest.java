@@ -46,7 +46,7 @@ class AssetControllerTest extends BaseTest {
     private static final String BASE_PATH = "/api/v1";
 
     /**
-     * Create-Controller
+     * Create()
      * {@link AssetController#create(AssetCreateRequest)}
      */
     @Test
@@ -108,7 +108,7 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * findById
+     * findById()
      * {@link AssetController#findById(Long)}
      */
     @Test
@@ -236,10 +236,9 @@ class AssetControllerTest extends BaseTest {
     @Test
     public void givenNonAssets_whenNotFoundSummaryAll_thenReturnEmptyList() throws Exception {
 
-        //Given
+        //When
         List<AssetsSummaryResponse> emptyList = Collections.emptyList();
 
-        //When
         Mockito.when(assetService.findSummaryAll())
                 .thenReturn(emptyList);
 
@@ -257,11 +256,11 @@ class AssetControllerTest extends BaseTest {
     }
 
     @Test
-    public void whenFindSummaryAllIsCalledAndTheServiceFails_henReturnInternalServerError() throws Exception {
+    public void whenFindSummaryAllIsCalledAndTheServiceFails_thenReturnInternalServerError() throws Exception {
 
         //When
         Mockito.when(assetService.findSummaryAll())
-                .thenThrow(new RuntimeException("Beklenmeyen bir hata oluştu"));
+                .thenThrow(new RuntimeException("An unexpected error occurred"));
 
         //Then
         mockMvc.perform(get(BASE_PATH + "/assets/summary")
@@ -401,7 +400,7 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * Update
+     * Update()
      * {@link AssetController#update(Long, AssetUpdateRequest)}
      */
     @Test
@@ -461,6 +460,10 @@ class AssetControllerTest extends BaseTest {
 
     }
 
+    /**
+     * delete()
+     * {@link AssetController#delete(Long)}
+     */
     @Test
     void givenValidId_whenCalledDelete_thenDeleteSuccessfully() throws Exception {
 
@@ -492,7 +495,7 @@ class AssetControllerTest extends BaseTest {
     }
 
     @Test
-    void testDeleteAsset_BadRequest() throws Exception {
+    void givenInValidId_whenCalledDeleteForAsset_thenReturnBadRequest() throws Exception {
 
         //Then
         mockMvc.perform(delete(BASE_PATH + "/asset/{id}", "lkjhg"))
@@ -501,7 +504,7 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * @return
+     *  # Methodized Objects
      */
     private static List<AssetsResponse> getAssetsResponse() {
         return List.of(AssetsResponse.builder()
