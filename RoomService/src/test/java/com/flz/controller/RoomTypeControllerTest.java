@@ -28,6 +28,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -462,7 +463,36 @@ class RoomTypeControllerTest extends BaseTest {
      * update()
      * {@link RoomTypeController#update(Long, RoomTypeUpdateRequest)}
      */
+    @Test
+    public void givenValidIdAndRoomTypeRequest_whenFindRoomTypeById_thenUpdateRoomTypeSuccessfully() throws Exception {
 
+        //Given
+        Long mockId = 10L;
+
+        RoomTypeUpdateRequest mockroomTypeUpdateRequest = new RoomTypeUpdateRequest();
+        mockroomTypeUpdateRequest.setName("testUpdateRoomType");
+        mockroomTypeUpdateRequest.setPrice(BigDecimal.valueOf(1500));
+        mockroomTypeUpdateRequest.setSize(35);
+        mockroomTypeUpdateRequest.setPersonCount(2);
+        mockroomTypeUpdateRequest.setDescription("This description for Test was written !");
+        mockroomTypeUpdateRequest.setAssetIds(List.of(1L, 2L, 3L));
+
+        //When
+        Mockito.doNothing().when(roomTypeService).update(mockId, mockroomTypeUpdateRequest);
+
+        //Then
+        mockMvc.perform(put(BASE_PATH + "/room-type/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockroomTypeUpdateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(roomTypeService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(RoomTypeUpdateRequest.class));
+
+    }
     /**
      * /room-type/{id}
      * delete
