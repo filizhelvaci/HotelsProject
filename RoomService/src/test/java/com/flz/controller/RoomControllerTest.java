@@ -369,5 +369,13 @@ class RoomControllerTest extends BaseTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void givenInValidId_whenCalledDeleteForRoom_thenReturnBadRequest() throws Exception {
+
+        //Then
+        mockMvc.perform(delete(BASE_PATH + "/room/{id}", "lkjhg"))
+                .andExpect(status().isBadRequest());
+
+    }
 
 }
