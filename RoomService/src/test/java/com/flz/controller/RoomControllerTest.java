@@ -249,6 +249,26 @@ class RoomControllerTest extends BaseTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void givenRoomCreateRequest_whenRoomServiceTakeError_thenReturnInternalServerError() throws Exception {
+
+        //Given
+        RoomCreateRequest mockRoomCreateRequest = new RoomCreateRequest();
+        mockRoomCreateRequest.setNumber(202);
+        mockRoomCreateRequest.setFloor(2);
+        mockRoomCreateRequest.setRoomTypeId(2L);
+        mockRoomCreateRequest.setStatus(RoomStatus.EMPTY);
+
+        //When
+        Mockito.doThrow(new RuntimeException("Unexpected Error")).when(roomService)
+                .create(Mockito.any(RoomCreateRequest.class));
+
+        //Then
+        mockMvc.perform(post(BASE_PATH + "/asset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest)))
+                .andExpect(status().isInternalServerError());
+    }
 
 
 }
