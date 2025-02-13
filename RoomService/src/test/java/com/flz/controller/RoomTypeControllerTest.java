@@ -6,6 +6,7 @@ import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
 import com.flz.model.response.RoomTypeResponse;
+import com.flz.model.response.RoomTypesResponse;
 import com.flz.model.response.RoomTypesSummaryResponse;
 import com.flz.service.RoomTypeService;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,6 +47,57 @@ class RoomTypeControllerTest extends BaseTest {
      * findAll()
      * {@link RoomTypeController#findAll(String, BigDecimal, BigDecimal, Integer, Integer, int, int, String, Sort.Direction)}
      */
+    @Test
+    public void givenFilteringParameters_whenCalledRoomTypeService_thenReturnFilteredRoomTypesResponseSuccessfully() throws Exception {
+
+        //Given
+        int page = 0;
+        int pageSize = 10;
+        String property = "name";
+        Sort.Direction direction = Sort.Direction.ASC;
+
+        //When
+        Sort sort = Sort.by(direction, property);
+        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+
+        List<RoomTypesResponse> mockRoomTypeResponse = List.of(RoomTypesResponse.builder()
+                        .id(10L)
+                        .name("test1 Room Type")
+                        .size(50)
+                        .personCount(2)
+                        .price(BigDecimal.valueOf(2000))
+                        .build(),
+                RoomTypesResponse.builder()
+                        .id(11L)
+                        .name("test2 Room Type")
+                        .size(60)
+                        .personCount(3)
+                        .price(BigDecimal.valueOf(3000))
+                        .build()
+        );
+
+        Page<RoomTypesResponse> mockRoomTypePage = new PageImpl<>(mockRoomTypeResponse, pageRequest, 2);
+
+        Mockito.when(roomTypeService.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any())).thenReturn(mockRoomTypePage);
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/room-types")
+                        .param("page", "0")
+                        .param("pageSize", "10")
+                        .param("property", "name")
+                        .param("direction", Sort.Direction.ASC.name())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(roomTypeService, Mockito.times(1))
+                .findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+    }
+
 
     /**
      * /room-types/summary
