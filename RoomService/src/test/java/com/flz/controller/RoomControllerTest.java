@@ -354,6 +354,20 @@ class RoomControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.isSuccess").value(true));
     }
 
+    @Test
+    void givenNonId_whenCalledDeleteRoom_thenReturnRoomNotFoundException() throws Exception {
+
+        //Given
+        Long mockId = 99L;
+
+        //When
+        Mockito.doThrow(new RoomNotFoundException(mockId))
+                .when(roomService).delete(mockId);
+
+        //Then
+        mockMvc.perform(delete(BASE_PATH + "/room/{id}", mockId))
+                .andExpect(status().isNotFound());
+    }
 
 
 }
