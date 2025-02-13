@@ -91,4 +91,23 @@ class RoomControllerTest extends BaseTest {
                 .findSummaryAll();
     }
 
+    @Test
+    public void whenFindSummaryAllIsCalledAndTheRoomServiceFails_thenReturnInternalServerError() throws Exception {
+
+        //When
+        Mockito.when(roomService.findSummaryAll())
+                .thenThrow(new RuntimeException("An unexpected error occurred"));
+
+        //Then
+        mockMvc.perform(get(BASE_PATH + "/rooms/summary")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.isSuccess").value(false));
+
+        //Verify
+        Mockito.verify(roomService, Mockito.times(1))
+                .findSummaryAll();
+
+    }
+
 }
