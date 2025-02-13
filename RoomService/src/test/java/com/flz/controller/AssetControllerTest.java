@@ -119,8 +119,8 @@ class AssetControllerTest extends BaseTest {
                         .param("direction", "ASC")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")));
-
+                .andExpect(jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")))
+                .andDo(print());
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
@@ -380,7 +380,7 @@ class AssetControllerTest extends BaseTest {
     }
 
     @Test
-    public void givenAssetServiceThrowsException_whenCreateAsset_thenInternalServerErrorResponse() throws Exception {
+    public void givenAssetCreateRequest_whenAssetServiceTakeError_thenReturnInternalServerError() throws Exception {
 
         //Given
         AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
