@@ -493,6 +493,39 @@ class RoomTypeControllerTest extends BaseTest {
                 .update(Mockito.any(), Mockito.any(RoomTypeUpdateRequest.class));
 
     }
+
+    @Test
+    void givenNonValidId_whenCalledRoomTypeWithNonById_thenReturnsRoomTypeNotFoundException() throws Exception {
+
+        //Given
+        Long mockNonId = 999L;
+
+        RoomTypeUpdateRequest mockroomTypeUpdateRequest = new RoomTypeUpdateRequest();
+        mockroomTypeUpdateRequest.setName("testUpdateRoomType");
+        mockroomTypeUpdateRequest.setPrice(BigDecimal.valueOf(1500));
+        mockroomTypeUpdateRequest.setSize(35);
+        mockroomTypeUpdateRequest.setPersonCount(2);
+        mockroomTypeUpdateRequest.setDescription("This description for Test was written !");
+        mockroomTypeUpdateRequest.setAssetIds(List.of(1L, 2L, 3L));
+
+        //When
+        Mockito.doThrow(new RoomTypeNotFoundException(mockNonId))
+                .when(roomTypeService).update(mockNonId, mockroomTypeUpdateRequest);
+
+        //Then
+        mockMvc.perform(put(BASE_PATH + "/room-type/{id}", mockNonId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockroomTypeUpdateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andDo(print());
+
+        //Verify
+        Mockito.verify(roomTypeService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(RoomTypeUpdateRequest.class));
+
+    }
+
     /**
      * /room-type/{id}
      * delete
