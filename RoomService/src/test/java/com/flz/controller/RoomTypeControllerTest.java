@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -531,4 +532,19 @@ class RoomTypeControllerTest extends BaseTest {
      * delete
      * {@link RoomTypeController#delete(Long)}
      */
+    @Test
+    void givenValidId_whenCalledRoomTypeServiceDelete_thenDeleteRoomTypeSuccessfully() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.doNothing().when(roomTypeService).delete(mockId);
+
+        //Then
+        mockMvc.perform(delete(BASE_PATH + "/room-type/{id}", mockId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true));
+    }
+
 }
