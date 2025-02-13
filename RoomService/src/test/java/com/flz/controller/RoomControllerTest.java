@@ -1,8 +1,11 @@
 package com.flz.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
 import com.flz.exception.RoomNotFoundException;
 import com.flz.model.enums.RoomStatus;
+import com.flz.model.request.AssetCreateRequest;
+import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.service.RoomService;
@@ -18,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -199,6 +203,36 @@ class RoomControllerTest extends BaseTest {
         mockMvc.perform(get(BASE_PATH + "/room/{id}", mockId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError());
+
+    }
+
+
+    /**
+     * Create()
+     * {@link AssetController#create(AssetCreateRequest)}
+     */
+    @Test
+    public void givenValidRoomCreateRequest_whenRoomCreated_thenSuccessRoomResponse() throws Exception {
+
+        //Given
+        RoomCreateRequest mockRoomCreateRequest = new RoomCreateRequest();
+        mockRoomCreateRequest.setNumber(202);
+        mockRoomCreateRequest.setFloor(2);
+        mockRoomCreateRequest.setRoomTypeId(2L);
+        mockRoomCreateRequest.setStatus(RoomStatus.EMPTY);
+
+        //When
+        Mockito.doNothing().when(roomService).create(mockRoomCreateRequest);
+
+        //Then
+        mockMvc.perform(post(BASE_PATH + "/room")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest)))
+                .andExpect(status().isOk());
+
+        //Verify
+        Mockito.verify(roomService, Mockito.times(1))
+                .create(Mockito.any(RoomCreateRequest.class));
 
     }
 
