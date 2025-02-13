@@ -206,7 +206,6 @@ class RoomControllerTest extends BaseTest {
 
     }
 
-
     /**
      * Create()
      * {@link AssetController#create(AssetCreateRequest)}
@@ -235,6 +234,21 @@ class RoomControllerTest extends BaseTest {
                 .create(Mockito.any(RoomCreateRequest.class));
 
     }
+
+    @Test
+    public void givenRoomCreateRequestWithMissingFields_whenCreateRoom_thenReturnBadRequest() throws Exception {
+
+        //Given
+        RoomCreateRequest invalidRequest = new RoomCreateRequest();
+        invalidRequest.setFloor(2);
+
+        //When
+        mockMvc.perform(post(BASE_PATH + "/room")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
 
 
 }
