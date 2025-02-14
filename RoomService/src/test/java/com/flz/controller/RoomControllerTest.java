@@ -30,9 +30,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @WebMvcTest(RoomController.class)
 class RoomControllerTest extends BaseTest {
 
@@ -217,9 +214,9 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response").isArray())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
                 .andDo(MockMvcResultHandlers.print());
 
         //Verify
@@ -242,10 +239,10 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response").isArray())
-                .andExpect(jsonPath("$.response").isEmpty());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isEmpty());
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -265,8 +262,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.isSuccess").value(false));
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -303,10 +300,10 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.id").value(10L))
-                .andExpect(jsonPath("$.response.number").value(105))
-                .andExpect(jsonPath("$.response.status").value("EMPTY"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(10L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.number").value(105))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.status").value("EMPTY"));
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1)).findById(mockId);
@@ -328,7 +325,7 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -347,7 +344,7 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         //Verify
         Mockito.verify(roomService, Mockito.never())
@@ -370,7 +367,7 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
 
     }
 
@@ -398,7 +395,7 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -420,7 +417,7 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -444,7 +441,7 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
     /**
@@ -473,8 +470,9 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -505,8 +503,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -532,8 +530,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
     }
 
     @Test
@@ -551,7 +549,7 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -562,7 +560,7 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 
