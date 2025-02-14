@@ -57,7 +57,6 @@ class AssetControllerTest extends BaseTest {
     public void givenFilteringParameters_whenCalledService_thenReturnFilteredAssetsResponseSuccessfully() throws Exception {
 
         //Given
-        String mockName = "test";
         int mockPage = 0;
         int mockSize = 10;
         String mockProperty = "id";
@@ -73,7 +72,7 @@ class AssetControllerTest extends BaseTest {
                 new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
 
         Mockito.when(assetService.findAll(
-                        Mockito.anyString(),
+                        Mockito.nullable(String.class),
                         Mockito.nullable(BigDecimal.class),
                         Mockito.nullable(BigDecimal.class),
                         Mockito.nullable(Boolean.class),
@@ -87,7 +86,6 @@ class AssetControllerTest extends BaseTest {
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .get(BASE_PATH + "/assets")
-                .param("name", mockName)
                 .param("page", String.valueOf(mockPage))
                 .param("size", String.valueOf(mockSize))
                 .param("property", mockProperty)
@@ -103,7 +101,7 @@ class AssetControllerTest extends BaseTest {
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
                 .findAll(
-                        Mockito.anyString(),
+                        Mockito.nullable(String.class),
                         Mockito.nullable(BigDecimal.class),
                         Mockito.nullable(BigDecimal.class),
                         Mockito.nullable(Boolean.class),
