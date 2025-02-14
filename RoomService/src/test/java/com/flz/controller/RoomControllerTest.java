@@ -132,45 +132,63 @@ class RoomControllerTest extends BaseTest {
     public void givenFloorFilter_whenFindAllRoomAsFilter_thenReturnRoomsResponse() throws Exception {
 
         //Given
-        int page = 0;
-        int size = 10;
-        String property = "id";
-        Sort.Direction direction = Sort.Direction.ASC;
+        Integer mockFloor = 1;
+        int mockPage = 0;
+        int mockSize = 10;
+        String mockProperty = "id";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Sort mockSort = Sort.by(mockDirection, mockProperty);
+        PageRequest pageRequest = PageRequest.of(mockPage, mockSize, mockSort);
 
-        RoomsResponse.Type roomType =
+        RoomsResponse.Type mockRoomType =
                 RoomsResponse.Type.builder().id(20L).name("Standart Room").build();
 
-        List<RoomsResponse> mockRoomsResponse = getRoomsResponse(roomType);
+        List<RoomsResponse> mockRoomsResponse = getRoomsResponse(mockRoomType);
 
         Page<RoomsResponse> mockRoomsPage =
                 new PageImpl<>(mockRoomsResponse, pageRequest, mockRoomsResponse.size());
 
-        Mockito.when(roomService.findAll(Mockito.any(), Mockito.eq(1), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+        Mockito.when(roomService.findAll(
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.nullable(RoomStatus.class),
+                        Mockito.nullable(Long.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                ))
                 .thenReturn(mockRoomsPage);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/rooms")
-                        .param("floor", "1")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("property", "id")
-                        .param("direction", "ASC")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response.content[0].floor").value(1))
-                .andDo(print());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms")
+                .param("floor", String.valueOf(mockFloor))
+                .param("page", String.valueOf(mockPage))
+                .param("size", String.valueOf(mockSize))
+                .param("property", mockProperty)
+                .param("direction", mockDirection.name())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].floor").value(1))
+                .andDo(MockMvcResultHandlers.print());
 
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
-                .findAll(Mockito.any(), Mockito.eq(1), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+                .findAll(
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.nullable(RoomStatus.class),
+                        Mockito.nullable(Long.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class));
     }
 
     /**
