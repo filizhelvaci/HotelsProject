@@ -30,7 +30,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -221,7 +220,7 @@ class RoomControllerTest extends BaseTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.response").isArray())
-                .andDo(print());
+                .andDo(MockMvcResultHandlers.print());
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1)).findSummaryAll();
@@ -242,6 +241,7 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.response").isArray())
@@ -264,6 +264,7 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.isSuccess").value(false));
 
@@ -301,7 +302,7 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(print())
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response.id").value(10L))
                 .andExpect(jsonPath("$.response.number").value(105))
@@ -326,6 +327,7 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isNotFound());
 
         //Verify
@@ -344,6 +346,7 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest());
 
         //Verify
@@ -366,6 +369,7 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isInternalServerError());
 
     }
@@ -393,6 +397,7 @@ class RoomControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
 
         //Verify
@@ -414,6 +419,7 @@ class RoomControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(invalidRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest());
     }
 
@@ -437,6 +443,7 @@ class RoomControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isInternalServerError());
     }
 
@@ -465,9 +472,9 @@ class RoomControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockRoomUpdateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andDo(print());
+                .andExpect(jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -497,9 +504,9 @@ class RoomControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockRoomUpdateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andDo(print());
+                .andExpect(jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -524,6 +531,7 @@ class RoomControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value(true));
     }
@@ -542,6 +550,7 @@ class RoomControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isNotFound());
     }
 
@@ -552,6 +561,7 @@ class RoomControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", "lkjhg");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest());
 
     }
