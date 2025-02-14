@@ -102,24 +102,6 @@ class RoomControllerTest extends BaseTest {
                         Mockito.any(Sort.Direction.class));
     }
 
-    private static List<RoomsResponse> getRoomsResponse(RoomsResponse.Type roomType) {
-        return List.of(RoomsResponse.builder()
-                        .id(10L)
-                        .number(101)
-                        .floor(1)
-                        .status(RoomStatus.EMPTY)
-                        .type(roomType)
-                        .build(),
-                RoomsResponse.builder()
-                        .id(11L)
-                        .number(102)
-                        .floor(1)
-                        .status(RoomStatus.FULL)
-                        .type(roomType)
-                        .build()
-        );
-    }
-
     @Test
     public void givenFloorFilter_whenFindAllRoomAsFilter_thenReturnRoomsResponse() throws Exception {
 
@@ -207,10 +189,12 @@ class RoomControllerTest extends BaseTest {
                 );
 
         //When
-        Mockito.when(roomService.findSummaryAll()).thenReturn(mockRoomsSummaryResponse);
+        Mockito.when(roomService.findSummaryAll())
+                .thenReturn(mockRoomsSummaryResponse);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms/summary")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/rooms/summary")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -284,14 +268,14 @@ class RoomControllerTest extends BaseTest {
         Long mockId = 10L;
 
         //When
-        RoomResponse.Type roomType = RoomResponse.Type.builder().id(10L).name("Standart Room").build();
+        RoomResponse.Type mockRoomType = RoomResponse.Type.builder().id(10L).name("Standart Room").build();
 
         RoomResponse mockRoomResponse = RoomResponse.builder()
                 .id(10L)
                 .number(105)
                 .floor(1)
                 .status(RoomStatus.EMPTY)
-                .type(roomType)
+                .type(mockRoomType)
                 .build();
 
         Mockito.when(roomService.findById(mockId))
@@ -341,11 +325,11 @@ class RoomControllerTest extends BaseTest {
     public void givenInvalidRoomId_whenNotFoundRoomById_thenReturnBadRequest() throws Exception {
 
         //Given
-        String invalidId = "ukhd21";
+        String mockInvalidId = "ukhd21";
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", invalidId)
+                MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", mockInvalidId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -415,14 +399,14 @@ class RoomControllerTest extends BaseTest {
     public void givenRoomCreateRequestWithMissingFields_whenCreateRoom_thenReturnBadRequest() throws Exception {
 
         //Given
-        RoomCreateRequest invalidRequest = new RoomCreateRequest();
-        invalidRequest.setFloor(2);
+        RoomCreateRequest mockInvalidRequest = new RoomCreateRequest();
+        mockInvalidRequest.setFloor(2);
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
                 MockMvcRequestBuilders.post(BASE_PATH + "/room")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+                        .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
@@ -495,7 +479,7 @@ class RoomControllerTest extends BaseTest {
     void givenNonId_whenCalledRoomWithNonById_thenReturnsRoomNotFoundException() throws Exception {
 
         //Given
-        Long NonId = 999L;
+        Long mockNonId = 999L;
 
         RoomUpdateRequest mockRoomUpdateRequest = new RoomUpdateRequest();
         mockRoomUpdateRequest.setNumber(302);
@@ -504,12 +488,12 @@ class RoomControllerTest extends BaseTest {
         mockRoomUpdateRequest.setStatus(RoomStatus.FULL);
 
         //When
-        Mockito.doThrow(new RoomNotFoundException(NonId))
-                .when(roomService).update(NonId, mockRoomUpdateRequest);
+        Mockito.doThrow(new RoomNotFoundException(mockNonId))
+                .when(roomService).update(mockNonId, mockRoomUpdateRequest);
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.put(BASE_PATH + "/room/{id}", NonId)
+                MockMvcRequestBuilders.put(BASE_PATH + "/room/{id}", mockNonId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(mockRoomUpdateRequest));
 
@@ -538,7 +522,8 @@ class RoomControllerTest extends BaseTest {
         Mockito.doNothing().when(roomService).delete(mockId);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", mockId);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
@@ -577,5 +562,24 @@ class RoomControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
+
+    private static List<RoomsResponse> getRoomsResponse(RoomsResponse.Type roomType) {
+        return List.of(RoomsResponse.builder()
+                        .id(10L)
+                        .number(101)
+                        .floor(1)
+                        .status(RoomStatus.EMPTY)
+                        .type(roomType)
+                        .build(),
+                RoomsResponse.builder()
+                        .id(11L)
+                        .number(102)
+                        .floor(1)
+                        .status(RoomStatus.FULL)
+                        .type(roomType)
+                        .build()
+        );
+    }
+
 
 }
