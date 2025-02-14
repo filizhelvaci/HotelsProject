@@ -41,7 +41,7 @@ class RoomControllerTest extends BaseTest {
     RoomService roomService;
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     private static final String BASE_PATH = "/api/v1";
 
