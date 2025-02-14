@@ -30,8 +30,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
 @WebMvcTest(RoomTypeController.class)
 class RoomTypeControllerTest extends BaseTest {
 
@@ -265,7 +263,7 @@ class RoomTypeControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
-                .andDo(print());
+                .andDo(MockMvcResultHandlers.print());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1)).findSummaryAll();
@@ -352,7 +350,7 @@ class RoomTypeControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(print())
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(mockId))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value("testRoomType"))
@@ -513,7 +511,7 @@ class RoomTypeControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andDo(print());
+                .andDo(MockMvcResultHandlers.print());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -542,7 +540,7 @@ class RoomTypeControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andDo(print());
+                .andDo(MockMvcResultHandlers.print());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
