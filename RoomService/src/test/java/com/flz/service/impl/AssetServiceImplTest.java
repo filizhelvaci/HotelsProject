@@ -326,7 +326,7 @@ class AssetServiceImplTest extends BaseTest {
     public void givenValidAssetIdAndAssetUpdateRequest_whenAssetEntityFoundById_thenThatAssetEntityUpdate() {
 
         //Given
-        Long mockId = 10L;
+        Long mockId = 1L;
 
         AssetUpdateRequest mockAssetUpdateRequest = new AssetUpdateRequest();
         mockAssetUpdateRequest.setName("updateAsset");
@@ -398,7 +398,7 @@ class AssetServiceImplTest extends BaseTest {
     public void givenValidId_whenAssetEntityFoundById_thenDeleteAssetEntity() {
 
         //Given
-        Long mockId = 10L;
+        Long mockId = 1L;
 
         AssetEntity mockAssetEntity = getAsset();
 
