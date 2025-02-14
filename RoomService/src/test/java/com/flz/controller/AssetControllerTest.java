@@ -299,6 +299,7 @@ class AssetControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
 
@@ -359,6 +360,7 @@ class AssetControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         //Verify
@@ -377,6 +379,7 @@ class AssetControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         //Verify
@@ -399,6 +402,7 @@ class AssetControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError());
 
     }
@@ -425,6 +429,7 @@ class AssetControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         //Verify
@@ -446,6 +451,7 @@ class AssetControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(invalidRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -468,6 +474,7 @@ class AssetControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
@@ -495,9 +502,9 @@ class AssetControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockAssetUpdateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
@@ -526,9 +533,9 @@ class AssetControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
@@ -554,6 +561,7 @@ class AssetControllerTest extends BaseTest {
                 MockMvcRequestBuilders.delete(BASE_PATH + "/asset/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
     }
@@ -572,6 +580,7 @@ class AssetControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/asset/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -582,6 +591,7 @@ class AssetControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/asset/{id}", "lkjhg");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
