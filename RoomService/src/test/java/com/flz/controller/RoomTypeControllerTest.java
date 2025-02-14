@@ -21,6 +21,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -54,37 +58,58 @@ class RoomTypeControllerTest extends BaseTest {
     public void givenFilteringParameters_whenCalledRoomTypeService_thenReturnFilteredRoomTypesResponseSuccessfully() throws Exception {
 
         //Given
-        int page = 0;
-        int pageSize = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        int mockPage = 0;
+        int mockPageSize = 10;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+        Sort mockSort = Sort.by(mockDirection, mockProperty);
+        PageRequest pageRequest = PageRequest.of(mockPage, mockPageSize, mockSort);
 
         List<RoomTypesResponse> mockRoomTypeResponse = getRoomTypes();
 
         Page<RoomTypesResponse> mockRoomTypePage = new PageImpl<>(mockRoomTypeResponse, pageRequest, 2);
 
-        Mockito.when(roomTypeService.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-                Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any())).thenReturn(mockRoomTypePage);
+        Mockito.when(roomTypeService.findAll(
+                        Mockito.nullable(String.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                ))
+                .thenReturn(mockRoomTypePage);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-types")
-                        .param("page", "0")
-                        .param("pageSize", "10")
-                        .param("property", "name")
-                        .param("direction", Sort.Direction.ASC.name())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andDo(print());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/room-types")
+                .param("page", String.valueOf(mockPage))
+                .param("pageSize", String.valueOf(mockPageSize))
+                .param("property", mockProperty)
+                .param("direction", mockDirection.name())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
-                .findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+                .findAll(
+                        Mockito.nullable(String.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                );
     }
 
     @Test
