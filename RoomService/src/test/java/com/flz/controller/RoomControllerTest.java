@@ -164,10 +164,10 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].floor").value(1))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].floor").value(1));
 
 
         //Verify
@@ -214,10 +214,10 @@ class RoomControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray());
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1)).findSummaryAll();
@@ -234,7 +234,8 @@ class RoomControllerTest extends BaseTest {
                 .thenReturn(emptyList);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms/summary")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/rooms/summary")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -257,7 +258,8 @@ class RoomControllerTest extends BaseTest {
                 .thenThrow(new RuntimeException("An unexpected error occurred"));
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms/summary")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/rooms/summary")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -292,10 +294,12 @@ class RoomControllerTest extends BaseTest {
                 .type(roomType)
                 .build();
 
-        Mockito.when(roomService.findById(mockId)).thenReturn(mockRoomResponse);
+        Mockito.when(roomService.findById(mockId))
+                .thenReturn(mockRoomResponse);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", mockId)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", mockId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -320,7 +324,8 @@ class RoomControllerTest extends BaseTest {
                 .thenThrow(new RoomNotFoundException(nonId));
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", nonId)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", nonId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -339,7 +344,8 @@ class RoomControllerTest extends BaseTest {
         String invalidId = "ukhd21";
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", invalidId)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", invalidId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -362,7 +368,8 @@ class RoomControllerTest extends BaseTest {
                 .thenThrow(new RuntimeException("Unexpected error"));
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", mockId)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room/{id}", mockId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -389,7 +396,8 @@ class RoomControllerTest extends BaseTest {
         Mockito.doNothing().when(roomService).create(mockRoomCreateRequest);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(BASE_PATH + "/room")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.post(BASE_PATH + "/room")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest));
 
@@ -411,7 +419,8 @@ class RoomControllerTest extends BaseTest {
         invalidRequest.setFloor(2);
 
         //When
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(BASE_PATH + "/room")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.post(BASE_PATH + "/room")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(invalidRequest));
 
@@ -435,7 +444,8 @@ class RoomControllerTest extends BaseTest {
                 .create(Mockito.any(RoomCreateRequest.class));
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(BASE_PATH + "/asset")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.post(BASE_PATH + "/asset")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest));
 
@@ -464,7 +474,8 @@ class RoomControllerTest extends BaseTest {
         Mockito.doNothing().when(roomService).update(mockId, mockRoomUpdateRequest);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.put(BASE_PATH + "/room/{id}", mockId)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.put(BASE_PATH + "/room/{id}", mockId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(mockRoomUpdateRequest));
 
@@ -497,7 +508,8 @@ class RoomControllerTest extends BaseTest {
                 .when(roomService).update(NonId, mockRoomUpdateRequest);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.put(BASE_PATH + "/room/{id}", NonId)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.put(BASE_PATH + "/room/{id}", NonId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(mockRoomUpdateRequest));
 
@@ -545,7 +557,8 @@ class RoomControllerTest extends BaseTest {
                 .when(roomService).delete(mockId);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", mockId);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
@@ -556,7 +569,8 @@ class RoomControllerTest extends BaseTest {
     void givenInValidId_whenCalledDeleteForRoom_thenReturnBadRequest() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", "lkjhg");
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.delete(BASE_PATH + "/room/{id}", "lkjhg");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
