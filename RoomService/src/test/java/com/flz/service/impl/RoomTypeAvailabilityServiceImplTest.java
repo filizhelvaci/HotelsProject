@@ -125,14 +125,14 @@ class RoomTypeAvailabilityServiceImplTest extends BaseTest {
                         .id(1L)
                         .number(101)
                         .floor(1)
-                        .status(RoomStatus.EMPTY)
+                        .status(RoomStatus.FULL)
                         .type(roomTypeEntities.get(1))
                         .build(),
                 RoomEntity.builder()
                         .id(2L)
                         .number(102)
                         .floor(1)
-                        .status(RoomStatus.EMPTY)
+                        .status(RoomStatus.FULL)
                         .type(roomTypeEntities.get(0))
                         .build()
         );
