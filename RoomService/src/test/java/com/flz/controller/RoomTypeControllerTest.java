@@ -30,10 +30,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RoomTypeController.class)
 class RoomTypeControllerTest extends BaseTest {
@@ -265,9 +262,9 @@ class RoomTypeControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response").isArray())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
                 .andDo(print());
 
         //Verify
@@ -289,10 +286,10 @@ class RoomTypeControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response").isArray())
-                .andExpect(jsonPath("$.response").isEmpty());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isEmpty());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -311,8 +308,8 @@ class RoomTypeControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.isSuccess").value(false));
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -356,12 +353,12 @@ class RoomTypeControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.id").value(mockId))
-                .andExpect(jsonPath("$.response.name").value("testRoomType"))
-                .andExpect(jsonPath("$.response.price").value(2500))
-                .andExpect(jsonPath("$.response.size").value(50))
-                .andExpect(jsonPath("$.response.personCount").value(2));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(mockId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value("testRoomType"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.price").value(2500))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.size").value(50))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.personCount").value(2));
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1)).findById(mockId);
@@ -378,9 +375,11 @@ class RoomTypeControllerTest extends BaseTest {
                 .thenThrow(new RoomTypeNotFoundException(nonRoomTypeId));
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-type/{id}", nonRoomTypeId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", nonRoomTypeId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -398,7 +397,7 @@ class RoomTypeControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.never())
@@ -420,7 +419,7 @@ class RoomTypeControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
 
     }
 
@@ -445,7 +444,7 @@ class RoomTypeControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -466,7 +465,7 @@ class RoomTypeControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(invalidRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -486,7 +485,7 @@ class RoomTypeControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
     /**
@@ -512,8 +511,8 @@ class RoomTypeControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockroomTypeUpdateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
                 .andDo(print());
 
         //Verify
@@ -541,8 +540,8 @@ class RoomTypeControllerTest extends BaseTest {
                 .content(new ObjectMapper().writeValueAsString(mockroomTypeUpdateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
                 .andDo(print());
 
         //Verify
@@ -569,8 +568,8 @@ class RoomTypeControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room-type/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
     }
 
     @Test
@@ -587,7 +586,7 @@ class RoomTypeControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room-type/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -597,7 +596,7 @@ class RoomTypeControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.delete(BASE_PATH + "/room-type/{id}", "hahahah");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 
