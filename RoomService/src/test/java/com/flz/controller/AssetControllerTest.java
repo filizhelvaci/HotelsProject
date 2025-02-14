@@ -360,15 +360,15 @@ class AssetControllerTest extends BaseTest {
     public void givenNonAssetId_whenNotFoundById_thenReturnNotFoundException() throws Exception {
 
         //Given
-        Long nonAssetId = 999L;
+        Long mockNonId = 999L;
 
         //When
-        Mockito.when(assetService.findById(nonAssetId))
-                .thenThrow(new AssetNotFoundException(nonAssetId));
+        Mockito.when(assetService.findById(mockNonId))
+                .thenThrow(new AssetNotFoundException(mockNonId));
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", nonAssetId)
+                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", mockNonId)
                         .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -377,18 +377,18 @@ class AssetControllerTest extends BaseTest {
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
-                .findById(nonAssetId);
+                .findById(mockNonId);
     }
 
     @Test
     public void givenInvalidAssetId_whenNotFoundById_thenReturnBadRequest() throws Exception {
 
         //Given
-        String invalidAssetId = "ukhd-3521";
+        String mockiInvalidId = "hahaha";
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", invalidAssetId)
+                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", mockiInvalidId)
                         .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -457,14 +457,14 @@ class AssetControllerTest extends BaseTest {
     public void givenAssetCreateRequestWithMissingFields_whenCreateAsset_thenBadRequestResponse() throws Exception {
 
         //Given
-        AssetCreateRequest invalidRequest = new AssetCreateRequest();
-        invalidRequest.setName("");
+        AssetCreateRequest mockInvalidRequest = new AssetCreateRequest();
+        mockInvalidRequest.setName("");
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
                 MockMvcRequestBuilders.post(BASE_PATH + "/asset")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(invalidRequest));
+                        .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
