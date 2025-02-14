@@ -115,40 +115,58 @@ class AssetControllerTest extends BaseTest {
     public void givenNameFilter_whenFindAll_thenReturnFilteredAssetsAsNameField() throws Exception {
 
         //Given
-        int page = 0;
-        int size = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        String mockName = "test";
+        int mockPage = 0;
+        int mockSize = 10;
+        String mockProperty = "id";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Sort mockSort = Sort.by(mockDirection, mockProperty);
+        PageRequest pageRequest = PageRequest.of(mockPage, mockSize, mockSort);
 
         List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
 
         Page<AssetsResponse> mockAssetsPage =
                 new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
 
-        Mockito.when(assetService.findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+        Mockito.when(assetService.findAll(
+                        Mockito.anyString(),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Boolean.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                ))
                 .thenReturn(mockAssetsPage);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/assets")
-                        .param("name", "test")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("property", "name")
-                        .param("direction", "ASC")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")))
-                .andDo(print());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = get(BASE_PATH + "/assets")
+                .param("name", mockName)
+                .param("page", String.valueOf(mockPage))
+                .param("size", String.valueOf(mockSize))
+                .param("property", mockProperty)
+                .param("direction", mockDirection.name())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")));
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
-                .findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+                .findAll(
+                        Mockito.anyString(),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Boolean.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class));
     }
 
     @Test
