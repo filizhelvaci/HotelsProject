@@ -116,40 +116,61 @@ class RoomTypeControllerTest extends BaseTest {
     public void givenNameFilter_whenFindAllMethodCalled_thenReturnFilteredRoomTypesAsNameField() throws Exception {
 
         //Given
-        int page = 0;
-        int pageSize = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        String mockName = "test";
+        int mockPage = 0;
+        int mockPageSize = 10;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+        Sort mockSort = Sort.by(mockDirection, mockProperty);
+        PageRequest pageRequest = PageRequest.of(mockPage, mockPageSize, mockSort);
 
         List<RoomTypesResponse> mockRoomTypesResponse = getRoomTypes();
 
         Page<RoomTypesResponse> mockRoomTypesPage =
                 new PageImpl<>(mockRoomTypesResponse, pageRequest, mockRoomTypesResponse.size());
 
-        Mockito.when(roomTypeService.findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+        Mockito.when(roomTypeService.findAll(
+                        Mockito.anyString(),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                ))
                 .thenReturn(mockRoomTypesPage);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-types")
-                        .param("name", "test")
-                        .param("page", "0")
-                        .param("pageSize", "10")
-                        .param("property", "name")
-                        .param("direction", "ASC")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/room-types")
+                .param("name", mockName)
+                .param("page", String.valueOf(mockPage))
+                .param("pageSize", String.valueOf(mockPageSize))
+                .param("property", mockProperty)
+                .param("direction", mockDirection.name())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")));
 
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
-                .findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+                .findAll(
+                        Mockito.anyString(),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class));
     }
 
     @Test
