@@ -281,10 +281,10 @@ class RoomTypeControllerTest extends BaseTest {
     public void whenNotFoundSummaryAllRoomTypesCalled_thenReturnEmptyList() throws Exception {
 
         //When
-        List<RoomTypesSummaryResponse> emptyList = Collections.emptyList();
+        List<RoomTypesSummaryResponse> mockEmptyList = Collections.emptyList();
 
         Mockito.when(roomTypeService.findSummaryAll())
-                .thenReturn(emptyList);
+                .thenReturn(mockEmptyList);
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
@@ -379,15 +379,15 @@ class RoomTypeControllerTest extends BaseTest {
     public void givenNonRoomTypeId_whenNotFoundById_thenReturnNotFoundException() throws Exception {
 
         //Given
-        Long nonRoomTypeId = 999L;
+        Long mockNonId = 999L;
 
         //When
-        Mockito.when(roomTypeService.findById(nonRoomTypeId))
-                .thenThrow(new RoomTypeNotFoundException(nonRoomTypeId));
+        Mockito.when(roomTypeService.findById(mockNonId))
+                .thenThrow(new RoomTypeNotFoundException(mockNonId));
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", nonRoomTypeId)
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", mockNonId)
                         .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -395,18 +395,18 @@ class RoomTypeControllerTest extends BaseTest {
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
-                .findById(nonRoomTypeId);
+                .findById(mockNonId);
     }
 
     @Test
     public void givenInvalidRoomTypeId_whenNotFoundById_thenReturnBadRequest() throws Exception {
 
         //Given
-        String invalidId = "ukhd-3521";
+        String mockInvalidId = "ukhd-3521";
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", invalidId)
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", mockInvalidId)
                         .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -474,14 +474,14 @@ class RoomTypeControllerTest extends BaseTest {
     public void givenRoomTypeCreateRequestWithMissingFields_whenCreateRoomType_thenBadRequestResponse() throws Exception {
 
         //Given
-        RoomTypeCreateRequest invalidRequest = new RoomTypeCreateRequest();
-        invalidRequest.setName("");
+        RoomTypeCreateRequest mockInvalidRequest = new RoomTypeCreateRequest();
+        mockInvalidRequest.setName("");
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
                 MockMvcRequestBuilders.post(BASE_PATH + "/room-type")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(invalidRequest));
+                        .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
