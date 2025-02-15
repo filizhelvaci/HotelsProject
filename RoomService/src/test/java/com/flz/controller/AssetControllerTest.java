@@ -262,7 +262,13 @@ class AssetControllerTest extends BaseTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id").value(11))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name").value("test1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].name", Matchers.everyItem(Matchers.matchesPattern(".*test.*"))));
+
+
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1)).findSummaryAll();
@@ -310,6 +316,8 @@ class AssetControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.status().is(500))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Prepared for unpredictable errors."))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
 
         //Verify
