@@ -21,18 +21,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RoomTypeController.class)
 class RoomTypeControllerTest extends BaseTest {
@@ -41,7 +37,7 @@ class RoomTypeControllerTest extends BaseTest {
     RoomTypeService roomTypeService;
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     private static final String BASE_PATH = "/api/v1";
 
@@ -54,119 +50,187 @@ class RoomTypeControllerTest extends BaseTest {
     public void givenFilteringParameters_whenCalledRoomTypeService_thenReturnFilteredRoomTypesResponseSuccessfully() throws Exception {
 
         //Given
-        int page = 0;
-        int pageSize = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        int mockPage = 0;
+        int mockPageSize = 10;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+        Sort mockSort = Sort.by(mockDirection, mockProperty);
+        PageRequest pageRequest = PageRequest.of(mockPage, mockPageSize, mockSort);
 
         List<RoomTypesResponse> mockRoomTypeResponse = getRoomTypes();
 
         Page<RoomTypesResponse> mockRoomTypePage = new PageImpl<>(mockRoomTypeResponse, pageRequest, 2);
 
-        Mockito.when(roomTypeService.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-                Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any())).thenReturn(mockRoomTypePage);
+        Mockito.when(roomTypeService.findAll(
+                        Mockito.nullable(String.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                ))
+                .thenReturn(mockRoomTypePage);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-types")
-                        .param("page", "0")
-                        .param("pageSize", "10")
-                        .param("property", "name")
-                        .param("direction", Sort.Direction.ASC.name())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andDo(print());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-types")
+                        .param("page", String.valueOf(mockPage))
+                        .param("pageSize", String.valueOf(mockPageSize))
+                        .param("property", mockProperty)
+                        .param("direction", mockDirection.name())
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
-                .findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-                        Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+                .findAll(
+                        Mockito.nullable(String.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                );
     }
 
     @Test
     public void givenNameFilter_whenFindAllMethodCalled_thenReturnFilteredRoomTypesAsNameField() throws Exception {
 
         //Given
-        int page = 0;
-        int pageSize = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        String mockName = "test";
+        int mockPage = 0;
+        int mockPageSize = 10;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+        Sort mockSort = Sort.by(mockDirection, mockProperty);
+        PageRequest pageRequest = PageRequest.of(mockPage, mockPageSize, mockSort);
 
         List<RoomTypesResponse> mockRoomTypesResponse = getRoomTypes();
 
         Page<RoomTypesResponse> mockRoomTypesPage =
                 new PageImpl<>(mockRoomTypesResponse, pageRequest, mockRoomTypesResponse.size());
 
-        Mockito.when(roomTypeService.findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any()))
+        Mockito.when(roomTypeService.findAll(
+                        Mockito.anyString(),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                ))
                 .thenReturn(mockRoomTypesPage);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-types")
-                        .param("name", "test")
-                        .param("page", "0")
-                        .param("pageSize", "10")
-                        .param("property", "name")
-                        .param("direction", "ASC")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.content[0].name").value(Matchers.matchesPattern(".*test.*")));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-types")
+                        .param("name", mockName)
+                        .param("page", String.valueOf(mockPage))
+                        .param("pageSize", String.valueOf(mockPageSize))
+                        .param("property", mockProperty)
+                        .param("direction", mockDirection.name())
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].name")
+                        .value(Matchers.matchesPattern(".*test.*")));
 
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
-                .findAll(Mockito.eq("test"), Mockito.any(), Mockito.any(), Mockito.any(),
-                        Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
+                .findAll(
+                        Mockito.anyString(),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class));
     }
 
     @Test
     public void givenPriceRangeFilter_whenFindAllMethodCalled_thenReturnFilteredRoomTypesAsBetweenMinPriceAndMaxPrice() throws Exception {
 
         //Given
-        int page = 0;
-        int pageSize = 10;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        BigDecimal mockMinPrice = BigDecimal.valueOf(1000);
+        BigDecimal mockMaxPrice = BigDecimal.valueOf(5000);
+        int mockPage = 0;
+        int mockPageSize = 10;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
-        Sort sort = Sort.by(direction, property);
-        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+        Sort mockSort = Sort.by(mockDirection, mockProperty);
+        PageRequest pageRequest = PageRequest.of(mockPage, mockPageSize, mockSort);
 
         List<RoomTypesResponse> mockRoomTypesResponse = getRoomTypes();
 
         Page<RoomTypesResponse> mockRoomTypesPage =
                 new PageImpl<>(mockRoomTypesResponse, pageRequest, mockRoomTypesResponse.size());
 
-        Mockito.when(roomTypeService.findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(1000)),
-                        Mockito.eq(BigDecimal.valueOf(5000)), Mockito.any(), Mockito.any(), Mockito.anyInt(),
-                        Mockito.anyInt(), Mockito.any(), Mockito.any()))
+        Mockito.when(roomTypeService.findAll(
+                        Mockito.nullable(String.class),
+                        Mockito.any(BigDecimal.class),
+                        Mockito.any(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                ))
                 .thenReturn(mockRoomTypesPage);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-types")
-                        .param("minPrice", "1000")
-                        .param("maxPrice", "5000")
-                        .param("page", "0")
-                        .param("pageSize", "10")
-                        .param("property", "name")
-                        .param("direction", "ASC")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.content[0].price").value(2000));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-types")
+                        .param("minPrice", String.valueOf(mockMinPrice))
+                        .param("maxPrice", String.valueOf(mockMaxPrice))
+                        .param("page", String.valueOf(mockPage))
+                        .param("pageSize", String.valueOf(mockPageSize))
+                        .param("property", mockProperty)
+                        .param("direction", mockDirection.name())
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].price")
+                        .value(2000));
 
         // Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
-                .findAll(Mockito.any(), Mockito.eq(BigDecimal.valueOf(1000)), Mockito.eq(BigDecimal.valueOf(5000)),
-                        Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.any());
-
+                .findAll(
+                        Mockito.nullable(String.class),
+                        Mockito.any(BigDecimal.class),
+                        Mockito.any(BigDecimal.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.nullable(Integer.class),
+                        Mockito.anyInt(),
+                        Mockito.anyInt(),
+                        Mockito.anyString(),
+                        Mockito.any(Sort.Direction.class)
+                );
     }
 
     /**
@@ -194,15 +258,19 @@ class RoomTypeControllerTest extends BaseTest {
                 );
 
         //When
-        Mockito.when(roomTypeService.findSummaryAll()).thenReturn(mockRoomTypesSummaryResponse);
+        Mockito.when(roomTypeService.findSummaryAll())
+                .thenReturn(mockRoomTypesSummaryResponse);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-types/summary")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response").isArray())
-                .andDo(print());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-types/summary")
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1)).findSummaryAll();
@@ -213,18 +281,22 @@ class RoomTypeControllerTest extends BaseTest {
     public void whenNotFoundSummaryAllRoomTypesCalled_thenReturnEmptyList() throws Exception {
 
         //When
-        List<RoomTypesSummaryResponse> emptyList = Collections.emptyList();
+        List<RoomTypesSummaryResponse> mockEmptyList = Collections.emptyList();
 
         Mockito.when(roomTypeService.findSummaryAll())
-                .thenReturn(emptyList);
+                .thenReturn(mockEmptyList);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-types/summary")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.response").isArray())
-                .andExpect(jsonPath("$.response").isEmpty());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-types/summary")
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isEmpty());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -239,10 +311,14 @@ class RoomTypeControllerTest extends BaseTest {
                 .thenThrow(new RuntimeException("An unexpected error occurred"));
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-types/summary")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.isSuccess").value(false));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-types/summary")
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -278,18 +354,22 @@ class RoomTypeControllerTest extends BaseTest {
                 .assets(mockAssets)
                 .build();
 
-        Mockito.when(roomTypeService.findById(mockId)).thenReturn(mockRoomTypeResponse);
+        Mockito.when(roomTypeService.findById(mockId))
+                .thenReturn(mockRoomTypeResponse);
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-type/{id}", mockId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response.id").value(mockId))
-                .andExpect(jsonPath("$.response.name").value("testRoomType"))
-                .andExpect(jsonPath("$.response.price").value(2500))
-                .andExpect(jsonPath("$.response.size").value(50))
-                .andExpect(jsonPath("$.response.personCount").value(2));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(mockId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value("testRoomType"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.price").value(2500))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.size").value(50))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.personCount").value(2));
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1)).findById(mockId);
@@ -299,32 +379,39 @@ class RoomTypeControllerTest extends BaseTest {
     public void givenNonRoomTypeId_whenNotFoundById_thenReturnNotFoundException() throws Exception {
 
         //Given
-        Long nonRoomTypeId = 999L;
+        Long mockNonId = 999L;
 
         //When
-        Mockito.when(roomTypeService.findById(nonRoomTypeId))
-                .thenThrow(new RoomTypeNotFoundException(nonRoomTypeId));
+        Mockito.when(roomTypeService.findById(mockNonId))
+                .thenThrow(new RoomTypeNotFoundException(mockNonId));
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-type/{id}", nonRoomTypeId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", mockNonId)
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
-                .findById(nonRoomTypeId);
+                .findById(mockNonId);
     }
 
     @Test
     public void givenInvalidRoomTypeId_whenNotFoundById_thenReturnBadRequest() throws Exception {
 
         //Given
-        String invalidId = "ukhd-3521";
+        String mockInvalidId = "ukhd-3521";
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-type/{id}", invalidId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", mockInvalidId)
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.never())
@@ -342,9 +429,13 @@ class RoomTypeControllerTest extends BaseTest {
                 .thenThrow(new RuntimeException("Unexpected error"));
 
         //Then
-        mockMvc.perform(get(BASE_PATH + "/room-type/{id}", mockId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.get(BASE_PATH + "/room-type/{id}", mockId)
+                        .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
 
     }
 
@@ -364,10 +455,14 @@ class RoomTypeControllerTest extends BaseTest {
         Mockito.doNothing().when(roomTypeService).create(mockRoomTypeCreateRequest);
 
         //Then
-        mockMvc.perform(post(BASE_PATH + "/room-type")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.post(BASE_PATH + "/room-type")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest)))
-                .andExpect(status().isOk());
+                        .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -379,14 +474,18 @@ class RoomTypeControllerTest extends BaseTest {
     public void givenRoomTypeCreateRequestWithMissingFields_whenCreateRoomType_thenBadRequestResponse() throws Exception {
 
         //Given
-        RoomTypeCreateRequest invalidRequest = new RoomTypeCreateRequest();
-        invalidRequest.setName("");
+        RoomTypeCreateRequest mockInvalidRequest = new RoomTypeCreateRequest();
+        mockInvalidRequest.setName("");
 
         //Then
-        mockMvc.perform(post(BASE_PATH + "/room-type")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.post(BASE_PATH + "/room-type")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(invalidRequest)))
-                .andExpect(status().isBadRequest());
+                        .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -401,10 +500,14 @@ class RoomTypeControllerTest extends BaseTest {
                 .create(Mockito.any(RoomTypeCreateRequest.class));
 
         //Then
-        mockMvc.perform(post(BASE_PATH + "/room-type")
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.post(BASE_PATH + "/room-type")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest)))
-                .andExpect(status().isInternalServerError());
+                        .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
     /**
@@ -425,12 +528,15 @@ class RoomTypeControllerTest extends BaseTest {
         Mockito.doNothing().when(roomTypeService).update(mockId, mockroomTypeUpdateRequest);
 
         //Then
-        mockMvc.perform(put(BASE_PATH + "/room-type/{id}", mockId)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.put(BASE_PATH + "/room-type/{id}", mockId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockroomTypeUpdateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andDo(print());
+                        .content(new ObjectMapper().writeValueAsString(mockroomTypeUpdateRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -452,12 +558,15 @@ class RoomTypeControllerTest extends BaseTest {
                 .when(roomTypeService).update(mockNonId, mockroomTypeUpdateRequest);
 
         //Then
-        mockMvc.perform(put(BASE_PATH + "/room-type/{id}", mockNonId)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.put(BASE_PATH + "/room-type/{id}", mockNonId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockroomTypeUpdateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andDo(print());
+                        .content(new ObjectMapper().writeValueAsString(mockroomTypeUpdateRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
@@ -480,9 +589,13 @@ class RoomTypeControllerTest extends BaseTest {
         Mockito.doNothing().when(roomTypeService).delete(mockId);
 
         //Then
-        mockMvc.perform(delete(BASE_PATH + "/room-type/{id}", mockId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.delete(BASE_PATH + "/room-type/{id}", mockId);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
     }
 
     @Test
@@ -496,16 +609,24 @@ class RoomTypeControllerTest extends BaseTest {
                 .when(roomTypeService).delete(mockId);
 
         //Then
-        mockMvc.perform(delete(BASE_PATH + "/room-type/{id}", mockId))
-                .andExpect(status().isNotFound());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.delete(BASE_PATH + "/room-type/{id}", mockId);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
     void givenInValidId_whenCalledRoomTypeDelete_thenReturnBadRequest() throws Exception {
 
         //Then
-        mockMvc.perform(delete(BASE_PATH + "/room-type/{id}", "hahahah"))
-                .andExpect(status().isBadRequest());
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+                MockMvcRequestBuilders.delete(BASE_PATH + "/room-type/{id}", "hahahah");
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 
@@ -544,6 +665,4 @@ class RoomTypeControllerTest extends BaseTest {
                         .build()
         );
     }
-
-
 }
