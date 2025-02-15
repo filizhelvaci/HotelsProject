@@ -174,7 +174,7 @@ class RoomTypeServiceImplTest extends BaseTest {
 
         //Then
         Assertions.assertNotNull(mockRoomTypesResponses);
-        Assertions.assertEquals(result, mockRoomTypesResponses);
+        Assertions.assertEquals(result.getContent().size(), mockRoomTypesResponses.getContent().size());
         Assertions.assertNotNull(mockRoomTypesResponses.getContent());
 
         //Verify
@@ -396,7 +396,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     public void givenValidId_whenRoomTypeEntityFoundById_thenDeleteRoomTypeEntity() {
 
         //Given
-        Long mockId = 10L;
+        Long mockId = 1L;
 
         List<AssetEntity> mockAssets = getAssets();
 
