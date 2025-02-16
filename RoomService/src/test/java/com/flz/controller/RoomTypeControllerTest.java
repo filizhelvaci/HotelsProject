@@ -299,7 +299,14 @@ class RoomTypeControllerTest extends BaseTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id").value(11))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name").value("test1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.length()", Matchers.equalTo(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].name", Matchers.everyItem(Matchers.matchesPattern(".*test.*"))));
+
+        ;
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1)).findSummaryAll();
