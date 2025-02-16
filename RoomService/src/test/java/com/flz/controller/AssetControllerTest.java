@@ -600,6 +600,7 @@ class AssetControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.time").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
     }
 
@@ -619,6 +620,8 @@ class AssetControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -631,6 +634,8 @@ class AssetControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
