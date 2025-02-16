@@ -218,7 +218,13 @@ class RoomControllerTest extends BaseTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].id").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].number").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.length()").value(mockRoomsSummaryResponse.size()))
+
+        ;
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1)).findSummaryAll();
