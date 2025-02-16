@@ -392,11 +392,11 @@ class AssetControllerTest extends BaseTest {
     public void givenInvalidAssetId_whenNotFoundById_thenReturnBadRequest() throws Exception {
 
         //Given
-        String mockiInvalidId = "hahaha";
+        String mockInvalidId = "hahaha";
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", mockiInvalidId)
+                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", mockInvalidId)
                         .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -453,7 +453,9 @@ class AssetControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+        ;
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
@@ -476,6 +478,8 @@ class AssetControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
+                .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/json"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
@@ -500,6 +504,8 @@ class AssetControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
+                .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/json"))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
