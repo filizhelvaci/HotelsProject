@@ -312,9 +312,11 @@ class RoomControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(10L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id", Matchers.equalTo(10)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.number").value(105))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.status").value("EMPTY"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.status").value("EMPTY"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.type").isMap());
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1)).findById(mockId);
@@ -337,7 +339,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -357,7 +360,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
 
         //Verify
         Mockito.verify(roomService, Mockito.never())
@@ -381,7 +385,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
 
     }
 
