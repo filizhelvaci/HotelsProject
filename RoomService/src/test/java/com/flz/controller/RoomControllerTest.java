@@ -415,7 +415,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
         Mockito.verify(roomService, Mockito.times(1))
@@ -438,7 +439,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
     }
 
     @Test
@@ -463,7 +465,8 @@ class RoomControllerTest extends BaseTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
     }
 
     /**
