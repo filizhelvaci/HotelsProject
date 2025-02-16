@@ -87,6 +87,13 @@ class AssetControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers.everyItem(Matchers.isA(Boolean.class))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
 
@@ -147,8 +154,15 @@ class AssetControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].name")
-                        .value(Matchers.matchesPattern(".*test.*")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name", Matchers.everyItem(Matchers.containsString("test"))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers.everyItem(Matchers.isA(Boolean.class))));
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
@@ -209,8 +223,15 @@ class AssetControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].price")
-                        .value(300));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price", Matchers.everyItem(Matchers.allOf(Matchers.greaterThanOrEqualTo(mockMinPrice), Matchers.lessThanOrEqualTo(mockMaxPrice)))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers.everyItem(Matchers.isA(Boolean.class))));
 
         // Verify
         Mockito.verify(assetService, Mockito.times(1))
@@ -267,7 +288,6 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id").value(11))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name").value("test1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].name", Matchers.everyItem(Matchers.matchesPattern(".*test.*"))));
-
 
 
         //Verify
