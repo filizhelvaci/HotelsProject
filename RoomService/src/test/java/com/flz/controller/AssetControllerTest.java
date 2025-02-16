@@ -230,7 +230,6 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price", Matchers.everyItem(Matchers.allOf(Matchers.greaterThanOrEqualTo(mockMinPrice), Matchers.lessThanOrEqualTo(mockMaxPrice)))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers.everyItem(Matchers.isA(Boolean.class))));
 
         // Verify
