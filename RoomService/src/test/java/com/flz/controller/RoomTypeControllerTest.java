@@ -88,7 +88,17 @@ class RoomTypeControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].size").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].personCount").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.pageable.pageNumber", Matchers.equalTo(0)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.totalElements", Matchers.equalTo(2)))
+        ;
 
         //Verify
         Mockito.verify(roomTypeService, Mockito.times(1))
