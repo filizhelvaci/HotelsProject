@@ -10,6 +10,7 @@ import com.flz.model.response.RoomResponse;
 import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.service.RoomService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,14 @@ class RoomControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].number").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].floor").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].status").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].type").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].type").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
@@ -148,8 +157,16 @@ class RoomControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[0].floor").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].number").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].floor").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].status").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].type").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].type").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].floor", Matchers.everyItem(Matchers.equalTo(mockFloor))));
 
 
         //Verify
