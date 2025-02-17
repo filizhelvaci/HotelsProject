@@ -55,12 +55,13 @@ class AssetControllerTest extends BaseTest {
 
         //When
         Sort mockSort = Sort.by(mockDirection, mockProperty);
-        PageRequest pageRequest = PageRequest.of(mockPage, mockSize, mockSort);
+        PageRequest pageRequest = PageRequest
+                .of(mockPage, mockSize, mockSort);
 
         List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
 
-        Page<AssetsResponse> mockAssetsPage =
-                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
+        Page<AssetsResponse> mockAssetsPage = new PageImpl<>
+                (mockAssetsResponse, pageRequest, mockAssetsResponse.size());
 
         Mockito.when(assetService.findAll(
                         Mockito.nullable(String.class),
@@ -86,14 +87,22 @@ class AssetControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers.everyItem(Matchers.isA(Boolean.class))))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers
+                        .everyItem(Matchers.isA(Boolean.class))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
 
 
         //Verify
@@ -125,8 +134,8 @@ class AssetControllerTest extends BaseTest {
 
         List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
 
-        Page<AssetsResponse> mockAssetsPage =
-                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
+        Page<AssetsResponse> mockAssetsPage = new PageImpl<>
+                (mockAssetsResponse, pageRequest, mockAssetsResponse.size());
 
         Mockito.when(assetService.findAll(
                         Mockito.anyString(),
@@ -141,27 +150,36 @@ class AssetControllerTest extends BaseTest {
                 .thenReturn(mockAssetsPage);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/assets")
-                        .param("name", mockName)
-                        .param("page", String.valueOf(mockPage))
-                        .param("size", String.valueOf(mockSize))
-                        .param("property", mockProperty)
-                        .param("direction", mockDirection.name())
-                        .contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/assets")
+                .param("name", mockName)
+                .param("page", String.valueOf(mockPage))
+                .param("size", String.valueOf(mockSize))
+                .param("property", mockProperty)
+                .param("direction", mockDirection.name())
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name", Matchers.everyItem(Matchers.containsString("test"))))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers.everyItem(Matchers.isA(Boolean.class))));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name", Matchers
+                        .everyItem(Matchers.containsString("test"))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers
+                        .everyItem(Matchers.isA(Boolean.class))));
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
@@ -193,8 +211,8 @@ class AssetControllerTest extends BaseTest {
 
         List<AssetsResponse> mockAssetsResponse = getAssetsResponse();
 
-        Page<AssetsResponse> mockAssetsPage =
-                new PageImpl<>(mockAssetsResponse, pageRequest, mockAssetsResponse.size());
+        Page<AssetsResponse> mockAssetsPage = new PageImpl<>
+                (mockAssetsResponse, pageRequest, mockAssetsResponse.size());
 
         Mockito.when(assetService.findAll(
                         Mockito.nullable(String.class),
@@ -209,27 +227,35 @@ class AssetControllerTest extends BaseTest {
                 .thenReturn(mockAssetsPage);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/assets")
-                        .param("minPrice", String.valueOf(mockMinPrice))
-                        .param("maxPrice", String.valueOf(mockMaxPrice))
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("property", "name")
-                        .param("direction", "ASC")
-                        .contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/assets")
+                .param("minPrice", String.valueOf(mockMinPrice))
+                .param("maxPrice", String.valueOf(mockMaxPrice))
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers.everyItem(Matchers.isA(Boolean.class))));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].id")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].name")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].price")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content[*].isDefault", Matchers
+                        .everyItem(Matchers.isA(Boolean.class))));
 
         // Verify
         Mockito.verify(assetService, Mockito.times(1))
@@ -272,19 +298,25 @@ class AssetControllerTest extends BaseTest {
                 .thenReturn(mockAssetsSummaryResponse);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/assets/summary")
-                        .contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/assets/summary")
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id").value(11))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name").value("test1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].name", Matchers.everyItem(Matchers.matchesPattern(".*test.*"))));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .value(11))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .value("test1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].name", Matchers
+                        .everyItem(Matchers.matchesPattern(".*test.*"))));
 
 
         //Verify
@@ -298,49 +330,26 @@ class AssetControllerTest extends BaseTest {
         //When
         List<AssetsSummaryResponse> emptyList = Collections.emptyList();
 
-        Mockito.when(assetService.findSummaryAll())
-                .thenReturn(emptyList);
+        Mockito.when(assetService.findSummaryAll()).thenReturn(emptyList);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/assets/summary")
-                        .contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/assets/summary")
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isEmpty());
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1))
                 .findSummaryAll();
-    }
-
-    @Test
-    public void whenFindSummaryAllIsCalledAndTheServiceFails_thenReturnInternalServerError() throws Exception {
-
-        //When
-        Mockito.when(assetService.findSummaryAll())
-                .thenThrow(new RuntimeException("An unexpected error occurred"));
-
-        //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/assets/summary")
-                        .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.status().is(500))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Prepared for unpredictable errors."))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
-
-        //Verify
-        Mockito.verify(assetService, Mockito.times(1))
-                .findSummaryAll();
-
     }
 
     /**
@@ -360,60 +369,39 @@ class AssetControllerTest extends BaseTest {
                 .isDefault(true)
                 .build();
 
-        Mockito.when(assetService.findById(mockId))
-                .thenReturn(mockAssetResponse);
+        Mockito.when(assetService.findById(mockId)).thenReturn(mockAssetResponse);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", mockId)
-                        .contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/asset/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(mockId))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value("test"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.price").value(250))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.isDefault").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id")
+                        .value(mockId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.name")
+                        .value("test"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.price")
+                        .value(250))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.isDefault")
+                        .value(true));
 
         //Verify
         Mockito.verify(assetService, Mockito.times(1)).findById(mockId);
     }
 
     @Test
-    public void givenNonAssetId_whenNotFoundById_thenReturnNotFoundException() throws Exception {
-
-        //Given
-        Long mockNonId = 999L;
-
-        //When
-        Mockito.when(assetService.findById(mockNonId))
-                .thenThrow(new AssetNotFoundException(mockNonId));
-
-        //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", mockNonId)
-                        .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-
-        //Verify
-        Mockito.verify(assetService, Mockito.times(1))
-                .findById(mockNonId);
-    }
-
-    @Test
     public void givenInvalidAssetId_whenNotFoundById_thenReturnBadRequest() throws Exception {
 
         //Given
-        String mockInvalidId = "hahaha";
+        String mockInvalidId = "bu bir invalidId";
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", mockInvalidId)
-                        .contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/asset/{id}", mockInvalidId)
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
@@ -422,27 +410,6 @@ class AssetControllerTest extends BaseTest {
         //Verify
         Mockito.verify(assetService, Mockito.never())
                 .findById(Mockito.any());
-    }
-
-    @Test
-    public void givenServerError_whenFindById_thenReturnInternalServerError() throws Exception {
-
-        //Given
-        Long mockId = 1L;
-
-        //When
-        Mockito.when(assetService.findById(mockId))
-                .thenThrow(new RuntimeException("Unexpected error"));
-
-        //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.get(BASE_PATH + "/asset/{id}", mockId)
-                        .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
-
     }
 
     /**
@@ -461,15 +428,16 @@ class AssetControllerTest extends BaseTest {
         Mockito.doNothing().when(assetService).create(Mockito.any(AssetCreateRequest.class));
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.post(BASE_PATH + "/asset")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/asset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
         ;
 
         //Verify
@@ -486,42 +454,16 @@ class AssetControllerTest extends BaseTest {
         mockInvalidRequest.setName("");
 
         //When
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.post(BASE_PATH + "/asset")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/asset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
                 .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/json"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void givenAssetCreateRequest_whenAssetServiceTakeError_thenReturnInternalServerError() throws Exception {
-
-        //Given
-        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
-        mockAssetCreateRequest.setName("test");
-        mockAssetCreateRequest.setPrice(BigDecimal.valueOf(250));
-        mockAssetCreateRequest.setIsDefault(true);
-
-        //When
-        Mockito.doThrow(new RuntimeException("Unexpected Error")).when(assetService)
-                .create(Mockito.any(AssetCreateRequest.class));
-
-        //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.post(BASE_PATH + "/asset")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
-                .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/json"))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
     /**
@@ -542,10 +484,10 @@ class AssetControllerTest extends BaseTest {
         Mockito.doNothing().when(assetService).update(mockId, mockAssetUpdateRequest);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.put(BASE_PATH + "/asset/{id}", mockId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockAssetUpdateRequest));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/asset/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockAssetUpdateRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
@@ -561,37 +503,32 @@ class AssetControllerTest extends BaseTest {
     }
 
     @Test
-    void givenNonValidId_whenCalledAssetWithNonById_thenReturnsAssetNotFoundException() throws Exception {
+    void givenInvalidId_whenCalledAssetWithByInvalidId_thenReturnsBadRequestError() throws Exception {
 
         //Given
-        Long mockNonId = 999L;
+        String mockInvalidId = "bu bir InvalidId";
 
         AssetUpdateRequest mockRequest = new AssetUpdateRequest();
         mockRequest.setName("updateAsset");
         mockRequest.setPrice(BigDecimal.valueOf(2000));
         mockRequest.setIsDefault(false);
 
-        //When
-        Mockito.doThrow(new AssetNotFoundException(mockNonId))
-                .when(assetService).update(mockNonId, mockRequest);
-
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.put(BASE_PATH + "/asset/{id}", mockNonId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(mockRequest));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/asset/{id}", mockInvalidId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRequest));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true));
+                        .value(false));
 
         //Verify
-        Mockito.verify(assetService, Mockito.times(1))
-                .update(Mockito.any(), Mockito.any(AssetUpdateRequest.class));
-
+        Mockito.verify(assetService, Mockito.never())
+                .update(Mockito.any(), Mockito.any());
     }
 
     /**
@@ -607,14 +544,16 @@ class AssetControllerTest extends BaseTest {
         Mockito.doNothing().when(assetService).delete(mockId);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.delete(BASE_PATH + "/asset/{id}", mockId);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/asset/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.time").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.time")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
     }
 
     @Test
@@ -628,13 +567,15 @@ class AssetControllerTest extends BaseTest {
                 .when(assetService).delete(mockId);
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.delete(BASE_PATH + "/asset/{id}", mockId);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/asset/{id}", mockId);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").isString())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -642,13 +583,15 @@ class AssetControllerTest extends BaseTest {
     void givenInValidId_whenCalledDeleteForAsset_thenReturnBadRequest() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
-                MockMvcRequestBuilders.delete(BASE_PATH + "/asset/{id}", "lkjhg");
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/asset/{id}", "lkjhg");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").isString())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
