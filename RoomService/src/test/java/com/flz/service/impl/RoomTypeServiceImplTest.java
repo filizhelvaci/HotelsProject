@@ -5,18 +5,16 @@ import com.flz.exception.RoomTypeAlreadyExistsException;
 import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.entity.AssetEntity;
 import com.flz.model.entity.RoomTypeEntity;
-import com.flz.model.mapper.AssetResponseToEntityMapper;
 import com.flz.model.mapper.RoomTypeCreateRequestToEntityMapper;
 import com.flz.model.mapper.RoomTypeEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomTypeEntityToSummaryResponseMapper;
 import com.flz.model.request.RoomTypeCreateRequest;
 import com.flz.model.request.RoomTypeUpdateRequest;
-import com.flz.model.response.AssetResponse;
 import com.flz.model.response.RoomTypeResponse;
 import com.flz.model.response.RoomTypesResponse;
 import com.flz.model.response.RoomTypesSummaryResponse;
+import com.flz.repository.AssetRepository;
 import com.flz.repository.RoomTypeRepository;
-import com.flz.service.AssetService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -39,7 +37,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     RoomTypeRepository roomTypeRepository;
 
     @Mock
-    AssetService assetService;
+    AssetRepository assetRepository;
 
     @InjectMocks
     RoomTypeServiceImpl roomTypeService;
@@ -232,23 +230,22 @@ class RoomTypeServiceImplTest extends BaseTest {
         mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 2L, 3L, 4L));
 
         //When
-        List<AssetResponse> mockAssetsResponse = List.of(
-                AssetResponse.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetResponse.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetResponse.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
-                AssetResponse.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        List<AssetEntity> mockAssetEntities = List.of(
+                AssetEntity.builder().id(1L).name("Yatak Seti").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(2L).name("55 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(3L).name("Wifi").price(BigDecimal.valueOf(0)).isDefault(false).build(),
+                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
         );
 
         Mockito.when(roomTypeRepository.existsByName(mockRoomTypeCreateRequest.getName()))
                 .thenReturn(false);
 
-        RoomTypeEntity mockRoomTypeEntity =
-                RoomTypeCreateRequestToEntityMapper.INSTANCE.map(mockRoomTypeCreateRequest);
+        RoomTypeEntity mockRoomTypeEntity = RoomTypeCreateRequestToEntityMapper.INSTANCE.map(mockRoomTypeCreateRequest);
 
-        Mockito.when(assetService.findAllById(mockRoomTypeCreateRequest.getAssetIds()))
-                .thenReturn(mockAssetsResponse);
+        Mockito.when(assetRepository.findAllById(mockRoomTypeCreateRequest.getAssetIds()))
+                .thenReturn(mockAssetEntities);
 
-        mockRoomTypeEntity.setAssets(AssetResponseToEntityMapper.INSTANCE.map(mockAssetsResponse));
+        mockRoomTypeEntity.setAssets(mockAssetEntities);
 
         Mockito.when(roomTypeRepository.save(mockRoomTypeEntity))
                 .thenReturn(mockRoomTypeEntity);
@@ -261,6 +258,8 @@ class RoomTypeServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .existsByName(mockRoomTypeCreateRequest.getName());
+        Mockito.verify(assetRepository, Mockito.times(1))
+                .findAllById(Mockito.any());
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .save(Mockito.any());
     }
@@ -299,11 +298,11 @@ class RoomTypeServiceImplTest extends BaseTest {
         //Given
         Long mockId = 1L;
 
-        List<AssetResponse> mockAssetsResponse = List.of(
-                AssetResponse.builder().id(5L).name("Nevresim Seti").price(BigDecimal.valueOf(10)).isDefault(false).build(),
-                AssetResponse.builder().id(6L).name("65 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
-                AssetResponse.builder().id(7L).name("Kahvaltı Seti").price(BigDecimal.valueOf(250)).isDefault(false).build(),
-                AssetResponse.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
+        List<AssetEntity> mockAssetsEntity = List.of(
+                AssetEntity.builder().id(5L).name("Nevresim Seti").price(BigDecimal.valueOf(10)).isDefault(false).build(),
+                AssetEntity.builder().id(6L).name("65 inç LCD TV").price(BigDecimal.valueOf(100)).isDefault(false).build(),
+                AssetEntity.builder().id(7L).name("Kahvaltı Seti").price(BigDecimal.valueOf(250)).isDefault(false).build(),
+                AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
         );
 
         RoomTypeUpdateRequest mockRoomTypeUpdateRequest = new RoomTypeUpdateRequest();
@@ -322,10 +321,10 @@ class RoomTypeServiceImplTest extends BaseTest {
         Mockito.when(roomTypeRepository.findById(mockId))
                 .thenReturn(Optional.of(mockRoomTypeEntity));
 
-        Mockito.when(assetService.findAllById(mockRoomTypeUpdateRequest.getAssetIds()))
-                .thenReturn(mockAssetsResponse);
+        Mockito.when(assetRepository.findAllById(mockRoomTypeUpdateRequest.getAssetIds()))
+                .thenReturn(mockAssetsEntity);
 
-        mockRoomTypeEntity.setAssets(AssetResponseToEntityMapper.INSTANCE.map(mockAssetsResponse));
+        mockRoomTypeEntity.setAssets(mockAssetsEntity);
 
         mockRoomTypeEntity.update(
                 mockRoomTypeUpdateRequest.getName(),
@@ -346,7 +345,7 @@ class RoomTypeServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .findById(mockId);
-        Mockito.verify(assetService, Mockito.times(1))
+        Mockito.verify(assetRepository, Mockito.times(1))
                 .findAllById(mockRoomTypeUpdateRequest.getAssetIds());
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .save(mockRoomTypeEntity);
@@ -380,7 +379,7 @@ class RoomTypeServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .findById(mockId);
-        Mockito.verify(assetService, Mockito.never())
+        Mockito.verify(assetRepository, Mockito.never())
                 .findAllById(Mockito.any());
         Mockito.verify(roomTypeRepository, Mockito.never())
                 .save(Mockito.any());
