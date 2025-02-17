@@ -23,6 +23,7 @@ class RoomTypeAvailabilityServiceImpl implements RoomTypeAvailabilityService {
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
 
+
     @Override
     public List<RoomTypeAvailabilityResponse> findRoomTypesAvailability() {
 
@@ -54,5 +55,4 @@ class RoomTypeAvailabilityServiceImpl implements RoomTypeAvailabilityService {
 
         return roomTypeAvailabilityResponses;
     }
-
 }

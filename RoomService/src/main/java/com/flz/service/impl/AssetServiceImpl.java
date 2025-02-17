@@ -36,21 +36,22 @@ class AssetServiceImpl implements AssetService {
 
     private final AssetRepository assetRepository;
 
+
     @Override
     public List<AssetsSummaryResponse> findSummaryAll() {
 
         List<AssetEntity> assetEntities = assetRepository.findAll();
         return assetEntityToSummaryResponseMapper.map(assetEntities);
-
     }
+
 
     @Override
     public List<AssetResponse> findAllById(List<Long> ids) {
 
         List<AssetEntity> assetEntities = assetRepository.findAllById(ids);
         return assetEntityToResponseMapper.map(assetEntities);
-
     }
+
 
     @Override
     public AssetResponse findById(Long id) {
@@ -58,8 +59,8 @@ class AssetServiceImpl implements AssetService {
         AssetEntity assetEntity = assetRepository.findById(id)
                 .orElseThrow(() -> new AssetNotFoundException(id));
         return assetEntityToResponseMapper.map(assetEntity);
-
     }
+
 
     @Override
     public Page<AssetsResponse> findAll(String name, BigDecimal minPrice, BigDecimal maxPrice, Boolean isDefault, int page, int size, String property, Sort.Direction direction) {
@@ -73,6 +74,7 @@ class AssetServiceImpl implements AssetService {
         return assetEntityToPageResponseMapper.map(assetEntities);
     }
 
+
     @Override
     public void create(AssetCreateRequest assetCreateRequest) {
 
@@ -82,7 +84,6 @@ class AssetServiceImpl implements AssetService {
         }
         AssetEntity assetEntity = assetCreateRequestToEntityMapper.map(assetCreateRequest);
         assetRepository.save(assetEntity);
-
     }
 
 
@@ -99,7 +100,6 @@ class AssetServiceImpl implements AssetService {
         );
 
         assetRepository.save(assetEntity);
-
     }
 
 
@@ -111,7 +111,6 @@ class AssetServiceImpl implements AssetService {
             throw new AssetNotFoundException(id);
         }
         assetRepository.deleteById(id);
-
     }
 
 }

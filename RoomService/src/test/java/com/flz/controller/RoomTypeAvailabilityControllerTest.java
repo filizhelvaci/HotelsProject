@@ -31,8 +31,6 @@ class RoomTypeAvailabilityControllerTest extends BaseTest {
     private static final String BASE_URL = "/api/v1";
 
     /**
-     * /RoomTypeAvailability
-     * findRoomTypesAvailability()
      * {@link RoomTypeAvailabilityController#findRoomTypesAvailability()}
      */
     @Test

@@ -2,22 +2,22 @@ package com.flz.service.impl;
 
 import com.flz.exception.RoomAlreadyExistsException;
 import com.flz.exception.RoomNotFoundException;
+import com.flz.exception.RoomTypeNotFoundException;
 import com.flz.model.entity.RoomEntity;
+import com.flz.model.entity.RoomTypeEntity;
 import com.flz.model.enums.RoomStatus;
 import com.flz.model.mapper.RoomCreateRequestToEntityMapper;
 import com.flz.model.mapper.RoomEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomEntityToResponseMapper;
 import com.flz.model.mapper.RoomEntityToSummaryResponseMapper;
-import com.flz.model.mapper.RoomTypeResponseToEntityMapper;
 import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.RoomResponse;
-import com.flz.model.response.RoomTypeResponse;
 import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
+import com.flz.repository.RoomTypeRepository;
 import com.flz.service.RoomService;
-import com.flz.service.RoomTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,18 +36,18 @@ class RoomServiceImpl implements RoomService {
     private final RoomEntityToSummaryResponseMapper roomEntityToSummaryResponseMapper = RoomEntityToSummaryResponseMapper.INSTANCE;
     private final RoomCreateRequestToEntityMapper roomCreateRequestToEntityMapper = RoomCreateRequestToEntityMapper.INSTANCE;
     private final RoomEntityToPageResponseMapper roomEntityToPageResponseMapper = RoomEntityToPageResponseMapper.INSTANCE;
-    private final RoomTypeResponseToEntityMapper roomTypeResponseToEntityMapper = RoomTypeResponseToEntityMapper.INSTANCE;
 
     private final RoomRepository roomRepository;
-    private final RoomTypeService roomTypeService;
+    private final RoomTypeRepository roomTypeRepository;
+
 
     @Override
     public List<RoomsSummaryResponse> findSummaryAll() {
 
         List<RoomEntity> roomEntities = roomRepository.findAll();
         return roomEntityToSummaryResponseMapper.map(roomEntities);
-
     }
+
 
     @Override
     public RoomResponse findById(Long id) {
@@ -55,8 +55,8 @@ class RoomServiceImpl implements RoomService {
         RoomEntity roomEntity = roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException(id));
         return roomEntityToResponseMapper.map(roomEntity);
-
     }
+
 
     @Override
     public Page<RoomsResponse> findAll(Integer number, Integer floor, RoomStatus status, Long typeId, int page, int size, String property, Sort.Direction direction) {
@@ -80,11 +80,13 @@ class RoomServiceImpl implements RoomService {
         }
         RoomEntity roomEntity = roomCreateRequestToEntityMapper.map(roomCreateRequest);
 
-        RoomTypeResponse roomTypeResponse = roomTypeService.findById(roomCreateRequest.getRoomTypeId());
-        roomEntity.setType(roomTypeResponseToEntityMapper.map(roomTypeResponse));
+        Long typeId = roomCreateRequest.getRoomTypeId();
+        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(typeId)
+                .orElseThrow(() -> new RoomTypeNotFoundException(typeId));
+        roomEntity.setType(roomTypeEntity);
         roomRepository.save(roomEntity);
-
     }
+
 
     @Override
     public void update(Long id, RoomUpdateRequest roomUpdateRequest) {
@@ -92,8 +94,10 @@ class RoomServiceImpl implements RoomService {
         RoomEntity roomEntity = roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException(id));
 
-        RoomTypeResponse roomTypeResponse = roomTypeService.findById(roomUpdateRequest.getRoomTypeId());
-        roomEntity.setType(roomTypeResponseToEntityMapper.map(roomTypeResponse));
+        Long typeId = roomUpdateRequest.getRoomTypeId();
+        RoomTypeEntity roomTypeEntity = roomTypeRepository.findById(typeId)
+                .orElseThrow(() -> new RoomTypeNotFoundException(typeId));
+        roomEntity.setType(roomTypeEntity);
 
         roomEntity.update(
                 roomUpdateRequest.getNumber(),
@@ -102,8 +106,8 @@ class RoomServiceImpl implements RoomService {
         );
 
         roomRepository.save(roomEntity);
-
     }
+
 
     @Override
     public void delete(Long id) throws RoomNotFoundException {
@@ -113,8 +117,5 @@ class RoomServiceImpl implements RoomService {
             throw new RoomNotFoundException(id);
         }
         roomRepository.deleteById(id);
-
     }
-
-
 }

@@ -191,14 +191,14 @@ class AssetServiceImplTest extends BaseTest {
     public void givenFilterParameters_whenAssetEntityFoundByFilterParameters_thenReturnAssetsResponseList() {
 
         //Given
-        String name = "test";
-        BigDecimal minPrice = BigDecimal.valueOf(100);
-        BigDecimal maxPrice = BigDecimal.valueOf(2000);
-        Boolean isDefault = true;
-        int page = 0;
-        int size = 5;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        String mockName = "test";
+        BigDecimal mockMinPrice = BigDecimal.valueOf(100);
+        BigDecimal mockMaxPrice = BigDecimal.valueOf(2000);
+        Boolean mockIsDefault = true;
+        int mockPage = 0;
+        int mockSize = 5;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
         List<AssetEntity> mockAssetEntities = getAssets();
@@ -212,7 +212,7 @@ class AssetServiceImplTest extends BaseTest {
                 AssetEntityToPageResponseMapper.INSTANCE.map(mockAssetPageEntities);
 
         Page<AssetsResponse> result = assetService
-                .findAll(name, minPrice, maxPrice, isDefault, page, size, property, direction);
+                .findAll(mockName, mockMinPrice, mockMaxPrice, mockIsDefault, mockPage, mockSize, mockProperty, mockDirection);
 
         //Then
         Assertions.assertNotNull(mockAssetPageEntities);
@@ -231,21 +231,21 @@ class AssetServiceImplTest extends BaseTest {
     public void whenCalledFilteredAssetListIfAssetEntitiesIsEmpty_thenReturnEmptyList() {
 
         //Given
-        String name = "test";
-        BigDecimal minPrice = BigDecimal.valueOf(100);
-        BigDecimal maxPrice = BigDecimal.valueOf(2000);
-        Boolean isDefault = true;
-        int page = 0;
-        int size = 5;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        String mockName = "test";
+        BigDecimal mockMinPrice = BigDecimal.valueOf(100);
+        BigDecimal mockMaxPrice = BigDecimal.valueOf(2000);
+        Boolean mockIsDefault = true;
+        int mockPage = 0;
+        int mockSize = 5;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
         Mockito.when(assetRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
                 .thenReturn(Page.empty());
 
         Page<AssetsResponse> assetResponses
-                = assetService.findAll(name, minPrice, maxPrice, isDefault, page, size, property, direction);
+                = assetService.findAll(mockName, mockMinPrice, mockMaxPrice, mockIsDefault, mockPage, mockSize, mockProperty, mockDirection);
 
         //Then
         Assertions.assertNotNull(assetRepository);
@@ -255,7 +255,6 @@ class AssetServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(assetRepository, Mockito.times(1))
                 .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
-
     }
 
     /**
@@ -316,7 +315,6 @@ class AssetServiceImplTest extends BaseTest {
                 .existsByName(mockAssetCreateRequest.getName());
         Mockito.verify(assetRepository, Mockito.never())
                 .save(Mockito.any());
-
     }
 
     /**
@@ -359,7 +357,6 @@ class AssetServiceImplTest extends BaseTest {
                 .findById(mockId);
         Mockito.verify(assetRepository, Mockito.times(1))
                 .save(mockAssetEntity);
-
     }
 
     /**
@@ -420,7 +417,6 @@ class AssetServiceImplTest extends BaseTest {
                 .existsById(mockId);
         Mockito.verify(assetRepository, Mockito.times(1))
                 .deleteById(mockId);
-
     }
 
     /**
@@ -448,7 +444,7 @@ class AssetServiceImplTest extends BaseTest {
     }
 
     /**
-     * @return
+     * # Methodized Objects
      */
     private static List<AssetEntity> getAssets() {
         return List.of(
@@ -481,4 +477,5 @@ class AssetServiceImplTest extends BaseTest {
                 .isDefault(true)
                 .build();
     }
+
 }

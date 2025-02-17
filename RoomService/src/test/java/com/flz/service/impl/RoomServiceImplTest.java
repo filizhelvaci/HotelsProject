@@ -10,15 +10,13 @@ import com.flz.model.enums.RoomStatus;
 import com.flz.model.mapper.RoomCreateRequestToEntityMapper;
 import com.flz.model.mapper.RoomEntityToPageResponseMapper;
 import com.flz.model.mapper.RoomEntityToSummaryResponseMapper;
-import com.flz.model.mapper.RoomTypeResponseToEntityMapper;
 import com.flz.model.request.RoomCreateRequest;
 import com.flz.model.request.RoomUpdateRequest;
 import com.flz.model.response.RoomResponse;
-import com.flz.model.response.RoomTypeResponse;
 import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.repository.RoomRepository;
-import com.flz.service.RoomTypeService;
+import com.flz.repository.RoomTypeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -41,7 +39,7 @@ class RoomServiceImplTest extends BaseTest {
     RoomRepository roomRepository;
 
     @Mock
-    RoomTypeService roomTypeService;
+    RoomTypeRepository roomTypeRepository;
 
     @InjectMocks
     RoomServiceImpl roomService;
@@ -153,14 +151,14 @@ class RoomServiceImplTest extends BaseTest {
     public void givenFilterParameters_whenRoomEntityFoundByFilterParameters_thenReturnRoomsResponseList() {
 
         //Given
-        Integer number = 102;
-        Integer floor = 2;
-        RoomStatus status = RoomStatus.EMPTY;
-        Long typeId = 10L;
-        int page = 0;
-        int size = 5;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        Integer mockNumber = 102;
+        Integer mockFloor = 2;
+        RoomStatus mockStatus = RoomStatus.EMPTY;
+        Long mockTypeId = 10L;
+        int mockPage = 0;
+        int mockSize = 5;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
         List<AssetEntity> mockAssets = getAssetEntities();
@@ -172,11 +170,11 @@ class RoomServiceImplTest extends BaseTest {
         Mockito.when(roomRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
                 .thenReturn(mockRoomPageEntities);
 
-        Page<RoomsResponse> mockRoomsResponses =
-                RoomEntityToPageResponseMapper.INSTANCE.map(mockRoomPageEntities);
+        Page<RoomsResponse> mockRoomsResponses = RoomEntityToPageResponseMapper
+                .INSTANCE.map(mockRoomPageEntities);
 
         Page<RoomsResponse> result = roomService
-                .findAll(number, floor, status, typeId, page, size, property, direction);
+                .findAll(mockNumber, mockFloor, mockStatus, mockTypeId, mockPage, mockSize, mockProperty, mockDirection);
 
         //Then
         Assertions.assertNotNull(mockRoomPageEntities);
@@ -195,21 +193,21 @@ class RoomServiceImplTest extends BaseTest {
     public void whenCalledFilteredRoomListIfRoomListIsEmpty_thenReturnEmptyList() {
 
         //Given
-        Integer number = 102;
-        Integer floor = 2;
-        RoomStatus status = RoomStatus.EMPTY;
-        Long typeId = 10L;
-        int page = 0;
-        int size = 5;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        Integer mockNumber = 102;
+        Integer mockFloor = 2;
+        RoomStatus mockStatus = RoomStatus.EMPTY;
+        Long mockTypeId = 10L;
+        int mockPage = 0;
+        int mockSize = 5;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
         Mockito.when(roomRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
                 .thenReturn(Page.empty());
 
         Page<RoomsResponse> roomsResponses
-                = roomService.findAll(number, floor, status, typeId, page, size, property, direction);
+                = roomService.findAll(mockNumber, mockFloor, mockStatus, mockTypeId, mockPage, mockSize, mockProperty, mockDirection);
 
         //Then
         Assertions.assertNotNull(roomRepository);
@@ -222,7 +220,6 @@ class RoomServiceImplTest extends BaseTest {
 
     }
 
-
     /**
      * {@link RoomServiceImpl#create(RoomCreateRequest)}
      */
@@ -230,31 +227,48 @@ class RoomServiceImplTest extends BaseTest {
     public void givenRoomCreateRequest_whenRoomByNameIsNotInTheDatabase_thenCreateAndSaveRoomEntity() {
 
         //Given
+        Long mockTypeId = 1L;
+
         RoomCreateRequest mockRoomCreateRequest = new RoomCreateRequest();
         mockRoomCreateRequest.setNumber(301);
         mockRoomCreateRequest.setFloor(3);
         mockRoomCreateRequest.setStatus(RoomStatus.EMPTY);
-        mockRoomCreateRequest.setRoomTypeId(1L);
+        mockRoomCreateRequest.setRoomTypeId(mockTypeId);
 
         //When
-        Mockito.when(roomRepository.existsByNumber(mockRoomCreateRequest.getNumber()))
-                .thenReturn(false);
+        List<AssetEntity> mockAssetEntities = getAssetEntities();
 
-        RoomEntity mockRoomEntity =
-                RoomCreateRequestToEntityMapper.INSTANCE.map(mockRoomCreateRequest);
+        Optional<RoomTypeEntity> mockRoomTypeEntity = Optional.of(RoomTypeEntity.builder()
+                .id(1L)
+                .name("Lux Room")
+                .price(BigDecimal.valueOf(2000))
+                .size(45)
+                .personCount(2)
+                .description("This is room type test")
+                .assets(mockAssetEntities)
+                .build());
 
-        Mockito.when(roomRepository.save(mockRoomEntity))
-                .thenReturn(mockRoomEntity);
+        Mockito.when(roomRepository.existsByNumber(mockRoomCreateRequest.getNumber())).thenReturn(false);
+
+        RoomEntity roomEntity = RoomCreateRequestToEntityMapper.INSTANCE.map(mockRoomCreateRequest);
+
+        Long mockRoomTypeId = mockRoomCreateRequest.getRoomTypeId();
+        Mockito.when(roomTypeRepository.findById(mockRoomTypeId)).thenReturn(mockRoomTypeEntity);
+        roomEntity.setType(mockRoomTypeEntity.get());
+
+        Mockito.when(roomRepository.save(roomEntity)).thenReturn(roomEntity);
 
         roomService.create(mockRoomCreateRequest);
 
         //Then
-        Assertions.assertNotNull(mockRoomEntity);
-        Assertions.assertEquals(mockRoomCreateRequest.getNumber(), mockRoomEntity.getNumber());
+        Assertions.assertNotNull(roomEntity);
+        Assertions.assertEquals(mockRoomCreateRequest.getNumber(), roomEntity.getNumber());
 
         //Verify
         Mockito.verify(roomRepository, Mockito.times(1))
                 .existsByNumber(mockRoomCreateRequest.getNumber());
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .findById(mockRoomTypeId);
         Mockito.verify(roomRepository, Mockito.times(1))
                 .save(Mockito.any());
     }
@@ -308,23 +322,13 @@ class RoomServiceImplTest extends BaseTest {
         Mockito.when(roomRepository.findById(mockId))
                 .thenReturn(Optional.of(mockRoomEntity));
 
-        List<RoomTypeResponse.Asset> mockAssetList = List.of(
-                RoomTypeResponse.Asset.builder().id(1L).name("Yatak Seti").build(),
-                RoomTypeResponse.Asset.builder().id(3L).name("Wifi").build()
-        );
-        RoomTypeResponse mockRoomTypeResponse = RoomTypeResponse.builder()
-                .id(2L)
-                .name("Standart Oda")
-                .price(BigDecimal.valueOf(2000))
-                .size(30)
-                .personCount(2)
-                .description("Bu mock response test için hazırlanmıştır ")
-                .assets(mockAssetList)
-                .build();
+        List<AssetEntity> assetEntities = getAssetEntities();
+        RoomTypeEntity mockRoomTypeEntity = getRoomType(assetEntities);
 
-        Mockito.when(roomTypeService.findById(mockRoomUpdateRequest.getRoomTypeId()))
-                .thenReturn(mockRoomTypeResponse);
-        mockRoomEntity.setType(RoomTypeResponseToEntityMapper.INSTANCE.map(mockRoomTypeResponse));
+        Mockito.when(roomTypeRepository.findById(mockRoomUpdateRequest.getRoomTypeId()))
+                .thenReturn(Optional.of(mockRoomTypeEntity));
+
+        mockRoomEntity.setType(mockRoomTypeEntity);
 
         mockRoomEntity.update(
                 mockRoomUpdateRequest.getNumber(),
@@ -344,11 +348,11 @@ class RoomServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(roomRepository, Mockito.times(1))
                 .findById(mockId);
+        Mockito.verify(roomTypeRepository, Mockito.times(1))
+                .findById(mockRoomUpdateRequest.getRoomTypeId());
         Mockito.verify(roomRepository, Mockito.times(1))
                 .save(mockRoomEntity);
-
     }
-
 
     /**
      * {@link RoomServiceImpl#update(Long, RoomUpdateRequest)}
@@ -439,7 +443,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * @return
+     * # Methodized Objects
      */
     private static List<AssetEntity> getAssetEntities() {
         return List.of(
@@ -482,7 +486,6 @@ class RoomServiceImplTest extends BaseTest {
                 getRoomEntity(mockRoomTypeEntity1)
         );
     }
-
 
 }
 
