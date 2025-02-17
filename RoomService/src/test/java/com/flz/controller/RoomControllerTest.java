@@ -43,7 +43,6 @@ class RoomControllerTest extends BaseTest {
     private static final String BASE_PATH = "/api/v1";
 
     /**
-     * findAll()
      * {@link AssetController#findAll(String, BigDecimal, BigDecimal, Boolean, int, int, String, Sort.Direction)}
      */
     @Test
@@ -183,7 +182,6 @@ class RoomControllerTest extends BaseTest {
     }
 
     /**
-     * findSummaryAll()
      * {@link RoomService#findSummaryAll()}
      */
     @Test
@@ -281,7 +279,6 @@ class RoomControllerTest extends BaseTest {
     }
 
     /**
-     * findById()
      * {@link RoomController#findById(Long)}
      */
     @Test
@@ -391,7 +388,6 @@ class RoomControllerTest extends BaseTest {
     }
 
     /**
-     * Create()
      * {@link RoomController#create(RoomCreateRequest)}
      */
     @Test
@@ -470,7 +466,6 @@ class RoomControllerTest extends BaseTest {
     }
 
     /**
-     * Update()
      * {@link RoomController#update(Long, RoomUpdateRequest)}
      */
     @Test
@@ -539,7 +534,6 @@ class RoomControllerTest extends BaseTest {
     }
 
     /**
-     * delete()
      * {@link RoomController#delete(Long)}
      */
     @Test
@@ -595,6 +589,9 @@ class RoomControllerTest extends BaseTest {
 
     }
 
+    /**
+     * # Methodized Objects
+     */
     private static List<RoomsResponse> getRoomsResponse(RoomsResponse.Type roomType) {
         return List.of(RoomsResponse.builder()
                         .id(10L)
@@ -612,6 +609,5 @@ class RoomControllerTest extends BaseTest {
                         .build()
         );
     }
-
 
 }

@@ -42,7 +42,6 @@ class AssetControllerTest extends BaseTest {
     private static final String BASE_PATH = "/api/v1";
 
     /**
-     * findAll()
      * {@link AssetController#findAll(String, BigDecimal, BigDecimal, Boolean, int, int, String, Sort.Direction)}
      */
     @Test
@@ -247,7 +246,6 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * findSummaryAll()
      * {@link AssetService#findSummaryAll()}
      */
     @Test
@@ -346,7 +344,6 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * findById()
      * {@link AssetController#findById(Long)}
      */
     @Test
@@ -449,7 +446,6 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * Create()
      * {@link AssetController#create(AssetCreateRequest)}
      */
     @Test
@@ -529,7 +525,6 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * Update()
      * {@link AssetController#update(Long, AssetUpdateRequest)}
      */
     @Test
@@ -600,7 +595,6 @@ class AssetControllerTest extends BaseTest {
     }
 
     /**
-     * delete()
      * {@link AssetController#delete(Long)}
      */
     @Test

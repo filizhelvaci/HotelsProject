@@ -42,8 +42,6 @@ class RoomTypeControllerTest extends BaseTest {
     private static final String BASE_PATH = "/api/v1";
 
     /**
-     * /room-types
-     * findAll()
      * {@link RoomTypeController#findAll(String, BigDecimal, BigDecimal, Integer, Integer, int, int, String, Sort.Direction)}
      */
     @Test
@@ -262,8 +260,6 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     /**
-     * /room-types/summary
-     * findSummaryAll()
      * {@link RoomTypeController#findSummaryAll()}
      */
     @Test
@@ -359,8 +355,6 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     /**
-     * /room-type/{id}
-     * findById()
      * {@link RoomTypeController#findById(Long)}
      */
     @Test
@@ -480,8 +474,6 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     /**
-     * /room-type
-     * create()
      * {@link RoomTypeController#create(RoomTypeCreateRequest)}
      */
     @Test
@@ -555,8 +547,6 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     /**
-     * /room-type/{id}
-     * update()
      * {@link RoomTypeController#update(Long, RoomTypeUpdateRequest)}
      */
     @Test
@@ -619,8 +609,6 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     /**
-     * /room-type/{id}
-     * delete
      * {@link RoomTypeController#delete(Long)}
      */
     @Test
@@ -676,6 +664,9 @@ class RoomTypeControllerTest extends BaseTest {
 
     }
 
+    /**
+     * # Methodized Objects
+     */
     private static void roomTypeCreate(RoomTypeCreateRequest mockRoomTypeCreateRequest) {
         mockRoomTypeCreateRequest.setName("testRoomType");
         mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
