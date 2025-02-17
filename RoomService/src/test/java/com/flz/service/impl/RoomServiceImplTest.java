@@ -153,14 +153,14 @@ class RoomServiceImplTest extends BaseTest {
     public void givenFilterParameters_whenRoomEntityFoundByFilterParameters_thenReturnRoomsResponseList() {
 
         //Given
-        Integer number = 102;
-        Integer floor = 2;
-        RoomStatus status = RoomStatus.EMPTY;
-        Long typeId = 10L;
-        int page = 0;
-        int size = 5;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        Integer mockNumber = 102;
+        Integer mockFloor = 2;
+        RoomStatus mockStatus = RoomStatus.EMPTY;
+        Long mockTypeId = 10L;
+        int mockPage = 0;
+        int mockSize = 5;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
         List<AssetEntity> mockAssets = getAssetEntities();
@@ -176,7 +176,7 @@ class RoomServiceImplTest extends BaseTest {
                 RoomEntityToPageResponseMapper.INSTANCE.map(mockRoomPageEntities);
 
         Page<RoomsResponse> result = roomService
-                .findAll(number, floor, status, typeId, page, size, property, direction);
+                .findAll(mockNumber, mockFloor, mockStatus, mockTypeId, mockPage, mockSize, mockProperty, mockDirection);
 
         //Then
         Assertions.assertNotNull(mockRoomPageEntities);
@@ -195,21 +195,21 @@ class RoomServiceImplTest extends BaseTest {
     public void whenCalledFilteredRoomListIfRoomListIsEmpty_thenReturnEmptyList() {
 
         //Given
-        Integer number = 102;
-        Integer floor = 2;
-        RoomStatus status = RoomStatus.EMPTY;
-        Long typeId = 10L;
-        int page = 0;
-        int size = 5;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        Integer mockNumber = 102;
+        Integer mockFloor = 2;
+        RoomStatus mockStatus = RoomStatus.EMPTY;
+        Long mockTypeId = 10L;
+        int mockPage = 0;
+        int mockSize = 5;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
         Mockito.when(roomRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
                 .thenReturn(Page.empty());
 
         Page<RoomsResponse> roomsResponses
-                = roomService.findAll(number, floor, status, typeId, page, size, property, direction);
+                = roomService.findAll(mockNumber, mockFloor, mockStatus, mockTypeId, mockPage, mockSize, mockProperty, mockDirection);
 
         //Then
         Assertions.assertNotNull(roomRepository);
@@ -221,7 +221,6 @@ class RoomServiceImplTest extends BaseTest {
                 .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
 
     }
-
 
     /**
      * {@link RoomServiceImpl#create(RoomCreateRequest)}
@@ -349,7 +348,6 @@ class RoomServiceImplTest extends BaseTest {
 
     }
 
-
     /**
      * {@link RoomServiceImpl#update(Long, RoomUpdateRequest)}
      */
@@ -439,7 +437,7 @@ class RoomServiceImplTest extends BaseTest {
     }
 
     /**
-     * @return
+     * # Methodized Objects
      */
     private static List<AssetEntity> getAssetEntities() {
         return List.of(
@@ -482,7 +480,6 @@ class RoomServiceImplTest extends BaseTest {
                 getRoomEntity(mockRoomTypeEntity1)
         );
     }
-
 
 }
 

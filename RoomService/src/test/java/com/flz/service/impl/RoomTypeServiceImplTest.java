@@ -148,15 +148,15 @@ class RoomTypeServiceImplTest extends BaseTest {
     public void givenFilterParameters_whenAssetEntityFoundByFilterParameters_thenReturnAssetsResponseList() {
 
         //Given
-        String name = "test";
-        BigDecimal minPrice = BigDecimal.valueOf(100);
-        BigDecimal maxPrice = BigDecimal.valueOf(2000);
-        Integer personCount = 2;
-        Integer size = 50;
-        int page = 0;
-        int pageSize = 5;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        String mockName = "test";
+        BigDecimal mockMinPrice = BigDecimal.valueOf(100);
+        BigDecimal mockMaxPrice = BigDecimal.valueOf(2000);
+        Integer mockPersonCount = 2;
+        Integer mockSize = 50;
+        int mockPage = 0;
+        int mockPageSize = 5;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
         List<AssetEntity> mockAssets = getAssets();
@@ -170,7 +170,7 @@ class RoomTypeServiceImplTest extends BaseTest {
                 RoomTypeEntityToPageResponseMapper.INSTANCE.map(mockRoomTypePageEntities);
 
         Page<RoomTypesResponse> result = roomTypeService
-                .findAll(name, minPrice, maxPrice, personCount, size, page, pageSize, property, direction);
+                .findAll(mockName, mockMinPrice, mockMaxPrice, mockPersonCount, mockSize, mockPage, mockPageSize, mockProperty, mockDirection);
 
         //Then
         Assertions.assertNotNull(mockRoomTypesResponses);
@@ -189,22 +189,22 @@ class RoomTypeServiceImplTest extends BaseTest {
     public void whenCalledFilteredRoomTypeListIfRoomTypeListIsEmpty_thenReturnEmptyList() {
 
         //Given
-        String name = "test";
-        BigDecimal minPrice = BigDecimal.valueOf(100);
-        BigDecimal maxPrice = BigDecimal.valueOf(2000);
-        Integer personCount = 2;
-        Integer size = 50;
-        int page = 0;
-        int pageSize = 5;
-        String property = "name";
-        Sort.Direction direction = Sort.Direction.ASC;
+        String mockName = "test";
+        BigDecimal mockMinPrice = BigDecimal.valueOf(100);
+        BigDecimal mockMaxPrice = BigDecimal.valueOf(2000);
+        Integer mockPersonCount = 2;
+        Integer mockSize = 50;
+        int mockPage = 0;
+        int mockPageSize = 5;
+        String mockProperty = "name";
+        Sort.Direction mockDirection = Sort.Direction.ASC;
 
         //When
         Mockito.when(roomTypeRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
                 .thenReturn(Page.empty());
 
         Page<RoomTypesResponse> roomTypeResponses
-                = roomTypeService.findAll(name, minPrice, maxPrice, personCount, size, page, pageSize, property, direction);
+                = roomTypeService.findAll(mockName, mockMinPrice, mockMaxPrice, mockPersonCount, mockSize, mockPage, mockPageSize, mockProperty, mockDirection);
 
         //Then
         Assertions.assertNotNull(roomTypeRepository);
@@ -214,7 +214,6 @@ class RoomTypeServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
-
     }
 
     /**
@@ -289,9 +288,7 @@ class RoomTypeServiceImplTest extends BaseTest {
                 .existsByName(roomTypeCreateRequest.getName());
         Mockito.verify(roomTypeRepository, Mockito.never())
                 .save(Mockito.any());
-
     }
-
 
     /**
      * {@link RoomTypeServiceImpl#update(Long, RoomTypeUpdateRequest)}
@@ -420,7 +417,6 @@ class RoomTypeServiceImplTest extends BaseTest {
                 .existsById(mockId);
         Mockito.verify(roomTypeRepository, Mockito.times(1))
                 .deleteById(mockId);
-
     }
 
     /**
@@ -448,7 +444,7 @@ class RoomTypeServiceImplTest extends BaseTest {
     }
 
     /**
-     * @return
+     * # Methodized Objects
      */
     private static List<RoomTypeEntity> getRoomTypes(List<AssetEntity> mockAssets) {
         return List.of(getRoomType(mockAssets),
@@ -491,6 +487,5 @@ class RoomTypeServiceImplTest extends BaseTest {
                 AssetEntity.builder().id(4L).name("Çay/kahve makinesi").price(BigDecimal.valueOf(100)).isDefault(false).build()
         );
     }
-
 
 }
