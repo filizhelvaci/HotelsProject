@@ -8,7 +8,10 @@ import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.model.response.HotelResponse;
 import com.flz.service.AssetService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -35,18 +38,20 @@ class AssetController {
     private final AssetService assetService;
 
     @GetMapping("/assets")
-    public HotelResponse<Page<AssetsResponse>> findAll(@RequestParam(required = false) String name,
-                                                       @RequestParam(required = false) BigDecimal minPrice,
-                                                       @RequestParam(required = false) BigDecimal maxPrice,
-                                                       @RequestParam(required = false) Boolean isDefault,
-                                                       @RequestParam int page,
-                                                       @RequestParam int size,
-                                                       @RequestParam String property,
-                                                       @RequestParam Sort.Direction direction) {
+    public HotelResponse<Page<AssetsResponse>> findAll(
+            @RequestParam(required = false) @Size(max = 150) String name,
+            @RequestParam(required = false) @Positive BigDecimal minPrice,
+            @RequestParam(required = false) @Positive BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean isDefault,
+            @RequestParam @Min(0) int page,
+            @RequestParam @Min(0) int size,
+            @RequestParam @NotBlank String property,
+            @RequestParam Sort.Direction direction) {
 
         Page<AssetsResponse> assetsResponses = assetService.findAll(name, minPrice, maxPrice, isDefault, page, size, property, direction);
         return HotelResponse.successOf(assetsResponses);
     }
+
 
     @GetMapping("/assets/summary")
     public HotelResponse<List<AssetsSummaryResponse>> findSummaryAll() {
@@ -54,11 +59,13 @@ class AssetController {
         return HotelResponse.successOf(assetsSummaryResponse);
     }
 
+
     @GetMapping("/asset/{id}")
-    public HotelResponse<AssetResponse> findById(@PathVariable(value = "id") Long id) {
+    public HotelResponse<AssetResponse> findById(@PathVariable(value = "id") @Positive Long id) {
         AssetResponse assetResponse = assetService.findById(id);
         return HotelResponse.successOf(assetResponse);
     }
+
 
     @PostMapping("/asset")
     public HotelResponse<Void> create(@RequestBody @Valid AssetCreateRequest createRequest) {
@@ -66,15 +73,18 @@ class AssetController {
         return HotelResponse.success();
     }
 
+
     @PutMapping("/asset/{id}")
     public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid AssetUpdateRequest assetUpdateRequest) {
         assetService.update(id, assetUpdateRequest);
         return HotelResponse.success();
     }
 
+
     @DeleteMapping("/asset/{id}")
-    public HotelResponse<Void> delete(@PathVariable(value = "id") Long id) {
+    public HotelResponse<Void> delete(@PathVariable(value = "id") @Positive Long id) {
         assetService.delete(id);
         return HotelResponse.success();
     }
+
 }
