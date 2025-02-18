@@ -1,0 +1,16 @@
+services:
+  user-service-db:
+    image: postgres:latest
+    container_name: user-service-db
+    restart: always
+    environment:
+      POSTGRES_DB: hotel_r
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 654321
+      POSTGRES_PORT: 5434
+    volumes:
+      - ./docker/database_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - hotel_network
