@@ -819,8 +819,11 @@ class RoomTypeControllerTest extends BaseTest {
     @MethodSource("invalidRoomTypeUpdateRequests")
     void givenInvalidRoomTypeUpdateRequests_whenUpdateRoomType_thenBadRequestResponse(RoomTypeUpdateRequest invalidRequest) throws Exception {
 
+        //Given
+        Long mockId = 10L;
+
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(BASE_PATH + "/room-type")
+                .put(BASE_PATH + "/room-type/" + mockId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(invalidRequest));
 
@@ -835,7 +838,7 @@ class RoomTypeControllerTest extends BaseTest {
                 Arguments.of(new RoomTypeUpdateRequest(null, BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of(1L))),
                 Arguments.of(new RoomTypeUpdateRequest("R", BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of(1L))),
                 Arguments.of(new RoomTypeUpdateRequest("Valid Name", null, 10, 200, "Valid Desc", List.of(1L))),
-                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(100000000), 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(100000001), 10, 200, "Valid Desc", List.of(1L))),
                 Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), null, 200, "Valid Desc", List.of(1L))),
                 Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), 10, 200, "", List.of(1L))),
                 Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of()))
