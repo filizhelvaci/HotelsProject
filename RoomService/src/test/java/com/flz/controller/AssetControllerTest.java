@@ -788,6 +788,39 @@ class AssetControllerTest extends BaseTest {
                 .update(Mockito.any(), Mockito.any());
     }
 
+    @ParameterizedTest
+    @MethodSource("invalidAssetUpdateRequests")
+    void givenInvalidAssetUpdateRequests_whenUpdateAsset_thenBadRequestResponse(AssetUpdateRequest invalidRequest) throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/asset/" + mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    private static Stream<Arguments> invalidAssetUpdateRequests() {
+        return Stream.of(
+                Arguments.of(new AssetUpdateRequest(null, BigDecimal.valueOf(100), true)),
+                Arguments.of(new AssetUpdateRequest("", BigDecimal.valueOf(100), true)),
+                Arguments.of(new AssetUpdateRequest("o", BigDecimal.valueOf(10), false)),
+                Arguments.of(new AssetUpdateRequest("Bu bir deneme mesajıdır ve bu mesajın 50 karakterden fazla olması gerektiği için mesajı uzun yazmak durumundayım.Umarım 50 karakteri geçmişimdir", BigDecimal.valueOf(100), true)),
+                Arguments.of(new AssetUpdateRequest("kahve seti", BigDecimal.valueOf(-200), true)),
+                Arguments.of(new AssetUpdateRequest("Kahve seti", BigDecimal.valueOf(10001), true)),
+                Arguments.of(new AssetUpdateRequest("Kahve seti", null, true)),
+                Arguments.of(new AssetUpdateRequest("Çay seti", BigDecimal.valueOf(200), null))
+        );
+    }
+
     /**
      * {@link AssetController#delete(Long)}
      */
