@@ -9,6 +9,7 @@ import com.flz.model.response.RoomsResponse;
 import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.service.RoomService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -39,8 +40,8 @@ class RoomController {
 
     @GetMapping("/rooms")
     public HotelResponse<Page<RoomsResponse>> findAll(
-            @RequestParam(required = false) @Positive Integer number,
-            @RequestParam(required = false) @Positive Integer floor,
+            @RequestParam(required = false) @Positive @Max(10000) Integer number,
+            @RequestParam(required = false) @Positive @Max(100) Integer floor,
             @RequestParam(required = false) RoomStatus status,
             @RequestParam(required = false) @Positive Long typeId,
             @RequestParam @Min(0) int page,

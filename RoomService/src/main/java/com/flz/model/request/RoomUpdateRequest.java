@@ -2,12 +2,16 @@ package com.flz.model.request;
 
 import com.flz.model.enums.RoomStatus;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomUpdateRequest {
 
     @NotNull

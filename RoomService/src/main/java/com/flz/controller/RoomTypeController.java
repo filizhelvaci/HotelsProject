@@ -8,6 +8,7 @@ import com.flz.model.response.RoomTypesResponse;
 import com.flz.model.response.RoomTypesSummaryResponse;
 import com.flz.service.RoomTypeService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -43,8 +44,8 @@ public class RoomTypeController {
             @RequestParam(required = false) @Size(max = 150) String name,
             @RequestParam(required = false) @Positive BigDecimal minPrice,
             @RequestParam(required = false) @Positive BigDecimal maxPrice,
-            @RequestParam(required = false) @Positive Integer personCount,
-            @RequestParam(required = false) @Positive Integer size,
+            @RequestParam(required = false) @Positive @Max(100) Integer personCount,
+            @RequestParam(required = false) @Positive @Max(1000) Integer size,
             @RequestParam @Min(0) int page,
             @RequestParam @Min(0) int pageSize,
             @RequestParam @NotBlank String property,

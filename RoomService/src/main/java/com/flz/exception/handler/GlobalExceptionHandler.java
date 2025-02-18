@@ -3,6 +3,7 @@ package com.flz.exception.handler;
 import com.flz.exception.AbstractAlreadyExistsException;
 import com.flz.exception.AbstractNotFoundException;
 import com.flz.model.response.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -111,6 +112,16 @@ public class GlobalExceptionHandler {
         return ErrorResponse.builder()
                 .field(exception.getReason())
                 .message("This field value is not Valid")
+                .build();
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorResponse handleValidationConstrainErrors(final ConstraintViolationException exception) {
+        log.error(exception.getMessage(), exception);
+        return ErrorResponse.builder()
+                .field(exception.getMessage())
+                .message("This field is not Valid")
                 .build();
     }
 
