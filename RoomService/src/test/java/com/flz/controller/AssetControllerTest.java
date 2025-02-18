@@ -10,6 +10,9 @@ import com.flz.model.response.AssetsSummaryResponse;
 import com.flz.service.AssetService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,6 +31,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(AssetController.class)
 class AssetControllerTest extends BaseTest {
@@ -360,6 +364,89 @@ class AssetControllerTest extends BaseTest {
                         .value(false));
     }
 
+    @Test
+    void whenPageDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/assets")
+                .param("page", "-1")
+                .param("size", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenSizeDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/assets")
+                .param("page", "0")
+                .param("size", "-10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenPropertyDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/assets")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenDirectionDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/assets")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "name")
+                .param("direction", "")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
     /**
      * {@link AssetService#findSummaryAll()}
      */
@@ -576,6 +663,35 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false))
                 .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/json"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidAssetRequests")
+    void givenInvalidAssetRequests_whenCreateAsset_thenBadRequestResponse(AssetCreateRequest invalidRequest) throws Exception {
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/asset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    private static Stream<Arguments> invalidAssetRequests() {
+        return Stream.of(
+                Arguments.of(new AssetCreateRequest(null, BigDecimal.valueOf(100), true)),
+                Arguments.of(new AssetCreateRequest("", BigDecimal.valueOf(100), true)),
+                Arguments.of(new AssetCreateRequest("o", BigDecimal.valueOf(10), false)),
+                Arguments.of(new AssetCreateRequest("Bu bir deneme mesajıdır ve bu mesajın 50 karakterden fazla olması gerektiği için mesajı uzun yazmak durumundayım.Umarım 50 karakteri geçmişimdir", BigDecimal.valueOf(100), true)),
+                Arguments.of(new AssetCreateRequest("kahve seti", BigDecimal.valueOf(-200), true)),
+                Arguments.of(new AssetCreateRequest("Kahve seti", BigDecimal.valueOf(10001), true)),
+                Arguments.of(new AssetCreateRequest("Kahve seti", null, true)),
+                Arguments.of(new AssetCreateRequest("Çay seti", BigDecimal.valueOf(200), null))
+        );
     }
 
     /**
