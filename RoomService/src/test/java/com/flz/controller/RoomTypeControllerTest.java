@@ -290,6 +290,137 @@ class RoomTypeControllerTest extends BaseTest {
                 );
     }
 
+    @Test
+    void whenNameFieldGreaterThanSizeMax_thenReturnBadRequestError() throws Exception {
+
+        //Given
+        String mockName = "Lorem Ipsum is simply dummy text of the printing and typesetting industry." +
+                " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, " +
+                "when an unknown printer took a galley of type and scrambled it to make a type " +
+                "specimen book. It has survived not only five centuries, but also the leap into " +
+                "electronic typesetting, remaining essentially unchanged. It was popularised " +
+                "in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, " +
+                "and more recently with desktop publishing software like Aldus PageMaker including " +
+                "versions of Lorem Ipsum.";
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("name", mockName)
+                .param("page", "0")
+                .param("pageSize", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenMinPriceSmallerThanZero_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("minPrice", "-10")
+                .param("page", "0")
+                .param("pageSize", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenMaxPriceSmallerThanZero_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("maxPrice", "-10")
+                .param("page", "0")
+                .param("pageSize", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenPersonCountSmallerThanZeroOrGreaterThanMaxValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("personCount", "250")
+                .param("page", "0")
+                .param("pageSize", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenSizeSmallerThanZeroOrGreaterThanMaxValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("size", "1001")
+                .param("page", "0")
+                .param("pageSize", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenPageSizePropertyDirectionDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("page", "0")
+                .param("pageSize", "10")
+                .param("property", "name")
+                .param("direction", "selam")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+
     /**
      * {@link RoomTypeController#findSummaryAll()}
      */
@@ -299,18 +430,18 @@ class RoomTypeControllerTest extends BaseTest {
         //Given
         List<RoomTypesSummaryResponse> mockRoomTypesSummaryResponse = List.of(
                 RoomTypesSummaryResponse.builder()
-                                .id(11L)
-                                .name("test1")
-                                .build(),
-                        RoomTypesSummaryResponse.builder()
-                                .id(12L)
-                                .name("test2")
-                                .build(),
-                        RoomTypesSummaryResponse.builder()
-                                .id(13L)
-                                .name("test3")
-                                .build()
-                );
+                        .id(11L)
+                        .name("test1")
+                        .build(),
+                RoomTypesSummaryResponse.builder()
+                        .id(12L)
+                        .name("test2")
+                        .build(),
+                RoomTypesSummaryResponse.builder()
+                        .id(13L)
+                        .name("test3")
+                        .build()
+        );
 
         //When
         Mockito.when(roomTypeService.findSummaryAll())
