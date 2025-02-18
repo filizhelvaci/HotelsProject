@@ -11,6 +11,9 @@ import com.flz.model.response.RoomsSummaryResponse;
 import com.flz.service.RoomService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,6 +32,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(RoomController.class)
 class RoomControllerTest extends BaseTest {
@@ -495,6 +499,21 @@ class RoomControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(false));
     }
+
+    @ParameterizedTest
+    @MethodSource("invalidRoomRequests")
+    void givenInvalidRoomRequests_whenCreateRoom_thenBadRequestResponse(RoomCreateRequest invalidRequest) throws Exception {
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(BASE_PATH + "/room").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+    }
+
+
+    private static Stream<Arguments> invalidRoomRequests() {
+        return Stream.of(Arguments.of(new RoomCreateRequest(null, 10, RoomStatus.EMPTY, 1L)), Arguments.of(new RoomCreateRequest(101, -1, RoomStatus.EMPTY, 2L)), Arguments.of(new RoomCreateRequest(102, 101, RoomStatus.EMPTY, 2L)), Arguments.of(new RoomCreateRequest(10001, 1, RoomStatus.EMPTY, 2L)), Arguments.of(new RoomCreateRequest(105, 1, null, 2L)), Arguments.of(new RoomCreateRequest(106, 1, RoomStatus.FULL, null)), Arguments.of(new RoomCreateRequest(-2, 2, RoomStatus.EMPTY, 2L)));
+    }
+
 
     /**
      * {@link RoomController#update(Long, RoomUpdateRequest)}
