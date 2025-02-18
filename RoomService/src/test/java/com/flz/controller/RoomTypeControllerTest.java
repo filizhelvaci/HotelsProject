@@ -10,6 +10,9 @@ import com.flz.model.response.RoomTypesSummaryResponse;
 import com.flz.service.RoomTypeService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,6 +31,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(RoomTypeController.class)
 class RoomTypeControllerTest extends BaseTest {
@@ -637,6 +641,60 @@ class RoomTypeControllerTest extends BaseTest {
                         .value(false));
     }
 
+    @Test
+    public void givenRoomTypeCreateRequestWithInvalidFields_whenCreateRoomType_thenBadRequestResponse() throws Exception {
+
+        //Given
+        RoomTypeCreateRequest mockInvalidRequest = new RoomTypeCreateRequest();
+        mockInvalidRequest.setName("testRoomType");
+        mockInvalidRequest.setPrice(BigDecimal.valueOf(10000));
+        mockInvalidRequest.setSize(200);
+        mockInvalidRequest.setPersonCount(10);
+        mockInvalidRequest.setDescription("This description for Test was written !");
+        mockInvalidRequest.setAssetIds(List.of());
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/room-type")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidRoomTypeRequests")
+    void givenInvalidRoomTypeRequests_whenCreateRoomType_thenBadRequestResponse(RoomTypeCreateRequest invalidRequest) throws Exception {
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/room-type")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+    }
+
+
+    private static Stream<Arguments> invalidRoomTypeRequests() {
+        return Stream.of(
+                Arguments.of(new RoomTypeCreateRequest(null, BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeCreateRequest("R", BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeCreateRequest("Valid Name", null, 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeCreateRequest("Valid Name", BigDecimal.valueOf(100000000), 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeCreateRequest("Valid Name", BigDecimal.valueOf(10000), null, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeCreateRequest("Valid Name", BigDecimal.valueOf(10000), 10, 200, "", List.of(1L))),
+                Arguments.of(new RoomTypeCreateRequest("Valid Name", BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of()))
+        );
+    }
+
+
     /**
      * {@link RoomTypeController#update(Long, RoomTypeUpdateRequest)}
      */
@@ -695,6 +753,33 @@ class RoomTypeControllerTest extends BaseTest {
         Mockito.verify(roomTypeService, Mockito.never())
                 .update(Mockito.any(), Mockito.any(RoomTypeUpdateRequest.class));
 
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidRoomTypeUpdateRequests")
+    void givenInvalidRoomTypeUpdateRequests_whenUpdateRoomType_thenBadRequestResponse(RoomTypeUpdateRequest invalidRequest) throws Exception {
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/room-type")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+    }
+
+    private static Stream<Arguments> invalidRoomTypeUpdateRequests() {
+        return Stream.of(
+                Arguments.of(new RoomTypeUpdateRequest(null, BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeUpdateRequest("R", BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeUpdateRequest("Valid Name", null, 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(100000000), 10, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), null, 200, "Valid Desc", List.of(1L))),
+                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), 10, 200, "", List.of(1L))),
+                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of()))
+        );
     }
 
     /**
