@@ -504,14 +504,29 @@ class RoomControllerTest extends BaseTest {
     @MethodSource("invalidRoomRequests")
     void givenInvalidRoomRequests_whenCreateRoom_thenBadRequestResponse(RoomCreateRequest invalidRequest) throws Exception {
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(BASE_PATH + "/room").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(invalidRequest));
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/room")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
 
     private static Stream<Arguments> invalidRoomRequests() {
-        return Stream.of(Arguments.of(new RoomCreateRequest(null, 10, RoomStatus.EMPTY, 1L)), Arguments.of(new RoomCreateRequest(101, -1, RoomStatus.EMPTY, 2L)), Arguments.of(new RoomCreateRequest(102, 101, RoomStatus.EMPTY, 2L)), Arguments.of(new RoomCreateRequest(10001, 1, RoomStatus.EMPTY, 2L)), Arguments.of(new RoomCreateRequest(105, 1, null, 2L)), Arguments.of(new RoomCreateRequest(106, 1, RoomStatus.FULL, null)), Arguments.of(new RoomCreateRequest(-2, 2, RoomStatus.EMPTY, 2L)));
+        return Stream.of(
+                Arguments.of(new RoomCreateRequest(null, 10, RoomStatus.EMPTY, 1L)),
+                Arguments.of(new RoomCreateRequest(101, -1, RoomStatus.EMPTY, 2L)),
+                Arguments.of(new RoomCreateRequest(102, 101, RoomStatus.EMPTY, 2L)),
+                Arguments.of(new RoomCreateRequest(10001, 1, RoomStatus.EMPTY, 2L)),
+                Arguments.of(new RoomCreateRequest(105, 1, null, 2L)),
+                Arguments.of(new RoomCreateRequest(106, 1, RoomStatus.FULL, null)),
+                Arguments.of(new RoomCreateRequest(-2, 2, RoomStatus.EMPTY, 2L))
+        );
     }
 
 
