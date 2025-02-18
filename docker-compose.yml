@@ -1,38 +1,19 @@
 services:
-  db:
-    image: postgres:latest
-    container_name: db
-    restart: always
-    environment:
-      POSTGRES_DB: hotel_r
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 654321
-      POSTGRES_PORT: 5433
-    volumes:
-      - ./RoomService/docker/database_data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    networks:
-      - hotel_network
+  room-service-db:
+    extends:
+      service: room-service-db
+      file: ./RoomService/docker-compose.yml
+
+  user-service-db:
+    extends:
+      service: user-service-db
+      file: ./UserService/docker-compose.yml
 
   room-service:
-    build:
-      context: .
-      dockerfile: ./RoomService/Dockerfile
-    container_name: rooms
-    restart: on-failure
-    ports:
-      - "8083:8082"
-    environment:
-      - DATABASE_IP=host.docker.internal
-    depends_on:
-      - db
-    networks:
-      - hotel_network
+    extends:
+      service: room-service
+      file: ./RoomService/docker-compose.yml
 
 networks:
   hotel_network:
     driver: bridge
-volumes:
-  database_data:
-    driver: local
