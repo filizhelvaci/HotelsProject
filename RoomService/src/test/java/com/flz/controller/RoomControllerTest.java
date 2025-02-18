@@ -211,85 +211,189 @@ class RoomControllerTest extends BaseTest {
     void whenNumberSmallerThanZero_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("number", "-1").param("page", "0").param("size", "10").param("property", "id").param("direction", "ASC").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("number", "-1")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "id")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     @Test
     void whenNumberGreaterThanMaxValue_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("number", "10001").param("page", "0").param("size", "10").param("property", "id").param("direction", "ASC").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("number", "10001")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "id")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     @Test
     void whenFloorSmallerThanZero_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("floor", "-1").param("page", "0").param("size", "10").param("property", "id").param("direction", "ASC").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("floor", "-1")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "id")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     @Test
     void whenFloorGreaterThanMaxValue_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("floor", "101").param("page", "0").param("size", "10").param("property", "id").param("direction", "ASC").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("floor", "101")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "id")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     @Test
     void whenTypeIdSmallerThanZero_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("typeId", "-1").param("page", "0").param("size", "10").param("property", "id").param("direction", "ASC").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("typeId", "-1")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "id")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     @Test
     void whenPageDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("page", "-10").param("size", "10").param("property", "name").param("direction", "ASC").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("page", "-10")
+                .param("size", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     @Test
     void whenSizeDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("page", "0").param("size", "-10").param("property", "name").param("direction", "ASC").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("page", "0")
+                .param("size", "-10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     @Test
     void whenPropertyDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("page", "0").param("size", "10").param("property", "").param("direction", "ASC").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
 
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     @Test
     void whenDirectionDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
 
         //Then
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get(BASE_PATH + "/rooms").param("page", "0").param("size", "10").param("property", "name").param("direction", "").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/rooms")
+                .param("page", "0")
+                .param("size", "10")
+                .param("property", "name")
+                .param("direction", "")
+                .contentType(MediaType.APPLICATION_JSON);
 
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isBadRequest()).andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
 
@@ -516,7 +620,6 @@ class RoomControllerTest extends BaseTest {
                         .value(false));
     }
 
-
     private static Stream<Arguments> invalidRoomRequests() {
         return Stream.of(
                 Arguments.of(new RoomCreateRequest(null, 10, RoomStatus.EMPTY, 1L)),
@@ -528,7 +631,6 @@ class RoomControllerTest extends BaseTest {
                 Arguments.of(new RoomCreateRequest(-2, 2, RoomStatus.EMPTY, 2L))
         );
     }
-
 
     /**
      * {@link RoomController#update(Long, RoomUpdateRequest)}
@@ -594,6 +696,38 @@ class RoomControllerTest extends BaseTest {
         Mockito.verify(roomService, Mockito.never())
                 .update(Mockito.any(), Mockito.any(RoomUpdateRequest.class));
 
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidRoomUpdateRequests")
+    void givenInvalidRoomUpdateRequests_whenUpdateRoom_thenBadRequestResponse(RoomUpdateRequest invalidRequest) throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/room/" + mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    private static Stream<Arguments> invalidRoomUpdateRequests() {
+        return Stream.of(
+                Arguments.of(new RoomUpdateRequest(null, 10, RoomStatus.EMPTY, 1L)),
+                Arguments.of(new RoomUpdateRequest(101, -1, RoomStatus.EMPTY, 2L)),
+                Arguments.of(new RoomUpdateRequest(102, 101, RoomStatus.EMPTY, 2L)),
+                Arguments.of(new RoomUpdateRequest(10001, 1, RoomStatus.EMPTY, 2L)),
+                Arguments.of(new RoomUpdateRequest(105, 1, null, 2L)),
+                Arguments.of(new RoomUpdateRequest(106, 1, RoomStatus.FULL, null)),
+                Arguments.of(new RoomUpdateRequest(-2, 2, RoomStatus.EMPTY, 2L))
+        );
     }
 
     /**
