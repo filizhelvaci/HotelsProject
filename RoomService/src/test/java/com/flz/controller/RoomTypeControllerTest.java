@@ -405,7 +405,67 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     @Test
-    void whenPageSizePropertyDirectionDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+    void whenPageDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("page", "-10")
+                .param("pageSize", "10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenSizeDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("page", "0")
+                .param("pageSize", "-10")
+                .param("property", "name")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenPropertyDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/room-types")
+                .param("page", "0")
+                .param("pageSize", "10")
+                .param("property", "")
+                .param("direction", "ASC")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
+
+    @Test
+    void whenDirectionDifferentThanValidValue_thenReturnBadRequestError() throws Exception {
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -413,7 +473,7 @@ class RoomTypeControllerTest extends BaseTest {
                 .param("page", "0")
                 .param("pageSize", "10")
                 .param("property", "name")
-                .param("direction", "selam")
+                .param("direction", "")
                 .contentType(MediaType.APPLICATION_JSON);
 
 
