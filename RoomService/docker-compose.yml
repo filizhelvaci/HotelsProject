@@ -1,0 +1,37 @@
+services:
+  room-service-db:
+    image: postgres:latest
+    container_name: room-service-db
+    restart: always
+    environment:
+      POSTGRES_DB: hotel_r
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 654321
+    volumes:
+      - ./docker/database_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - hotel_network
+  room-service:
+    build:
+      context: ..
+      dockerfile: RoomService/Dockerfile
+    container_name: room-service
+    restart: on-failure
+    ports:
+      - "8083:8082"
+    environment:
+      - DATABASE_IP=host.docker.internal
+    depends_on:
+      - room-service-db
+    networks:
+      - hotel_network
+
+networks:
+  hotel_network:
+    driver: bridge
+
+volumes:
+  database_data:
+    driver: local
