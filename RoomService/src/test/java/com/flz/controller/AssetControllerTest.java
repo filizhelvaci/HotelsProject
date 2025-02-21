@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -664,6 +666,40 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.header().string("Content-Type", "application/json"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {
+            "a",
+            "One morning, when Gregor Samsa woke from troubled dre"})
+    void givenInvalidNamesAssetRequests_whenCreateAsset_thenBadRequestResponse(String invalidRequest) throws Exception {
+
+        //Given
+        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
+        mockAssetCreateRequest.setName(invalidRequest);
+        mockAssetCreateRequest.setPrice(BigDecimal.valueOf(250));
+        mockAssetCreateRequest.setIsDefault(true);
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/asset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field").value("assetCreateRequest"))
+        ;
+        // Verify
+        Mockito.verify(assetService, Mockito.never()).create(Mockito.any());
+
+    }
+
 
     @ParameterizedTest
     @MethodSource("invalidAssetRequests")
