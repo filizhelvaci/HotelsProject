@@ -624,6 +624,43 @@ class RoomControllerTest extends BaseTest {
     }
 
     @ParameterizedTest
+    @NullSource
+    @ValueSource(ints = {
+            -1,
+            101
+    })
+    void givenInvalidFloor_whenRoomCreateRequest_thenBadRequestResponse(Integer invalidRequest) throws Exception {
+
+        //Given
+        RoomCreateRequest mockRoomCreateRequest = new RoomCreateRequest();
+        mockRoomCreateRequest.setNumber(102);
+        mockRoomCreateRequest.setFloor(invalidRequest);
+        mockRoomCreateRequest.setStatus(RoomStatus.EMPTY);
+        mockRoomCreateRequest.setRoomTypeId(2L);
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/room")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomCreateRequest"));
+
+        // Verify
+        Mockito.verify(roomService, Mockito.never()).create(Mockito.any());
+    }
+
+    @ParameterizedTest
     @MethodSource("invalidRoomRequests")
     void givenInvalidRoomRequests_whenCreateRoom_thenBadRequestResponse(RoomCreateRequest invalidRequest) throws Exception {
 
