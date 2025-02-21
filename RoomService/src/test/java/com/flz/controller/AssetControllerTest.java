@@ -709,7 +709,7 @@ class AssetControllerTest extends BaseTest {
             "-0.1",
             "10000.1"
     })
-    void givenInvalidPriceValuesAssetRequests_whenCreateAsset_thenBadRequestResponse(String value) throws Exception {
+    void givenInvalidIsDefaultValuesAssetRequests_whenCreateAsset_thenBadRequestResponse(String value) throws Exception {
 
         //Given
         BigDecimal bigDecimal = new BigDecimal(value);
@@ -719,12 +719,12 @@ class AssetControllerTest extends BaseTest {
         mockAssetCreateRequest.setPrice(bigDecimal);
         mockAssetCreateRequest.setIsDefault(true);
 
-        //Then
+        //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(BASE_PATH + "/asset")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
-
+        //Then
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -735,6 +735,38 @@ class AssetControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.field")
                         .value("assetCreateRequest"))
         ;
+        // Verify
+        Mockito.verify(assetService, Mockito.never()).create(Mockito.any());
+    }
+
+    @ParameterizedTest
+    @NullSource
+    void givenNullIsDefaultValue_whenCreateAsset_thenBadRequestResponse(Boolean invalidIsDefault) throws Exception {
+
+        // Given
+        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
+        mockAssetCreateRequest.setName("Kahve Seti");
+        mockAssetCreateRequest.setPrice(BigDecimal.valueOf(500));
+        mockAssetCreateRequest.setIsDefault(invalidIsDefault);
+
+        // When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/asset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
+
+        // Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("assetCreateRequest"))
+        ;
+
         // Verify
         Mockito.verify(assetService, Mockito.never()).create(Mockito.any());
     }
