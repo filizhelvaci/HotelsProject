@@ -910,7 +910,7 @@ class AssetControllerTest extends BaseTest {
     void givenInvalidNameAssetUpdateRequests_whenUpdateAsset_thenBadRequestResponse(String value) throws Exception {
 
         //Given
-        Long mockId = 10L;
+        long mockId = 10L;
 
         AssetUpdateRequest mockAssetUpdateRequest = new AssetUpdateRequest();
         mockAssetUpdateRequest.setName(value);
@@ -938,11 +938,43 @@ class AssetControllerTest extends BaseTest {
     }
 
     @ParameterizedTest
+    @NullSource
+    void givenNullIsBooleanAssetUpdateRequests_whenUpdateAsset_thenBadRequestResponse(Boolean value) throws Exception {
+
+        //Given
+        long mockId = 10L;
+
+        AssetUpdateRequest mockAssetUpdateRequest = new AssetUpdateRequest();
+        mockAssetUpdateRequest.setName("Bebek Seti");
+        mockAssetUpdateRequest.setPrice(BigDecimal.valueOf(250));
+        mockAssetUpdateRequest.setIsDefault(value);
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/asset/" + mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockAssetUpdateRequest));
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("assetUpdateRequest"))
+        ;
+        // Verify
+        Mockito.verify(assetService, Mockito.never()).update(Mockito.any(), Mockito.any());
+    }
+
+    @ParameterizedTest
     @MethodSource("invalidAssetUpdateRequests")
     void givenInvalidAssetUpdateRequests_whenUpdateAsset_thenBadRequestResponse(AssetUpdateRequest invalidRequest) throws Exception {
 
         //Given
-        Long mockId = 10L;
+        long mockId = 10L;
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
