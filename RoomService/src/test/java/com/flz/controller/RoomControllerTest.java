@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -584,24 +586,41 @@ class RoomControllerTest extends BaseTest {
 
     }
 
-    @Test
-    public void givenRoomCreateRequestWithMissingFields_whenCreateRoom_thenReturnBadRequest() throws Exception {
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(ints = {
+            0,
+            10001
+    })
+    void givenInvalidNumber_whenRoomCreateRequest_thenBadRequestResponse(Integer invalidRequest) throws Exception {
 
         //Given
-        RoomCreateRequest mockInvalidRequest = new RoomCreateRequest();
-        mockInvalidRequest.setFloor(2);
+        RoomCreateRequest mockRoomCreateRequest = new RoomCreateRequest();
+        mockRoomCreateRequest.setNumber(invalidRequest);
+        mockRoomCreateRequest.setFloor(1);
+        mockRoomCreateRequest.setStatus(RoomStatus.EMPTY);
+        mockRoomCreateRequest.setRoomTypeId(2L);
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(BASE_PATH + "/room")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
+                .content(new ObjectMapper().writeValueAsString(mockRoomCreateRequest));
 
+        //Then
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(false));
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomCreateRequest"));
+
+        // Verify
+        Mockito.verify(roomService, Mockito.never()).create(Mockito.any());
     }
 
     @ParameterizedTest
