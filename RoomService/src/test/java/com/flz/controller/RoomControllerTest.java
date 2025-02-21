@@ -868,6 +868,35 @@ class RoomControllerTest extends BaseTest {
         Mockito.verify(roomService, Mockito.never()).update(Mockito.anyLong(), Mockito.any(RoomUpdateRequest.class));
     }
 
+    @Test
+    void givenNullStatus_whenCalledRoomWithByInvalidId_thenReturnsBadRequestError() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        RoomUpdateRequest mockRoomUpdateRequest = new RoomUpdateRequest();
+        mockRoomUpdateRequest.setNumber(302);
+        mockRoomUpdateRequest.setFloor(3);
+        mockRoomUpdateRequest.setRoomTypeId(2L);
+        mockRoomUpdateRequest.setStatus(null);
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/room/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRoomUpdateRequest));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(roomService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(RoomUpdateRequest.class));
+
+    }
 
     @ParameterizedTest
     @MethodSource("invalidRoomUpdateRequests")
