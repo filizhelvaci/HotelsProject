@@ -12,7 +12,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -674,6 +673,7 @@ class AssetControllerTest extends BaseTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {
+            "",
             "a",
             "One morning, when Gregor Samsa woke from troubled dre"})
     void givenInvalidNamesAssetRequests_whenCreateAsset_thenBadRequestResponse(String invalidRequest) throws Exception {
@@ -705,7 +705,7 @@ class AssetControllerTest extends BaseTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
+    @ValueSource(strings = {
             "-0.1",
             "10000.1"
     })
@@ -769,35 +769,6 @@ class AssetControllerTest extends BaseTest {
 
         // Verify
         Mockito.verify(assetService, Mockito.never()).create(Mockito.any());
-    }
-
-    @ParameterizedTest
-    @MethodSource("invalidAssetRequests")
-    void givenInvalidAssetRequests_whenCreateAsset_thenBadRequestResponse(AssetCreateRequest invalidRequest) throws Exception {
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(BASE_PATH + "/asset")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(invalidRequest));
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(false));
-    }
-
-    private static Stream<Arguments> invalidAssetRequests() {
-        return Stream.of(
-                Arguments.of(new AssetCreateRequest(null, BigDecimal.valueOf(100), true)),
-                Arguments.of(new AssetCreateRequest("", BigDecimal.valueOf(100), true)),
-                Arguments.of(new AssetCreateRequest("o", BigDecimal.valueOf(10), false)),
-                Arguments.of(new AssetCreateRequest("Bu bir deneme mesajıdır ve bu mesajın 50 karakterden fazla olması gerektiği için mesajı uzun yazmak durumundayım.Umarım 50 karakteri geçmişimdir", BigDecimal.valueOf(100), true)),
-                Arguments.of(new AssetCreateRequest("kahve seti", BigDecimal.valueOf(-200), true)),
-                Arguments.of(new AssetCreateRequest("Kahve seti", BigDecimal.valueOf(10001), true)),
-                Arguments.of(new AssetCreateRequest("Kahve seti", null, true)),
-                Arguments.of(new AssetCreateRequest("Çay seti", BigDecimal.valueOf(200), null))
-        );
     }
 
     /**
@@ -866,14 +837,14 @@ class AssetControllerTest extends BaseTest {
     }
 
     @Test
-    void givenInvalidAssetUpdateRequestField_whenCalledAssetUpdate_thenReturnsBadRequestError() throws Exception {
+    void givenNullPriceAssetUpdateRequestField_whenCalledAssetUpdate_thenReturnsBadRequestError() throws Exception {
 
         //Given
         Long mockId = 10L;
 
         AssetUpdateRequest mockRequest = new AssetUpdateRequest();
         mockRequest.setName("Kahve Seti");
-        mockRequest.setPrice(BigDecimal.valueOf(-100));
+        mockRequest.setPrice(null);
         mockRequest.setIsDefault(false);
 
         //Then
@@ -892,6 +863,41 @@ class AssetControllerTest extends BaseTest {
         //Verify
         Mockito.verify(assetService, Mockito.never())
                 .update(Mockito.any(), Mockito.any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "-0.1",
+            "10000.1"
+    })
+    void givenInvalidPriceAssetUpdateRequests_whenUpdateAsset_thenBadRequestResponse(String value) throws Exception {
+
+        //Given
+        BigDecimal bigDecimal = new BigDecimal(value);
+
+        AssetCreateRequest mockAssetCreateRequest = new AssetCreateRequest();
+        mockAssetCreateRequest.setName("Kahve Seti");
+        mockAssetCreateRequest.setPrice(bigDecimal);
+        mockAssetCreateRequest.setIsDefault(true);
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/asset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockAssetCreateRequest));
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("assetCreateRequest"))
+        ;
+        // Verify
+        Mockito.verify(assetService, Mockito.never()).update(Mockito.any(), Mockito.any());
     }
 
     @ParameterizedTest
