@@ -810,23 +810,37 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     @Test
-    public void givenRoomTypeCreateRequestWithMissingFields_whenCreateRoomType_thenBadRequestResponse() throws Exception {
+    public void givenRoomTypeCreateRequestWithNullPersonCount_whenCreateRoomType_thenBadRequestResponse() throws Exception {
 
         //Given
-        RoomTypeCreateRequest mockInvalidRequest = new RoomTypeCreateRequest();
-        mockInvalidRequest.setName("");
+        RoomTypeCreateRequest mockRoomTypeCreateRequest = new RoomTypeCreateRequest();
+        mockRoomTypeCreateRequest.setName("Delux Room");
+        mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
+        mockRoomTypeCreateRequest.setPersonCount(null);
+        mockRoomTypeCreateRequest.setSize(50);
+        mockRoomTypeCreateRequest.setDescription("this is a description");
+        mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 3L, 5L));
 
         //Then
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(BASE_PATH + "/room-type")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(mockInvalidRequest));
+                .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest));
 
+        //Then
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(false));
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomTypeCreateRequest"));
+
+        // Verify
+        Mockito.verify(roomTypeService, Mockito.never()).create(Mockito.any());
     }
 
     @Test
