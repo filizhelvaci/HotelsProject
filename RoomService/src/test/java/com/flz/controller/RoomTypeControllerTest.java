@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -681,6 +683,47 @@ class RoomTypeControllerTest extends BaseTest {
 
     }
 
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {
+            "",
+            "f",
+            " ",
+            "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed in"
+    })
+    void givenInvalidName_whenRoomCreateRequest_thenBadRequestResponse(String invalidRequest) throws Exception {
+
+        //Given
+        RoomTypeCreateRequest mockRoomTypeCreateRequest = new RoomTypeCreateRequest();
+        mockRoomTypeCreateRequest.setName(invalidRequest);
+        mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(1500));
+        ;
+        mockRoomTypeCreateRequest.setPersonCount(2);
+        mockRoomTypeCreateRequest.setSize(50);
+        mockRoomTypeCreateRequest.setDescription("this is a description");
+        mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 3L, 5L));
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/room-type")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomTypeCreateRequest"));
+
+        // Verify
+        Mockito.verify(roomTypeService, Mockito.never()).create(Mockito.any());
+    }
     @Test
     public void givenRoomTypeCreateRequestWithMissingFields_whenCreateRoomType_thenBadRequestResponse() throws Exception {
 
