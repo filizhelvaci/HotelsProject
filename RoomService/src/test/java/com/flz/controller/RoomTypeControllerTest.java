@@ -1240,6 +1240,82 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = {
+            "-1",
+            "10001",
+    })
+    void givenInvalidSize_whenRoomTypeUpdateRequest_thenBadRequestResponse(String invalidRequest) throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        RoomTypeUpdateRequest mockRoomTypeUpdateRequest = new RoomTypeUpdateRequest();
+        mockRoomTypeUpdateRequest.setName("Standart Room");
+        mockRoomTypeUpdateRequest.setPersonCount(3);
+        mockRoomTypeUpdateRequest.setSize(Integer.valueOf(invalidRequest));
+        mockRoomTypeUpdateRequest.setDescription("this is a description");
+        mockRoomTypeUpdateRequest.setAssetIds(List.of(1L, 3L, 5L));
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/room-type/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRoomTypeUpdateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomTypeUpdateRequest"));
+
+        // Verify
+        Mockito.verify(roomTypeService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(RoomTypeUpdateRequest.class));
+    }
+
+    @Test
+    void givenNullSize_whenRoomTypeUpdateRequest_thenBadRequestResponse() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        RoomTypeUpdateRequest mockRoomTypeUpdateRequest = new RoomTypeUpdateRequest();
+        mockRoomTypeUpdateRequest.setName("Standart Room");
+        mockRoomTypeUpdateRequest.setPersonCount(3);
+        mockRoomTypeUpdateRequest.setSize(null);
+        mockRoomTypeUpdateRequest.setDescription("this is a description");
+        mockRoomTypeUpdateRequest.setAssetIds(List.of(1L, 3L, 5L));
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/room-type/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRoomTypeUpdateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomTypeUpdateRequest"));
+
+        // Verify
+        Mockito.verify(roomTypeService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(RoomTypeUpdateRequest.class));
+    }
+
+    @ParameterizedTest
     @MethodSource("invalidRoomTypeUpdateRequests")
     void givenInvalidRoomTypeUpdateRequests_whenUpdateRoomType_thenBadRequestResponse(RoomTypeUpdateRequest invalidRequest) throws Exception {
 
