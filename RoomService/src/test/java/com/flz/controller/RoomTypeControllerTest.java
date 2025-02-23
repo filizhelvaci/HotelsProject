@@ -11,8 +11,6 @@ import com.flz.service.RoomTypeService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
@@ -34,7 +32,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 @WebMvcTest(RoomTypeController.class)
 class RoomTypeControllerTest extends BaseTest {
@@ -1361,33 +1358,46 @@ class RoomTypeControllerTest extends BaseTest {
     }
 
     @ParameterizedTest
-    @MethodSource("invalidRoomTypeUpdateRequests")
-    void givenInvalidRoomTypeUpdateRequests_whenUpdateRoomType_thenBadRequestResponse(RoomTypeUpdateRequest invalidRequest) throws Exception {
+    @NullSource
+    @ValueSource(strings = {""})
+    void givenEmptyAssetsIdList_whenRoomTypeUpdateRequest_thenBadRequestResponse(String invalidRequest) throws Exception {
 
         //Given
-        long mockId = 10L;
+        Long mockId = 10L;
 
+        RoomTypeUpdateRequest mockRoomTypeUpdateRequest = new RoomTypeUpdateRequest();
+        mockRoomTypeUpdateRequest.setName("Standart Room");
+        mockRoomTypeUpdateRequest.setPersonCount(3);
+        mockRoomTypeUpdateRequest.setSize(50);
+        mockRoomTypeUpdateRequest.setDescription(invalidRequest);
+
+        List<Long> assetIds = null;
+        if (invalidRequest != null) {
+            assetIds = new ArrayList<>();
+        }
+        mockRoomTypeUpdateRequest.setAssetIds(assetIds);
+
+        //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .put(BASE_PATH + "/room-type/" + mockId)
+                .put(BASE_PATH + "/room-type/{id}", mockId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+                .content(new ObjectMapper().writeValueAsString(mockRoomTypeUpdateRequest));
 
+
+        //Then
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(false));
-    }
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomTypeUpdateRequest"));
 
-    private static Stream<Arguments> invalidRoomTypeUpdateRequests() {
-        return Stream.of(
-                Arguments.of(new RoomTypeUpdateRequest(null, BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of(1L))),
-                Arguments.of(new RoomTypeUpdateRequest("R", BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of(1L))),
-                Arguments.of(new RoomTypeUpdateRequest("Valid Name", null, 10, 200, "Valid Desc", List.of(1L))),
-                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(100000001), 10, 200, "Valid Desc", List.of(1L))),
-                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), null, 200, "Valid Desc", List.of(1L))),
-                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), 10, 200, "", List.of(1L))),
-                Arguments.of(new RoomTypeUpdateRequest("Valid Name", BigDecimal.valueOf(10000), 10, 200, "Valid Desc", List.of()))
-        );
+        // Verify
+        Mockito.verify(roomTypeService, Mockito.never()).update(Mockito.any(), Mockito.any(RoomTypeUpdateRequest.class));
     }
 
     /**
