@@ -843,6 +843,79 @@ class RoomTypeControllerTest extends BaseTest {
         Mockito.verify(roomTypeService, Mockito.never()).create(Mockito.any());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "-1",
+            "1001"
+    })
+    void givenInvalidSize_whenRoomTypeCreateRequest_thenBadRequestResponse(String invalidRequest) throws Exception {
+
+        //Given
+        RoomTypeCreateRequest mockRoomTypeCreateRequest = new RoomTypeCreateRequest();
+
+        mockRoomTypeCreateRequest.setName("Delux Room");
+        mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
+        mockRoomTypeCreateRequest.setPersonCount(3);
+        mockRoomTypeCreateRequest.setSize(Integer.valueOf(invalidRequest));
+        mockRoomTypeCreateRequest.setDescription("this is a description");
+        mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 3L, 5L));
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/room-type")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomTypeCreateRequest"));
+
+        // Verify
+        Mockito.verify(roomTypeService, Mockito.never()).create(Mockito.any());
+    }
+
+    @Test
+    public void givenRoomTypeCreateRequestWithNullSize_whenCreateRoomType_thenBadRequestResponse() throws Exception {
+
+        //Given
+        RoomTypeCreateRequest mockRoomTypeCreateRequest = new RoomTypeCreateRequest();
+        mockRoomTypeCreateRequest.setName("Delux Room");
+        mockRoomTypeCreateRequest.setPrice(BigDecimal.valueOf(2500));
+        mockRoomTypeCreateRequest.setPersonCount(3);
+        mockRoomTypeCreateRequest.setSize(null);
+        mockRoomTypeCreateRequest.setDescription("this is a description");
+        mockRoomTypeCreateRequest.setAssetIds(List.of(1L, 3L, 5L));
+
+        //Then
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/room-type")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRoomTypeCreateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.field")
+                        .value("roomTypeCreateRequest"));
+
+        // Verify
+        Mockito.verify(roomTypeService, Mockito.never()).create(Mockito.any());
+    }
+
     @Test
     public void givenRoomTypeCreateRequestWithInvalidFields_whenCreateRoomType_thenBadRequestResponse() throws Exception {
 
