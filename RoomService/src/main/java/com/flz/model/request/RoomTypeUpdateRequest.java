@@ -32,11 +32,11 @@ public class RoomTypeUpdateRequest {
     private Integer personCount;
 
     @NotNull
-    @Range(min = 0, max = 10000)
+    @Range(min = 0, max = 1000)
     private Integer size;
 
     @NotBlank
-    @Size(max = 10_000)
+    @Size(min = 1, max = 1000)
     private String description;
 
     @NotEmpty

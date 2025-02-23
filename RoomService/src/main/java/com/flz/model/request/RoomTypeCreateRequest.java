@@ -20,7 +20,7 @@ import java.util.List;
 public class RoomTypeCreateRequest {
 
     @NotBlank
-    @Size(min = 2, max = 99)
+    @Size(min = 2, max = 100)
     private String name;
 
     @NotNull
