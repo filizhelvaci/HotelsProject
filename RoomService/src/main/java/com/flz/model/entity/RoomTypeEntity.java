@@ -2,6 +2,7 @@ package com.flz.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -57,7 +58,7 @@ public class RoomTypeEntity extends BaseEntity {
      * RoomTypeEntity   AssetEntity
      * M              M
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "rs_room_type_asset",
             joinColumns = @JoinColumn(name = "room_type_id"),
