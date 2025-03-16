@@ -14,6 +14,11 @@ services:
       service: room-service
       file: ./RoomService/docker-compose.yml
 
+  user-service:
+    extends:
+      service: user-service
+      file: ./UserService/docker-compose.yml
+
 networks:
   hotel_network:
     driver: bridge
