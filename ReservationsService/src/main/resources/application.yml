@@ -1,21 +1,26 @@
-##### port #####
 server:
-  port: 8085
+  port: 8090
 
-# RoomService
-##### data postgresql #####
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/hotel_db?currentSchema=reservations   # PostgreSQL veritabanı URL'si
-    username: postgres                                    # Veritabanı kullanıcı adı
-    password: 4321                                 # Veritabanı şifresi
-    driver-class-name: org.postgresql.Driver             # PostgreSQL JDBC sürücüsü
+    url: jdbc:postgresql://${DATABASE_IP:localhost}:${DATABASE_PORT:5438}/hotel_rs
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:654321}
+    driver-class-name: org.postgresql.Driver
   jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update                                # Veritabanı şemasının otomatik güncellenmesi
-    show-sql: true
-
-##### swagger-ui path #####
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    open-in-view: false
+  flyway:
+    baseline-on-migrate: true
+    locations: db/migration
+    enabled: true
+    clean-disabled: false
+logging:
+  level:
+    sql: debug
