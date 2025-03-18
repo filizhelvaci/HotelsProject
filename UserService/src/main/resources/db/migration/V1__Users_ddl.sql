@@ -1,3 +1,14 @@
+create table if not exists department
+(
+    id         bigint generated always as identity primary key,
+    name       varchar(100) not null unique,
+    status     varchar(25)  not null check (status in ('ACTIVE', 'DELETED')),
+    created_at timestamp(0) not null default current_timestamp,
+    created_by varchar(120) not null,
+    updated_at timestamp(0),
+    updated_by varchar(120)
+);
+
 create table if not exists employee
 (
     id              bigint generated always as identity primary key,
@@ -34,6 +45,18 @@ create table if not exists old_employee
     updated_by      varchar(120)
 );
 
+create table if not exists position
+(
+    id            bigint generated always as identity primary key,
+    name          varchar(100) not null unique,
+    department_id bigint       not null references department (id),
+    status        varchar(25)  not null check (status in ('ACTIVE', 'DELETED')),
+    created_at    timestamp(0) not null default current_timestamp,
+    created_by    varchar(120) not null,
+    updated_at    timestamp(0),
+    updated_by    varchar(120)
+);
+
 create table if not exists employee_work_status
 (
     id            bigint generated always as identity primary key,
@@ -60,29 +83,6 @@ create table old_employee_work_status
     end_date      date           not null,
     created_at    timestamp(0)   not null default current_timestamp,
     created_by    varchar(120)   not null,
-    updated_at    timestamp(0),
-    updated_by    varchar(120)
-);
-
-create table if not exists department
-(
-    id         bigint generated always as identity primary key,
-    name       varchar(100) not null unique,
-    status     varchar(25)  not null check (status in ('ACTIVE', 'DELETED')),
-    created_at timestamp(0) not null default current_timestamp,
-    created_by varchar(120) not null,
-    updated_at timestamp(0),
-    updated_by varchar(120)
-);
-
-create table if not exists position
-(
-    id            bigint generated always as identity primary key,
-    name          varchar(100) not null unique,
-    department_id bigint       not null references department (id),
-    status        varchar(25)  not null check (status in ('ACTIVE', 'DELETED')),
-    created_at    timestamp(0) not null default current_timestamp,
-    created_by    varchar(120) not null,
     updated_at    timestamp(0),
     updated_by    varchar(120)
 );
