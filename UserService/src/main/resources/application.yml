@@ -24,3 +24,15 @@ spring:
 logging:
   level:
     sql: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+      probes:
+        enabled: true
+
