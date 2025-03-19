@@ -15,6 +15,7 @@ flyway {
 }
 dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
+    implementation 'org.springframework.boot:spring-boot-starter:3.2.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.2'
     implementation 'org.springframework.boot:spring-boot-starter-web:3.2.2'
     implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
@@ -29,6 +30,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:5.14.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.2'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.2.2'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.2'
 }
 tasks.named('test') {
