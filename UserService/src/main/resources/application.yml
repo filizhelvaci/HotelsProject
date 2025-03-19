@@ -1,11 +1,11 @@
 server:
-  port: 8083
+  port: 8084
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5434/hotel_r
-    username: postgres
-    password: 654321
+    url: jdbc:postgresql://${DATABASE_IP:localhost}:${DATABASE_PORT:5434}/hotel_u
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:654321}
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -24,3 +24,15 @@ spring:
 logging:
   level:
     sql: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+      probes:
+        enabled: true
+

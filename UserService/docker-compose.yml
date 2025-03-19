@@ -4,13 +4,34 @@ services:
     container_name: user-service-db
     restart: always
     environment:
-      POSTGRES_DB: hotel_r
+      POSTGRES_DB: hotel_u
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 654321
-      POSTGRES_PORT: 5434
     volumes:
       - ./docker/database_data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
     networks:
       - hotel_network
+  user-service:
+    build:
+      context: ..
+      dockerfile: UserService/Dockerfile
+    container_name: user-service
+    restart: on-failure
+    ports:
+      - "8085:8083"
+    environment:
+      - DATABASE_IP=host.docker.internal
+    depends_on:
+      - user-service-db
+    networks:
+      - hotel_network
+
+networks:
+  hotel_network:
+    driver: bridge
+
+volumes:
+  database_data:
+    driver: local

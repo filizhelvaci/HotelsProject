@@ -13,8 +13,8 @@ FROM amazoncorretto:17.0.12-al2023
 
 WORKDIR /app
 
-COPY --from=build /app/UserService/build/libs/*.jar hotel_r.jar
+COPY --from=build /app/UserService/build/libs/*.jar hotel_u.jar
 
 EXPOSE 8083
 
-ENTRYPOINT ["java", "-jar", "hotel_r.jar"]
+ENTRYPOINT ["java", "-jar", "hotel_u.jar"]
