@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ErrorResponse handleValidationErrors(final MethodArgumentNotValidException exception) {
+    ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .message("This field cannot contain null values.")
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ErrorResponse handleValidationErrors(final MethodArgumentTypeMismatchException exception) {
+    ErrorResponse handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException exception) {
         log.error(exception.getMessage(), exception.getErrorCode());
         return ErrorResponse.builder()
                 .message("This field is required to be filled.")
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ErrorResponse handleMissingParamsException(final MissingServletRequestParameterException exception) {
+    ErrorResponse handleMissingServletRequestParameterException(final MissingServletRequestParameterException exception) {
         log.error(exception.getMessage(), exception.getCause());
         return ErrorResponse.builder()
                 .message("Missing or invalid parameter:" + exception.getParameterName())
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AbstractNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    ErrorResponse handleNotExistError(final AbstractNotFoundException exception) {
+    ErrorResponse handleAbstractNotFoundException(final AbstractNotFoundException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .message(exception.getMessage())
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SQLException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ErrorResponse handleSQLError(final SQLException exception) {
+    ErrorResponse handleSQLException(final SQLException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .message("Database Error")
@@ -80,16 +80,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    ErrorResponse handleSQLUseError(DataIntegrityViolationException exception) {
+    ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
-                .message("This value is used elsewhere.")
+                .message("Database Error")
                 .build();
     }
 
     @ExceptionHandler(AbstractAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    ErrorResponse handleSQLConflictError(final AbstractAlreadyExistsException exception) {
+    ErrorResponse handleAbstractAlreadyExistsException(final AbstractAlreadyExistsException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .message(exception.getMessage())
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ErrorResponse handleValidationErrors(final HandlerMethodValidationException exception) {
+    ErrorResponse handleHandlerMethodValidationException(final HandlerMethodValidationException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .field(exception.getReason())
@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ErrorResponse handleValidationConstrainErrors(final ConstraintViolationException exception) {
+    ErrorResponse handleConstraintViolationException(final ConstraintViolationException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .field(exception.getMessage())
