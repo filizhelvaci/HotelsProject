@@ -9,13 +9,11 @@ import com.flz.port.DepartmentSavePort;
 import com.flz.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
 class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
 
     private final DepartmentRepository departmentRepository;
@@ -32,7 +30,6 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
     }
 
     @Override
-    @Transactional
     public void save(final Department department) {
         final DepartmentEntity departmentEntity = departmentToEntityMapper.map(department);
         departmentRepository.save(departmentEntity);

@@ -7,10 +7,8 @@ import com.flz.port.DepartmentSavePort;
 import com.flz.service.DepartmentCreateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 class DepartmentCreateServiceImpl implements DepartmentCreateService {
 
