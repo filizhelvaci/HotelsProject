@@ -15,6 +15,6 @@ WORKDIR /app
 
 COPY --from=build /app/UserService/build/libs/*.jar hotel_u.jar
 
-EXPOSE 8083
+EXPOSE 8084
 
 ENTRYPOINT ["java", "-jar", "hotel_u.jar"]

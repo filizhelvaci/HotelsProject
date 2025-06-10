@@ -111,13 +111,13 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .field(exception.getReason())
-                .message("This field is not Valid")
+                .message("This field value is not Valid")
                 .build();
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ErrorResponse handleHandlerMethodValidationException(final ConstraintViolationException exception) {
+    ErrorResponse handleConstraintViolationException(final ConstraintViolationException exception) {
         log.error(exception.getMessage(), exception);
         return ErrorResponse.builder()
                 .field(exception.getMessage())
