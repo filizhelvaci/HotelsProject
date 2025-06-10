@@ -34,6 +34,6 @@ public class DepartmentEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private DepartmentStatus status;
+    private DepartmentStatus status = DepartmentStatus.ACTIVE;
 
 }
