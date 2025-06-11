@@ -9,4 +9,5 @@ public interface DepartmentCreateService {
 
     void update(Long id, DepartmentUpdateRequest departmentUpdateRequest);
 
+    void delete(Long id);
 }

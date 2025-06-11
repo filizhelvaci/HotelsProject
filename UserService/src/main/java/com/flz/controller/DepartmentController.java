@@ -43,18 +43,22 @@ class DepartmentController {
         return HotelResponse.successOf(departmentSummaryResponses);
     }
 
-    @PutMapping("/department/{id}")
-    public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid DepartmentUpdateRequest departmentUpdateRequest) {
-        departmentCreateService.update(id, departmentUpdateRequest);
-        return HotelResponse.success();
-    }
-
-
     @PostMapping("/department")
     public HotelResponse<Void> create(@RequestBody @Valid DepartmentCreateRequest createRequest) {
         departmentCreateService.create(createRequest);
         return HotelResponse.success();
     }
 
+    @PutMapping("/department/{id}")
+    public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid DepartmentUpdateRequest departmentUpdateRequest) {
+        departmentCreateService.update(id, departmentUpdateRequest);
+        return HotelResponse.success();
+    }
+
+    @DeleteMapping("/department/{id}")
+    public HotelResponse<Void> delete(@PathVariable(value = "id") @Positive Long id) {
+        departmentCreateService.delete(id);
+        return HotelResponse.success();
+    }
 
 }
