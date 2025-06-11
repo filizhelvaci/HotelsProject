@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class Department extends BaseDomainModel {
 
-    private String id;
+    private Long id;
     private String name;
     private DepartmentStatus status;
 
