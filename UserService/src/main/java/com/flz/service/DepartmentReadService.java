@@ -9,6 +9,6 @@ public interface DepartmentReadService {
 
     List<Department> findAll(Integer page, Integer size);
 
-    List<DepartmentSummaryResponse> findSummaryAll(Integer page, Integer size);
+    List<DepartmentSummaryResponse> findSummaryAll();
 
 }
