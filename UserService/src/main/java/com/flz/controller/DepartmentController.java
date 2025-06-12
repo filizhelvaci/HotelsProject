@@ -35,11 +35,8 @@ class DepartmentController {
     }
 
     @GetMapping("/departments/summary")
-    public HotelResponse<List<DepartmentSummaryResponse>> findSummaryAll(@Valid PageRequest pageRequest) {
-        List<DepartmentSummaryResponse> departmentSummaryResponses = departmentReadService.findSummaryAll(
-                pageRequest.getPage(),
-                pageRequest.getPageSize()
-        );
+    public HotelResponse<List<DepartmentSummaryResponse>> findSummaryAll() {
+        List<DepartmentSummaryResponse> departmentSummaryResponses = departmentReadService.findSummaryAll();
         return HotelResponse.successOf(departmentSummaryResponses);
     }
 
@@ -50,7 +47,8 @@ class DepartmentController {
     }
 
     @PutMapping("/department/{id}")
-    public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid DepartmentUpdateRequest departmentUpdateRequest) {
+    public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id
+            , @RequestBody @Valid DepartmentUpdateRequest departmentUpdateRequest) {
         departmentCreateService.update(id, departmentUpdateRequest);
         return HotelResponse.success();
     }
