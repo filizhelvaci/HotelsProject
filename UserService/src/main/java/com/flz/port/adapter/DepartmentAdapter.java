@@ -33,6 +33,13 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
     }
 
     @Override
+    public List<Department> findSummaryAll() {
+        List<DepartmentEntity> departmentEntities = departmentRepository.findAll();
+        return departmentEntityToDomainMapper.map(departmentEntities);
+    }
+
+
+    @Override
     public Optional<Department> findById(Long id) {
         Optional<DepartmentEntity> departmentEntity = departmentRepository.findById(id);
         return departmentEntity.map(departmentEntityToDomainMapper::map);
