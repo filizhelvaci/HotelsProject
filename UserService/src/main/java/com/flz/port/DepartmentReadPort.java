@@ -9,6 +9,8 @@ public interface DepartmentReadPort {
 
     List<Department> findAll(Integer page, Integer pageSize);
 
+    List<Department> findSummaryAll();
+
     Optional<Department> findById(Long id);
 
     boolean existsByName(String name);
