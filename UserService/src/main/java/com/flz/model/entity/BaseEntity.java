@@ -20,10 +20,10 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class BaseEntity {
 
-    @Column(name = "created_by")
+    @Column(name = "created_by", updatable = false)
     protected String createdBy;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     protected LocalDateTime createdAt;
 
     @Column(name = "updated_by")
