@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentCreateRequest {
+public class DepartmentUpdateRequest {
 
     @NotBlank
     @Size(min = 2, max = 50)

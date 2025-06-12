@@ -1,9 +1,14 @@
 package com.flz.service;
 
-import com.flz.model.response.DepartmentResponse;
+import com.flz.model.Department;
+import com.flz.model.response.DepartmentSummaryResponse;
+
+import java.util.List;
 
 public interface DepartmentReadService {
 
-    DepartmentResponse findById(Long id);
+    List<Department> findAll(Integer page, Integer size);
+
+    List<DepartmentSummaryResponse> findSummaryAll();
 
 }

@@ -2,7 +2,7 @@ create table if not exists ru_department
 (
     id         bigint generated always as identity primary key,
     name       varchar(100) not null unique,
-    status     varchar(25)  not null check (status in ('ACTIVE', 'DELETED')),
+    status varchar(25) not null default 'ACTIVE',
     created_at timestamp(0) not null default current_timestamp,
     created_by varchar(120) not null,
     updated_at timestamp(0),
@@ -49,7 +49,10 @@ create table if not exists ru_position
 (
     id            bigint generated always as identity primary key,
     name          varchar(100) not null unique,
-    department_id bigint not null references ru_department (id),
+    department_id bigint not null references ru_department
+        (
+         id
+            ),
     status        varchar(25)  not null check (status in ('ACTIVE', 'DELETED')),
     created_at    timestamp(0) not null default current_timestamp,
     created_by    varchar(120) not null,
