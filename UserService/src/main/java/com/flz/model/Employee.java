@@ -1,5 +1,6 @@
 package com.flz.model;
 
+import com.flz.model.enums.Gender;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +23,7 @@ public class Employee extends BaseDomainModel {
     private String phoneNumber;
     private String address;
     private LocalDate birthDate;
-    private String gender;
+    private Gender gender;
     private String nationality;
 
     private List<EmployeeExperience> experiences;
