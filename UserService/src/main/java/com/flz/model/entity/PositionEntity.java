@@ -1,6 +1,6 @@
 package com.flz.model.entity;
 
-import com.flz.model.enums.DepartmentStatus;
+import com.flz.model.enums.PositionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,8 +24,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ru_department")
-public class DepartmentEntity extends BaseEntity {
+@Table(name = "ru_position")
+public class PositionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +38,15 @@ public class DepartmentEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     @Builder.Default
-    private DepartmentStatus status = DepartmentStatus.ACTIVE;
+    private PositionStatus status = PositionStatus.ACTIVE;
+
+    /**
+     * ----------------------------------------------------------------
+     * PositionEntity      DepartmentEntity
+     * M                    1
+     */
+    @ManyToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "id")
+    private DepartmentEntity department;
 
 }
