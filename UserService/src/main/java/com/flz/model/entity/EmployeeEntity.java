@@ -1,8 +1,11 @@
 package com.flz.model.entity;
 
+import com.flz.model.enums.Gender;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -52,14 +55,14 @@ public class EmployeeEntity extends BaseEntity {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private String gender;
+    private Gender gender;
 
     @Column(name = "nationality")
     private String nationality;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmployeeExperienceEntity> experiences;
-
 
 }
