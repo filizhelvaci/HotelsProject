@@ -9,6 +9,6 @@ public final class PositionNotFoundException extends AbstractNotFoundException {
 
     public PositionNotFoundException(Long id) {
 
-        super("This Department not found ID = " + id);
+        super("This position not found ID = " + id);
     }
 }
