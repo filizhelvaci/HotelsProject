@@ -17,7 +17,7 @@ public class EmployeeExperience extends BaseDomainModel {
     private Long id;
     private BigDecimal salary;
     private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDate transitionDate;
 
     private Position position;
     private Employee employee;
