@@ -28,4 +28,16 @@ public class Employee extends BaseDomainModel {
 
     private List<EmployeeExperience> experiences;
 
+    public void update(String firstName, String lastName, String identityNumber, String email, String phoneNumber, String address, LocalDate birthDate, Gender gender, String nationality) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.identityNumber = identityNumber;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.nationality = nationality;
+    }
+
 }
