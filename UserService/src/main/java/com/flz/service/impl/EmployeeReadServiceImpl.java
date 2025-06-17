@@ -13,11 +13,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeReadServiceImpl implements EmployeeReadService {
+class EmployeeReadServiceImpl implements EmployeeReadService {
 
     private final EmployeeReadPort employeeReadPort;
 
-    private final EmployeeToEmployeeSummaryResponseMapper employeeToEmployeeSummaryResponseMapper;
+    private final EmployeeToEmployeeSummaryResponseMapper employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
 
     @Override
     public Employee findById(Long id) {
