@@ -21,7 +21,7 @@ public class EmployeeCreateServiceImpl implements EmployeeCreateService {
     private final EmployeeSavePort employeeSavePort;
     private final EmployeeDeletePort employeeDeletePort;
 
-    private final EmployeeCreateRequestToDomainMapper employeeCreateRequestToDomainMapper;
+    private final EmployeeCreateRequestToDomainMapper employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
 
     @Override
     public void create(EmployeeCreateRequest createRequest) {
