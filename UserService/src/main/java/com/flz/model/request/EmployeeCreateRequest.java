@@ -1,17 +1,19 @@
 package com.flz.model.request;
 
-import com.flz.model.EmployeeExperience;
 import com.flz.model.enums.Gender;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -53,7 +55,22 @@ public class EmployeeCreateRequest {
     @Size(min = 2, max = 100)
     private String nationality;
 
-    @NotEmpty
-    private EmployeeExperience experience;
+    @NotNull
+    @Range(min = 0, max = 10_000_000)
+    @Positive
+    private BigDecimal salary;
+
+    @NotNull
+    private Long positionId;
+
+    @NotNull
+    private Long departmentId;
+
+    @NotNull
+    private Long supervisorId;
+
+    @NotNull
+    @FutureOrPresent
+    private LocalDate startDate;
 
 }
