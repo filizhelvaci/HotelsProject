@@ -20,10 +20,12 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
     private final DepartmentSavePort departmentSavePort;
     private final DepartmentReadPort departmentReadPort;
 
-    private final DepartmentCreateRequestToDomainMapper departmentCreateRequestToDomainMapper = DepartmentCreateRequestToDomainMapper.INSTANCE;
+    private final DepartmentCreateRequestToDomainMapper
+            departmentCreateRequestToDomainMapper = DepartmentCreateRequestToDomainMapper.INSTANCE;
 
     @Override
     public void create(DepartmentCreateRequest createRequest) {
+
         boolean existsByName = departmentReadPort.existsByName(createRequest.getName());
         if (existsByName) {
             throw new DepartmentAlreadyExistsException(createRequest.getName());
@@ -34,12 +36,15 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
 
     }
 
+
     @Override
     public void update(Long id, DepartmentUpdateRequest departmentUpdateRequest) {
+
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
 
-        boolean existsByName = departmentReadPort.existsByName(departmentUpdateRequest.getName());
+        boolean existsByName = departmentReadPort
+                .existsByName(departmentUpdateRequest.getName());
         if (existsByName) {
             throw new DepartmentAlreadyExistsException(departmentUpdateRequest.getName());
         }
@@ -48,13 +53,16 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
         departmentSavePort.save(department);
     }
 
+
     @Override
     public void delete(Long id) {
+
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
 
         department.setStatus(DepartmentStatus.DELETED);
         departmentSavePort.save(department);
     }
+
 
 }

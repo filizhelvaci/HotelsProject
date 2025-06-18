@@ -16,17 +16,22 @@ class DepartmentReadServiceImpl implements DepartmentReadService {
 
     private final DepartmentReadPort departmentReadPort;
 
-    private final DepartmentToDepartmentSummaryResponseMapper departmentToDepartmentSummaryResponseMapper = DepartmentToDepartmentSummaryResponseMapper.INSTANCE;
+    private final DepartmentToDepartmentSummaryResponseMapper
+            departmentToDepartmentSummaryResponseMapper = DepartmentToDepartmentSummaryResponseMapper.INSTANCE;
 
     @Override
     public List<DepartmentSummaryResponse> findSummaryAll() {
+
         List<Department> department = departmentReadPort.findSummaryAll();
         return departmentToDepartmentSummaryResponseMapper.map(department);
     }
 
+
     @Override
     public List<Department> findAll(Integer page, Integer pageSize) {
+
         return departmentReadPort.findAll(page, pageSize);
     }
+
 
 }
