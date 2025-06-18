@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface EmployeeExperienceReadService {
 
-    EmployeeExperience findById(Long id);
-
-    List<EmployeeExperience> findAll(Integer page, Integer size);
+    List<EmployeeExperience> findAll();
 
 }
