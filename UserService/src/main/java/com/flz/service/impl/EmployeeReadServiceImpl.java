@@ -17,18 +17,24 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
 
     private final EmployeeReadPort employeeReadPort;
 
-    private final EmployeeToEmployeeSummaryResponseMapper employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
+    private final EmployeeToEmployeeSummaryResponseMapper
+            employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
 
     @Override
     public Employee findById(Long id) {
-        return employeeReadPort.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+
+        return employeeReadPort.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(id));
     }
+
 
     @Override
     public List<EmployeeSummaryResponse> findSummaryAll() {
+
         List<Employee> employee = employeeReadPort.findSummaryAll();
         return employeeToEmployeeSummaryResponseMapper.map(employee);
     }
+
 
     @Override
     public List<Employee> findAll(Integer page, Integer pageSize) {
