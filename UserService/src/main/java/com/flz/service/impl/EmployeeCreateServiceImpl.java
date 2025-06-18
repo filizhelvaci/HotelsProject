@@ -21,12 +21,14 @@ class EmployeeCreateServiceImpl implements EmployeeCreateService {
     private final EmployeeSavePort employeeSavePort;
     private final EmployeeDeletePort employeeDeletePort;
 
-    private final EmployeeCreateRequestToDomainMapper employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
+    private final EmployeeCreateRequestToDomainMapper
+            employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
 
     @Override
     public void create(EmployeeCreateRequest createRequest) {
 
-        boolean existsByIdentity = employeeReadPort.existsByIdentity(createRequest.getIdentityNumber());
+        boolean existsByIdentity = employeeReadPort
+                .existsByIdentity(createRequest.getIdentityNumber());
         if (existsByIdentity) {
             throw new EmployeeAlreadyExistsException(createRequest.getIdentityNumber());
         }
@@ -38,8 +40,18 @@ class EmployeeCreateServiceImpl implements EmployeeCreateService {
     @Override
     public void update(Long id, EmployeeUpdateRequest employeeUpdateRequest) {
 
-        Employee employee = employeeReadPort.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
-        employee.update(employeeUpdateRequest.getFirstName(), employeeUpdateRequest.getLastName(), employeeUpdateRequest.getIdentityNumber(), employeeUpdateRequest.getEmail(), employeeUpdateRequest.getPhoneNumber(), employeeUpdateRequest.getAddress(), employeeUpdateRequest.getBirthDate(), employeeUpdateRequest.getGender(), employeeUpdateRequest.getNationality());
+        Employee employee = employeeReadPort.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(id));
+
+        employee.update(employeeUpdateRequest.getFirstName(),
+                employeeUpdateRequest.getLastName(),
+                employeeUpdateRequest.getIdentityNumber(),
+                employeeUpdateRequest.getEmail(),
+                employeeUpdateRequest.getPhoneNumber(),
+                employeeUpdateRequest.getAddress(),
+                employeeUpdateRequest.getBirthDate(),
+                employeeUpdateRequest.getGender(),
+                employeeUpdateRequest.getNationality());
         employeeSavePort.save(employee);
     }
 
