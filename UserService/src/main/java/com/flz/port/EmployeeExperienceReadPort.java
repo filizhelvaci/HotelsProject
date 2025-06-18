@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface EmployeeExperienceReadPort {
 
-    List<EmployeeExperience> findAll(Integer page, Integer pageSize);
+    List<EmployeeExperience> findAll();
 
     Optional<EmployeeExperience> findTopByEmployeeIdOrderByStartDateDesc(Long id);
 
