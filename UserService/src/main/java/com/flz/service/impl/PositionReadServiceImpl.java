@@ -12,22 +12,27 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PositionReadServiceImpl implements PositionReadService {
+class PositionReadServiceImpl implements PositionReadService {
 
     private final PositionReadPort positionReadPort;
 
-    private final PositionToPositionSummaryResponseMapper positionToPositionSummaryResponseMapper = PositionToPositionSummaryResponseMapper.INSTANCE;
+    private final PositionToPositionSummaryResponseMapper
+            positionToPositionSummaryResponseMapper = PositionToPositionSummaryResponseMapper.INSTANCE;
+
 
     @Override
     public List<PositionSummaryResponse> findSummaryAll() {
+
         List<Position> positions = positionReadPort.findSummaryAll();
         return positionToPositionSummaryResponseMapper.map(positions);
     }
+
 
     @Override
     public List<Position> findAll(Integer page, Integer pageSize) {
 
         return positionReadPort.findAll(page, pageSize);
     }
+
 
 }

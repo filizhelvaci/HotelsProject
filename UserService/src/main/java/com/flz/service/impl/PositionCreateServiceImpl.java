@@ -24,10 +24,13 @@ class PositionCreateServiceImpl implements PositionCreateService {
     private final PositionReadPort positionReadPort;
     private final DepartmentReadPort departmentReadPort;
 
-    private final PositionCreateRequestToPositionDomainMapper positionCreateRequestToPositionDomainMapper = PositionCreateRequestToPositionDomainMapper.INSTANCE;
+    private final PositionCreateRequestToPositionDomainMapper
+            positionCreateRequestToPositionDomainMapper = PositionCreateRequestToPositionDomainMapper.INSTANCE;
+
 
     @Override
     public void create(PositionCreateRequest createRequest) {
+
         boolean existsByName = positionReadPort.existsByName(createRequest.getName());
         if (existsByName) {
             throw new PositionAlreadyExistsException(createRequest.getName());
@@ -44,8 +47,10 @@ class PositionCreateServiceImpl implements PositionCreateService {
 
     }
 
+
     @Override
     public void update(Long id, PositionUpdateRequest positionUpdateRequest) {
+
         Position position = positionReadPort.findById(id)
                 .orElseThrow(() -> new PositionNotFoundException(id));
 
@@ -65,8 +70,10 @@ class PositionCreateServiceImpl implements PositionCreateService {
         positionSavePort.save(position);
     }
 
+
     @Override
     public void delete(Long id) {
+
         Position position = positionReadPort.findById(id).orElseThrow(() -> new PositionNotFoundException(id));
 
         position.setStatus(PositionStatus.DELETED);

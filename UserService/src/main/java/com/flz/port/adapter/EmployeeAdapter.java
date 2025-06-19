@@ -3,7 +3,6 @@ package com.flz.port.adapter;
 import com.flz.model.Employee;
 import com.flz.model.entity.EmployeeEntity;
 import com.flz.model.mapper.EmployeeEntityToDomainMapper;
-import com.flz.model.mapper.EmployeeExperienceToEntityMapper;
 import com.flz.model.mapper.EmployeeToEntityMapper;
 import com.flz.port.EmployeeDeletePort;
 import com.flz.port.EmployeeReadPort;
@@ -23,9 +22,8 @@ import java.util.stream.Collectors;
 public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, EmployeeDeletePort {
 
     private final EmployeeRepository employeeRepository;
-    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper;
-    private final EmployeeToEntityMapper employeeToEntityMapper;
-    private final EmployeeExperienceToEntityMapper employeeExperienceToEntityMapper;
+    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
+    private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
 
 
     @Override

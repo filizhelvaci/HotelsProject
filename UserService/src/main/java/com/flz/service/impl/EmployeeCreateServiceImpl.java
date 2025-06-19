@@ -15,13 +15,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeCreateServiceImpl implements EmployeeCreateService {
+class EmployeeCreateServiceImpl implements EmployeeCreateService {
 
     private final EmployeeReadPort employeeReadPort;
     private final EmployeeSavePort employeeSavePort;
     private final EmployeeDeletePort employeeDeletePort;
 
-    private final EmployeeCreateRequestToDomainMapper employeeCreateRequestToDomainMapper;
+    private final EmployeeCreateRequestToDomainMapper
+            employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
 
     @Override
     public void create(EmployeeCreateRequest createRequest) {
@@ -41,8 +42,8 @@ public class EmployeeCreateServiceImpl implements EmployeeCreateService {
 
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
-        employee.update(
-                employeeUpdateRequest.getFirstName(),
+
+        employee.update(employeeUpdateRequest.getFirstName(),
                 employeeUpdateRequest.getLastName(),
                 employeeUpdateRequest.getIdentityNumber(),
                 employeeUpdateRequest.getEmail(),
