@@ -39,15 +39,15 @@ public class EmployeeExperienceEntity extends BaseEntity {
     @Column(name = "start_date")
     private LocalDate startDate;
 
-    @Column(name = "transition_date")
-    private LocalDate transitionDate;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     /**
      * ----------------------------------------------------------------
      * EmployeeExperienceEntity      PositionEntity
      * M                       1
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "position_id", referencedColumnName = "id")
     private PositionEntity position;
 
@@ -56,7 +56,7 @@ public class EmployeeExperienceEntity extends BaseEntity {
      * EmployeeExperienceEntity      EmployeeEntity
      * M                       1
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     private EmployeeEntity employee;
 
@@ -65,7 +65,7 @@ public class EmployeeExperienceEntity extends BaseEntity {
      * EmployeeExperienceEntity      EmployeeEntity
      * M                       1
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "supervisor_id", referencedColumnName = "id", nullable = false)
     private EmployeeEntity supervisor;
 }
