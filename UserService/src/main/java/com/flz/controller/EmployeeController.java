@@ -4,6 +4,7 @@ import com.flz.model.Employee;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
 import com.flz.model.request.PageRequest;
+import com.flz.model.response.EmployeeDetailsResponse;
 import com.flz.model.response.EmployeeSummaryResponse;
 import com.flz.model.response.HotelResponse;
 import com.flz.service.EmployeeCreateService;
@@ -33,9 +34,9 @@ class EmployeeController {
     private final EmployeeCreateService employeeCreateService;
 
     @GetMapping("/employee/{id}")
-    public HotelResponse<Employee> findById(@PathVariable(value = "id") @Positive Long id) {
-        Employee employee = employeeReadService.findById(id);
-        return HotelResponse.successOf(employee);
+    public HotelResponse<EmployeeDetailsResponse> findById(@PathVariable(value = "id") @Positive Long id) {
+        EmployeeDetailsResponse employeeDetailsResponse = employeeReadService.findById(id);
+        return HotelResponse.successOf(employeeDetailsResponse);
     }
 
     @GetMapping("/employees")
