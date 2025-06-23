@@ -18,6 +18,6 @@ public class EmployeeDetailsResponse {
 
     private Employee employee;
 
-    private List<EmployeeExperienceDetailResponse> experiences;
+    private List<EmployeeExperienceResponse> experiences;
 
 }
