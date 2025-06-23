@@ -4,6 +4,7 @@ import com.flz.BaseTest;
 import com.flz.exception.DepartmentAlreadyExistsException;
 import com.flz.exception.DepartmentNotFoundException;
 import com.flz.model.Department;
+import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.mapper.DepartmentCreateRequestToDomainMapper;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
@@ -156,5 +157,58 @@ class DepartmentCreateServiceImplTest extends BaseTest {
         Mockito.verify(departmentReadPort, Mockito.times(1)).existsByName(mockDepartmentUpdateRequest.getName());
         Mockito.verify(departmentSavePort, Mockito.never()).save(Mockito.any());
     }
+
+    /**
+     * {@link DepartmentCreateServiceImpl#delete(Long)}
+     */
+    @Test
+    public void givenValidId_whenDepartmentEntityFoundById_thenMakeStatusOfDepartmentEntityDeleted() {
+
+        //Given
+        Long mockId = 1L;
+
+        Department mockDepartment = Mockito.mock(Department.class);
+
+        //When
+        Mockito.when(departmentReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockDepartment));
+
+        mockDepartment.setStatus(DepartmentStatus.DELETED);
+        departmentSavePort.save(mockDepartment);
+
+        //Then
+        departmentCreateService.delete(mockId);
+
+        //Verify
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(departmentSavePort, Mockito.times(1))
+                .save(Mockito.any(Department.class));
+    }
+
+    /**
+     * {@link DepartmentCreateServiceImpl#delete(Long)}
+     */
+    @Test
+    public void givenValidId_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Mockito.when(departmentReadPort.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(DepartmentNotFoundException.class,
+                () -> departmentCreateService.delete(mockId));
+
+        //Verify
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any());
+    }
+
 
 }
