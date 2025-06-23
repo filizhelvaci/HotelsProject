@@ -38,18 +38,19 @@ class DepartmentReadServiceImplTest extends BaseTest {
         mockDepartments.add(mockDepartment2);
 
 
-        Mockito.when(departmentReadPort.findSummaryAll())
-                .thenReturn(mockDepartments);
+        Mockito.when(departmentReadPort.findSummaryAll()).thenReturn(mockDepartments);
 
         List<DepartmentSummaryResponse> departmentSummaryResponses =
                 DepartmentToDepartmentSummaryResponseMapper.INSTANCE.map(mockDepartments);
 
         //Then
-        List<DepartmentSummaryResponse> result = departmentReadServiceImpl.findSummaryAll();
+        List<DepartmentSummaryResponse> result = departmentReadServiceImpl
+                .findSummaryAll();
         Assertions.assertEquals(departmentSummaryResponses, result);
 
         //Verify
-        Mockito.verify(departmentReadPort, Mockito.times(1)).findSummaryAll();
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findSummaryAll();
     }
 
     /**
@@ -59,10 +60,12 @@ class DepartmentReadServiceImplTest extends BaseTest {
     public void whenCalledAllSummaryDepartmentIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
 
         //When
-        Mockito.when(departmentReadPort.findSummaryAll()).thenReturn(Collections.emptyList());
+        Mockito.when(departmentReadPort.findSummaryAll())
+                .thenReturn(Collections.emptyList());
 
         //Then
-        List<DepartmentSummaryResponse> departmentSummaryResponses = departmentReadServiceImpl.findSummaryAll();
+        List<DepartmentSummaryResponse> departmentSummaryResponses =
+                departmentReadServiceImpl.findSummaryAll();
 
         Assertions.assertNotNull(departmentReadPort);
         Assertions.assertEquals(0, departmentSummaryResponses.size());
@@ -70,6 +73,66 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1)).findSummaryAll();
+
+    }
+
+    /**
+     * {@link DepartmentReadServiceImpl#findAll(Integer, Integer)}
+     */
+    @Test
+    public void givenValidPagePageSize_whenCalledAllDepartment_thenReturnListAllOfDepartments() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        List<Department> mockDepartments = new ArrayList<>();
+
+        Department mockDepartment1 = Department.builder().name("Test1").build();
+        Department mockDepartment2 = Department.builder().name("Test2").build();
+        mockDepartments.add(mockDepartment1);
+        mockDepartments.add(mockDepartment2);
+
+
+        Mockito.when(departmentReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(mockDepartments);
+
+        //Then
+        List<Department> mockDepartment = departmentReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+        Assertions.assertEquals(mockDepartments.size(), mockDepartment.size());
+
+        //Verify
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
+
+    /**
+     * {@link DepartmentReadServiceImpl#findAll(Integer, Integer)}
+     */
+    @Test
+    public void givenValidPagePageSize_whenCalledAllDepartmentIfAllDepartmentEntitiesIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        Mockito.when(departmentReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<Department> departments = departmentReadServiceImpl
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+
+        Assertions.assertNotNull(departments);
+        Assertions.assertEquals(0, departments.size());
+        Assertions.assertTrue(departments.isEmpty());
+
+        //Verify
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findAll(mockPage, mockPageSize);
 
     }
 
