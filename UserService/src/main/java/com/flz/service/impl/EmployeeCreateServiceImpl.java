@@ -3,10 +3,13 @@ package com.flz.service.impl;
 import com.flz.exception.EmployeeAlreadyExistsException;
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.model.Employee;
+import com.flz.model.EmployeeExperience;
+import com.flz.model.Position;
 import com.flz.model.mapper.EmployeeCreateRequestToDomainMapper;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
 import com.flz.port.EmployeeDeletePort;
+import com.flz.port.EmployeeExperienceSavePort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.EmployeeSavePort;
 import com.flz.service.EmployeeCreateService;
@@ -20,6 +23,7 @@ class EmployeeCreateServiceImpl implements EmployeeCreateService {
     private final EmployeeReadPort employeeReadPort;
     private final EmployeeSavePort employeeSavePort;
     private final EmployeeDeletePort employeeDeletePort;
+    private final EmployeeExperienceSavePort employeeExperienceSavePort;
 
     private final EmployeeCreateRequestToDomainMapper
             employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
@@ -32,7 +36,22 @@ class EmployeeCreateServiceImpl implements EmployeeCreateService {
         if (existsByIdentity) {
             throw new EmployeeAlreadyExistsException(createRequest.getIdentityNumber());
         }
+
         Employee employee = employeeCreateRequestToDomainMapper.map(createRequest);
+
+        Employee supervisor = null;
+        if (createRequest.getSupervisorId() != null) {
+            supervisor = Employee.builder().id(createRequest.getSupervisorId()).build();
+        }
+
+        EmployeeExperience employeeExperience = EmployeeExperience.builder()
+                .salary(createRequest.getSalary())
+                .startDate(createRequest.getStartDate())
+                .position(Position.builder().id(createRequest.getPositionId()).build())
+                .supervisor(supervisor)
+                .build();
+
+        employee.addExperience(employeeExperience);
         employeeSavePort.save(employee);
     }
 

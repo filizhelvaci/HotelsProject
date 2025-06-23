@@ -4,6 +4,7 @@ import com.flz.model.Employee;
 import com.flz.model.entity.EmployeeEntity;
 import com.flz.model.mapper.EmployeeEntityToDomainMapper;
 import com.flz.model.mapper.EmployeeToEntityMapper;
+import com.flz.model.response.EmployeeSummaryResponse;
 import com.flz.port.EmployeeDeletePort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.EmployeeSavePort;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, EmployeeDeletePort {
 
     private final EmployeeRepository employeeRepository;
+
     private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
     private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
 
@@ -40,9 +42,8 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
     }
 
     @Override
-    public List<Employee> findSummaryAll() {
-        List<EmployeeEntity> employeeEntities = employeeRepository.findAll();
-        return employeeEntityToDomainMapper.map(employeeEntities);
+    public List<EmployeeSummaryResponse> findSummaryAll() {
+        return employeeRepository.findEmployeeSummaries();
     }
 
     @Override

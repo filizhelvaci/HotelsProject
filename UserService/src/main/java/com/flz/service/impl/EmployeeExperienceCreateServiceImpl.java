@@ -34,12 +34,17 @@ class EmployeeExperienceCreateServiceImpl implements EmployeeExperienceCreateSer
         Optional<EmployeeExperience> lastExperience = employeeExperienceReadPort.findTopByEmployeeIdOrderByStartDateDesc(employeeId);
         if (lastExperience.isPresent()) {
             EmployeeExperience lastEmployeeExperience = lastExperience.get();
-            LocalDate newTransitionDate = createRequest.getStartDate().minusDays(1);
-            lastEmployeeExperience.setTransitionDate(newTransitionDate);
+            LocalDate newEndDate = createRequest.getStartDate().minusDays(1);
+            lastEmployeeExperience.setEndDate(newEndDate);
             employeeExperienceSavePort.save(lastEmployeeExperience);
         }
 
-        EmployeeExperience employeeExperience = EmployeeExperience.builder().salary(createRequest.getSalary()).startDate(createRequest.getStartDate()).position(Position.builder().id(createRequest.getPositionId()).build()).employee(Employee.builder().id(employeeId).build()).supervisor(Employee.builder().id(createRequest.getSupervisorId()).build()).build();
+        EmployeeExperience employeeExperience = EmployeeExperience.builder()
+                .salary(createRequest.getSalary())
+                .startDate(createRequest.getStartDate())
+                .position(Position.builder().id(createRequest.getPositionId()).build())
+                .employee(Employee.builder().id(employeeId).build())
+                .supervisor(Employee.builder().id(createRequest.getSupervisorId()).build()).build();
         employeeExperienceSavePort.save(employeeExperience);
     }
 
