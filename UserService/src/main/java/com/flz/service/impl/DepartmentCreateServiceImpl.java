@@ -1,5 +1,6 @@
 package com.flz.service.impl;
 
+import com.flz.exception.DepartmentAlreadyDeletedException;
 import com.flz.exception.DepartmentAlreadyExistsException;
 import com.flz.exception.DepartmentNotFoundException;
 import com.flz.model.Department;
@@ -58,6 +59,10 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
 
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
+
+        if (department.isDeleted()) {
+            throw new DepartmentAlreadyDeletedException(department.getId());
+        }
 
         department.delete();
         departmentSavePort.save(department);
