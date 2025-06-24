@@ -24,4 +24,8 @@ public class Department extends BaseDomainModel {
         this.setUpdatedUser("ADMIN");
     }
 
+    public boolean isDeleted() {
+        return this.getStatus() == DepartmentStatus.DELETED;
+    }
+
 }
