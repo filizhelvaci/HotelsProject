@@ -3,7 +3,6 @@ package com.flz.service.impl;
 import com.flz.exception.DepartmentAlreadyExistsException;
 import com.flz.exception.DepartmentNotFoundException;
 import com.flz.model.Department;
-import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.mapper.DepartmentCreateRequestToDomainMapper;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
@@ -60,7 +59,7 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
 
-        department.setStatus(DepartmentStatus.DELETED);
+        department.delete();
         departmentSavePort.save(department);
     }
 
