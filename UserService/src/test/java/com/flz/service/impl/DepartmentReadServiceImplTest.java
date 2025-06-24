@@ -124,7 +124,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
         //Then
         List<Department> departments = departmentReadServiceImpl
-                .findAll(Mockito.anyInt(), Mockito.anyInt());
+                .findAll(mockPage, mockPageSize);
 
         Assertions.assertNotNull(departments);
         Assertions.assertEquals(0, departments.size());

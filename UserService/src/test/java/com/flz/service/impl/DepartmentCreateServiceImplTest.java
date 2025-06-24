@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 class DepartmentCreateServiceImplTest extends BaseTest {
@@ -167,14 +168,29 @@ class DepartmentCreateServiceImplTest extends BaseTest {
         //Given
         Long mockId = 1L;
 
-        Department mockDepartment = Mockito.mock(Department.class);
-
         //When
+        Department mockDepartment = Department.builder()
+                .id(mockId)
+                .name("updatedDepartment")
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdUser("createdUser")
+                .build();
+
+        Department mockDeletedDepartment = Department.builder()
+                .id(mockDepartment.getId())
+                .name(mockDepartment.getName())
+                .status(mockDepartment.getStatus())
+                .createdAt(mockDepartment.getCreatedAt())
+                .createdUser(mockDepartment.getCreatedUser())
+                .build();
+        mockDeletedDepartment.delete();
+
         Mockito.when(departmentReadPort.findById(mockId))
                 .thenReturn(Optional.of(mockDepartment));
 
-        mockDepartment.setStatus(DepartmentStatus.DELETED);
-        departmentSavePort.save(mockDepartment);
+        Mockito.doNothing().when(departmentSavePort)
+                .save(mockDeletedDepartment);
 
         //Then
         departmentCreateService.delete(mockId);
