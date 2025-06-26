@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 class DepartmentAdapterTest extends BaseTest {
 
@@ -129,6 +130,68 @@ class DepartmentAdapterTest extends BaseTest {
         // Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findAll();
+    }
+
+    /**
+     * {@link DepartmentAdapter#findById(Long)}
+     */
+    @Test
+    public void givenValidId_whenDepartmentEntityFoundAccordingById_thenReturnDepartment() {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Optional<DepartmentEntity> mockDepartmentEntity = Optional.of(getDepartment(mockId));
+
+        Mockito.when(departmentRepository.findById(mockId))
+                .thenReturn(mockDepartmentEntity);
+
+        //Then
+        Optional<Department> department = adapter.findById(mockId);
+
+        Assertions.assertNotNull(department);
+        Assertions.assertTrue(department.isPresent());
+        Assertions.assertEquals(mockId, department.get().getId());
+
+        //Verify
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
+
+    /**
+     * {@link DepartmentAdapter#findById}
+     */
+    @Test
+    public void givenValidId_whenDepartmentEntityNotFoundById_returnOptionalDepartment() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(departmentRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Optional<Department> department = adapter.findById(mockId);
+
+        Assertions.assertFalse(department.isPresent());
+
+        //Verify
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
+
+    private static DepartmentEntity getDepartment(Long mockId) {
+        return DepartmentEntity.builder()
+                .id(mockId)
+                .name("Test")
+                .status(DepartmentStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     private static List<DepartmentEntity> getDepartmentEntities() {
