@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 class DepartmentAdapterTest extends BaseTest {
@@ -85,6 +86,49 @@ class DepartmentAdapterTest extends BaseTest {
         // Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findAll(mockPageable);
+    }
+
+    /**
+     * {@link DepartmentAdapter#findSummaryAll()}
+     */
+    @Test
+    void whenCalledAllSummaryDepartment_thenReturnListOfDepartmentSummariesResponse() {
+
+        // When
+        List<DepartmentEntity> mockDepartmentEntities = getDepartmentEntities();
+
+        Mockito.when(departmentRepository.findAll())
+                .thenReturn(mockDepartmentEntities);
+
+        // Then
+        List<Department> mockDepartments = departmentEntityToDomainMapper
+                .map(mockDepartmentEntities);
+        List<Department> result = adapter.findSummaryAll();
+        Assertions.assertEquals(mockDepartments.size(), result.size());
+
+        // Verify
+        Mockito.verify(departmentRepository, Mockito.times(1)).findAll();
+    }
+
+    /**
+     * {@link DepartmentAdapter#findSummaryAll()}
+     */
+    @Test
+    void whenCalledAllSummaryDepartmentsIfDepartmentListIsEmpty_thenReturnEmptyList() {
+
+        // When
+        Mockito.when(departmentRepository.findAll())
+                .thenReturn(Collections.emptyList());
+
+        // Then
+        List<Department> departments = adapter.findSummaryAll();
+
+        Assertions.assertEquals(0, departments.size());
+        Assertions.assertTrue(departments.isEmpty());
+
+        // Verify
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .findAll();
     }
 
     private static List<DepartmentEntity> getDepartmentEntities() {
