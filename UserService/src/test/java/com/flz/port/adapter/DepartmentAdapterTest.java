@@ -164,7 +164,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#findById}
      */
     @Test
-    public void givenValidId_whenDepartmentEntityNotFoundById_returnOptionalDepartment() {
+    public void givenValidId_whenDepartmentEntityNotFoundById_returnOptionalEmpty() {
 
         //Given
         Long mockId = 10L;
@@ -181,6 +181,54 @@ class DepartmentAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findById(mockId);
+
+    }
+
+    /**
+     * {@link DepartmentAdapter#existsByName(String)}
+     */
+    @Test
+    public void givenValidName_whenDepartmentEntityFoundAccordingByName_thenReturnTrue() {
+
+        //Given
+        String mockName = "TestName";
+
+        //When
+        Mockito.when(departmentRepository.existsByName(mockName))
+                .thenReturn(Boolean.TRUE);
+
+        //Then
+        boolean result = adapter.existsByName(mockName);
+
+        Assertions.assertTrue(result);
+
+        //Verify
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .existsByName(mockName);
+
+    }
+
+    /**
+     * {@link DepartmentAdapter#existsByName(String)}
+     */
+    @Test
+    public void givenValidName_whenDepartmentEntityNotFoundAccordingByName_thenReturnFalse() {
+
+        //Given
+        String mockName = "TestName";
+
+        //When
+        Mockito.when(departmentRepository.existsByName(mockName))
+                .thenReturn(Boolean.FALSE);
+
+        //Then
+        boolean result = adapter.existsByName(mockName);
+
+        Assertions.assertFalse(result);
+
+        //Verify
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .existsByName(mockName);
 
     }
 
