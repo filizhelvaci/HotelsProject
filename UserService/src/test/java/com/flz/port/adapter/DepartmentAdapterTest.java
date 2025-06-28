@@ -232,6 +232,42 @@ class DepartmentAdapterTest extends BaseTest {
 
     }
 
+    /**
+     * {@link DepartmentAdapter#save(Department)}
+     */
+    @Test
+    public void givenDepartment_whenCalledSave_thenSaveDepartmentEntity() {
+
+        //Given
+        Department mockDepartment = Department.builder()
+                .name("TestName")
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdUser("TestAdmin")
+                .build();
+
+        DepartmentEntity mockDepartmentEntity = DepartmentEntity.builder()
+                .id(1L)
+                .name(mockDepartment.getName())
+                .status(mockDepartment.getStatus())
+                .createdAt(mockDepartment.getCreatedAt())
+                .createdBy(mockDepartment.getCreatedUser())
+                .build();
+
+        //When
+        Mockito.when(departmentToEntityMapper.map(mockDepartment))
+                .thenReturn(mockDepartmentEntity);
+
+        Mockito.when(departmentRepository.save(mockDepartmentEntity)).thenReturn(mockDepartmentEntity);
+
+        //Then
+        adapter.save(mockDepartment);
+
+        //Verify
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .save(Mockito.any());
+    }
+
     private static DepartmentEntity getDepartment(Long mockId) {
         return DepartmentEntity.builder()
                 .id(mockId)
