@@ -9,6 +9,9 @@ import com.flz.model.response.DepartmentSummaryResponse;
 import com.flz.service.DepartmentCreateService;
 import com.flz.service.DepartmentReadService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -237,6 +240,9 @@ class DepartmentControllerTest extends BaseTest {
                 .findSummaryAll();
     }
 
+    /**
+     * {@link DepartmentController#create(DepartmentCreateRequest)}
+     */
     @Test
     void givenValidDepartmentCreateRequest_whenDepartmentCreated_thenReturnSuccess() throws Exception {
 
@@ -269,6 +275,39 @@ class DepartmentControllerTest extends BaseTest {
                 .create(Mockito.any(DepartmentCreateRequest.class));
 
     }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {
+            "",
+            " ",
+            "a",
+            "One morning, when Gregor Samsa woke from troubled dre"
+    })
+    void givenInvalidCreateRequest_whenCreateDepartment_thenReturnBadRequest(String invalidName) throws Exception {
+
+        //Given
+        DepartmentCreateRequest invalidRequest = DepartmentCreateRequest.builder()
+                .name(invalidName)
+                .build();
+
+        String jsonRequest = new ObjectMapper().writeValueAsString(invalidRequest);
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/department")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest);
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verifyNoInteractions(departmentCreateService);
+    }
+
 
 
 
