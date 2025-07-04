@@ -1,8 +1,10 @@
 package com.flz.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
 import com.flz.model.Department;
 import com.flz.model.enums.DepartmentStatus;
+import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.response.DepartmentSummaryResponse;
 import com.flz.service.DepartmentCreateService;
 import com.flz.service.DepartmentReadService;
@@ -234,6 +236,40 @@ class DepartmentControllerTest extends BaseTest {
         Mockito.verify(departmentReadService, Mockito.times(1))
                 .findSummaryAll();
     }
+
+    @Test
+    void givenValidDepartmentCreateRequest_whenDepartmentCreated_thenReturnSuccess() throws Exception {
+
+        //Given
+        DepartmentCreateRequest mockCreateRequest = DepartmentCreateRequest.builder()
+                .name("TestName")
+                .build();
+
+        //When
+        Mockito.doNothing()
+                .when(departmentCreateService)
+                .create(Mockito.any(DepartmentCreateRequest.class));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/department")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockCreateRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .doesNotExist());
+
+        //Verify
+        Mockito.verify(departmentCreateService, Mockito.times(1))
+                .create(Mockito.any(DepartmentCreateRequest.class));
+
+    }
+
 
 
     private static List<Department> getDepartments() {
