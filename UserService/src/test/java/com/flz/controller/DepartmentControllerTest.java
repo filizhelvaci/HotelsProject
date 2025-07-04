@@ -57,17 +57,104 @@ class DepartmentControllerTest extends BaseTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.length()").value(mockDepartments.size()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status").isNotEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.length()")
+                        .value(mockDepartments.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
 
         //Verify
         Mockito.verify(departmentReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
     }
 
+    @Test
+    void whenPageSizeDifferentThanValidValueInFindAll_thenReturnBadRequestError() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments")
+                .param("page", "1")
+                .param("pageSize", "-10")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(departmentReadService, Mockito.never())
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
+
+    @Test
+    void whenPageDifferentThanValidValueInFindAll_thenReturnBadRequestError() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments")
+                .param("page", "-1")
+                .param("pageSize", "10")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(departmentReadService, Mockito.never())
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
+
+    @Test
+    public void givenValidPageAndPageSize_whenCalledAllDepartment_thenReturnEmptyList() throws Exception {
+
+        //Given
+        Integer mockPageSize = 10;
+        Integer mockPage = 1;
+
+        List<Department> emptyDepartments = List.of();
+
+        //When
+        Mockito.when(departmentReadService.findAll(Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(emptyDepartments);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments")
+                .param("page", String.valueOf(mockPage))
+                .param("pageSize", String.valueOf(mockPageSize))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.length()")
+                        .value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        // Verify
+        Mockito.verify(departmentReadService, Mockito.times(1))
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
 
     private static List<Department> getDepartments() {
         return List.of(
