@@ -3,6 +3,7 @@ package com.flz.controller;
 import com.flz.BaseTest;
 import com.flz.model.Department;
 import com.flz.model.enums.DepartmentStatus;
+import com.flz.model.response.DepartmentSummaryResponse;
 import com.flz.service.DepartmentCreateService;
 import com.flz.service.DepartmentReadService;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @WebMvcTest(DepartmentController.class)
@@ -61,11 +63,11 @@ class DepartmentControllerTest extends BaseTest {
                         .isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.length()")
                         .value(mockDepartments.size()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].id")
                         .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].name")
                         .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].status")
                         .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
@@ -155,6 +157,84 @@ class DepartmentControllerTest extends BaseTest {
         Mockito.verify(departmentReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
     }
+
+    /**
+     * {@link DepartmentController#findSummaryAll()}
+     */
+    @Test
+    public void whenCalledAllSummaryRoom_thenReturnRoomsSummaryResponse() throws Exception {
+
+        //Given
+        List<DepartmentSummaryResponse> mockDepartmentsSummaryResponse = List.of(
+                DepartmentSummaryResponse.builder()
+                        .id(11L)
+                        .name("TestName1")
+                        .build(),
+                DepartmentSummaryResponse.builder()
+                        .id(12L)
+                        .name("TestName2")
+                        .build(),
+                DepartmentSummaryResponse.builder()
+                        .id(13L)
+                        .name("TestName3")
+                        .build()
+        );
+
+        //When
+        Mockito.when(departmentReadService.findSummaryAll())
+                .thenReturn(mockDepartmentsSummaryResponse);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].name")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(departmentReadService, Mockito.times(1))
+                .findSummaryAll();
+    }
+
+    @Test
+    public void whenNotFoundDepartmentsSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //When
+        List<DepartmentSummaryResponse> emptyList = Collections.emptyList();
+
+        Mockito.when(departmentReadService.findSummaryAll())
+                .thenReturn(emptyList);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isEmpty());
+
+        //Verify
+        Mockito.verify(departmentReadService, Mockito.times(1))
+                .findSummaryAll();
+    }
+
 
     private static List<Department> getDepartments() {
         return List.of(
