@@ -395,6 +395,53 @@ class DepartmentControllerTest extends BaseTest {
                         .value(false));
     }
 
+    /**
+     * {@link DepartmentController#delete(Long)}
+     */
+    @Test
+    void givenValidId_whenCalledDeleteDepartment_thenDoDepartmentStatusDeleted() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.doNothing().when(departmentCreateService).delete(mockId);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/department/{id}", mockId);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(departmentCreateService, Mockito.times(1))
+                .delete(Mockito.anyLong());
+    }
+
+    @Test
+    void givenInValidId_whenCalledDeleteForDepartment_thenReturnBadRequest() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/department/{id}", "lkjhg");
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(departmentCreateService, Mockito.never()).delete(Mockito.anyLong());
+    }
+
     private static List<Department> getDepartments() {
         return List.of(
                 Department.builder()
