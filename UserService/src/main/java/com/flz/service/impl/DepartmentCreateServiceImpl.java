@@ -13,6 +13,8 @@ import com.flz.service.DepartmentCreateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 class DepartmentCreateServiceImpl implements DepartmentCreateService {
@@ -43,14 +45,25 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
 
+        String name = departmentUpdateRequest.getName();
+
+        if (!(department.getName().equals(name))) {
+            extracted(departmentUpdateRequest);
+        }
+
+        department.setName(departmentUpdateRequest.getName());
+        department.setUpdatedAt(LocalDateTime.now());
+        department.setUpdatedUser("SYSTEM");
+        departmentSavePort.save(department);
+    }
+
+    void extracted(DepartmentUpdateRequest departmentUpdateRequest) {
+
         boolean existsByName = departmentReadPort
                 .existsByName(departmentUpdateRequest.getName());
         if (existsByName) {
             throw new DepartmentAlreadyExistsException(departmentUpdateRequest.getName());
         }
-
-        department.setName(departmentUpdateRequest.getName());
-        departmentSavePort.save(department);
     }
 
 
