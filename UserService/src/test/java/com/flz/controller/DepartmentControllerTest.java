@@ -5,6 +5,7 @@ import com.flz.BaseTest;
 import com.flz.model.Department;
 import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.request.DepartmentCreateRequest;
+import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.model.response.DepartmentSummaryResponse;
 import com.flz.service.DepartmentCreateService;
 import com.flz.service.DepartmentReadService;
@@ -291,13 +292,11 @@ class DepartmentControllerTest extends BaseTest {
                 .name(invalidName)
                 .build();
 
-        String jsonRequest = new ObjectMapper().writeValueAsString(invalidRequest);
-
         //When
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(BASE_PATH + "/department")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonRequest);
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
 
         //Then
         mockMvc.perform(request)
@@ -308,8 +307,93 @@ class DepartmentControllerTest extends BaseTest {
         Mockito.verifyNoInteractions(departmentCreateService);
     }
 
+    /**
+     * {@link DepartmentController#update(Long, DepartmentUpdateRequest)}
+     */
+    @Test
+    public void givenValidIdAndDepartmentUpdateRequest_whenFindDepartmentById_thenUpdateDepartmentSuccessfully() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
+                .name("TestName")
+                .build();
+
+        //When
+        Mockito.doNothing().when(departmentCreateService).update(mockId, mockDepartmentUpdateRequest);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/department/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockDepartmentUpdateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(departmentCreateService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0L,
+            -1L,
+            -100L
+    })
+    void givenInvalidId_whenUpdateDepartment_thenReturnBadRequest(Long invalidId) throws Exception {
+
+        //Given
+        DepartmentUpdateRequest mockRequest = DepartmentUpdateRequest.builder()
+                .name("ValidTestName")
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/department/{id}", invalidId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRequest));
+
+        // Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
 
 
+        // Verify
+        Mockito.verify(departmentCreateService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
+    }
+
+    @Test
+    void givenNullId_whenUpdateDepartment_thenReturnInternalServerError() throws Exception {
+
+        //Given
+        DepartmentUpdateRequest mockRequest = DepartmentUpdateRequest.builder()
+                .name("ValidTestName")
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/department/null")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
 
     private static List<Department> getDepartments() {
         return List.of(
