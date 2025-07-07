@@ -40,13 +40,14 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
         Mockito.when(departmentReadPort.findSummaryAll()).thenReturn(mockDepartments);
 
-        List<DepartmentSummaryResponse> departmentSummaryResponses =
-                DepartmentToDepartmentSummaryResponseMapper.INSTANCE.map(mockDepartments);
+        List<DepartmentSummaryResponse> mockDepartmentSummaryResponses =
+                DepartmentToDepartmentSummaryResponseMapper.INSTANCE
+                        .map(mockDepartments);
 
         //Then
         List<DepartmentSummaryResponse> result = departmentReadServiceImpl
                 .findSummaryAll();
-        Assertions.assertEquals(departmentSummaryResponses, result);
+        Assertions.assertEquals(mockDepartmentSummaryResponses, result);
 
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
@@ -70,7 +71,8 @@ class DepartmentReadServiceImplTest extends BaseTest {
         Assertions.assertTrue(departmentSummaryResponses.isEmpty());
 
         //Verify
-        Mockito.verify(departmentReadPort, Mockito.times(1)).findSummaryAll();
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findSummaryAll();
 
     }
 
