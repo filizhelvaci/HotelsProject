@@ -62,9 +62,7 @@ class DepartmentAdapterTest extends BaseTest {
                 .findAll(mockPageable);
     }
 
-    /**
-     * {@link DepartmentAdapter#findAll(Integer, Integer)}
-     */
+
     @Test
     void givenValidPageAndPageSize_whenDepartmentNotFound_thenReturnEmptyDepartment() {
 
@@ -111,9 +109,7 @@ class DepartmentAdapterTest extends BaseTest {
         Mockito.verify(departmentRepository, Mockito.times(1)).findAll();
     }
 
-    /**
-     * {@link DepartmentAdapter#findSummaryAll()}
-     */
+
     @Test
     void whenCalledAllSummaryDepartmentsIfDepartmentListIsEmpty_thenReturnEmptyList() {
 
@@ -160,9 +156,7 @@ class DepartmentAdapterTest extends BaseTest {
 
     }
 
-    /**
-     * {@link DepartmentAdapter#findById}
-     */
+
     @Test
     public void givenValidId_whenDepartmentEntityNotFoundById_returnOptionalEmpty() {
 
@@ -208,9 +202,7 @@ class DepartmentAdapterTest extends BaseTest {
 
     }
 
-    /**
-     * {@link DepartmentAdapter#existsByName(String)}
-     */
+
     @Test
     public void givenValidName_whenDepartmentEntityNotFoundAccordingByName_thenReturnFalse() {
 
@@ -246,19 +238,12 @@ class DepartmentAdapterTest extends BaseTest {
                 .createdUser("TestAdmin")
                 .build();
 
-        DepartmentEntity mockDepartmentEntity = DepartmentEntity.builder()
-                .id(1L)
-                .name(mockDepartment.getName())
-                .status(mockDepartment.getStatus())
-                .createdAt(mockDepartment.getCreatedAt())
-                .createdBy(mockDepartment.getCreatedUser())
-                .build();
+        DepartmentEntity mockDepartmentEntity = DepartmentToEntityMapper
+                .INSTANCE.map(mockDepartment);
 
         //When
-        Mockito.when(departmentToEntityMapper.map(mockDepartment))
+        Mockito.when(departmentRepository.save(Mockito.any(DepartmentEntity.class)))
                 .thenReturn(mockDepartmentEntity);
-
-        Mockito.when(departmentRepository.save(mockDepartmentEntity)).thenReturn(mockDepartmentEntity);
 
         //Then
         adapter.save(mockDepartment);

@@ -53,9 +53,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
                 .findSummaryAll();
     }
 
-    /**
-     * {@link DepartmentReadServiceImpl#findSummaryAll()}
-     */
+
     @Test
     public void whenCalledAllSummaryDepartmentIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
 
@@ -108,9 +106,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
     }
 
-    /**
-     * {@link DepartmentReadServiceImpl#findAll(Integer, Integer)}
-     */
+
     @Test
     public void givenValidPagePageSize_whenCalledAllDepartmentIfAllDepartmentEntitiesIsEmpty_thenReturnEmptyList() {
 

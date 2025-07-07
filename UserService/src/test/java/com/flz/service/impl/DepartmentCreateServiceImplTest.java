@@ -57,9 +57,7 @@ class DepartmentCreateServiceImplTest extends BaseTest {
 
     }
 
-    /**
-     * {@link DepartmentCreateServiceImpl#create(DepartmentCreateRequest)}
-     */
+
     @Test
     public void givenDepartmentCreateRequest_whenCreateRequestNameAlreadyExists_thenThrowDepartmentAlreadyExists() {
 
@@ -88,14 +86,22 @@ class DepartmentCreateServiceImplTest extends BaseTest {
         //Given
         Long mockId = 1L;
 
+        Department mockDepartment = Department.builder()
+                .id(mockId)
+                .name("Department")
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdUser("createdUser")
+                .build();
+
         DepartmentUpdateRequest mockDepartmentUpdateRequest = new DepartmentUpdateRequest();
         mockDepartmentUpdateRequest.setName("updatedDepartment");
 
         //When
-        Department mockDepartment = Mockito.mock(Department.class);
-
-        Mockito.when(departmentReadPort.findById(mockId)).thenReturn(Optional.of(mockDepartment));
-        Mockito.when(departmentReadPort.existsByName(mockDepartmentUpdateRequest.getName())).thenReturn(false);
+        Mockito.when(departmentReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockDepartment));
+        Mockito.when(departmentReadPort.existsByName(mockDepartmentUpdateRequest.getName()))
+                .thenReturn(false);
 
         mockDepartment.setName(mockDepartmentUpdateRequest.getName());
         Mockito.doNothing().when(departmentSavePort).save(mockDepartment);
@@ -104,14 +110,15 @@ class DepartmentCreateServiceImplTest extends BaseTest {
         departmentCreateService.update(mockId, mockDepartmentUpdateRequest);
 
         //Verify
-        Mockito.verify(departmentReadPort, Mockito.times(1)).findById(mockId);
-        Mockito.verify(departmentReadPort, Mockito.times(1)).existsByName(mockDepartmentUpdateRequest.getName());
-        Mockito.verify(departmentSavePort, Mockito.times(1)).save(Mockito.any(Department.class));
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .existsByName(mockDepartmentUpdateRequest.getName());
+        Mockito.verify(departmentSavePort, Mockito.times(1))
+                .save(Mockito.any(Department.class));
     }
 
-    /**
-     * {@link DepartmentCreateServiceImpl#update(Long, DepartmentUpdateRequest)}
-     */
+
     @Test
     public void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
 
@@ -132,9 +139,7 @@ class DepartmentCreateServiceImplTest extends BaseTest {
         Mockito.verify(departmentSavePort, Mockito.never()).save(Mockito.any());
     }
 
-    /**
-     * {@link DepartmentCreateServiceImpl#update(Long, DepartmentUpdateRequest)}
-     */
+
     @Test
     public void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityAlreadyExists_thenThrowsDepartmentAlreadyExistsException() {
 
@@ -202,9 +207,7 @@ class DepartmentCreateServiceImplTest extends BaseTest {
                 .save(Mockito.any(Department.class));
     }
 
-    /**
-     * {@link DepartmentCreateServiceImpl#delete(Long)}
-     */
+
     @Test
     public void givenValidId_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
 
