@@ -253,6 +253,31 @@ class DepartmentAdapterTest extends BaseTest {
                 .save(Mockito.any());
     }
 
+
+    @Test
+    public void givenDepartment_whenRepositoryThrowsException_thenPropagateException() {
+        //Given
+        Department mockDepartment = Department.builder()
+                .name("TestName")
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdUser("TestAdmin")
+                .build();
+
+        DepartmentEntity mockDepartmentEntity = DepartmentToEntityMapper.INSTANCE.map(mockDepartment);
+
+        //When
+        Mockito.when(departmentRepository.save(Mockito.any(DepartmentEntity.class)))
+                .thenThrow(new RuntimeException("Database error"));
+
+        //Then
+        Assertions.assertThrows(RuntimeException.class, () -> adapter.save(mockDepartment));
+
+        //Verify
+        Mockito.verify(departmentRepository, Mockito.times(1)).save(Mockito.any());
+    }
+
+
     private static DepartmentEntity getDepartment(Long mockId) {
         return DepartmentEntity.builder()
                 .id(mockId)
