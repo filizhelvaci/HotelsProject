@@ -6,8 +6,8 @@ import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.model.request.PageRequest;
 import com.flz.model.response.DepartmentSummaryResponse;
 import com.flz.model.response.HotelResponse;
-import com.flz.service.DepartmentCreateService;
 import com.flz.service.DepartmentReadService;
+import com.flz.service.DepartmentWriteService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ import java.util.List;
 class DepartmentController {
 
     private final DepartmentReadService departmentReadService;
-    private final DepartmentCreateService departmentCreateService;
+    private final DepartmentWriteService departmentWriteService;
 
     @GetMapping("/departments")
     public HotelResponse<List<Department>> findAll(@Valid PageRequest pageRequest) {
@@ -49,20 +49,20 @@ class DepartmentController {
 
     @PostMapping("/department")
     public HotelResponse<Void> create(@RequestBody @Valid DepartmentCreateRequest createRequest) {
-        departmentCreateService.create(createRequest);
+        departmentWriteService.create(createRequest);
         return HotelResponse.success();
     }
 
     @PutMapping("/department/{id}")
     public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id,
                                       @RequestBody @Valid DepartmentUpdateRequest departmentUpdateRequest) {
-        departmentCreateService.update(id, departmentUpdateRequest);
+        departmentWriteService.update(id, departmentUpdateRequest);
         return HotelResponse.success();
     }
 
     @DeleteMapping("/department/{id}")
     public HotelResponse<Void> delete(@PathVariable(value = "id") @Positive Long id) {
-        departmentCreateService.delete(id);
+        departmentWriteService.delete(id);
         return HotelResponse.success();
     }
 

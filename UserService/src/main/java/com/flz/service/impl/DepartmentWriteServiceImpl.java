@@ -9,7 +9,7 @@ import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.port.DepartmentReadPort;
 import com.flz.port.DepartmentSavePort;
-import com.flz.service.DepartmentCreateService;
+import com.flz.service.DepartmentWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-class DepartmentCreateServiceImpl implements DepartmentCreateService {
+class DepartmentWriteServiceImpl implements DepartmentWriteService {
 
     private final DepartmentSavePort departmentSavePort;
     private final DepartmentReadPort departmentReadPort;
@@ -48,7 +48,7 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
         String name = departmentUpdateRequest.getName();
 
         if (!(department.getName().equals(name))) {
-            extracted(departmentUpdateRequest);
+            checkIfDepartmentNameExists(departmentUpdateRequest);
         }
 
         department.setName(departmentUpdateRequest.getName());
@@ -57,7 +57,7 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
         departmentSavePort.save(department);
     }
 
-    void extracted(DepartmentUpdateRequest departmentUpdateRequest) {
+    void checkIfDepartmentNameExists(DepartmentUpdateRequest departmentUpdateRequest) {
 
         boolean existsByName = departmentReadPort
                 .existsByName(departmentUpdateRequest.getName());
