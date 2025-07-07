@@ -7,8 +7,8 @@ import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.model.response.DepartmentSummaryResponse;
-import com.flz.service.DepartmentCreateService;
 import com.flz.service.DepartmentReadService;
+import com.flz.service.DepartmentWriteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
@@ -32,7 +32,7 @@ import java.util.List;
 class DepartmentControllerTest extends BaseTest {
 
     @MockBean
-    DepartmentCreateService departmentCreateService;
+    DepartmentWriteService departmentWriteService;
 
     @MockBean
     DepartmentReadService departmentReadService;
@@ -254,7 +254,7 @@ class DepartmentControllerTest extends BaseTest {
 
         //When
         Mockito.doNothing()
-                .when(departmentCreateService)
+                .when(departmentWriteService)
                 .create(Mockito.any(DepartmentCreateRequest.class));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -272,7 +272,7 @@ class DepartmentControllerTest extends BaseTest {
                         .doesNotExist());
 
         //Verify
-        Mockito.verify(departmentCreateService, Mockito.times(1))
+        Mockito.verify(departmentWriteService, Mockito.times(1))
                 .create(Mockito.any(DepartmentCreateRequest.class));
 
     }
@@ -304,7 +304,7 @@ class DepartmentControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         //Verify
-        Mockito.verifyNoInteractions(departmentCreateService);
+        Mockito.verifyNoInteractions(departmentWriteService);
     }
 
     /**
@@ -321,7 +321,7 @@ class DepartmentControllerTest extends BaseTest {
                 .build();
 
         //When
-        Mockito.doNothing().when(departmentCreateService).update(mockId, mockDepartmentUpdateRequest);
+        Mockito.doNothing().when(departmentWriteService).update(mockId, mockDepartmentUpdateRequest);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .put(BASE_PATH + "/department/{id}", mockId)
@@ -336,7 +336,7 @@ class DepartmentControllerTest extends BaseTest {
                         .value(true));
 
         //Verify
-        Mockito.verify(departmentCreateService, Mockito.times(1))
+        Mockito.verify(departmentWriteService, Mockito.times(1))
                 .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
     }
 
@@ -370,7 +370,7 @@ class DepartmentControllerTest extends BaseTest {
 
 
         // Verify
-        Mockito.verify(departmentCreateService, Mockito.never())
+        Mockito.verify(departmentWriteService, Mockito.never())
                 .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
     }
 
@@ -405,7 +405,7 @@ class DepartmentControllerTest extends BaseTest {
         Long mockId = 10L;
 
         //When
-        Mockito.doNothing().when(departmentCreateService).delete(mockId);
+        Mockito.doNothing().when(departmentWriteService).delete(mockId);
 
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .delete(BASE_PATH + "/department/{id}", mockId);
@@ -418,7 +418,7 @@ class DepartmentControllerTest extends BaseTest {
                         .value(true));
 
         //Verify
-        Mockito.verify(departmentCreateService, Mockito.times(1))
+        Mockito.verify(departmentWriteService, Mockito.times(1))
                 .delete(Mockito.anyLong());
     }
 
@@ -439,7 +439,7 @@ class DepartmentControllerTest extends BaseTest {
                         .value(false));
 
         //Verify
-        Mockito.verify(departmentCreateService, Mockito.never()).delete(Mockito.anyLong());
+        Mockito.verify(departmentWriteService, Mockito.never()).delete(Mockito.anyLong());
     }
 
     private static List<Department> getDepartments() {
