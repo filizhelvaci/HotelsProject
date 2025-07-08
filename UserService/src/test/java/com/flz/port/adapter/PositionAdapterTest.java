@@ -182,6 +182,52 @@ class PositionAdapterTest extends BaseTest {
 
     }
 
+    /**
+     * {@link PositionAdapter#existsByName(String)}
+     */
+    @Test
+    public void givenValidName_whenPositionEntityFoundAccordingByName_thenReturnTrue() {
+
+        //Given
+        String mockName = "TestName";
+
+        //When
+        Mockito.when(positionRepository.existsByName(mockName))
+                .thenReturn(Boolean.TRUE);
+
+        //Then
+        boolean result = adapter.existsByName(mockName);
+
+        Assertions.assertTrue(result);
+
+        //Verify
+        Mockito.verify(positionRepository, Mockito.times(1))
+                .existsByName(mockName);
+
+    }
+
+
+    @Test
+    public void givenValidName_whenPositionEntityNotFoundAccordingByName_thenReturnFalse() {
+
+        //Given
+        String mockName = "TestName";
+
+        //When
+        Mockito.when(positionRepository.existsByName(mockName))
+                .thenReturn(Boolean.FALSE);
+
+        //Then
+        boolean result = adapter.existsByName(mockName);
+
+        Assertions.assertFalse(result);
+
+        //Verify
+        Mockito.verify(positionRepository, Mockito.times(1))
+                .existsByName(mockName);
+
+    }
+
     private static PositionEntity getPositionEntity(Long mockId) {
         return PositionEntity.builder()
                 .id(mockId)
