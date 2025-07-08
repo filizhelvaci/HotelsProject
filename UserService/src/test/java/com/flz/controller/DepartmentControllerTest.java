@@ -168,7 +168,7 @@ class DepartmentControllerTest extends BaseTest {
      * {@link DepartmentController#findSummaryAll()}
      */
     @Test
-    public void whenCalledAllSummaryRoom_thenReturnRoomsSummaryResponse() throws Exception {
+    public void whenCalledAllSummaryDepartment_thenReturnDepartmentSummaryResponse() throws Exception {
 
         //Given
         List<DepartmentSummaryResponse> mockDepartmentsSummaryResponse = List.of(
