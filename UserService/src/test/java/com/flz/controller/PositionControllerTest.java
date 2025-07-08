@@ -432,6 +432,58 @@ class PositionControllerTest {
                         .value(false));
     }
 
+    /**
+     * {@link PositionController#delete(Long)}
+     */
+    @Test
+    void givenValidId_whenCalledDeletePosition_thenDoPositionStatusDeleted() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.doNothing()
+                .when(positionWriteService)
+                .delete(mockId);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/position/{id}", mockId);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(positionWriteService, Mockito.times(1))
+                .delete(Mockito.anyLong());
+    }
+
+    @Test
+    void whenCalledDeletePositionWithInvalidId_thenReturnBadRequest() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/position/{id}", "lkjhg");
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(positionWriteService, Mockito.never())
+                .delete(Mockito.anyLong());
+    }
+
     private static List<Position> getPositions() {
         return List.of(
                 Position.builder()
