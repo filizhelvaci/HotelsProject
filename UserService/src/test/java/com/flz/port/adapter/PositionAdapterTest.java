@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 class PositionAdapterTest extends BaseTest {
 
@@ -130,6 +131,56 @@ class PositionAdapterTest extends BaseTest {
                 .findAll();
     }
 
+    /**
+     * {@link PositionAdapter#findById(Long)}
+     */
+    @Test
+    public void givenValidId_whenPositionEntityFoundAccordingById_thenReturnPosition() {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Optional<PositionEntity> mockPositionEntity = Optional.of(getPositionEntity(mockId));
+
+        Mockito.when(positionRepository.findById(mockId))
+                .thenReturn(mockPositionEntity);
+
+        //Then
+        Optional<Position> position = adapter.findById(mockId);
+
+        Assertions.assertNotNull(position);
+        Assertions.assertTrue(position.isPresent());
+        Assertions.assertEquals(mockId, position.get()
+                .getId());
+
+        //Verify
+        Mockito.verify(positionRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
+
+
+    @Test
+    public void givenValidId_whenPositionEntityNotFoundById_returnOptionalEmpty() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(positionRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Optional<Position> position = adapter.findById(mockId);
+
+        Assertions.assertFalse(position.isPresent());
+
+        //Verify
+        Mockito.verify(positionRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
 
     private static PositionEntity getPositionEntity(Long mockId) {
         return PositionEntity.builder()
