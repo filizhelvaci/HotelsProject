@@ -12,13 +12,13 @@ import com.flz.model.request.PositionUpdateRequest;
 import com.flz.port.DepartmentReadPort;
 import com.flz.port.PositionReadPort;
 import com.flz.port.PositionSavePort;
-import com.flz.service.PositionCreateService;
+import com.flz.service.PositionWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-class PositionCreateServiceImpl implements PositionCreateService {
+class PositionWriteServiceImpl implements PositionWriteService {
 
     private final PositionSavePort positionSavePort;
     private final PositionReadPort positionReadPort;

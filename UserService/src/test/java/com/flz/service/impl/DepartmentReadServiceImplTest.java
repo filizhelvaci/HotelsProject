@@ -40,22 +40,21 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
         Mockito.when(departmentReadPort.findSummaryAll()).thenReturn(mockDepartments);
 
-        List<DepartmentSummaryResponse> departmentSummaryResponses =
-                DepartmentToDepartmentSummaryResponseMapper.INSTANCE.map(mockDepartments);
+        List<DepartmentSummaryResponse> mockDepartmentSummaryResponses =
+                DepartmentToDepartmentSummaryResponseMapper.INSTANCE
+                        .map(mockDepartments);
 
         //Then
         List<DepartmentSummaryResponse> result = departmentReadServiceImpl
                 .findSummaryAll();
-        Assertions.assertEquals(departmentSummaryResponses, result);
+        Assertions.assertEquals(mockDepartmentSummaryResponses, result);
 
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .findSummaryAll();
     }
 
-    /**
-     * {@link DepartmentReadServiceImpl#findSummaryAll()}
-     */
+
     @Test
     public void whenCalledAllSummaryDepartmentIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
 
@@ -72,7 +71,8 @@ class DepartmentReadServiceImplTest extends BaseTest {
         Assertions.assertTrue(departmentSummaryResponses.isEmpty());
 
         //Verify
-        Mockito.verify(departmentReadPort, Mockito.times(1)).findSummaryAll();
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findSummaryAll();
 
     }
 
@@ -108,9 +108,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
     }
 
-    /**
-     * {@link DepartmentReadServiceImpl#findAll(Integer, Integer)}
-     */
+
     @Test
     public void givenValidPagePageSize_whenCalledAllDepartmentIfAllDepartmentEntitiesIsEmpty_thenReturnEmptyList() {
 
@@ -124,7 +122,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
         //Then
         List<Department> departments = departmentReadServiceImpl
-                .findAll(Mockito.anyInt(), Mockito.anyInt());
+                .findAll(mockPage, mockPageSize);
 
         Assertions.assertNotNull(departments);
         Assertions.assertEquals(0, departments.size());

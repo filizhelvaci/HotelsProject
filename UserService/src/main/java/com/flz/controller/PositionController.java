@@ -6,8 +6,8 @@ import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
 import com.flz.model.response.HotelResponse;
 import com.flz.model.response.PositionSummaryResponse;
-import com.flz.service.PositionCreateService;
 import com.flz.service.PositionReadService;
+import com.flz.service.PositionWriteService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 class PositionController {
 
-    private final PositionCreateService positionCreateService;
+    private final PositionWriteService positionWriteService;
     private final PositionReadService positionReadService;
 
     @GetMapping("/positions")
@@ -46,20 +46,20 @@ class PositionController {
 
     @PostMapping("/position")
     public HotelResponse<Void> create(@RequestBody @Valid PositionCreateRequest createRequest) {
-        positionCreateService.create(createRequest);
+        positionWriteService.create(createRequest);
         return HotelResponse.success();
     }
 
     @PutMapping("/position/{id}")
     public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id,
                                       @RequestBody @Valid PositionUpdateRequest positionUpdateRequest) {
-        positionCreateService.update(id, positionUpdateRequest);
+        positionWriteService.update(id, positionUpdateRequest);
         return HotelResponse.success();
     }
 
     @DeleteMapping("/position/{id}")
     public HotelResponse<Void> delete(@PathVariable(value = "id") @Positive Long id) {
-        positionCreateService.delete(id);
+        positionWriteService.delete(id);
         return HotelResponse.success();
     }
 

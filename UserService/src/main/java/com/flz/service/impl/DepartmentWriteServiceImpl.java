@@ -1,21 +1,23 @@
 package com.flz.service.impl;
 
+import com.flz.exception.DepartmentAlreadyDeletedException;
 import com.flz.exception.DepartmentAlreadyExistsException;
 import com.flz.exception.DepartmentNotFoundException;
 import com.flz.model.Department;
-import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.mapper.DepartmentCreateRequestToDomainMapper;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.port.DepartmentReadPort;
 import com.flz.port.DepartmentSavePort;
-import com.flz.service.DepartmentCreateService;
+import com.flz.service.DepartmentWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
-class DepartmentCreateServiceImpl implements DepartmentCreateService {
+class DepartmentWriteServiceImpl implements DepartmentWriteService {
 
     private final DepartmentSavePort departmentSavePort;
     private final DepartmentReadPort departmentReadPort;
@@ -43,14 +45,25 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
 
+        String name = departmentUpdateRequest.getName();
+
+        if (!(department.getName().equals(name))) {
+            checkIfDepartmentNameExists(departmentUpdateRequest);
+        }
+
+        department.setName(departmentUpdateRequest.getName());
+        department.setUpdatedAt(LocalDateTime.now());
+        department.setUpdatedUser("SYSTEM");
+        departmentSavePort.save(department);
+    }
+
+    void checkIfDepartmentNameExists(DepartmentUpdateRequest departmentUpdateRequest) {
+
         boolean existsByName = departmentReadPort
                 .existsByName(departmentUpdateRequest.getName());
         if (existsByName) {
             throw new DepartmentAlreadyExistsException(departmentUpdateRequest.getName());
         }
-
-        department.setName(departmentUpdateRequest.getName());
-        departmentSavePort.save(department);
     }
 
 
@@ -60,7 +73,11 @@ class DepartmentCreateServiceImpl implements DepartmentCreateService {
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
 
-        department.setStatus(DepartmentStatus.DELETED);
+        if (department.isDeleted()) {
+            throw new DepartmentAlreadyDeletedException(department.getId());
+        }
+
+        department.delete();
         departmentSavePort.save(department);
     }
 
