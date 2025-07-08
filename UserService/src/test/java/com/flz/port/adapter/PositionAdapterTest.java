@@ -228,6 +228,64 @@ class PositionAdapterTest extends BaseTest {
 
     }
 
+    /**
+     * {@link PositionAdapter#save(Position)}
+     */
+    @Test
+    public void givenPosition_whenCalledSave_thenSavePositionEntity() {
+
+        //Given
+        Position mockPosition = getPosition();
+        PositionEntity mockPositionEntity = positionToEntityMapper.map(mockPosition);
+
+        //When
+        Mockito.when(positionRepository.save(Mockito.any(PositionEntity.class)))
+                .thenReturn(mockPositionEntity);
+
+        //Then
+        adapter.save(mockPosition);
+
+        //Verify
+        Mockito.verify(positionRepository, Mockito.times(1))
+                .save(Mockito.any());
+    }
+
+
+    @Test
+    public void givenPosition_whenRepositoryThrowsException_thenReturnException() {
+
+        //Given
+        Position mockPosition = getPosition();
+        PositionEntity mockPositionEntity = PositionToEntityMapper.INSTANCE.map(mockPosition);
+
+        //When
+        Mockito.when(positionRepository.save(Mockito.any(PositionEntity.class)))
+                .thenThrow(new RuntimeException("Database error"));
+
+        //Then
+        Assertions.assertThrows(RuntimeException.class, () -> adapter.save(mockPosition));
+
+        //Verify
+        Mockito.verify(positionRepository, Mockito.times(1))
+                .save(Mockito.any());
+    }
+
+    private static Position getPosition() {
+        return Position.builder()
+                .name("Test")
+                .department(Department.builder()
+                        .id(1L)
+                        .name("TestDepartment")
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdUser("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdUser("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
     private static PositionEntity getPositionEntity(Long mockId) {
         return PositionEntity.builder()
                 .id(mockId)
@@ -287,52 +345,6 @@ class PositionAdapterTest extends BaseTest {
                                 .build())
                         .status(PositionStatus.ACTIVE)
                         .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .build());
-    }
-
-    private static List<Position> getPositions() {
-        return List.of(
-                Position.builder()
-                        .id(11L)
-                        .name("Test1")
-                        .department(Department.builder()
-                                .id(1L)
-                                .name("Test1Department")
-                                .status(DepartmentStatus.ACTIVE)
-                                .createdAt(LocalDateTime.now())
-                                .createdUser("TestSystem")
-                                .build())
-                        .status(PositionStatus.ACTIVE)
-                        .createdUser("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .build(),
-                Position.builder()
-                        .id(12L)
-                        .name("Test2")
-                        .department(Department.builder()
-                                .id(1L)
-                                .name("Test2Department")
-                                .status(DepartmentStatus.ACTIVE)
-                                .createdAt(LocalDateTime.now())
-                                .createdUser("TestSystem")
-                                .build())
-                        .status(PositionStatus.ACTIVE)
-                        .createdUser("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .build(),
-                Position.builder()
-                        .id(13L)
-                        .name("Test3")
-                        .department(Department.builder()
-                                .id(2L)
-                                .name("Test3Department")
-                                .status(DepartmentStatus.ACTIVE)
-                                .createdAt(LocalDateTime.now())
-                                .createdUser("TestSystem")
-                                .build())
-                        .status(PositionStatus.ACTIVE)
-                        .createdUser("SYSTEM")
                         .createdAt(LocalDateTime.now())
                         .build());
     }
