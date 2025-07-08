@@ -3,7 +3,7 @@ package com.flz.service;
 import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
 
-public interface PositionCreateService {
+public interface PositionWriteService {
 
     void create(PositionCreateRequest positionCreateRequest);
 
