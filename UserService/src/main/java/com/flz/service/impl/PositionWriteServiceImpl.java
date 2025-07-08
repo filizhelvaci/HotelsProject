@@ -38,9 +38,9 @@ class PositionWriteServiceImpl implements PositionWriteService {
 
         Position position = positionCreateRequestToPositionDomainMapper.map(createRequest);
 
-        Long typeId = createRequest.getDepartmentId();
-        Department department = departmentReadPort.findById(typeId)
-                .orElseThrow(() -> new DepartmentNotFoundException(typeId));
+        Long departmentId = createRequest.getDepartmentId();
+        Department department = departmentReadPort.findById(departmentId)
+                .orElseThrow(() -> new DepartmentNotFoundException(departmentId));
         position.setDepartment(department);
         position.setStatus(PositionStatus.ACTIVE);
         positionSavePort.save(position);
