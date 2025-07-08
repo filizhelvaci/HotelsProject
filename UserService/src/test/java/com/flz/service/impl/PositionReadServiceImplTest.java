@@ -74,6 +74,58 @@ class PositionReadServiceImplTest extends BaseTest {
 
     }
 
+    /**
+     * {@link PositionReadServiceImpl#findAll(Integer, Integer)}
+     */
+    @Test
+    public void givenValidPagePageSize_whenCalledAllPosition_thenReturnListAllOfPositions() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        List<Position> mockPositions = getPositions();
+
+        Mockito.when(positionReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(mockPositions);
+
+        //Then
+        List<Position> result = positionReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+        Assertions.assertEquals(mockPositions.size(), result.size());
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
+
+
+    @Test
+    public void givenValidPagePageSize_whenCalledAllPositionIfAllPositionEntitiesIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        Mockito.when(positionReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<Position> result = positionReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.size());
+        Assertions.assertTrue(result.isEmpty());
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findAll(mockPage, mockPageSize);
+
+    }
+
     private static List<Position> getPositions() {
         return List.of(
                 Position.builder()
