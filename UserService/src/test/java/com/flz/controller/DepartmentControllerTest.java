@@ -359,7 +359,7 @@ class DepartmentControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(mockRequest));
 
-        // Then
+        //Then
         mockMvc.perform(request)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -369,7 +369,7 @@ class DepartmentControllerTest extends BaseTest {
                         .value(false));
 
 
-        // Verify
+        //Verify
         Mockito.verify(departmentWriteService, Mockito.never())
                 .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
     }
