@@ -39,11 +39,11 @@ class DepartmentAdapterTest extends BaseTest {
     @Test
     void givenValidPageAndPageSize_whenDepartmentFound_thenReturnListDepartments() {
 
-        // Given
+        //Given
         Integer mockPage = 1;
         Integer mockPageSize = 10;
 
-        // When
+        //When
         List<DepartmentEntity> mockDepartmentEntities = getDepartmentEntities();
 
         Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
@@ -52,12 +52,12 @@ class DepartmentAdapterTest extends BaseTest {
         Mockito.when(departmentRepository.findAll(mockPageable))
                 .thenReturn(mockDepartmentEntitiesPage);
 
-        // Then
+        //Then
         List<Department> departments = adapter.findAll(mockPage, mockPageSize);
 
         Assertions.assertEquals(mockDepartmentEntities.size(), departments.size());
 
-        // Verify
+        //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findAll(mockPageable);
     }
@@ -66,23 +66,23 @@ class DepartmentAdapterTest extends BaseTest {
     @Test
     void givenValidPageAndPageSize_whenDepartmentNotFound_thenReturnEmptyDepartment() {
 
-        // Given
+        //Given
         Integer mockPage = 1;
         Integer mockPageSize = 10;
 
-        // When
+        //When
         Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
         Mockito.when(departmentRepository.findAll(mockPageable))
                 .thenReturn(Page.empty());
 
-        // Then
+        //Then
         List<Department> departments = adapter.findAll(mockPage, mockPageSize);
 
         Assertions.assertEquals(0, departments.size());
         Assertions.assertEquals(0, departmentRepository.count());
         Assertions.assertTrue(departments.isEmpty());
 
-        // Verify
+        //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findAll(mockPageable);
     }
@@ -93,19 +93,19 @@ class DepartmentAdapterTest extends BaseTest {
     @Test
     void whenCalledAllSummaryDepartment_thenReturnListOfDepartmentSummariesResponse() {
 
-        // When
+        //When
         List<DepartmentEntity> mockDepartmentEntities = getDepartmentEntities();
 
         Mockito.when(departmentRepository.findAll())
                 .thenReturn(mockDepartmentEntities);
 
-        // Then
+        //Then
         List<Department> mockDepartments = departmentEntityToDomainMapper
                 .map(mockDepartmentEntities);
         List<Department> result = adapter.findSummaryAll();
         Assertions.assertEquals(mockDepartments.size(), result.size());
 
-        // Verify
+        //Verify
         Mockito.verify(departmentRepository, Mockito.times(1)).findAll();
     }
 
@@ -113,17 +113,17 @@ class DepartmentAdapterTest extends BaseTest {
     @Test
     void whenCalledAllSummaryDepartmentsIfDepartmentListIsEmpty_thenReturnEmptyList() {
 
-        // When
+        //When
         Mockito.when(departmentRepository.findAll())
                 .thenReturn(Collections.emptyList());
 
-        // Then
+        //Then
         List<Department> departments = adapter.findSummaryAll();
 
         Assertions.assertEquals(0, departments.size());
         Assertions.assertTrue(departments.isEmpty());
 
-        // Verify
+        //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findAll();
     }
