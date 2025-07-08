@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.model.Position;
 import com.flz.model.enums.PositionStatus;
 import com.flz.model.request.PositionCreateRequest;
+import com.flz.model.request.PositionUpdateRequest;
 import com.flz.model.response.PositionSummaryResponse;
 import com.flz.service.PositionReadService;
 import com.flz.service.PositionWriteService;
@@ -336,7 +337,100 @@ class PositionControllerTest {
         Mockito.verifyNoInteractions(positionWriteService);
     }
 
+    /**
+     * {@link PositionController#update(Long, PositionUpdateRequest)}
+     */
+    @Test
+    public void givenValidIdAndPositionUpdateRequest_whenFindPositionById_thenUpdatePositionSuccessfully() throws Exception {
 
+        //Given
+        Long mockId = 10L;
+
+        PositionUpdateRequest mockPositionUpdateRequest = PositionUpdateRequest.builder()
+                .name("TestName")
+                .departmentId(3L)
+                .build();
+
+        //When
+        Mockito.doNothing()
+                .when(positionWriteService)
+                .update(mockId, mockPositionUpdateRequest);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/position/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockPositionUpdateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(positionWriteService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(PositionUpdateRequest.class));
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0L,
+            -1L,
+            -100L
+    })
+    void givenInvalidId_whenUpdatePosition_thenReturnBadRequest(Long invalidId) throws Exception {
+
+        //Given
+        PositionUpdateRequest mockRequest = PositionUpdateRequest.builder()
+                .name("ValidTestName")
+                .departmentId(5L)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/position/{id}", invalidId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+
+        //Verify
+        Mockito.verify(positionWriteService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(PositionUpdateRequest.class));
+    }
+
+    @Test
+    void givenNullId_whenUpdatePosition_thenReturnInternalServerError() throws Exception {
+
+        //Given
+        PositionUpdateRequest mockRequest = PositionUpdateRequest.builder()
+                .name("ValidTestName")
+                .departmentId(3L)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/position/null")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+    }
 
     private static List<Position> getPositions() {
         return List.of(
