@@ -1,11 +1,16 @@
 package com.flz.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.model.Position;
 import com.flz.model.enums.PositionStatus;
+import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.response.PositionSummaryResponse;
 import com.flz.service.PositionReadService;
 import com.flz.service.PositionWriteService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -230,6 +235,105 @@ class PositionControllerTest {
         //Verify
         Mockito.verify(positionReadService, Mockito.times(1))
                 .findSummaryAll();
+    }
+
+    /**
+     * {@link PositionController#create(PositionCreateRequest)}
+     */
+    @Test
+    void givenValidPositionCreateRequest_whenPositionCreated_thenReturnSuccess() throws Exception {
+
+        //Given
+        PositionCreateRequest mockCreateRequest = PositionCreateRequest.builder()
+                .name("TestName")
+                .departmentId(2L)
+                .build();
+
+        //When
+        Mockito.doNothing()
+                .when(positionWriteService)
+                .create(Mockito.any(PositionCreateRequest.class));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/position")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockCreateRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .doesNotExist());
+
+        //Verify
+        Mockito.verify(positionWriteService, Mockito.times(1))
+                .create(Mockito.any(PositionCreateRequest.class));
+
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {
+            "",
+            " ",
+            "a",
+            "One morning, when Gregor Samsa woke from troubled dre"
+    })
+    void givenInvalidCreateRequest_whenCreatePosition_thenReturnBadRequest(String invalidName) throws Exception {
+
+        //Given
+        PositionCreateRequest invalidRequest = PositionCreateRequest.builder()
+                .name(invalidName)
+                .departmentId(2L)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/position")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verify(positionWriteService, Mockito.never())
+                .create(Mockito.any(PositionCreateRequest.class));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = {
+            -1L,
+            501L,
+            1000L
+    })
+    void givenInvalidDepartmentId_whenCreatePosition_thenReturnBadRequest(Long invalidDepartmentId) throws Exception {
+
+        //Given
+        PositionCreateRequest invalidRequest = PositionCreateRequest.builder()
+                .name("ValidName")
+                .departmentId(invalidDepartmentId)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/position")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verifyNoInteractions(positionWriteService);
     }
 
 
