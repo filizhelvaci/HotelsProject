@@ -2,6 +2,7 @@ package com.flz.service.impl;
 
 import com.flz.BaseTest;
 import com.flz.exception.DepartmentNotFoundException;
+import com.flz.exception.PositionAlreadyDeletedException;
 import com.flz.exception.PositionAlreadyExistsException;
 import com.flz.exception.PositionNotFoundException;
 import com.flz.model.Department;
@@ -287,6 +288,126 @@ class PositionWriteServiceImplTest extends BaseTest {
         Mockito.verify(positionSavePort, Mockito.never())
                 .save(Mockito.any());
     }
+
+    /**
+     * {@link PositionWriteServiceImpl#delete(Long)}
+     */
+    @Test
+    public void givenValidId_whenPositionEntityFoundById_thenMakeStatusOfPositionEntityDeleted() {
+
+        //Given
+        Long mockPositionId = 1L;
+        Long mockDepartmentId = 2L;
+
+        //When
+        Department mockDepartment = Department.builder()
+                .id(mockDepartmentId)
+                .name("TestDepartment")
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdBy("SYSTEM")
+                .build();
+
+        Position mockPosition = Position.builder()
+                .id(mockPositionId)
+                .name("TestPosition")
+                .status(PositionStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdBy("ADMIN")
+                .department(mockDepartment)
+                .build();
+
+        Position mockDeletedPosition = Position.builder()
+                .id(mockPosition.getId())
+                .name(mockPosition.getName())
+                .status(PositionStatus.DELETED)
+                .createdAt(mockPosition.getCreatedAt())
+                .createdBy(mockPosition.getCreatedBy())
+                .build();
+
+        Mockito.when(positionReadPort.findById(mockPositionId))
+                .thenReturn(Optional.of(mockPosition));
+
+        Mockito.doNothing()
+                .when(positionSavePort)
+                .save(mockDeletedPosition);
+
+        //Then
+        positionWriteServiceImpl.delete(mockPositionId);
+
+        Assertions.assertEquals(PositionStatus.DELETED, mockDeletedPosition.getStatus());
+
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findById(mockPositionId);
+        Mockito.verify(positionSavePort, Mockito.times(1))
+                .save(Mockito.any(Position.class));
+    }
+
+
+    @Test
+    public void givenValidId_whenPositionEntityNotFoundById_thenThrowsPositionNotFoundException() {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Mockito.when(positionReadPort.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(PositionNotFoundException.class,
+                () -> positionWriteServiceImpl.delete(mockId));
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(positionSavePort, Mockito.never())
+                .save(Mockito.any());
+    }
+
+    @Test
+    public void givenDeletedPosition_whenDeleteCalled_thenThrowPositionAlreadyDeletedException() {
+
+        //Given
+        Long mockId = 1L;
+        Long mockDepartmentId = 2L;
+
+        Department mockDepartment = Department.builder()
+                .id(mockDepartmentId)
+                .name("TestDepartment")
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdBy("SYSTEM")
+                .build();
+
+        Position mockPosition = Position.builder()
+                .id(mockId)
+                .name("TestPosition")
+                .status(PositionStatus.DELETED)
+                .createdAt(LocalDateTime.now())
+                .createdBy("ADMIN")
+                .department(mockDepartment)
+                .build();
+
+
+        //When
+        Mockito.when(positionReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockPosition));
+
+        //Then
+        Assertions.assertThrows(PositionAlreadyDeletedException.class, () -> {
+            positionWriteServiceImpl.delete(mockId);
+        });
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(positionSavePort, Mockito.never())
+                .save(Mockito.any());
+    }
+
 
     private static List<Position> getPositions() {
         return List.of(
