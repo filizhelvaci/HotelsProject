@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 public abstract class BaseDomainModel {
 
-    protected String createdUser;
+    protected String createdBy;
     protected LocalDateTime createdAt;
-    protected String updatedUser;
+    protected String updatedBy;
     protected LocalDateTime updatedAt;
 
 }

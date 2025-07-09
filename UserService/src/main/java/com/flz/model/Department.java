@@ -21,7 +21,7 @@ public class Department extends BaseDomainModel {
     public void delete() {
         this.setStatus(DepartmentStatus.DELETED);
         this.setUpdatedAt(LocalDateTime.now());
-        this.setUpdatedUser("ADMIN");
+        this.setUpdatedBy("ADMIN");
     }
 
     public boolean isDeleted() {
