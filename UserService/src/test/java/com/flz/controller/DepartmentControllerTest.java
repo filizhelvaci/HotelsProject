@@ -449,21 +449,21 @@ class DepartmentControllerTest extends BaseTest {
                         .name("TEST1")
                         .status(DepartmentStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
-                        .createdUser("testAdmin")
+                        .createdBy("testAdmin")
                         .build(),
                 Department.builder()
                         .id(12L)
                         .name("TEST2")
                         .status(DepartmentStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
-                        .createdUser("testAdmin")
+                        .createdBy("testAdmin")
                         .build(),
                 Department.builder()
                         .id(13L)
                         .name("TEST3")
                         .status(DepartmentStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
-                        .createdUser("testAdmin")
+                        .createdBy("testAdmin")
                         .build());
     }
 }

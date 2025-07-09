@@ -278,10 +278,10 @@ class PositionAdapterTest extends BaseTest {
                         .name("TestDepartment")
                         .status(DepartmentStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
-                        .createdUser("TestSystem")
+                        .createdBy("TestSystem")
                         .build())
                 .status(PositionStatus.ACTIVE)
-                .createdUser("SYSTEM")
+                .createdBy("SYSTEM")
                 .createdAt(LocalDateTime.now())
                 .build();
     }

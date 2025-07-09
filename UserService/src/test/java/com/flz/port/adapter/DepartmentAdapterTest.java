@@ -235,7 +235,7 @@ class DepartmentAdapterTest extends BaseTest {
                 .name("TestName")
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
-                .createdUser("TestAdmin")
+                .createdBy("TestAdmin")
                 .build();
 
         DepartmentEntity mockDepartmentEntity = DepartmentToEntityMapper
@@ -261,7 +261,7 @@ class DepartmentAdapterTest extends BaseTest {
                 .name("TestName")
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
-                .createdUser("TestAdmin")
+                .createdBy("TestAdmin")
                 .build();
 
         DepartmentEntity mockDepartmentEntity = DepartmentToEntityMapper.INSTANCE.map(mockDepartment);

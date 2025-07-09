@@ -136,10 +136,10 @@ class PositionReadServiceImplTest extends BaseTest {
                                 .name("Test1Department")
                                 .status(DepartmentStatus.ACTIVE)
                                 .createdAt(LocalDateTime.now())
-                                .createdUser("TestSystem")
+                                .createdBy("TestSystem")
                                 .build())
                         .status(PositionStatus.ACTIVE)
-                        .createdUser("SYSTEM")
+                        .createdBy("SYSTEM")
                         .createdAt(LocalDateTime.now())
                         .build(),
                 Position.builder()
@@ -150,10 +150,10 @@ class PositionReadServiceImplTest extends BaseTest {
                                 .name("Test2Department")
                                 .status(DepartmentStatus.ACTIVE)
                                 .createdAt(LocalDateTime.now())
-                                .createdUser("TestSystem")
+                                .createdBy("TestSystem")
                                 .build())
                         .status(PositionStatus.ACTIVE)
-                        .createdUser("SYSTEM")
+                        .createdBy("SYSTEM")
                         .createdAt(LocalDateTime.now())
                         .build(),
                 Position.builder()
@@ -164,10 +164,10 @@ class PositionReadServiceImplTest extends BaseTest {
                                 .name("Test3Department")
                                 .status(DepartmentStatus.ACTIVE)
                                 .createdAt(LocalDateTime.now())
-                                .createdUser("TestSystem")
+                                .createdBy("TestSystem")
                                 .build())
                         .status(PositionStatus.ACTIVE)
-                        .createdUser("SYSTEM")
+                        .createdBy("SYSTEM")
                         .createdAt(LocalDateTime.now())
                         .build());
     }
