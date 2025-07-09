@@ -16,6 +16,8 @@ import com.flz.service.PositionWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 class PositionWriteServiceImpl implements PositionWriteService {
@@ -31,10 +33,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
     @Override
     public void create(PositionCreateRequest createRequest) {
 
-        boolean existsByName = positionReadPort.existsByName(createRequest.getName());
-        if (existsByName) {
-            throw new PositionAlreadyExistsException(createRequest.getName());
-        }
+        checkIfPositionNameExists(createRequest.getName());
 
         Position position = positionCreateRequestToPositionDomainMapper.map(createRequest);
 
@@ -54,20 +53,37 @@ class PositionWriteServiceImpl implements PositionWriteService {
         Position position = positionReadPort.findById(id)
                 .orElseThrow(() -> new PositionNotFoundException(id));
 
-        boolean existsByName = positionReadPort
-                .existsByName(positionUpdateRequest.getName());
-        if (existsByName) {
-            throw new PositionAlreadyExistsException(positionUpdateRequest.getName());
+        String requestName = positionUpdateRequest.getName();
+        Long requestDepartmentId = positionUpdateRequest.getDepartmentId();
+
+        Department department = departmentReadPort.findById(requestDepartmentId)
+                .orElseThrow(() -> new DepartmentNotFoundException(requestDepartmentId));
+
+        boolean samePositionName = position.getName()
+                .equals(requestName);
+        boolean sameDepartmentName = position.getDepartment()
+                .getId()
+                .equals(requestDepartmentId);
+
+        if (samePositionName && sameDepartmentName) {
+            throw new PositionAlreadyExistsException(requestName);
         }
 
-        Long typeId = positionUpdateRequest.getDepartmentId();
-        Department department = departmentReadPort.findById(typeId)
-                .orElseThrow(() -> new DepartmentNotFoundException(typeId));
-
-        position.setName(positionUpdateRequest.getName());
+        position.setName(requestName);
         position.setDepartment(department);
         position.setStatus(PositionStatus.ACTIVE);
+        position.setUpdatedAt(LocalDateTime.now());
+        position.setUpdatedBy("SYSTEM");
+
         positionSavePort.save(position);
+    }
+
+    private void checkIfPositionNameExists(String positionUpdateRequest) {
+        boolean existsByName = positionReadPort
+                .existsByName(positionUpdateRequest);
+        if (existsByName) {
+            throw new PositionAlreadyExistsException(positionUpdateRequest);
+        }
     }
 
 
@@ -79,6 +95,5 @@ class PositionWriteServiceImpl implements PositionWriteService {
         position.setStatus(PositionStatus.DELETED);
         positionSavePort.save(position);
     }
-
 
 }
