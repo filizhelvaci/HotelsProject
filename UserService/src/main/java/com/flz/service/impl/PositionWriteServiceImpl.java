@@ -1,6 +1,7 @@
 package com.flz.service.impl;
 
 import com.flz.exception.DepartmentNotFoundException;
+import com.flz.exception.PositionAlreadyDeletedException;
 import com.flz.exception.PositionAlreadyExistsException;
 import com.flz.exception.PositionNotFoundException;
 import com.flz.model.Department;
@@ -59,13 +60,12 @@ class PositionWriteServiceImpl implements PositionWriteService {
         Department department = departmentReadPort.findById(requestDepartmentId)
                 .orElseThrow(() -> new DepartmentNotFoundException(requestDepartmentId));
 
-        boolean samePositionName = position.getName()
-                .equals(requestName);
-        boolean sameDepartmentName = position.getDepartment()
+        boolean isDuplicatePosition = position.getName()
+                .equals(requestName) && position.getDepartment()
                 .getId()
                 .equals(requestDepartmentId);
 
-        if (samePositionName && sameDepartmentName) {
+        if (isDuplicatePosition) {
             throw new PositionAlreadyExistsException(requestName);
         }
 
@@ -90,9 +90,14 @@ class PositionWriteServiceImpl implements PositionWriteService {
     @Override
     public void delete(Long id) {
 
-        Position position = positionReadPort.findById(id).orElseThrow(() -> new PositionNotFoundException(id));
+        Position position = positionReadPort.findById(id)
+                .orElseThrow(() -> new PositionNotFoundException(id));
 
-        position.setStatus(PositionStatus.DELETED);
+        if (position.isDeleted()) {
+            throw new PositionAlreadyDeletedException(position.getId());
+        }
+
+        position.delete();
         positionSavePort.save(position);
     }
 
