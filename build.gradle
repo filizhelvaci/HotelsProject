@@ -52,6 +52,9 @@ subprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
         testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.2'
         implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.2.2'
+        testImplementation 'org.testcontainers:junit-jupiter:1.21.0'
+        testImplementation 'org.testcontainers:postgresql:1.21.0'
+        testImplementation 'org.awaitility:awaitility:4.2.2'
     }
 }
 allprojects {
