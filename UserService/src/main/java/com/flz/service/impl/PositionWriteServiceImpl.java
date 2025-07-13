@@ -1,6 +1,7 @@
 package com.flz.service.impl;
 
 import com.flz.exception.DepartmentNotFoundException;
+import com.flz.exception.PositionAlreadyDeletedException;
 import com.flz.exception.PositionAlreadyExistsException;
 import com.flz.exception.PositionNotFoundException;
 import com.flz.model.Department;
@@ -15,6 +16,8 @@ import com.flz.port.PositionSavePort;
 import com.flz.service.PositionWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -31,16 +34,13 @@ class PositionWriteServiceImpl implements PositionWriteService {
     @Override
     public void create(PositionCreateRequest createRequest) {
 
-        boolean existsByName = positionReadPort.existsByName(createRequest.getName());
-        if (existsByName) {
-            throw new PositionAlreadyExistsException(createRequest.getName());
-        }
+        checkIfPositionNameExists(createRequest.getName());
 
         Position position = positionCreateRequestToPositionDomainMapper.map(createRequest);
 
-        Long typeId = createRequest.getDepartmentId();
-        Department department = departmentReadPort.findById(typeId)
-                .orElseThrow(() -> new DepartmentNotFoundException(typeId));
+        Long departmentId = createRequest.getDepartmentId();
+        Department department = departmentReadPort.findById(departmentId)
+                .orElseThrow(() -> new DepartmentNotFoundException(departmentId));
         position.setDepartment(department);
         position.setStatus(PositionStatus.ACTIVE);
         positionSavePort.save(position);
@@ -54,31 +54,51 @@ class PositionWriteServiceImpl implements PositionWriteService {
         Position position = positionReadPort.findById(id)
                 .orElseThrow(() -> new PositionNotFoundException(id));
 
-        boolean existsByName = positionReadPort
-                .existsByName(positionUpdateRequest.getName());
-        if (existsByName) {
-            throw new PositionAlreadyExistsException(positionUpdateRequest.getName());
+        String requestName = positionUpdateRequest.getName();
+        Long requestDepartmentId = positionUpdateRequest.getDepartmentId();
+
+        Department department = departmentReadPort.findById(requestDepartmentId)
+                .orElseThrow(() -> new DepartmentNotFoundException(requestDepartmentId));
+
+        boolean isDuplicatePosition = position.getName()
+                .equals(requestName) && position.getDepartment()
+                .getId()
+                .equals(requestDepartmentId);
+
+        if (isDuplicatePosition) {
+            throw new PositionAlreadyExistsException(requestName);
         }
 
-        Long typeId = positionUpdateRequest.getDepartmentId();
-        Department department = departmentReadPort.findById(typeId)
-                .orElseThrow(() -> new DepartmentNotFoundException(typeId));
-
-        position.setName(positionUpdateRequest.getName());
+        position.setName(requestName);
         position.setDepartment(department);
         position.setStatus(PositionStatus.ACTIVE);
+        position.setUpdatedAt(LocalDateTime.now());
+        position.setUpdatedBy("SYSTEM");
+
         positionSavePort.save(position);
+    }
+
+    private void checkIfPositionNameExists(String positionUpdateRequest) {
+        boolean existsByName = positionReadPort
+                .existsByName(positionUpdateRequest);
+        if (existsByName) {
+            throw new PositionAlreadyExistsException(positionUpdateRequest);
+        }
     }
 
 
     @Override
     public void delete(Long id) {
 
-        Position position = positionReadPort.findById(id).orElseThrow(() -> new PositionNotFoundException(id));
+        Position position = positionReadPort.findById(id)
+                .orElseThrow(() -> new PositionNotFoundException(id));
 
-        position.setStatus(PositionStatus.DELETED);
+        if (position.isDeleted()) {
+            throw new PositionAlreadyDeletedException(position.getId());
+        }
+
+        position.delete();
         positionSavePort.save(position);
     }
-
 
 }

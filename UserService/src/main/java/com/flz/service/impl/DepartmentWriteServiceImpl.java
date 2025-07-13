@@ -4,6 +4,7 @@ import com.flz.exception.DepartmentAlreadyDeletedException;
 import com.flz.exception.DepartmentAlreadyExistsException;
 import com.flz.exception.DepartmentNotFoundException;
 import com.flz.model.Department;
+import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.mapper.DepartmentCreateRequestToDomainMapper;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
@@ -34,6 +35,8 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         }
 
         Department department = departmentCreateRequestToDomainMapper.map(createRequest);
+        department.setStatus(DepartmentStatus.ACTIVE);
+
         departmentSavePort.save(department);
 
     }
@@ -53,7 +56,7 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
 
         department.setName(departmentUpdateRequest.getName());
         department.setUpdatedAt(LocalDateTime.now());
-        department.setUpdatedUser("SYSTEM");
+        department.setUpdatedBy("SYSTEM");
         departmentSavePort.save(department);
     }
 

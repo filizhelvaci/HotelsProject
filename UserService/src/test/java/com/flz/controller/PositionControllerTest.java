@@ -491,21 +491,21 @@ class PositionControllerTest {
                         .name("TEST1")
                         .status(PositionStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
-                        .createdUser("testAdmin")
+                        .createdBy("testAdmin")
                         .build(),
                 Position.builder()
                         .id(12L)
                         .name("TEST2")
                         .status(PositionStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
-                        .createdUser("testAdmin")
+                        .createdBy("testAdmin")
                         .build(),
                 Position.builder()
                         .id(13L)
                         .name("TEST3")
                         .status(PositionStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
-                        .createdUser("testAdmin")
+                        .createdBy("testAdmin")
                         .build());
     }
 

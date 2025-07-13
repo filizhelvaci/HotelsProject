@@ -99,7 +99,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .name("Department")
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
-                .createdUser("createdUser")
+                .createdBy("createdUser")
                 .build();
 
         DepartmentUpdateRequest mockDepartmentUpdateRequest = new DepartmentUpdateRequest();
@@ -116,7 +116,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         departmentWriteService.update(mockId, mockDepartmentUpdateRequest);
 
         Assertions.assertEquals("updatedDepartment", mockDepartment.getName());
-        Assertions.assertEquals("SYSTEM", mockDepartment.getUpdatedUser());
+        Assertions.assertEquals("SYSTEM", mockDepartment.getUpdatedBy());
         Assertions.assertNotNull(mockDepartment.getUpdatedAt());
 
         //Verify
@@ -139,15 +139,18 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         mockDepartmentUpdateRequest.setName("updatedDepartment");
 
         //When
-        Mockito.when(departmentReadPort.findById(mockId)).thenReturn(Optional.empty());
+        Mockito.when(departmentReadPort.findById(mockId))
+                .thenReturn(Optional.empty());
 
         //Then
         Assertions.assertThrows(DepartmentNotFoundException.class,
                 () -> departmentWriteService.update(mockId, mockDepartmentUpdateRequest));
 
         //Verify
-        Mockito.verify(departmentReadPort, Mockito.times(1)).findById(mockId);
-        Mockito.verify(departmentSavePort, Mockito.never()).save(Mockito.any());
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any());
     }
 
     @Test
@@ -161,7 +164,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .name("SameName")
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
-                .createdUser("SYSTEM")
+                .createdBy("SYSTEM")
                 .build();
 
         DepartmentUpdateRequest mockRequest = new DepartmentUpdateRequest();
@@ -196,7 +199,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .name("SameName")
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
-                .createdUser("SYSTEM")
+                .createdBy("SYSTEM")
                 .build();
 
         DepartmentUpdateRequest mockRequest = new DepartmentUpdateRequest();
@@ -237,7 +240,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .name("updatedDepartment")
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
-                .createdUser("createdUser")
+                .createdBy("createdUser")
                 .build();
 
         Department mockDeletedDepartment = Department.builder()
@@ -245,7 +248,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .name(mockDepartment.getName())
                 .status(DepartmentStatus.DELETED)
                 .createdAt(mockDepartment.getCreatedAt())
-                .createdUser(mockDepartment.getCreatedUser())
+                .createdBy(mockDepartment.getCreatedBy())
                 .build();
 
         Mockito.when(departmentReadPort.findById(mockId))
@@ -300,7 +303,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .name("DeletedDepartment")
                 .status(DepartmentStatus.DELETED)
                 .createdAt(LocalDateTime.now())
-                .createdUser("SYSTEM")
+                .createdBy("SYSTEM")
                 .build();
 
         //When
