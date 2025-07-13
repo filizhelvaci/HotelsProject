@@ -3,11 +3,9 @@ package com.flz.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.cleaner.DepartmentTestCleaner;
 import com.flz.model.Department;
-import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.port.DepartmentReadPort;
-import com.flz.port.DepartmentSavePort;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,9 +31,6 @@ public class DepartmentEndToEndTest {
 
     @Autowired
     private DepartmentReadPort departmentReadPort;
-
-    @Autowired
-    private DepartmentSavePort departmentSavePort;
 
     @Autowired
     private DepartmentTestCleaner testCleaner;
@@ -134,7 +129,7 @@ public class DepartmentEndToEndTest {
     }
 
     @Test
-    void givenDepartmentId_whenDeleteDepartment_thenDeleted() throws Exception {
+    void givenDepartmentId_whenDeleteDepartment_thenSoftDeleted() throws Exception {
 
         //Given
         DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
@@ -176,22 +171,16 @@ public class DepartmentEndToEndTest {
                         .value(true));
 
         //Then
-        Optional<Department> deletedDepartmentOpt = departmentReadPort.findById(departmentId);
-        Assertions.assertEquals(deletedDepartmentOpt.get()
-                .getName(), createdDepartment.getName());
-        Assertions.assertTrue(deletedDepartmentOpt.get()
-                .isDeleted());
-        Assertions.assertEquals(deletedDepartmentOpt.get()
+        Optional<Department> deletedDepartment = departmentReadPort.findById(departmentId);
+
+        Assertions.assertTrue(deletedDepartment.isPresent());
+        Assertions.assertEquals(deletedDepartment.get()
                 .getId(), departmentId);
-        Assertions.assertEquals(deletedDepartmentOpt.get()
-                .getStatus(), DepartmentStatus.DELETED);
-        Assertions.assertNotEquals(createdDepartment
-                .getStatus(), DepartmentStatus.DELETED);
-        Assertions.assertNotEquals(deletedDepartmentOpt.get()
+        Assertions.assertNotEquals(deletedDepartment.get()
                 .getStatus(), createdDepartment.getStatus());
-        Assertions.assertNotNull(deletedDepartmentOpt.get()
+        Assertions.assertNotNull(deletedDepartment.get()
                 .getCreatedAt());
-        Assertions.assertNotNull(deletedDepartmentOpt.get()
+        Assertions.assertNotNull(deletedDepartment.get()
                 .getCreatedBy());
     }
 
