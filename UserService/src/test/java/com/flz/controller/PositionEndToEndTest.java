@@ -255,4 +255,56 @@ public class PositionEndToEndTest {
                 .getCreatedBy());
     }
 
+    @Test
+    void whenFindAllPositions_thenReturnListAndVerifyContent() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BASE_PATH + "/positions")
+                .param("page", "1")
+                .param("pageSize", "10")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .value("Genel Müdür"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
+                        .value("ACTIVE"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdBy")
+                        .value("Admin"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdAt")
+                        .isNotEmpty());
+
+        //Then
+        List<Position> positions = positionReadPort.findAll(1, 10);
+        Assertions.assertNotNull(positions);
+        Assertions.assertFalse(positions.isEmpty());
+        Assertions.assertNotNull(positions.get(0)
+                .getName());
+        Assertions.assertNotNull(positions.get(0)
+                .getStatus());
+        Assertions.assertNotNull(positions.get(0)
+                .getCreatedAt());
+        Assertions.assertNotNull(positions.get(0)
+                .getCreatedBy());
+        Assertions.assertNotNull(positions.get(0)
+                .getId());
+
+    }
+
 }
