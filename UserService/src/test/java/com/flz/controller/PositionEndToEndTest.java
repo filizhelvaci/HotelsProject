@@ -183,10 +183,12 @@ public class PositionEndToEndTest {
         Assertions.assertEquals(position.get()
                 .getId(), positionId);
         Assertions.assertEquals(position.get()
-                .getName(), updateRequest.getName());
+                        .getName(),
+                updateRequest.getName());
         Assertions.assertEquals(position.get()
-                .getDepartment()
-                .getId(), updateRequest.getDepartmentId());
+                        .getDepartment()
+                        .getId(),
+                updateRequest.getDepartmentId());
     }
 
 }
