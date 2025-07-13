@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class DepartmentTestCleaner {
 
     private final DepartmentRepository departmentRepository;
