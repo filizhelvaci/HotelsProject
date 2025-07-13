@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.cleaner.PositionTestCleaner;
 import com.flz.model.Position;
 import com.flz.model.request.PositionCreateRequest;
+import com.flz.model.request.PositionUpdateRequest;
 import com.flz.port.PositionReadPort;
 import com.flz.port.PositionSavePort;
 import org.junit.jupiter.api.Assertions;
@@ -111,6 +112,81 @@ public class PositionEndToEndTest {
         Assertions.assertEquals(createdPosition.getStatus(),
                 position.get()
                         .getStatus());
+    }
+
+    @Test
+    void givenUpdateRequest_whenUpdatePosition_thenReturnSuccess() throws Exception {
+
+        //Given
+        PositionCreateRequest createRequest = PositionCreateRequest.builder()
+                .name("test - request")
+                .departmentId(2L)
+                .build();
+
+        MockHttpServletRequestBuilder createRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/position")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(createRequest));
+
+        mockMvc.perform(createRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        Thread.sleep(5000);
+
+        List<Position> positions = positionReadPort.findSummaryAll();
+        Position createdPosition = positions.stream()
+                .filter(d -> d.getName()
+                        .equals("test - request"))
+                .findFirst()
+                .orElseThrow();
+
+        Long positionId = createdPosition.getId();
+
+        //When
+        PositionUpdateRequest updateRequest = PositionUpdateRequest.builder()
+                .name("test - updated")
+                .departmentId(1L)
+                .build();
+
+        MockHttpServletRequestBuilder updateRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/position/" + positionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateRequest));
+
+        mockMvc.perform(updateRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Then
+        Optional<Position> position = positionReadPort.findById(positionId);
+        Assertions.assertTrue(position.isPresent());
+        Assertions.assertNotNull(position.get());
+        Assertions.assertNotNull(position.get()
+                .getName());
+        Assertions.assertNotNull(position.get()
+                .getDepartment());
+        Assertions.assertNotNull(position.get()
+                .getId());
+        Assertions.assertNotNull(position.get()
+                .getCreatedBy());
+        Assertions.assertNotNull(position.get()
+                .getCreatedAt());
+        Assertions.assertNotNull(position.get()
+                .getStatus());
+        Assertions.assertEquals(position.get()
+                .getId(), positionId);
+        Assertions.assertEquals(position.get()
+                .getName(), updateRequest.getName());
+        Assertions.assertEquals(position.get()
+                .getDepartment()
+                .getId(), updateRequest.getDepartmentId());
     }
 
 }
