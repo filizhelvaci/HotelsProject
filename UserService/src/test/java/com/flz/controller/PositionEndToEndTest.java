@@ -307,4 +307,38 @@ public class PositionEndToEndTest {
 
     }
 
+    @Test
+    void whenFindSummaryAllPositions_thenReturnListAndVerifyContent() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BASE_PATH + "/positions/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .value("Genel Müdür"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNumber());
+
+        //Then
+        List<Position> positions = positionReadPort.findSummaryAll();
+        Assertions.assertNotNull(positions);
+        Assertions.assertFalse(positions.isEmpty());
+        Assertions.assertNotNull(positions.get(0)
+                .getName());
+        Assertions.assertNotNull(positions.get(0)
+                .getId());
+    }
 }
