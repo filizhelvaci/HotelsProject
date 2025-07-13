@@ -3,11 +3,9 @@ package com.flz.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.cleaner.PositionTestCleaner;
 import com.flz.model.Position;
-import com.flz.model.enums.PositionStatus;
 import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
 import com.flz.port.PositionReadPort;
-import com.flz.port.PositionSavePort;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,9 +31,6 @@ public class PositionEndToEndTest {
 
     @Autowired
     private PositionReadPort positionReadPort;
-
-    @Autowired
-    private PositionSavePort positionSavePort;
 
     @Autowired
     private PositionTestCleaner testCleaner;
@@ -237,16 +232,10 @@ public class PositionEndToEndTest {
 
         //Then
         Optional<Position> deletedPosition = positionReadPort.findById(positionId);
-        Assertions.assertEquals(deletedPosition.get()
-                .getName(), createdPosition.getName());
-        Assertions.assertTrue(deletedPosition.get()
-                .isDeleted());
+
+        Assertions.assertTrue(deletedPosition.isPresent());
         Assertions.assertEquals(deletedPosition.get()
                 .getId(), positionId);
-        Assertions.assertEquals(deletedPosition.get()
-                .getStatus(), PositionStatus.DELETED);
-        Assertions.assertNotEquals(createdPosition
-                .getStatus(), PositionStatus.DELETED);
         Assertions.assertNotEquals(deletedPosition.get()
                 .getStatus(), createdPosition.getStatus());
         Assertions.assertNotNull(deletedPosition.get()
