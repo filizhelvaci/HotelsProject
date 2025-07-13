@@ -3,6 +3,7 @@ package com.flz.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.cleaner.PositionTestCleaner;
 import com.flz.model.Position;
+import com.flz.model.enums.PositionStatus;
 import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
 import com.flz.port.PositionReadPort;
@@ -189,6 +190,69 @@ public class PositionEndToEndTest {
                         .getDepartment()
                         .getId(),
                 updateRequest.getDepartmentId());
+    }
+
+    @Test
+    void givenPositionId_whenDeletePosition_thenSoftDeleted() throws Exception {
+
+        //Given
+        PositionCreateRequest createRequest = PositionCreateRequest.builder()
+                .name("test - request")
+                .departmentId(2L)
+                .build();
+
+        MockHttpServletRequestBuilder createRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/position")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(createRequest));
+
+        mockMvc.perform(createRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        Thread.sleep(5000);
+
+        List<Position> positions = positionReadPort.findSummaryAll();
+        Position createdPosition = positions.stream()
+                .filter(d -> d.getName()
+                        .equals("test - request"))
+                .findFirst()
+                .orElseThrow();
+
+        Long positionId = createdPosition.getId();
+
+        //When
+        MockHttpServletRequestBuilder deleteRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/position/" + positionId);
+
+        mockMvc.perform(deleteRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Then
+        Optional<Position> deletedPosition = positionReadPort.findById(positionId);
+        Assertions.assertEquals(deletedPosition.get()
+                .getName(), createdPosition.getName());
+        Assertions.assertTrue(deletedPosition.get()
+                .isDeleted());
+        Assertions.assertEquals(deletedPosition.get()
+                .getId(), positionId);
+        Assertions.assertEquals(deletedPosition.get()
+                .getStatus(), PositionStatus.DELETED);
+        Assertions.assertNotEquals(createdPosition
+                .getStatus(), PositionStatus.DELETED);
+        Assertions.assertNotEquals(deletedPosition.get()
+                .getStatus(), createdPosition.getStatus());
+        Assertions.assertNotNull(deletedPosition.get()
+                .getCreatedAt());
+        Assertions.assertNotNull(deletedPosition.get()
+                .getCreatedBy());
     }
 
 }
