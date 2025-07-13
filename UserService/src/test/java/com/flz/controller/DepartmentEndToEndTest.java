@@ -50,12 +50,12 @@ public class DepartmentEndToEndTest {
     @Test
     void givenCreateRequest_whenCreateDepartment_thenReturnSuccess() throws Exception {
 
-        //
+        //Given
         DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
                 .name("test - temizlik")
                 .build();
 
-        //Then
+        //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .post(BASE_PATH + "/department")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -68,8 +68,9 @@ public class DepartmentEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
-        boolean isExistsDepartment = departmentReadPort.existsByName(createRequest.getName());
-
+        //Then
+        boolean isExistsDepartment = departmentReadPort
+                .existsByName(createRequest.getName());
 
         //Verify
         Assertions.assertTrue(isExistsDepartment);
