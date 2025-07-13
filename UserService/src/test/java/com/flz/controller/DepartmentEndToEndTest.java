@@ -184,7 +184,8 @@ public class DepartmentEndToEndTest {
                 .getId(), departmentId);
         Assertions.assertEquals(deletedDepartmentOpt.get()
                 .getStatus(), DepartmentStatus.DELETED);
-        Assertions.assertNotEquals(createdDepartment.getStatus(), DepartmentStatus.DELETED);
+        Assertions.assertNotEquals(createdDepartment
+                .getStatus(), DepartmentStatus.DELETED);
         Assertions.assertNotEquals(deletedDepartmentOpt.get()
                 .getStatus(), createdDepartment.getStatus());
         Assertions.assertNotNull(deletedDepartmentOpt.get()
@@ -193,5 +194,93 @@ public class DepartmentEndToEndTest {
                 .getCreatedBy());
     }
 
+    @Test
+    void whenFindAllDepartments_thenReturnListAndVerifyContent() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments")
+                .param("page", "1")
+                .param("pageSize", "10")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .value("Ön Büro"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
+                        .value("ACTIVE"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdBy")
+                        .value("Admin"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdAt")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].deleted")
+                        .value(false));
+
+        //Then
+        List<Department> departments = departmentReadPort.findAll(1, 10);
+        Assertions.assertNotNull(departments);
+        Assertions.assertFalse(departments.isEmpty());
+        Assertions.assertNotNull(departments.get(0)
+                .getName());
+        Assertions.assertNotNull(departments.get(0)
+                .getStatus());
+        Assertions.assertNotNull(departments.get(0)
+                .getCreatedAt());
+        Assertions.assertNotNull(departments.get(0)
+                .getCreatedBy());
+        Assertions.assertNotNull(departments.get(0)
+                .getId());
+
+    }
+
+    @Test
+    void whenFindSummaryAllDepartments_thenReturnListAndVerifyContent() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
+                        .value("Ön Büro"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNumber());
+
+        //Then
+        List<Department> departments = departmentReadPort.findSummaryAll();
+        Assertions.assertNotNull(departments);
+        Assertions.assertFalse(departments.isEmpty());
+        Assertions.assertNotNull(departments.get(0)
+                .getName());
+        Assertions.assertNotNull(departments.get(0)
+                .getId());
+    }
 
 }
