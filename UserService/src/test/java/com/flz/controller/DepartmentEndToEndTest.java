@@ -1,12 +1,15 @@
 package com.flz.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flz.cleaner.DepartmentTestCleaner;
 import com.flz.model.Department;
+import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.port.DepartmentReadPort;
 import com.flz.port.DepartmentSavePort;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,13 +32,18 @@ public class DepartmentEndToEndTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private DepartmentReadPort departmentReadPort;
 
     @Autowired
     private DepartmentSavePort departmentSavePort;
+
+    @Autowired
+    private DepartmentTestCleaner testCleaner;
+
+    @BeforeEach
+    void cleanBeforeTest() {
+        testCleaner.cleanTestDepartments();
+    }
 
     private static final String BASE_PATH = "/api/v1";
 
@@ -43,7 +52,7 @@ public class DepartmentEndToEndTest {
 
         //
         DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
-                .name("Finance")
+                .name("test - temizlik")
                 .build();
 
         //Then
@@ -72,7 +81,7 @@ public class DepartmentEndToEndTest {
 
         //Given
         DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
-                .name("Reklam")
+                .name("test - Reklam")
                 .build();
 
         MockHttpServletRequestBuilder createRequestBuilder = MockMvcRequestBuilders
@@ -92,7 +101,7 @@ public class DepartmentEndToEndTest {
         List<Department> departments = departmentReadPort.findSummaryAll();
         Department createdDepartment = departments.stream()
                 .filter(d -> d.getName()
-                        .equals("Reklam"))
+                        .equals("test - Reklam"))
                 .findFirst()
                 .orElseThrow();
 
@@ -100,7 +109,7 @@ public class DepartmentEndToEndTest {
 
         //When
         DepartmentUpdateRequest updateRequest = DepartmentUpdateRequest.builder()
-                .name("Updated Finance")
+                .name("test - updated")
                 .build();
 
         MockHttpServletRequestBuilder updateRequestBuilder = MockMvcRequestBuilders
@@ -116,11 +125,72 @@ public class DepartmentEndToEndTest {
                         .value(true));
 
         //Then
-        boolean isOldNameStillExists = departmentReadPort.existsByName("Reklam");
-        boolean isUpdatedNameExists = departmentReadPort.existsByName("Updated Finance");
+        boolean isOldNameStillExists = departmentReadPort.existsByName("test - Reklam");
+        boolean isUpdatedNameExists = departmentReadPort.existsByName("test - updated");
 
         Assertions.assertFalse(isOldNameStillExists);
         Assertions.assertTrue(isUpdatedNameExists);
+    }
+
+    @Test
+    void givenDepartmentId_whenDeleteDepartment_thenDeleted() throws Exception {
+
+        //Given
+        DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
+                .name("test - request")
+                .build();
+
+        MockHttpServletRequestBuilder createRequestBuilder = MockMvcRequestBuilders
+                .post(BASE_PATH + "/department")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(createRequest));
+
+        mockMvc.perform(createRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        Thread.sleep(5000);
+
+        List<Department> departments = departmentReadPort.findSummaryAll();
+        Department createdDepartment = departments.stream()
+                .filter(d -> d.getName()
+                        .equals("test - request"))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Created department not found"));
+
+        Long departmentId = createdDepartment.getId();
+
+        //When
+        MockHttpServletRequestBuilder deleteRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/department/" + departmentId);
+
+        mockMvc.perform(deleteRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Then
+        Optional<Department> deletedDepartmentOpt = departmentReadPort.findById(departmentId);
+        Assertions.assertEquals(deletedDepartmentOpt.get()
+                .getName(), createdDepartment.getName());
+        Assertions.assertTrue(deletedDepartmentOpt.get()
+                .isDeleted());
+        Assertions.assertEquals(deletedDepartmentOpt.get()
+                .getId(), departmentId);
+        Assertions.assertEquals(deletedDepartmentOpt.get()
+                .getStatus(), DepartmentStatus.DELETED);
+        Assertions.assertNotEquals(createdDepartment.getStatus(), DepartmentStatus.DELETED);
+        Assertions.assertNotEquals(deletedDepartmentOpt.get()
+                .getStatus(), createdDepartment.getStatus());
+        Assertions.assertNotNull(deletedDepartmentOpt.get()
+                .getCreatedAt());
+        Assertions.assertNotNull(deletedDepartmentOpt.get()
+                .getCreatedBy());
     }
 
 
