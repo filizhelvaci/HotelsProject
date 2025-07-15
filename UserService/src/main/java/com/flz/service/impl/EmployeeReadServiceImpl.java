@@ -1,6 +1,5 @@
 package com.flz.service.impl;
 
-import com.flz.exception.EmployeeExperienceNotFoundException;
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.model.Employee;
 import com.flz.model.mapper.EmployeeToEmployeeSummaryResponseMapper;
@@ -22,19 +21,26 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
     private final EmployeeReadPort employeeReadPort;
     private final EmployeeExperienceReadPort employeeExperienceReadPort;
 
-    private final EmployeeToEmployeeSummaryResponseMapper employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
+    private final EmployeeToEmployeeSummaryResponseMapper
+            employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
 
     @Override
     public EmployeeDetailsResponse findById(Long id) {
 
-        Employee employee = employeeReadPort.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+        Employee employee = employeeReadPort.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        List<EmployeeExperienceResponse> employeeExperiences = employeeExperienceReadPort.findAllByEmployee_Id(id);
+        List<EmployeeExperienceResponse> employeeExperiences = employeeExperienceReadPort
+                .findAllByEmployee_Id(id);
         if (employeeExperiences.isEmpty()) {
-            throw new EmployeeExperienceNotFoundException(id);
+            System.out.println("No employee experiences found, " +
+                    "So please add employee experience for this employee");
         }
 
-        return EmployeeDetailsResponse.builder().employee(employee).experiences(employeeExperiences).build();
+        return EmployeeDetailsResponse.builder()
+                .employee(employee)
+                .experiences(employeeExperiences)
+                .build();
     }
 
 
