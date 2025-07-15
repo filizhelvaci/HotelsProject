@@ -37,28 +37,36 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
     @Override
     public List<Employee> findAll(Integer page, Integer pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        List<EmployeeEntity> employeeEntities = employeeRepository.findAll(pageable).getContent();
-        return employeeEntities.stream().map(employeeEntityToDomainMapper::map).collect(Collectors.toList());
+        List<EmployeeEntity> employeeEntities = employeeRepository
+                .findAll(pageable)
+                .getContent();
+        return employeeEntities.stream()
+                .map(employeeEntityToDomainMapper::map)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<EmployeeSummaryResponse> findSummaryAll() {
+
         return employeeRepository.findEmployeeSummaries();
     }
 
     @Override
     public boolean existsByIdentity(String identity) {
+
         return employeeRepository.existsByIdentityNumber(identity);
     }
 
     @Override
-    public void save(final Employee employee) {
+    public Optional<Employee> save(final Employee employee) {
         final EmployeeEntity employeeEntity = employeeToEntityMapper.map(employee);
-        employeeRepository.save(employeeEntity);
+        return Optional.ofNullable(employeeEntityToDomainMapper
+                .map(employeeRepository.save(employeeEntity)));
     }
 
     @Override
     public void delete(Long id) {
+
         employeeRepository.deleteById(id);
     }
 }
