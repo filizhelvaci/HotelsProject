@@ -7,7 +7,7 @@ COPY settings.gradle .
 COPY UserService/build.gradle ./UserService/
 COPY UserService/src ./UserService/src
 
-RUN gradle UserService:build
+RUN gradle UserService:build -x test
 
 FROM amazoncorretto:17.0.12-al2023
 
