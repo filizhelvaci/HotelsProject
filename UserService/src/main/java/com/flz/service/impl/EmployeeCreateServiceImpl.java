@@ -2,6 +2,7 @@ package com.flz.service.impl;
 
 import com.flz.exception.EmployeeAlreadyExistsException;
 import com.flz.exception.EmployeeNotFoundException;
+import com.flz.exception.PositionNotFoundException;
 import com.flz.model.Employee;
 import com.flz.model.EmployeeExperience;
 import com.flz.model.Position;
@@ -12,6 +13,7 @@ import com.flz.port.EmployeeDeletePort;
 import com.flz.port.EmployeeExperienceSavePort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.EmployeeSavePort;
+import com.flz.port.PositionReadPort;
 import com.flz.service.EmployeeCreateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,9 @@ class EmployeeCreateServiceImpl implements EmployeeCreateService {
     private final EmployeeReadPort employeeReadPort;
     private final EmployeeSavePort employeeSavePort;
     private final EmployeeDeletePort employeeDeletePort;
+    private final PositionReadPort positionReadPort;
     private final EmployeeExperienceSavePort employeeExperienceSavePort;
+    private final EmployeeExperienceCreateServiceImpl employeeExperienceCreateServiceImpl;
 
     private final EmployeeCreateRequestToDomainMapper
             employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
@@ -39,22 +43,27 @@ class EmployeeCreateServiceImpl implements EmployeeCreateService {
 
         Employee employee = employeeCreateRequestToDomainMapper.map(createRequest);
 
-        Employee supervisor = null;
-        if (createRequest.getSupervisorId() != null) {
-            supervisor = Employee.builder().id(createRequest.getSupervisorId()).build();
+        Employee savedEmployee = employeeSavePort.save(employee)
+                .orElseThrow(() -> new RuntimeException("Employee could not be saved"));
+
+        if (createRequest.getPositionId() != null && createRequest.getStartDate() != null) {
+            Position position = positionReadPort.findById(createRequest.getPositionId())
+                    .orElseThrow(() -> new PositionNotFoundException(createRequest.getPositionId()));
+
+            Employee supervisor = employeeReadPort.findById(createRequest.getSupervisorId())
+                    .orElseThrow(() -> new EmployeeNotFoundException(createRequest.getSupervisorId()));
+
+            EmployeeExperience experience = EmployeeExperience.builder()
+                    .salary(createRequest.getSalary())
+                    .startDate(createRequest.getStartDate())
+                    .position(position)
+                    .supervisor(supervisor)
+                    .employee(savedEmployee)
+                    .build();
+            employeeExperienceSavePort.save(experience);
         }
 
-        EmployeeExperience employeeExperience = EmployeeExperience.builder()
-                .salary(createRequest.getSalary())
-                .startDate(createRequest.getStartDate())
-                .position(Position.builder().id(createRequest.getPositionId()).build())
-                .supervisor(supervisor)
-                .build();
-
-        employee.addExperience(employeeExperience);
-        employeeSavePort.save(employee);
     }
-
 
     @Override
     public void update(Long id, EmployeeUpdateRequest employeeUpdateRequest) {
@@ -78,7 +87,8 @@ class EmployeeCreateServiceImpl implements EmployeeCreateService {
     @Override
     public void delete(Long id) {
 
-        employeeReadPort.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+        employeeReadPort.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(id));
         employeeDeletePort.delete(id);
     }
 
