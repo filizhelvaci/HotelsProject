@@ -11,6 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +30,57 @@ class EmployeeAdapterTest extends BaseTest {
     @Mock
     EmployeeRepository employeeRepository;
 
+    /**
+     * {@link EmployeeAdapter#findAll(Integer, Integer)}
+     */
+    @Test
+    void givenValidPageAndPageSize_whenEmployeeFound_thenReturnListEmployee() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        List<EmployeeEntity> mockEmployeeEntities = getEmployeeEntities();
+        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+
+        Page<EmployeeEntity> mockEmployeeEntitiesPage = new PageImpl<>(mockEmployeeEntities);
+        Mockito.when(employeeRepository.findAll(mockPageable))
+                .thenReturn(mockEmployeeEntitiesPage);
+
+        //Then
+        List<Employee> employees = employeeAdapter.findAll(mockPage, mockPageSize);
+
+        Assertions.assertEquals(mockEmployeeEntities.size(), employees.size());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .findAll(mockPageable);
+    }
+
+    @Test
+    void givenValidPageAndPageSize_whenEmployeeNotFound_thenReturnEmptyPositions() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Mockito.when(employeeRepository.findAll(mockPageable))
+                .thenReturn(Page.empty());
+
+        //Then
+        List<Employee> employees = employeeAdapter.findAll(mockPage, mockPageSize);
+
+        Assertions.assertEquals(0, employees.size());
+        Assertions.assertEquals(0, employeeRepository.count());
+        Assertions.assertTrue(employees.isEmpty());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .findAll(mockPageable);
+    }
 
     /**
      * {@link EmployeeAdapter#findSummaryAll()}
