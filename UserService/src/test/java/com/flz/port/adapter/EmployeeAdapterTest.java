@@ -4,6 +4,8 @@ import com.flz.BaseTest;
 import com.flz.model.Employee;
 import com.flz.model.entity.EmployeeEntity;
 import com.flz.model.enums.Gender;
+import com.flz.model.mapper.EmployeeEntityToDomainMapper;
+import com.flz.model.mapper.EmployeeToEntityMapper;
 import com.flz.model.response.EmployeeSummaryResponse;
 import com.flz.repository.EmployeeRepository;
 import org.junit.jupiter.api.Assertions;
@@ -29,6 +31,9 @@ class EmployeeAdapterTest extends BaseTest {
 
     @Mock
     EmployeeRepository employeeRepository;
+
+    private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
+    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
 
     /**
      * {@link EmployeeAdapter#findAll(Integer, Integer)}
@@ -242,10 +247,78 @@ class EmployeeAdapterTest extends BaseTest {
 
     }
 
+    /**
+     * {@link EmployeeAdapter#save(Employee)} )}
+     */
+    @Test
+    public void givenEmployee_whenCalledSave_thenSaveEmployeeEntity() {
+
+        //Given
+        Employee mockEmployee = getEmployee();
+
+        EmployeeEntity mockEmployeeEntity = employeeToEntityMapper.map(mockEmployee);
+
+        //When
+        Mockito.when(employeeRepository.save(Mockito.any(EmployeeEntity.class)))
+                .thenReturn(mockEmployeeEntity);
+
+        //Then
+        Optional<Employee> result = employeeAdapter.save(mockEmployee);
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(mockEmployee.getFirstName(), result.get()
+                .getFirstName());
+        Assertions.assertEquals(mockEmployee.getLastName(), result.get()
+                .getLastName());
+        Assertions.assertEquals(mockEmployee.getGender(), result.get()
+                .getGender());
+        Assertions.assertEquals(mockEmployee.getBirthDate(), result.get()
+                .getBirthDate());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .save(Mockito.any());
+    }
+
+
+    @Test
+    public void givenEmployee_whenRepositoryThrowsException_thenReturnException() {
+
+        //Given
+        Employee mockEmployee = getEmployee();
+        EmployeeEntity mockEmployeeEntity = employeeToEntityMapper.map(getEmployee());
+
+        //When
+        Mockito.when(employeeRepository.save(Mockito.any(EmployeeEntity.class)))
+                .thenThrow(new RuntimeException("Database error"));
+
+        //Then
+        Assertions.assertThrows(RuntimeException.class, () -> employeeAdapter.save(mockEmployee));
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .save(Mockito.any());
+    }
+
 
     private static EmployeeEntity getEmployeeEntity(Long id) {
         return EmployeeEntity.builder()
                 .id(id)
+                .address("test address")
+                .firstName("test first name")
+                .lastName("test last name")
+                .birthDate(LocalDate.parse("2000-01-01"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321456")
+                .build();
+    }
+
+    private static Employee getEmployee() {
+        return Employee.builder()
                 .address("test address")
                 .firstName("test first name")
                 .lastName("test last name")
