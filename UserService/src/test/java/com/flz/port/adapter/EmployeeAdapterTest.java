@@ -197,6 +197,52 @@ class EmployeeAdapterTest extends BaseTest {
 
     }
 
+    /**
+     * {@link EmployeeAdapter#existsByIdentity(String)}
+     */
+    @Test
+    public void givenValidName_whenEmployeeEntityFoundAccordingByIdentity_thenReturnTrue() {
+
+        //Given
+        String mockIdentity = "test";
+
+        //When
+        Mockito.when(employeeRepository.existsByIdentityNumber(Mockito.anyString()))
+                .thenReturn(Boolean.TRUE);
+
+        //Then
+        boolean result = employeeAdapter.existsByIdentity("test");
+
+        Assertions.assertTrue(result);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .existsByIdentityNumber(Mockito.anyString());
+
+    }
+
+    @Test
+    public void givenValidName_whenEmployeeEntityNotFoundAccordingByName_thenReturnFalse() {
+
+        //Given
+        String mockIdentity = "TestIdentity";
+
+        //When
+        Mockito.when(employeeRepository.existsByIdentityNumber(mockIdentity))
+                .thenReturn(Boolean.FALSE);
+
+        //Then
+        boolean result = employeeAdapter.existsByIdentity(mockIdentity);
+
+        Assertions.assertFalse(result);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .existsByIdentityNumber(Mockito.anyString());
+
+    }
+
+
     private static EmployeeEntity getEmployeeEntity(Long id) {
         return EmployeeEntity.builder()
                 .id(id)
