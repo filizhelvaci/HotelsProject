@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-class EmployeeCreateServiceImpl implements EmployeeCreateService {
+class EmployeeWriteServiceImpl implements EmployeeCreateService {
 
     private final EmployeeReadPort employeeReadPort;
     private final EmployeeSavePort employeeSavePort;
