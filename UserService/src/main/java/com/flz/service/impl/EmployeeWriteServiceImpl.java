@@ -71,6 +71,16 @@ class EmployeeWriteServiceImpl implements EmployeeCreateService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
+        String identityNumber = employeeUpdateRequest.getIdentityNumber();
+        String phoneNumber = employeeUpdateRequest.getPhoneNumber();
+
+        if (!(employee.getIdentityNumber()
+                .equals(identityNumber))
+                || !(employee.getPhoneNumber()
+                .equals(phoneNumber))) {
+            checkIfEmployeeExists(employeeUpdateRequest);
+        }
+
         employee.update(employeeUpdateRequest.getFirstName(),
                 employeeUpdateRequest.getLastName(),
                 employeeUpdateRequest.getIdentityNumber(),
@@ -81,6 +91,21 @@ class EmployeeWriteServiceImpl implements EmployeeCreateService {
                 employeeUpdateRequest.getGender(),
                 employeeUpdateRequest.getNationality());
         employeeSavePort.save(employee);
+    }
+
+    void checkIfEmployeeExists(EmployeeUpdateRequest employeeUpdateRequest) {
+
+        boolean existsByIdentity = employeeReadPort
+                .existsByIdentity(employeeUpdateRequest.getIdentityNumber());
+        if (existsByIdentity) {
+            throw new EmployeeAlreadyExistsException(employeeUpdateRequest.getIdentityNumber());
+        }
+
+        boolean existsByPhoneNumber = employeeReadPort
+                .existsByPhoneNumber(employeeUpdateRequest.getPhoneNumber());
+        if (existsByPhoneNumber) {
+            throw new EmployeeAlreadyExistsException(employeeUpdateRequest.getPhoneNumber());
+        }
     }
 
 
