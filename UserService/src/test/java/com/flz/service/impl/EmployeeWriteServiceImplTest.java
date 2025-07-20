@@ -10,6 +10,7 @@ import com.flz.model.Position;
 import com.flz.model.enums.Gender;
 import com.flz.model.mapper.EmployeeCreateRequestToDomainMapper;
 import com.flz.model.request.EmployeeCreateRequest;
+import com.flz.model.request.EmployeeUpdateRequest;
 import com.flz.port.EmployeeExperienceSavePort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.EmployeeSavePort;
@@ -233,6 +234,166 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(Mockito.anyLong());
     }
+
+    /**
+     * {@link EmployeeWriteServiceImpl#update(Long, EmployeeUpdateRequest)}
+     */
+    @Test
+    void givenValidIdAndValidUpdateRequest_whenUpdateEmployee_thenEmployeeIsUpdatedSuccessful() {
+
+        //Given
+        Long mockEmployeeId = 1L;
+
+        EmployeeUpdateRequest request = EmployeeUpdateRequest.builder()
+                .firstName("UpdatedName")
+                .lastName("UpdatedSurname")
+                .identityNumber("99999999999")
+                .email("updated@example.com")
+                .phoneNumber("05559998877")
+                .address("Updated Address")
+                .birthDate(LocalDate.of(1990, 1, 1))
+                .gender(Gender.FEMALE)
+                .nationality("UpdatedCountry")
+                .build();
+
+        Employee mockEmployee = Employee.builder()
+                .id(mockEmployeeId)
+                .firstName("OldName")
+                .lastName("OldSurname")
+                .identityNumber("12345678901")
+                .email("old@example.com")
+                .phoneNumber("05551231212")
+                .address("Old Address")
+                .birthDate(LocalDate.of(1985, 1, 1))
+                .gender(Gender.MALE)
+                .nationality("OldCountry")
+                .build();
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockEmployeeId))
+                .thenReturn(Optional.of(mockEmployee));
+        Mockito.when(employeeReadPort.existsByIdentity("99999999999"))
+                .thenReturn(false);
+        Mockito.when(employeeReadPort.existsByPhoneNumber("05559998877"))
+                .thenReturn(false);
+
+        //Then
+        employeeWriteServiceImpl.update(mockEmployeeId, request);
+
+        Assertions.assertEquals("UpdatedName", mockEmployee.getFirstName());
+        Assertions.assertEquals("UpdatedSurname", mockEmployee.getLastName());
+        Assertions.assertEquals("99999999999", mockEmployee.getIdentityNumber());
+        Assertions.assertEquals("updated@example.com", mockEmployee.getEmail());
+        Assertions.assertEquals("05559998877", mockEmployee.getPhoneNumber());
+        Assertions.assertEquals("Updated Address", mockEmployee.getAddress());
+        Assertions.assertEquals(LocalDate.of(1990, 1, 1), mockEmployee.getBirthDate());
+        Assertions.assertEquals(Gender.FEMALE, mockEmployee.getGender());
+        Assertions.assertEquals("UpdatedCountry", mockEmployee.getNationality());
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .existsByIdentity("99999999999");
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .existsByPhoneNumber("05559998877");
+        Mockito.verify(employeeSavePort, Mockito.times(1))
+                .save(mockEmployee);
+    }
+
+    @Test
+    void givenInvalidEmployeeId_whenUpdateEmployee_thenThrowEmployeeNotFoundException() {
+
+        //Given
+        Long mockEmployeeId = 999L;
+        EmployeeUpdateRequest request = EmployeeUpdateRequest.builder()
+                .identityNumber("12345678901")
+                .phoneNumber("05551231212")
+                .build();
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockEmployeeId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(EmployeeNotFoundException.class,
+                () -> employeeWriteServiceImpl.update(mockEmployeeId, request));
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(mockEmployeeId);
+        Mockito.verify(employeeSavePort, Mockito.never())
+                .save(Mockito.any(Employee.class));
+    }
+
+    @Test
+    void givenSameIdentityNumberExists_whenUpdateEmployee_thenThrowEmployeeAlreadyExistsException() {
+
+        //Given
+        Long mockEmployeeId = 1L;
+
+        EmployeeUpdateRequest request = EmployeeUpdateRequest.builder()
+                .identityNumber("99999999999")
+                .phoneNumber("05551231212")
+                .build();
+
+        Employee existingEmployee = Employee.builder()
+                .id(mockEmployeeId)
+                .identityNumber("12345678901")
+                .phoneNumber("05551231212")
+                .build();
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockEmployeeId))
+                .thenReturn(Optional.of(existingEmployee));
+        Mockito.when(employeeReadPort.existsByIdentity("99999999999"))
+                .thenReturn(true);
+
+        //Then
+        Assertions.assertThrows(EmployeeAlreadyExistsException.class,
+                () -> employeeWriteServiceImpl.update(mockEmployeeId, request));
+
+        //verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .existsByIdentity(Mockito.anyString());
+        Mockito.verify(employeeSavePort, Mockito.never())
+                .save(Mockito.any(Employee.class));
+    }
+
+    @Test
+    void givenSamePhoneNumberExists_whenUpdateEmployee_thenThrowEmployeeAlreadyExistsException() {
+
+        //Given
+        Long mockEmployeeId = 1L;
+
+        EmployeeUpdateRequest request = EmployeeUpdateRequest.builder()
+                .identityNumber("12345678901")
+                .phoneNumber("05559998877")
+                .build();
+
+        Employee existingEmployee = Employee.builder()
+                .id(mockEmployeeId)
+                .identityNumber("12345678901")
+                .phoneNumber("05551231212")
+                .build();
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockEmployeeId))
+                .thenReturn(Optional.of(existingEmployee));
+        Mockito.when(employeeReadPort.existsByPhoneNumber("05559998877"))
+                .thenReturn(true);
+
+        //Then
+        Assertions.assertThrows(EmployeeAlreadyExistsException.class,
+                () -> employeeWriteServiceImpl.update(mockEmployeeId, request));
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .existsByPhoneNumber("05559998877");
+        Mockito.verify(employeeSavePort, Mockito.never())
+                .save(Mockito.any(Employee.class));
+    }
+
 
     private static EmployeeCreateRequest getEmployeeCreateRequest() {
         return EmployeeCreateRequest.builder()
