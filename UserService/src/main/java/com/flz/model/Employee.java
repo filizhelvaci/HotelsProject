@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
@@ -25,8 +24,6 @@ public class Employee extends BaseDomainModel {
     private LocalDate birthDate;
     private Gender gender;
     private String nationality;
-
-    private List<EmployeeExperience> experiences;
 
     public void update(String firstName, String lastName, String identityNumber, String email, String phoneNumber, String address, LocalDate birthDate, Gender gender, String nationality) {
         this.firstName = firstName;
