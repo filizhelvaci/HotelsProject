@@ -13,6 +13,8 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 
     boolean existsByIdentityNumber(String identityNumber);
 
+    boolean existsByPhoneNumber(String phoneNumber);
+
     @Query("SELECT new com.flz.model.response.EmployeeSummaryResponse(e.id, e.firstName, e.lastName) FROM EmployeeEntity e")
     List<EmployeeSummaryResponse> findEmployeeSummaries();
 

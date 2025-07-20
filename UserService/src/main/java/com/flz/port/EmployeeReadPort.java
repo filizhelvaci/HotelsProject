@@ -15,4 +15,6 @@ public interface EmployeeReadPort {
     List<EmployeeSummaryResponse> findSummaryAll();
 
     boolean existsByIdentity(String identity);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }

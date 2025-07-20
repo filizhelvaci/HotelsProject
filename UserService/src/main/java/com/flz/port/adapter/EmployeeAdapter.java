@@ -58,6 +58,12 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
     }
 
     @Override
+    public boolean existsByPhoneNumber(String phoneNumber) {
+
+        return employeeRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    @Override
     public Optional<Employee> save(final Employee employee) {
         final EmployeeEntity employeeEntity = employeeToEntityMapper.map(employee);
         return Optional.ofNullable(employeeEntityToDomainMapper
