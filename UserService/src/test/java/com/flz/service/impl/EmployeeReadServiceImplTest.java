@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -175,5 +176,100 @@ class EmployeeReadServiceImplTest extends BaseTest {
                 .findSummaryAll();
 
     }
+
+    /**
+     * {@link EmployeeReadServiceImpl#findAll(Integer, Integer)}
+     */
+    @Test
+    public void givenValidPagePageSize_whenCalledAllEmployee_thenReturnListAllOfEmployees() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        List<Employee> mockEmployees = getEmployees();
+
+        Mockito.when(employeeReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(mockEmployees);
+
+        //Then
+        List<Employee> result = employeeReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+        Assertions.assertEquals(mockEmployees.size(), result.size());
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
+
+    @Test
+    public void givenValidPagePageSize_whenCalledAllEmployeeIfAllEmployeeIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        Mockito.when(employeeReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<Employee> result = employeeReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.size());
+        Assertions.assertTrue(result.isEmpty());
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findAll(mockPage, mockPageSize);
+
+    }
+
+    private static List<Employee> getEmployees() {
+        return List.of(
+                Employee.builder()
+                        .id(1L)
+                        .firstName("test first name 1")
+                        .lastName("test last name 1")
+                        .address("test address 1")
+                        .birthDate(LocalDate.parse("2000-01-01"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test1@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321456")
+                        .build(),
+                Employee.builder()
+                        .id(2L)
+                        .firstName("test first name 2")
+                        .lastName("test last name 2 ")
+                        .address("test address 2")
+                        .birthDate(LocalDate.parse("2000-02-02"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test2@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321465")
+                        .build(),
+                Employee.builder()
+                        .id(3L)
+                        .firstName("test first name 3")
+                        .lastName("test last name 3")
+                        .address("test address 3")
+                        .birthDate(LocalDate.parse("2000-03-03"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test3@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321499")
+                        .build());
+    }
+
 
 }
