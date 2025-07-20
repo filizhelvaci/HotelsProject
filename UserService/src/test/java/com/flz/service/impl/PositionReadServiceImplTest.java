@@ -28,7 +28,7 @@ class PositionReadServiceImplTest extends BaseTest {
     PositionReadServiceImpl positionReadServiceImpl;
 
     /**
-     * {@link DepartmentReadServiceImpl#findSummaryAll()}
+     * {@link PositionReadServiceImpl#findSummaryAll()}
      */
     @Test
     public void whenCalledAllSummaryPosition_thenReturnListOfPositionsSummaryResponse() {
