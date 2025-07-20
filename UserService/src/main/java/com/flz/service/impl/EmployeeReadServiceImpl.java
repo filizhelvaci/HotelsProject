@@ -12,7 +12,9 @@ import com.flz.service.EmployeeReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +32,14 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        List<EmployeeExperienceResponse> employeeExperiences = employeeExperienceReadPort
-                .findAllByEmployee_Id(id);
+        List<EmployeeExperienceResponse> employeeExperiences = Optional.ofNullable(
+                        employeeExperienceReadPort.findAllByEmployee_Id(id)
+                )
+                .orElse(Collections.emptyList());
+
         if (employeeExperiences.isEmpty()) {
             System.out.println("No employee experiences found, " +
-                    "So please add employee experience for this employee");
+                    "so please add employee experience for this employee.");
         }
 
         return EmployeeDetailsResponse.builder()
