@@ -14,13 +14,13 @@ import com.flz.port.EmployeeExperienceSavePort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.EmployeeSavePort;
 import com.flz.port.PositionReadPort;
-import com.flz.service.EmployeeCreateService;
+import com.flz.service.EmployeeWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-class EmployeeWriteServiceImpl implements EmployeeCreateService {
+class EmployeeWriteServiceImpl implements EmployeeWriteService {
 
     private final EmployeeReadPort employeeReadPort;
     private final EmployeeSavePort employeeSavePort;

@@ -7,8 +7,8 @@ import com.flz.model.request.PageRequest;
 import com.flz.model.response.EmployeeDetailsResponse;
 import com.flz.model.response.EmployeeSummaryResponse;
 import com.flz.model.response.HotelResponse;
-import com.flz.service.EmployeeCreateService;
 import com.flz.service.EmployeeReadService;
+import com.flz.service.EmployeeWriteService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ import java.util.List;
 class EmployeeController {
 
     private final EmployeeReadService employeeReadService;
-    private final EmployeeCreateService employeeCreateService;
+    private final EmployeeWriteService employeeWriteService;
 
     @GetMapping("/employee/{id}")
     public HotelResponse<EmployeeDetailsResponse> findById(@PathVariable(value = "id") @Positive Long id) {
@@ -53,19 +53,19 @@ class EmployeeController {
 
     @PostMapping("/employee")
     public HotelResponse<Void> create(@RequestBody @Valid EmployeeCreateRequest createRequest) {
-        employeeCreateService.create(createRequest);
+        employeeWriteService.create(createRequest);
         return HotelResponse.success();
     }
 
     @PutMapping("/employee/{id}")
     public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid EmployeeUpdateRequest employeeUpdateRequest) {
-        employeeCreateService.update(id, employeeUpdateRequest);
+        employeeWriteService.update(id, employeeUpdateRequest);
         return HotelResponse.success();
     }
 
     @DeleteMapping("/employee/{id}")
     public HotelResponse<Void> delete(@PathVariable(value = "id") @Positive Long id) {
-        employeeCreateService.delete(id);
+        employeeWriteService.delete(id);
         return HotelResponse.success();
     }
 
