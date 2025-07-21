@@ -1,6 +1,7 @@
 package com.flz.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flz.BaseTest;
 import com.flz.model.Position;
 import com.flz.model.enums.PositionStatus;
 import com.flz.model.request.PositionCreateRequest;
@@ -28,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 @WebMvcTest(PositionController.class)
-class PositionControllerTest {
+class PositionControllerTest extends BaseTest {
 
     @MockBean
     PositionWriteService positionWriteService;
