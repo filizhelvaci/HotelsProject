@@ -2,6 +2,7 @@ package com.flz.controller;
 
 import com.flz.model.Employee;
 import com.flz.model.enums.Gender;
+import com.flz.model.response.EmployeeSummaryResponse;
 import com.flz.service.EmployeeReadService;
 import com.flz.service.EmployeeWriteService;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @WebMvcTest(EmployeeController.class)
@@ -160,6 +162,90 @@ class EmployeeControllerTest {
         // Verify
         Mockito.verify(employeeReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
+
+    /**
+     * {@link EmployeeController#findSummaryAll()}
+     */
+    @Test
+    public void whenCalledAllSummaryPosition_thenReturnPositionsSummaryResponse() throws Exception {
+
+        //Given
+        List<EmployeeSummaryResponse> mockEmployeeSummaryResponse = List.of(
+                EmployeeSummaryResponse.builder()
+                        .id(11L)
+                        .firstName("Joe")
+                        .lastName("Doe")
+                        .build(),
+                EmployeeSummaryResponse.builder()
+                        .id(12L)
+                        .firstName("John")
+                        .lastName("Smith")
+                        .build(),
+                EmployeeSummaryResponse.builder()
+                        .id(13L)
+                        .firstName("Jane")
+                        .lastName("Jones")
+                        .build()
+        );
+
+        //When
+        Mockito.when(employeeReadService.findSummaryAll())
+                .thenReturn(mockEmployeeSummaryResponse);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employees/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].firstName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[*].lastName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.times(1))
+                .findSummaryAll();
+    }
+
+    @Test
+    public void whenNotFoundEmployeesSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //When
+        List<EmployeeSummaryResponse> emptyList = Collections.emptyList();
+
+        Mockito.when(employeeReadService.findSummaryAll())
+                .thenReturn(emptyList);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employees/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isEmpty());
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.times(1))
+                .findSummaryAll();
     }
 
     private static List<Employee> getEmployees() {
