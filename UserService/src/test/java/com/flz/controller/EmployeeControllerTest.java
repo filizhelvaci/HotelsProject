@@ -1,6 +1,7 @@
 package com.flz.controller;
 
 import com.flz.BaseTest;
+import com.flz.exception.EmployeeNotFoundException;
 import com.flz.model.Employee;
 import com.flz.model.enums.Gender;
 import com.flz.model.request.EmployeeCreateRequest;
@@ -117,6 +118,60 @@ class EmployeeControllerTest extends BaseTest {
                 .findById(Mockito.anyLong());
     }
 
+    @Test
+    public void givenNonEmployeeId_whenCalledFindByIdEmployee_thenReturnNotFoundStatusAndErrorMessage() throws Exception {
+
+        //Given
+        Long mockId = 999L;
+
+        //When
+        Mockito.when(employeeReadService.findById(mockId))
+                .thenThrow(new EmployeeNotFoundException(mockId));
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employee/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .doesNotExist());
+
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.times(1))
+                .findById(Mockito.anyLong());
+    }
+
+    @Test
+    public void givenInvalidId_whenCalledFindByIdEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        String invalidId = "abc";
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employee/{id}", invalidId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .doesNotExist());
+
+        // Verify
+        Mockito.verify(employeeReadService, Mockito.never())
+                .findById(Mockito.anyLong());
+    }
 
     /**
      * {@link EmployeeController#findAll(com.flz.model.request.PageRequest)}
