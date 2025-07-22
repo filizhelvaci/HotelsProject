@@ -5,6 +5,7 @@ import com.flz.exception.EmployeeNotFoundException;
 import com.flz.model.Employee;
 import com.flz.model.enums.Gender;
 import com.flz.model.request.EmployeeCreateRequest;
+import com.flz.model.request.EmployeeUpdateRequest;
 import com.flz.model.response.EmployeeDetailsResponse;
 import com.flz.model.response.EmployeeExperienceResponse;
 import com.flz.model.response.EmployeeSummaryResponse;
@@ -1154,6 +1155,122 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    /**
+     * {@link EmployeeController#update(Long, EmployeeUpdateRequest)}
+     */
+    @Test
+    public void givenValidIdAndEmployeeUpdateRequest_whenFindEmployeeById_thenUpdateEmployeeSuccessfully() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        EmployeeUpdateRequest mockEmployeeUpdateRequest = EmployeeUpdateRequest.builder()
+                .firstName("Semih")
+                .lastName("Ay")
+                .identityNumber("1111111111111")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+
+        //When
+        Mockito.doNothing()
+                .when(employeeWriteService)
+                .update(mockId, mockEmployeeUpdateRequest);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/employee/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mockEmployeeUpdateRequest));
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.times(1))
+                .update(Mockito.any(), Mockito.any(EmployeeUpdateRequest.class));
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0L,
+            -1L,
+            -100L
+    })
+    void givenInvalidId_whenUpdateEmployee_thenReturnBadRequest(Long invalidId) throws Exception {
+
+        //Given
+        EmployeeUpdateRequest mockEmployeeUpdateRequest = EmployeeUpdateRequest.builder()
+                .firstName("Semih")
+                .lastName("Ay")
+                .identityNumber("1111111111111")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/employee/{id}", invalidId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mockEmployeeUpdateRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(EmployeeUpdateRequest.class));
+    }
+
+    @Test
+    void givenNullId_whenUpdateEmployee_thenReturnInternalServerError() throws Exception {
+
+        //Given
+        EmployeeUpdateRequest mockEmployeeUpdateRequest = EmployeeUpdateRequest.builder()
+                .firstName("Semih")
+                .lastName("Ay")
+                .identityNumber("1111111111111")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/employee/null")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mockEmployeeUpdateRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
     }
 
     private static List<Employee> getEmployees() {
