@@ -9,6 +9,7 @@ import com.flz.service.EmployeeReadService;
 import com.flz.service.EmployeeWriteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(EmployeeController.class)
 class EmployeeControllerTest extends BaseTest {
@@ -570,6 +572,442 @@ class EmployeeControllerTest extends BaseTest {
                 .departmentId(3L)
                 .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @Test
+    void givenInvalidBirthDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Yılmaz")
+                .phoneNumber("05332221133")
+                .email("alisemih@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.now()
+                        .plusDays(1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(20000))
+                .positionId(1L)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @Test
+    void givenNullBirthDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Yılmaz")
+                .phoneNumber("05332221133")
+                .email("alisemih@gmail.com")
+                .address("Bursa")
+                .birthDate(null)
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(20000))
+                .positionId(1L)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @Test
+    void givenNullGenderCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Yılmaz")
+                .phoneNumber("05332221133")
+                .email("alisemih@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(null)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(20000))
+                .positionId(1L)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "",
+            " ",
+            "a",
+            "One morning, when Gregor Samsa woke from troubled dreams, " +
+                    "he found himself transformed in his bed into a horrible vermin. " +
+                    "He lay on his armour-like back, and if he lifted his head a little " +
+                    "he could see his brown belly, slightly domed and divided by arches."
+    })
+    void givenInvalidNationalityCreateRequest_whenCreateEmployee_thenReturnBadRequest(String invalidName) throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Yılmaz")
+                .phoneNumber("05332221133")
+                .email("alisemih@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(1990, 1, 1))
+                .gender(Gender.MALE)
+                .nationality(invalidName)
+                .salary(BigDecimal.valueOf(20000))
+                .positionId(1L)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInvalidSalaries")
+    void givenInvalidSalaryCreateRequest_whenCreateEmployee_thenReturnBadRequest(BigDecimal invalidSalary) throws Exception {
+
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Yılmaz")
+                .phoneNumber("05332221133")
+                .email("alisemih@gmail.com")
+                .address("Test Mahallesi")
+                .birthDate(LocalDate.of(1990, 1, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(invalidSalary)
+                .positionId(1L)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    private static Stream<BigDecimal> provideInvalidSalaries() {
+        return Stream.of(
+                new BigDecimal("-1"),
+                new BigDecimal("0"),
+                new BigDecimal("10000000.01")
+        );
+    }
+
+    @Test
+    void givenNullSalaryCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(null)
+                .positionId(1L)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @Test
+    void givenNullPositionIdCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(null)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @Test
+    void givenNullDepartmentIdCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(1L)
+                .departmentId(null)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @Test
+    void givenNullSupervisorIdCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(3L)
+                .departmentId(5L)
+                .supervisorId(null)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @Test
+    void givenNullStartDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(1L)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(null)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @Test
+    void givenInvalidStartDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(1L)
+                .departmentId(3L)
+                .supervisorId(2L)
+                .startDate(LocalDate.of(2020, 9, 1))
                 .build();
 
         //When
