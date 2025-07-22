@@ -4,6 +4,8 @@ import com.flz.BaseTest;
 import com.flz.model.Employee;
 import com.flz.model.enums.Gender;
 import com.flz.model.request.EmployeeCreateRequest;
+import com.flz.model.response.EmployeeDetailsResponse;
+import com.flz.model.response.EmployeeExperienceResponse;
 import com.flz.model.response.EmployeeSummaryResponse;
 import com.flz.service.EmployeeReadService;
 import com.flz.service.EmployeeWriteService;
@@ -43,6 +45,78 @@ class EmployeeControllerTest extends BaseTest {
     MockMvc mockMvc;
 
     private static final String BASE_PATH = "/api/v1";
+
+    /**
+     * {@link EmployeeController#findById(Long)} ()}
+     */
+    @Test
+    public void givenValidId_whenCalledFindByIdEmployee_thenReturnEmployeeDetailResponseSuccessful() throws Exception {
+
+        //Given
+        Long mockId = 1L;
+
+        EmployeeDetailsResponse mockEmployeeDetailsResponse = EmployeeDetailsResponse.builder()
+                .employee(getEmployee())
+                .experiences(List.of(getEmployeeExperienceResponse()))
+                .build();
+
+        //When
+        Mockito.when(employeeReadService.findById(mockId))
+                .thenReturn(mockEmployeeDetailsResponse);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employee/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isMap())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.firstName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.lastName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.phoneNumber")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.address")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.birthDate")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.gender")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].salary")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].startDate")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].positionName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].supervisorName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.times(1))
+                .findById(Mockito.anyLong());
+    }
+
 
     /**
      * {@link EmployeeController#findAll(com.flz.model.request.PageRequest)}
@@ -1068,6 +1142,38 @@ class EmployeeControllerTest extends BaseTest {
                         .nationality("TC")
                         .phoneNumber("05465321499")
                         .build());
+    }
+
+    private static Employee getEmployee() {
+        return Employee.builder()
+                .id(1L)
+                .firstName("test first name 1")
+                .lastName("test last name 1")
+                .address("test address 1")
+                .birthDate(LocalDate.parse("2000-01-01"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test1@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321456")
+                .build();
+    }
+
+    private static EmployeeExperienceResponse getEmployeeExperienceResponse() {
+
+        return EmployeeExperienceResponse.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(100000))
+                .startDate(LocalDate.now()
+                        .plusDays(2))
+                .endDate(LocalDate.now()
+                        .plusMonths(6))
+                .positionId(2L)
+                .positionName("Test position")
+                .supervisorId(5L)
+                .supervisorName("Supervisor name")
+                .build();
     }
 
 }
