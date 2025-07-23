@@ -206,7 +206,7 @@ class EmployeeAdapterTest extends BaseTest {
      * {@link EmployeeAdapter#existsByIdentity(String)}
      */
     @Test
-    public void givenValidName_whenEmployeeEntityFoundAccordingByIdentity_thenReturnTrue() {
+    public void givenValidIdentityNumber_whenEmployeeEntityFoundAccordingByIdentity_thenReturnTrue() {
 
         //Given
         String mockIdentity = "test";
@@ -227,7 +227,7 @@ class EmployeeAdapterTest extends BaseTest {
     }
 
     @Test
-    public void givenValidName_whenEmployeeEntityNotFoundAccordingByName_thenReturnFalse() {
+    public void givenValidIdentityNumber_whenEmployeeEntityNotFoundAccordingByIdentityNumber_thenReturnFalse() {
 
         //Given
         String mockIdentity = "TestIdentity";
@@ -244,6 +244,51 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .existsByIdentityNumber(Mockito.anyString());
+
+    }
+
+    /**
+     * {@link EmployeeAdapter#existsByPhoneNumber(String)}
+     */
+    @Test
+    public void givenValidPhoneNumber_whenEmployeeEntityFoundAccordingByPhoneNumber_thenReturnTrue() {
+
+        //Given
+        String mockPhoneNumber = "05558978978";
+
+        //When
+        Mockito.when(employeeRepository.existsByPhoneNumber(mockPhoneNumber))
+                .thenReturn(Boolean.TRUE);
+
+        //Then
+        boolean result = employeeAdapter.existsByPhoneNumber(mockPhoneNumber);
+
+        Assertions.assertTrue(result);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .existsByPhoneNumber(Mockito.anyString());
+
+    }
+
+    @Test
+    public void givenValidPhoneNumber_whenEmployeeEntityNotFoundAccordingByPhoneNumber_thenReturnFalse() {
+
+        //Given
+        String mockPhoneNumber = "5551111111";
+
+        //When
+        Mockito.when(employeeRepository.existsByPhoneNumber(mockPhoneNumber))
+                .thenReturn(Boolean.FALSE);
+
+        //Then
+        boolean result = employeeAdapter.existsByPhoneNumber(mockPhoneNumber);
+
+        Assertions.assertFalse(result);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .existsByPhoneNumber(Mockito.anyString());
 
     }
 
