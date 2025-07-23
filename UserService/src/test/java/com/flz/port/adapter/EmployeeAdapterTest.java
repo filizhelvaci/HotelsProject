@@ -6,7 +6,6 @@ import com.flz.model.entity.EmployeeEntity;
 import com.flz.model.enums.Gender;
 import com.flz.model.mapper.EmployeeEntityToDomainMapper;
 import com.flz.model.mapper.EmployeeToEntityMapper;
-import com.flz.model.response.EmployeeSummaryResponse;
 import com.flz.repository.EmployeeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,9 @@ class EmployeeAdapterTest extends BaseTest {
     EmployeeRepository employeeRepository;
 
     private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
-    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
+
+    @Mock
+    EmployeeEntityToDomainMapper employeeEntityToDomainMapper;
 
     /**
      * {@link EmployeeAdapter#findAll(Integer, Integer)}
@@ -42,12 +43,12 @@ class EmployeeAdapterTest extends BaseTest {
     void givenValidPageAndPageSize_whenEmployeeFound_thenReturnListEmployee() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        int mockPage = 1;
+        int mockPageSize = 10;
 
         //When
         List<EmployeeEntity> mockEmployeeEntities = getEmployeeEntities();
-        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
 
         Page<EmployeeEntity> mockEmployeeEntitiesPage = new PageImpl<>(mockEmployeeEntities);
         Mockito.when(employeeRepository.findAll(mockPageable))
@@ -67,11 +68,11 @@ class EmployeeAdapterTest extends BaseTest {
     void givenValidPageAndPageSize_whenEmployeeNotFound_thenReturnEmptyPositions() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        int mockPage = 1;
+        int mockPageSize = 10;
 
         //When
-        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
         Mockito.when(employeeRepository.findAll(mockPageable))
                 .thenReturn(Page.empty());
 
@@ -94,29 +95,29 @@ class EmployeeAdapterTest extends BaseTest {
     void whenCalledAllSummaryEmployee_thenReturnListOfEmployeeSummariesResponse() {
 
         //When
-        List<EmployeeSummaryResponse> mockEmployeeSummaryResponse = List.of(
-                EmployeeSummaryResponse.builder()
+        List<Employee> mockEmployees = List.of(
+                Employee.builder()
                         .id(1L)
                         .firstName("John")
                         .lastName("Doe")
                         .build(),
-                EmployeeSummaryResponse.builder()
+                Employee.builder()
                         .id(2L)
                         .firstName("Jane")
                         .lastName("Doe")
                         .build(),
-                EmployeeSummaryResponse.builder()
+                Employee.builder()
                         .id(3L)
                         .firstName("Bob")
                         .lastName("Joe")
                         .build());
 
         Mockito.when(employeeRepository.findEmployeeSummaries())
-                .thenReturn(mockEmployeeSummaryResponse);
+                .thenReturn(mockEmployees);
 
         //Then
-        List<EmployeeSummaryResponse> result = employeeAdapter.findSummaryAll();
-        Assertions.assertEquals(mockEmployeeSummaryResponse.size(), result.size());
+        List<Employee> result = employeeAdapter.findSummaryAll();
+        Assertions.assertEquals(mockEmployees.size(), result.size());
 
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
@@ -132,7 +133,7 @@ class EmployeeAdapterTest extends BaseTest {
                 .thenReturn(Collections.emptyList());
 
         //Then
-        List<EmployeeSummaryResponse> responses = employeeAdapter.findSummaryAll();
+        List<Employee> responses = employeeAdapter.findSummaryAll();
 
         Assertions.assertEquals(0, responses.size());
         Assertions.assertTrue(responses.isEmpty());
@@ -212,7 +213,7 @@ class EmployeeAdapterTest extends BaseTest {
         String mockIdentity = "test";
 
         //When
-        Mockito.when(employeeRepository.existsByIdentityNumber(Mockito.anyString()))
+        Mockito.when(employeeRepository.existsByIdentityNumber(mockIdentity))
                 .thenReturn(Boolean.TRUE);
 
         //Then
@@ -327,24 +328,26 @@ class EmployeeAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenEmployee_whenRepositoryThrowsException_thenReturnException() {
+    public void givenEmployee_whenRepositoryThrowsException_thenExceptionIsPropagated() {
 
         //Given
         Employee mockEmployee = getEmployee();
-        EmployeeEntity mockEmployeeEntity = employeeToEntityMapper.map(getEmployee());
 
         //When
         Mockito.when(employeeRepository.save(Mockito.any(EmployeeEntity.class)))
-                .thenThrow(new RuntimeException("Database error"));
+                .thenThrow(new RuntimeException("Simulated database connection error"));
 
         //Then
-        Assertions.assertThrows(RuntimeException.class, () -> employeeAdapter.save(mockEmployee));
+        Assertions.assertThrows(RuntimeException.class,
+                () -> employeeAdapter.save(mockEmployee));
 
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
-                .save(Mockito.any());
-    }
+                .save(Mockito.any(EmployeeEntity.class));
 
+        Mockito.verify(employeeEntityToDomainMapper, Mockito.never())
+                .map(Mockito.any(EmployeeEntity.class));
+    }
 
     private static EmployeeEntity getEmployeeEntity(Long id) {
         return EmployeeEntity.builder()
