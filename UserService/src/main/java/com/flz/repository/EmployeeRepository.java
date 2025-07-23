@@ -18,4 +18,6 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
     @Query("SELECT new com.flz.model.response.EmployeeSummaryResponse(e.id, e.firstName, e.lastName) FROM EmployeeEntity e")
     List<EmployeeSummaryResponse> findEmployeeSummaries();
 
+    void deleteAllByFirstNameContainingIgnoreCase(String firstName);
+
 }
