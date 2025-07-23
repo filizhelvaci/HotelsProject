@@ -27,7 +27,6 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
     private final EmployeeDeletePort employeeDeletePort;
     private final PositionReadPort positionReadPort;
     private final EmployeeExperienceSavePort employeeExperienceSavePort;
-    private final EmployeeExperienceCreateServiceImpl employeeExperienceCreateServiceImpl;
 
     private final EmployeeCreateRequestToDomainMapper
             employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
@@ -72,13 +71,15 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
         String identityNumber = employeeUpdateRequest.getIdentityNumber();
-        String phoneNumber = employeeUpdateRequest.getPhoneNumber();
+        if (!employee.getIdentityNumber()
+                .equals(identityNumber)) {
+            checkIfExistsByIdentity(employeeUpdateRequest);
+        }
 
-        if (!(employee.getIdentityNumber()
-                .equals(identityNumber))
-                || !(employee.getPhoneNumber()
+        String phoneNumber = employeeUpdateRequest.getPhoneNumber();
+        if (!(employee.getPhoneNumber()
                 .equals(phoneNumber))) {
-            checkIfEmployeeExists(employeeUpdateRequest);
+            checkIfExistsByPhoneNumber(employeeUpdateRequest);
         }
 
         employee.update(employeeUpdateRequest.getFirstName(),
@@ -93,13 +94,16 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         employeeSavePort.save(employee);
     }
 
-    void checkIfEmployeeExists(EmployeeUpdateRequest employeeUpdateRequest) {
+    private void checkIfExistsByIdentity(EmployeeUpdateRequest employeeUpdateRequest) {
 
         boolean existsByIdentity = employeeReadPort
                 .existsByIdentity(employeeUpdateRequest.getIdentityNumber());
         if (existsByIdentity) {
             throw new EmployeeAlreadyExistsException(employeeUpdateRequest.getIdentityNumber());
         }
+    }
+
+    private void checkIfExistsByPhoneNumber(EmployeeUpdateRequest employeeUpdateRequest) {
 
         boolean existsByPhoneNumber = employeeReadPort
                 .existsByPhoneNumber(employeeUpdateRequest.getPhoneNumber());
