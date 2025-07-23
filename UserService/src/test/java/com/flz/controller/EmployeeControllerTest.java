@@ -1273,6 +1273,58 @@ class EmployeeControllerTest extends BaseTest {
                         .value(false));
     }
 
+    /**
+     * {@link EmployeeController#delete(Long)}
+     */
+    @Test
+    void givenValidId_whenCalledDeleteEmployee_thenEmployeeDeleted() throws Exception {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.doNothing()
+                .when(employeeWriteService)
+                .delete(mockId);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/employee/{id}", mockId);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.times(1))
+                .delete(Mockito.anyLong());
+    }
+
+    @Test
+    void whenCalledDeleteEmployeeWithInvalidId_thenReturnBadRequest() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/employee/{id}", "lkjhg");
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .delete(Mockito.anyLong());
+    }
+
     private static List<Employee> getEmployees() {
         return List.of(
                 Employee.builder()
