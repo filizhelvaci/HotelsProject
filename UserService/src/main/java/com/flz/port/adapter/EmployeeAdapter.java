@@ -4,7 +4,6 @@ import com.flz.model.Employee;
 import com.flz.model.entity.EmployeeEntity;
 import com.flz.model.mapper.EmployeeEntityToDomainMapper;
 import com.flz.model.mapper.EmployeeToEntityMapper;
-import com.flz.model.response.EmployeeSummaryResponse;
 import com.flz.port.EmployeeDeletePort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.EmployeeSavePort;
@@ -46,7 +45,7 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
     }
 
     @Override
-    public List<EmployeeSummaryResponse> findSummaryAll() {
+    public List<Employee> findSummaryAll() {
 
         return employeeRepository.findEmployeeSummaries();
     }
