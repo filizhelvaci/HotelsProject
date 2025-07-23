@@ -51,6 +51,7 @@ class PositionAdapter implements PositionSavePort, PositionReadPort {
 
     @Override
     public boolean existsByName(String name) {
+
         return positionRepository.existsByName(name);
     }
 

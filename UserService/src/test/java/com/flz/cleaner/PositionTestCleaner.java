@@ -15,6 +15,7 @@ public class PositionTestCleaner {
 
     @Transactional
     public void cleanTestPositions() {
+
         positionRepository.deleteAllByNameContainingIgnoreCase("test");
     }
 

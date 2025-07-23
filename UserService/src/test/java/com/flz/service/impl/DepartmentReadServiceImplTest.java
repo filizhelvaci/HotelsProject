@@ -134,5 +134,4 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
     }
 
-
 }

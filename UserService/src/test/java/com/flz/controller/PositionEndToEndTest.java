@@ -330,4 +330,5 @@ public class PositionEndToEndTest {
         Assertions.assertNotNull(positions.get(0)
                 .getId());
     }
+
 }

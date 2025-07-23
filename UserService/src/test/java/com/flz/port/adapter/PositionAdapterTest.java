@@ -44,12 +44,12 @@ class PositionAdapterTest extends BaseTest {
     void givenValidPageAndPageSize_whenPositionFound_thenReturnListPositions() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        int mockPage = 1;
+        int mockPageSize = 10;
 
         //When
         List<PositionEntity> mockPositionEntities = getPositionEntities();
-        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
 
         Page<PositionEntity> mockPositionEntitiesPage = new PageImpl<>(mockPositionEntities);
         Mockito.when(positionRepository.findAll(mockPageable))
@@ -69,11 +69,11 @@ class PositionAdapterTest extends BaseTest {
     void givenValidPageAndPageSize_whenPositionNotFound_thenReturnEmptyPositions() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        int mockPage = 1;
+        int mockPageSize = 10;
 
         //When
-        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
         Mockito.when(positionRepository.findAll(mockPageable))
                 .thenReturn(Page.empty());
 
@@ -256,7 +256,7 @@ class PositionAdapterTest extends BaseTest {
 
         //Given
         Position mockPosition = getPosition();
-        PositionEntity mockPositionEntity = PositionToEntityMapper.INSTANCE.map(mockPosition);
+        PositionToEntityMapper.INSTANCE.map(mockPosition);
 
         //When
         Mockito.when(positionRepository.save(Mockito.any(PositionEntity.class)))

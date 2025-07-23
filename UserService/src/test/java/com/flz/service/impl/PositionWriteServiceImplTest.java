@@ -22,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 class PositionWriteServiceImplTest extends BaseTest {
@@ -50,13 +49,14 @@ class PositionWriteServiceImplTest extends BaseTest {
         mockPositionCreateRequest.setName("test");
         mockPositionCreateRequest.setDepartmentId(1L);
 
-        Optional<Department> mockDepartment = Optional.ofNullable(Department.builder()
-                .id(1L)
-                .name("test")
-                .status(DepartmentStatus.ACTIVE)
-                .createdAt(LocalDateTime.now())
-                .createdBy("admin")
-                .build());
+        Optional<Department> mockDepartment = Optional.ofNullable(
+                Department.builder()
+                        .id(1L)
+                        .name("test")
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("admin")
+                        .build());
 
         //When
         Mockito.when(positionReadPort.existsByName(mockPositionCreateRequest.getName()))
@@ -68,8 +68,6 @@ class PositionWriteServiceImplTest extends BaseTest {
         Long departmentId = mockPositionCreateRequest.getDepartmentId();
         Mockito.when(departmentReadPort.findById(departmentId))
                 .thenReturn(mockDepartment);
-
-        mockPosition.setDepartment(mockDepartment.get());
 
         Mockito.doNothing()
                 .when(positionSavePort)
@@ -277,7 +275,7 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .thenReturn(Optional.of(mockDepartment));
 
         //Then
-        PositionAlreadyExistsException exception = Assertions.assertThrows(PositionAlreadyExistsException.class,
+        Assertions.assertThrows(PositionAlreadyExistsException.class,
                 () -> positionWriteServiceImpl.update(positionId, request));
 
         //Verify
@@ -397,62 +395,14 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .thenReturn(Optional.of(mockPosition));
 
         //Then
-        Assertions.assertThrows(PositionAlreadyDeletedException.class, () -> {
-            positionWriteServiceImpl.delete(mockId);
-        });
+        Assertions.assertThrows(PositionAlreadyDeletedException.class,
+                () -> positionWriteServiceImpl.delete(mockId));
 
         //Verify
         Mockito.verify(positionReadPort, Mockito.times(1))
                 .findById(mockId);
         Mockito.verify(positionSavePort, Mockito.never())
                 .save(Mockito.any());
-    }
-
-
-    private static List<Position> getPositions() {
-        return List.of(
-                Position.builder()
-                        .id(11L)
-                        .name("Test1")
-                        .department(Department.builder()
-                                .id(1L)
-                                .name("Test1Department")
-                                .status(DepartmentStatus.ACTIVE)
-                                .createdAt(LocalDateTime.now())
-                                .createdBy("TestSystem")
-                                .build())
-                        .status(PositionStatus.ACTIVE)
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .build(),
-                Position.builder()
-                        .id(12L)
-                        .name("Test2")
-                        .department(Department.builder()
-                                .id(1L)
-                                .name("Test2Department")
-                                .status(DepartmentStatus.ACTIVE)
-                                .createdAt(LocalDateTime.now())
-                                .createdBy("TestSystem")
-                                .build())
-                        .status(PositionStatus.ACTIVE)
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .build(),
-                Position.builder()
-                        .id(13L)
-                        .name("Test3")
-                        .department(Department.builder()
-                                .id(2L)
-                                .name("Test3Department")
-                                .status(DepartmentStatus.ACTIVE)
-                                .createdAt(LocalDateTime.now())
-                                .createdBy("TestSystem")
-                                .build())
-                        .status(PositionStatus.ACTIVE)
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .build());
     }
 
 }

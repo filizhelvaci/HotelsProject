@@ -17,4 +17,5 @@ public class EmployeeTestCleaner {
     public void cleanEmployees() {
         employeeRepository.deleteAllByFirstNameContainingIgnoreCase("test");
     }
+
 }

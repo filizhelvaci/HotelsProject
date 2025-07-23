@@ -212,9 +212,8 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .thenReturn(true);
 
         //Then
-        Assertions.assertThrows(DepartmentAlreadyExistsException.class, () -> {
-            departmentWriteService.update(mockId, mockRequest);
-        });
+        Assertions.assertThrows(DepartmentAlreadyExistsException.class,
+                () -> departmentWriteService.update(mockId, mockRequest));
 
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
@@ -311,9 +310,8 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .thenReturn(Optional.of(mockDepartment));
 
         //Then
-        Assertions.assertThrows(DepartmentAlreadyDeletedException.class, () -> {
-            departmentWriteService.delete(mockId);
-        });
+        Assertions.assertThrows(DepartmentAlreadyDeletedException.class,
+                () -> departmentWriteService.delete(mockId));
 
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
@@ -321,7 +319,5 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.verify(departmentSavePort, Mockito.never())
                 .save(Mockito.any());
     }
-
-
 
 }

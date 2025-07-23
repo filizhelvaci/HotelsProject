@@ -466,4 +466,5 @@ class DepartmentControllerTest extends BaseTest {
                         .createdBy("testAdmin")
                         .build());
     }
+
 }

@@ -62,5 +62,4 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
         return employeeReadPort.findAll(page, pageSize);
     }
 
-
 }

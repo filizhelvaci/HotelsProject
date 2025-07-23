@@ -272,5 +272,4 @@ class EmployeeReadServiceImplTest extends BaseTest {
                         .build());
     }
 
-
 }

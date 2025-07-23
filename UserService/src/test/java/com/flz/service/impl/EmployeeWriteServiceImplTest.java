@@ -139,9 +139,8 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .thenReturn(Optional.empty());
 
         //Then
-        Assertions.assertThrows(RuntimeException.class, () -> {
-            employeeWriteServiceImpl.create(request);
-        });
+        Assertions.assertThrows(RuntimeException.class,
+                () -> employeeWriteServiceImpl.create(request));
 
         //Verify
         Mockito.verify(employeeSavePort)
