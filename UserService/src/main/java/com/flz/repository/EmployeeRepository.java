@@ -1,7 +1,7 @@
 package com.flz.repository;
 
+import com.flz.model.Employee;
 import com.flz.model.entity.EmployeeEntity;
-import com.flz.model.response.EmployeeSummaryResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,9 +15,9 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 
     boolean existsByPhoneNumber(String phoneNumber);
 
-    @Query("SELECT new com.flz.model.response.EmployeeSummaryResponse(e.id, e.firstName, e.lastName) FROM EmployeeEntity e")
-    List<EmployeeSummaryResponse> findEmployeeSummaries();
-
     void deleteAllByFirstNameContainingIgnoreCase(String firstName);
+
+    @Query("SELECT new com.flz.model.Employee(e.id, e.firstName, e.lastName) FROM EmployeeEntity e")
+    List<Employee> findEmployeeSummaries();
 
 }

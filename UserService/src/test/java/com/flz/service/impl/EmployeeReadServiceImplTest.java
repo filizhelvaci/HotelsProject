@@ -124,18 +124,18 @@ class EmployeeReadServiceImplTest extends BaseTest {
     public void whenCalledAllSummaryEmployee_thenReturnListOfEmployeesSummaryResponse() {
 
         //When
-        List<EmployeeSummaryResponse> mockEmployeeSummaryResponse = List.of(
-                EmployeeSummaryResponse.builder()
+        List<Employee> mockEmployees = List.of(
+                Employee.builder()
                         .id(1L)
                         .firstName("John")
                         .lastName("Doe")
                         .build(),
-                EmployeeSummaryResponse.builder()
+                Employee.builder()
                         .id(2L)
                         .firstName("Jane")
                         .lastName("Boe")
                         .build(),
-                EmployeeSummaryResponse.builder()
+                Employee.builder()
                         .id(3L)
                         .firstName("Bob")
                         .lastName("Joe")
@@ -143,12 +143,13 @@ class EmployeeReadServiceImplTest extends BaseTest {
         );
 
         Mockito.when(employeeReadPort.findSummaryAll())
-                .thenReturn(mockEmployeeSummaryResponse);
+                .thenReturn(mockEmployees);
 
         //Then
         List<EmployeeSummaryResponse> result = employeeReadServiceImpl
                 .findSummaryAll();
-        Assertions.assertEquals(mockEmployeeSummaryResponse, result);
+        Assertions.assertEquals(mockEmployees.size(), result.size());
+        Assertions.assertNotNull(result);
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))

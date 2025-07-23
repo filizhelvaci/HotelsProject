@@ -52,7 +52,7 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
     @Override
     public List<EmployeeSummaryResponse> findSummaryAll() {
 
-        return employeeReadPort.findSummaryAll();
+        return employeeToEmployeeSummaryResponseMapper.map(employeeReadPort.findSummaryAll());
     }
 
 
