@@ -37,4 +37,10 @@ public class Employee extends BaseDomainModel {
         this.nationality = nationality;
     }
 
+    public Employee(Long id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
 }

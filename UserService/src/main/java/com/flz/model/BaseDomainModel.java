@@ -18,4 +18,6 @@ public abstract class BaseDomainModel {
     protected String updatedBy;
     protected LocalDateTime updatedAt;
 
+    protected BaseDomainModel() {
+    }
 }
