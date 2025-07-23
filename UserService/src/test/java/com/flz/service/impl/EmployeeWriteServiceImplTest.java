@@ -294,9 +294,9 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(Mockito.anyLong());
         Mockito.verify(employeeReadPort, Mockito.times(1))
-                .existsByIdentity("99999999999");
+                .existsByIdentity(Mockito.anyString());
         Mockito.verify(employeeReadPort, Mockito.times(1))
-                .existsByPhoneNumber("05559998877");
+                .existsByPhoneNumber(Mockito.anyString());
         Mockito.verify(employeeSavePort, Mockito.times(1))
                 .save(mockEmployee);
     }
@@ -322,6 +322,10 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(mockEmployeeId);
+        Mockito.verify(employeeReadPort, Mockito.never())
+                .existsByIdentity(Mockito.anyString());
+        Mockito.verify(employeeReadPort, Mockito.never())
+                .existsByPhoneNumber(Mockito.anyString());
         Mockito.verify(employeeSavePort, Mockito.never())
                 .save(Mockito.any(Employee.class));
     }
@@ -355,7 +359,11 @@ class EmployeeWriteServiceImplTest extends BaseTest {
 
         //verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeReadPort, Mockito.times(1))
                 .existsByIdentity(Mockito.anyString());
+        Mockito.verify(employeeReadPort, Mockito.never())
+                .existsByPhoneNumber(Mockito.anyString());
         Mockito.verify(employeeSavePort, Mockito.never())
                 .save(Mockito.any(Employee.class));
     }
@@ -367,7 +375,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         Long mockEmployeeId = 1L;
 
         EmployeeUpdateRequest request = EmployeeUpdateRequest.builder()
-                .identityNumber("12345678901")
+                .identityNumber("12345678902")
                 .phoneNumber("05559998877")
                 .build();
 
@@ -380,7 +388,9 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         //When
         Mockito.when(employeeReadPort.findById(mockEmployeeId))
                 .thenReturn(Optional.of(existingEmployee));
-        Mockito.when(employeeReadPort.existsByPhoneNumber("05559998877"))
+        Mockito.when(employeeReadPort.existsByIdentity(Mockito.anyString()))
+                .thenReturn(false);
+        Mockito.when(employeeReadPort.existsByPhoneNumber(Mockito.anyString()))
                 .thenReturn(true);
 
         //Then
@@ -389,7 +399,11 @@ class EmployeeWriteServiceImplTest extends BaseTest {
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
-                .existsByPhoneNumber("05559998877");
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .existsByIdentity(Mockito.anyString());
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .existsByPhoneNumber(Mockito.anyString());
         Mockito.verify(employeeSavePort, Mockito.never())
                 .save(Mockito.any(Employee.class));
     }
