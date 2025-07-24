@@ -27,8 +27,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
     private final PositionReadPort positionReadPort;
     private final DepartmentReadPort departmentReadPort;
 
-    private final PositionCreateRequestToPositionDomainMapper
-            positionCreateRequestToPositionDomainMapper = PositionCreateRequestToPositionDomainMapper.INSTANCE;
+    private final PositionCreateRequestToPositionDomainMapper positionCreateRequestToPositionDomainMapper;
 
 
     @Override

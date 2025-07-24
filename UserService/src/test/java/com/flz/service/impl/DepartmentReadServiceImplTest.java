@@ -27,7 +27,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
      * {@link DepartmentReadServiceImpl#findSummaryAll()}
      */
     @Test
-    public void whenCalledAllSummaryDepartment_thenReturnListOfDepartmentsSummaryResponse() {
+    void whenCalledAllSummaryDepartment_thenReturnListOfDepartmentsSummaryResponse() {
 
         //When
         List<Department> mockDepartments = new ArrayList<>();
@@ -56,7 +56,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
 
     @Test
-    public void whenCalledAllSummaryDepartmentIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
+    void whenCalledAllSummaryDepartmentIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
 
         //When
         Mockito.when(departmentReadPort.findSummaryAll())
@@ -80,7 +80,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
      * {@link DepartmentReadServiceImpl#findAll(Integer, Integer)}
      */
     @Test
-    public void givenValidPagePageSize_whenCalledAllDepartment_thenReturnListAllOfDepartments() {
+    void givenValidPagePageSize_whenCalledAllDepartment_thenReturnListAllOfDepartments() {
 
         //Given
         Integer mockPage = 1;
@@ -110,7 +110,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
 
     @Test
-    public void givenValidPagePageSize_whenCalledAllDepartmentIfAllDepartmentEntitiesIsEmpty_thenReturnEmptyList() {
+    void givenValidPagePageSize_whenCalledAllDepartmentIfAllDepartmentEntitiesIsEmpty_thenReturnEmptyList() {
 
         //Given
         Integer mockPage = 1;

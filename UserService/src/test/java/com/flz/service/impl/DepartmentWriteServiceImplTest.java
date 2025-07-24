@@ -37,7 +37,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
      * {@link DepartmentWriteServiceImpl#create(DepartmentCreateRequest)}
      */
     @Test
-    public void givenDepartmentCreateRequest_whenCreateRequestNameIsNotInDatabase_thenCreateDepartment() {
+    void givenDepartmentCreateRequest_whenCreateRequestNameIsNotInDatabase_thenCreateDepartment() {
 
         //Given
         DepartmentCreateRequest mockDepartmentCreateRequest = new DepartmentCreateRequest();
@@ -63,7 +63,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
 
     @Test
-    public void givenDepartmentCreateRequest_whenCreateRequestNameAlreadyExists_thenThrowDepartmentAlreadyExists() {
+    void givenDepartmentCreateRequest_whenCreateRequestNameAlreadyExists_thenThrowDepartmentAlreadyExists() {
 
         //Given
         DepartmentCreateRequest mockDepartmentCreateRequest = new DepartmentCreateRequest();
@@ -89,7 +89,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
      * {@link DepartmentWriteServiceImpl#update(Long, DepartmentUpdateRequest)}
      */
     @Test
-    public void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentExists_thenUpdateDepartment() {
+    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentExists_thenUpdateDepartment() {
 
         //Given
         Long mockId = 1L;
@@ -130,7 +130,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
 
     @Test
-    public void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
+    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
 
         //Given
         Long mockId = 1L;
@@ -154,7 +154,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    public void givenValidDepartmentIdAndSameName_whenDepartmentExists_thenUpdateWithoutNameCheck() {
+    void givenValidDepartmentIdAndSameName_whenDepartmentExists_thenUpdateWithoutNameCheck() {
 
         //Given
         Long mockId = 2L;
@@ -189,7 +189,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    public void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityAlreadyExists_thenThrowsDepartmentAlreadyExistsException() {
+    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityAlreadyExists_thenThrowsDepartmentAlreadyExistsException() {
 
         //Given
         Long mockId = 1L;
@@ -228,7 +228,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
      * {@link DepartmentWriteServiceImpl#delete(Long)}
      */
     @Test
-    public void givenValidId_whenDepartmentEntityFoundById_thenMakeStatusOfDepartmentEntityDeleted() {
+    void givenValidId_whenDepartmentEntityFoundById_thenMakeStatusOfDepartmentEntityDeleted() {
 
         //Given
         Long mockId = 1L;
@@ -271,7 +271,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
 
     @Test
-    public void givenValidId_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
+    void givenValidId_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
 
         //Given
         Long mockId = 1L;
@@ -292,7 +292,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    public void givenDeletedDepartment_whenDeleteCalled_thenThrowDepartmentAlreadyDeletedException() {
+    void givenDeletedDepartment_whenDeleteCalled_thenThrowDepartmentAlreadyDeletedException() {
 
         //Given
         Long mockId = 1L;

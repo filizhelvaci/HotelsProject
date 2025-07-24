@@ -135,7 +135,7 @@ class PositionAdapterTest extends BaseTest {
      * {@link PositionAdapter#findById(Long)}
      */
     @Test
-    public void givenValidId_whenPositionEntityFoundAccordingById_thenReturnPosition() {
+    void givenValidId_whenPositionEntityFoundAccordingById_thenReturnPosition() {
 
         //Given
         Long mockId = 1L;
@@ -162,7 +162,7 @@ class PositionAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidId_whenPositionEntityNotFoundById_returnOptionalEmpty() {
+    void givenValidId_whenPositionEntityNotFoundById_returnOptionalEmpty() {
 
         //Given
         Long mockId = 10L;
@@ -186,7 +186,7 @@ class PositionAdapterTest extends BaseTest {
      * {@link PositionAdapter#existsByName(String)}
      */
     @Test
-    public void givenValidName_whenPositionEntityFoundAccordingByName_thenReturnTrue() {
+    void givenValidName_whenPositionEntityFoundAccordingByName_thenReturnTrue() {
 
         //Given
         String mockName = "TestName";
@@ -208,7 +208,7 @@ class PositionAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidName_whenPositionEntityNotFoundAccordingByName_thenReturnFalse() {
+    void givenValidName_whenPositionEntityNotFoundAccordingByName_thenReturnFalse() {
 
         //Given
         String mockName = "TestName";
@@ -232,7 +232,7 @@ class PositionAdapterTest extends BaseTest {
      * {@link PositionAdapter#save(Position)}
      */
     @Test
-    public void givenPosition_whenCalledSave_thenSavePositionEntity() {
+    void givenPosition_whenCalledSave_thenSavePositionEntity() {
 
         //Given
         Position mockPosition = getPosition();
@@ -252,7 +252,7 @@ class PositionAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenPosition_whenRepositoryThrowsException_thenReturnException() {
+    void givenPosition_whenRepositoryThrowsException_thenReturnException() {
 
         //Given
         Position mockPosition = getPosition();

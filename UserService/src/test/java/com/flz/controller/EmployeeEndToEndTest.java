@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class EmployeeEndToEndTest {
+class EmployeeEndToEndTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -23,8 +22,8 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
 
     private final EmployeeRepository employeeRepository;
 
-    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
-    private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
+    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper;
+    private final EmployeeToEntityMapper employeeToEntityMapper;
 
 
     @Override
@@ -41,7 +40,7 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
                 .getContent();
         return employeeEntities.stream()
                 .map(employeeEntityToDomainMapper::map)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

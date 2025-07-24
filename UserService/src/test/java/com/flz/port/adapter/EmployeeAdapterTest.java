@@ -147,7 +147,7 @@ class EmployeeAdapterTest extends BaseTest {
      * {@link EmployeeAdapter#findById(Long)}
      */
     @Test
-    public void givenValidId_whenEmployeeEntityFoundAccordingById_thenReturnEmployee() {
+    void givenValidId_whenEmployeeEntityFoundAccordingById_thenReturnEmployee() {
 
         //Given
         Long mockId = 1L;
@@ -183,7 +183,7 @@ class EmployeeAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidId_whenEmployeeEntityNotFoundById_returnOptionalEmpty() {
+    void givenValidId_whenEmployeeEntityNotFoundById_returnOptionalEmpty() {
 
         //Given
         Long mockId = 10L;
@@ -207,7 +207,7 @@ class EmployeeAdapterTest extends BaseTest {
      * {@link EmployeeAdapter#existsByIdentity(String)}
      */
     @Test
-    public void givenValidIdentityNumber_whenEmployeeEntityFoundAccordingByIdentity_thenReturnTrue() {
+    void givenValidIdentityNumber_whenEmployeeEntityFoundAccordingByIdentity_thenReturnTrue() {
 
         //Given
         String mockIdentity = "test";
@@ -228,7 +228,7 @@ class EmployeeAdapterTest extends BaseTest {
     }
 
     @Test
-    public void givenValidIdentityNumber_whenEmployeeEntityNotFoundAccordingByIdentityNumber_thenReturnFalse() {
+    void givenValidIdentityNumber_whenEmployeeEntityNotFoundAccordingByIdentityNumber_thenReturnFalse() {
 
         //Given
         String mockIdentity = "TestIdentity";
@@ -252,7 +252,7 @@ class EmployeeAdapterTest extends BaseTest {
      * {@link EmployeeAdapter#existsByPhoneNumber(String)}
      */
     @Test
-    public void givenValidPhoneNumber_whenEmployeeEntityFoundAccordingByPhoneNumber_thenReturnTrue() {
+    void givenValidPhoneNumber_whenEmployeeEntityFoundAccordingByPhoneNumber_thenReturnTrue() {
 
         //Given
         String mockPhoneNumber = "05558978978";
@@ -273,7 +273,7 @@ class EmployeeAdapterTest extends BaseTest {
     }
 
     @Test
-    public void givenValidPhoneNumber_whenEmployeeEntityNotFoundAccordingByPhoneNumber_thenReturnFalse() {
+    void givenValidPhoneNumber_whenEmployeeEntityNotFoundAccordingByPhoneNumber_thenReturnFalse() {
 
         //Given
         String mockPhoneNumber = "5551111111";
@@ -297,7 +297,7 @@ class EmployeeAdapterTest extends BaseTest {
      * {@link EmployeeAdapter#save(Employee)} )}
      */
     @Test
-    public void givenEmployee_whenCalledSave_thenSaveEmployeeEntity() {
+    void givenEmployee_whenCalledSave_thenSaveEmployeeEntity() {
 
         //Given
         Employee mockEmployee = getEmployee();
@@ -328,7 +328,7 @@ class EmployeeAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenEmployee_whenRepositoryThrowsException_thenExceptionIsPropagated() {
+    void givenEmployee_whenRepositoryThrowsException_thenExceptionIsPropagated() {
 
         //Given
         Employee mockEmployee = getEmployee();

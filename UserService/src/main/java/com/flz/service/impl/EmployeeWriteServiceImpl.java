@@ -24,8 +24,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
     private final PositionReadPort positionReadPort;
     private final EmployeeExperienceSavePort employeeExperienceSavePort;
 
-    private final EmployeeCreateRequestToDomainMapper
-            employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
+    private final EmployeeCreateRequestToDomainMapper employeeCreateRequestToDomainMapper;
 
     @Override
     public void create(EmployeeCreateRequest createRequest) {

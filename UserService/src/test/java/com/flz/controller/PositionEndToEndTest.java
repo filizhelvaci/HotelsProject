@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PositionEndToEndTest {
+class PositionEndToEndTest {
 
     @Autowired
     private MockMvc mockMvc;

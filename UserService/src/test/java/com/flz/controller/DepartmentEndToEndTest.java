@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DepartmentEndToEndTest {
+class DepartmentEndToEndTest {
 
     @Autowired
     private MockMvc mockMvc;

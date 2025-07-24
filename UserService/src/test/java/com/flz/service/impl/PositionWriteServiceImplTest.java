@@ -42,7 +42,7 @@ class PositionWriteServiceImplTest extends BaseTest {
      * {@link PositionWriteServiceImpl#create(PositionCreateRequest)}
      */
     @Test
-    public void givenPositionCreateRequest_whenCreateRequestNameIsNotInDatabase_thenCreatePosition() {
+    void givenPositionCreateRequest_whenCreateRequestNameIsNotInDatabase_thenCreatePosition() {
 
         //Given
         PositionCreateRequest mockPositionCreateRequest = new PositionCreateRequest();
@@ -87,7 +87,7 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    public void givenPositionCreateRequest_whenCreateRequestNameAlreadyExists_thenThrowPositionAlreadyExists() {
+    void givenPositionCreateRequest_whenCreateRequestNameAlreadyExists_thenThrowPositionAlreadyExists() {
 
         //Given
         PositionCreateRequest mockPositionCreateRequest = new PositionCreateRequest();
@@ -291,7 +291,7 @@ class PositionWriteServiceImplTest extends BaseTest {
      * {@link PositionWriteServiceImpl#delete(Long)}
      */
     @Test
-    public void givenValidId_whenPositionEntityFoundById_thenMakeStatusOfPositionEntityDeleted() {
+    void givenValidId_whenPositionEntityFoundById_thenMakeStatusOfPositionEntityDeleted() {
 
         //Given
         Long mockPositionId = 1L;
@@ -345,7 +345,7 @@ class PositionWriteServiceImplTest extends BaseTest {
 
 
     @Test
-    public void givenValidId_whenPositionEntityNotFoundById_thenThrowsPositionNotFoundException() {
+    void givenValidId_whenPositionEntityNotFoundById_thenThrowsPositionNotFoundException() {
 
         //Given
         Long mockId = 1L;
@@ -366,7 +366,7 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    public void givenDeletedPosition_whenDeleteCalled_thenThrowPositionAlreadyDeletedException() {
+    void givenDeletedPosition_whenDeleteCalled_thenThrowPositionAlreadyDeletedException() {
 
         //Given
         Long mockId = 1L;

@@ -46,7 +46,7 @@ class DepartmentControllerTest extends BaseTest {
      * {@link DepartmentController#findAll(com.flz.model.request.PageRequest)}
      */
     @Test
-    public void givenPageAndPageSize_whenCalledAllDepartment_thenReturnAllDepartmentsSuccessfully() throws Exception {
+    void givenPageAndPageSize_whenCalledAllDepartment_thenReturnAllDepartmentsSuccessfully() throws Exception {
 
         //Given
         List<Department> mockDepartments = getDepartments();
@@ -130,7 +130,7 @@ class DepartmentControllerTest extends BaseTest {
     }
 
     @Test
-    public void givenValidPageAndPageSize_whenCalledAllDepartment_thenReturnEmptyList() throws Exception {
+    void givenValidPageAndPageSize_whenCalledAllDepartment_thenReturnEmptyList() throws Exception {
 
         //Given
         Integer mockPageSize = 10;
@@ -168,7 +168,7 @@ class DepartmentControllerTest extends BaseTest {
      * {@link DepartmentController#findSummaryAll()}
      */
     @Test
-    public void whenCalledAllSummaryDepartment_thenReturnDepartmentSummaryResponse() throws Exception {
+    void whenCalledAllSummaryDepartment_thenReturnDepartmentSummaryResponse() throws Exception {
 
         //Given
         List<DepartmentSummaryResponse> mockDepartmentsSummaryResponse = List.of(
@@ -213,7 +213,7 @@ class DepartmentControllerTest extends BaseTest {
     }
 
     @Test
-    public void whenNotFoundDepartmentsSummaryAll_thenReturnEmptyList() throws Exception {
+    void whenNotFoundDepartmentsSummaryAll_thenReturnEmptyList() throws Exception {
 
         //When
         List<DepartmentSummaryResponse> emptyList = Collections.emptyList();
@@ -311,7 +311,7 @@ class DepartmentControllerTest extends BaseTest {
      * {@link DepartmentController#update(Long, DepartmentUpdateRequest)}
      */
     @Test
-    public void givenValidIdAndDepartmentUpdateRequest_whenFindDepartmentById_thenUpdateDepartmentSuccessfully() throws Exception {
+    void givenValidIdAndDepartmentUpdateRequest_whenFindDepartmentById_thenUpdateDepartmentSuccessfully() throws Exception {
 
         //Given
         Long mockId = 10L;

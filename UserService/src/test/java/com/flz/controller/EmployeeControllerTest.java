@@ -52,7 +52,7 @@ class EmployeeControllerTest extends BaseTest {
      * {@link EmployeeController#findById(Long)} ()}
      */
     @Test
-    public void givenValidId_whenCalledFindByIdEmployee_thenReturnEmployeeDetailResponseSuccessful() throws Exception {
+    void givenValidId_whenCalledFindByIdEmployee_thenReturnEmployeeDetailResponseSuccessful() throws Exception {
 
         //Given
         Long mockId = 1L;
@@ -120,7 +120,7 @@ class EmployeeControllerTest extends BaseTest {
     }
 
     @Test
-    public void givenNonEmployeeId_whenCalledFindByIdEmployee_thenReturnNotFoundStatusAndErrorMessage() throws Exception {
+    void givenNonEmployeeId_whenCalledFindByIdEmployee_thenReturnNotFoundStatusAndErrorMessage() throws Exception {
 
         //Given
         Long mockId = 999L;
@@ -150,7 +150,7 @@ class EmployeeControllerTest extends BaseTest {
     }
 
     @Test
-    public void givenInvalidId_whenCalledFindByIdEmployee_thenReturnBadRequest() throws Exception {
+    void givenInvalidId_whenCalledFindByIdEmployee_thenReturnBadRequest() throws Exception {
 
         //Given
         String invalidId = "abc";
@@ -178,7 +178,7 @@ class EmployeeControllerTest extends BaseTest {
      * {@link EmployeeController#findAll(com.flz.model.request.PageRequest)}
      */
     @Test
-    public void givenPageAndPageSize_whenCalledAllEmployee_thenReturnAllEmployeesSuccessfully() throws Exception {
+    void givenPageAndPageSize_whenCalledAllEmployee_thenReturnAllEmployeesSuccessfully() throws Exception {
 
         //Given
         List<Employee> mockEmployees = getEmployees();
@@ -267,7 +267,7 @@ class EmployeeControllerTest extends BaseTest {
     }
 
     @Test
-    public void givenValidPageAndPageSize_whenCalledAllEmployees_thenReturnEmptyList() throws Exception {
+    void givenValidPageAndPageSize_whenCalledAllEmployees_thenReturnEmptyList() throws Exception {
 
         //Given
         Integer mockPageSize = 10;
@@ -306,7 +306,7 @@ class EmployeeControllerTest extends BaseTest {
      * {@link EmployeeController#findSummaryAll()}
      */
     @Test
-    public void whenCalledAllSummaryEmployee_thenReturnEmployeesSummaryResponse() throws Exception {
+    void whenCalledAllSummaryEmployee_thenReturnEmployeesSummaryResponse() throws Exception {
 
         //Given
         List<EmployeeSummaryResponse> mockEmployeeSummaryResponse = List.of(
@@ -357,7 +357,7 @@ class EmployeeControllerTest extends BaseTest {
     }
 
     @Test
-    public void whenNotFoundEmployeesSummaryAll_thenReturnEmptyList() throws Exception {
+    void whenNotFoundEmployeesSummaryAll_thenReturnEmptyList() throws Exception {
 
         //When
         List<EmployeeSummaryResponse> emptyList = Collections.emptyList();
@@ -1161,7 +1161,7 @@ class EmployeeControllerTest extends BaseTest {
      * {@link EmployeeController#update(Long, EmployeeUpdateRequest)}
      */
     @Test
-    public void givenValidIdAndEmployeeUpdateRequest_whenFindEmployeeById_thenUpdateEmployeeSuccessfully() throws Exception {
+    void givenValidIdAndEmployeeUpdateRequest_whenFindEmployeeById_thenUpdateEmployeeSuccessfully() throws Exception {
 
         //Given
         Long mockId = 10L;

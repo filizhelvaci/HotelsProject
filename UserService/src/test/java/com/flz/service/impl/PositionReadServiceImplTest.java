@@ -31,7 +31,7 @@ class PositionReadServiceImplTest extends BaseTest {
      * {@link PositionReadServiceImpl#findSummaryAll()}
      */
     @Test
-    public void whenCalledAllSummaryPosition_thenReturnListOfPositionsSummaryResponse() {
+    void whenCalledAllSummaryPosition_thenReturnListOfPositionsSummaryResponse() {
 
         //When
         List<Position> mockPositions = getPositions();
@@ -54,7 +54,7 @@ class PositionReadServiceImplTest extends BaseTest {
 
 
     @Test
-    public void whenCalledAllSummaryPositionIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
+    void whenCalledAllSummaryPositionIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
 
         //When
         Mockito.when(positionReadPort.findSummaryAll())
@@ -78,7 +78,7 @@ class PositionReadServiceImplTest extends BaseTest {
      * {@link PositionReadServiceImpl#findAll(Integer, Integer)}
      */
     @Test
-    public void givenValidPagePageSize_whenCalledAllPosition_thenReturnListAllOfPositions() {
+    void givenValidPagePageSize_whenCalledAllPosition_thenReturnListAllOfPositions() {
 
         //Given
         Integer mockPage = 1;
@@ -102,7 +102,7 @@ class PositionReadServiceImplTest extends BaseTest {
 
 
     @Test
-    public void givenValidPagePageSize_whenCalledAllPositionIfAllPositionEntitiesIsEmpty_thenReturnEmptyList() {
+    void givenValidPagePageSize_whenCalledAllPositionIfAllPositionEntitiesIsEmpty_thenReturnEmptyList() {
 
         //Given
         Integer mockPage = 1;

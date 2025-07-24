@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -24,16 +23,16 @@ class PositionAdapter implements PositionSavePort, PositionReadPort {
 
     private final PositionRepository positionRepository;
 
-    private final PositionToEntityMapper positionToEntityMapper = PositionToEntityMapper.INSTANCE;
-    private final PositionEntityToDomainMapper positionEntityToDomainMapper = PositionEntityToDomainMapper.INSTANCE;
-    private final DepartmentToEntityMapper departmentToEntityMapper = DepartmentToEntityMapper.INSTANCE;
+    private final PositionToEntityMapper positionToEntityMapper;
+    private final PositionEntityToDomainMapper positionEntityToDomainMapper;
+    private final DepartmentToEntityMapper departmentToEntityMapper;
 
 
     @Override
     public List<Position> findAll(Integer page, Integer pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         List<PositionEntity> positionEntities = positionRepository.findAll(pageable).getContent();
-        return positionEntities.stream().map(positionEntityToDomainMapper::map).collect(Collectors.toList());
+        return positionEntities.stream().map(positionEntityToDomainMapper::map).toList();
     }
 
     @Override

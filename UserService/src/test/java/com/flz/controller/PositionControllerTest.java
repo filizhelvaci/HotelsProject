@@ -46,7 +46,7 @@ class PositionControllerTest extends BaseTest {
      * {@link PositionController#findAll(com.flz.model.request.PageRequest)}
      */
     @Test
-    public void givenPageAndPageSize_whenCalledAllPosition_thenReturnAllPositionsSuccessfully() throws Exception {
+    void givenPageAndPageSize_whenCalledAllPosition_thenReturnAllPositionsSuccessfully() throws Exception {
 
         //Given
         List<Position> mockPositions = getPositions();
@@ -129,7 +129,7 @@ class PositionControllerTest extends BaseTest {
     }
 
     @Test
-    public void givenValidPageAndPageSize_whenCalledAllPositions_thenReturnEmptyList() throws Exception {
+    void givenValidPageAndPageSize_whenCalledAllPositions_thenReturnEmptyList() throws Exception {
 
         //Given
         Integer mockPageSize = 10;
@@ -166,7 +166,7 @@ class PositionControllerTest extends BaseTest {
      * {@link PositionController#findSummaryAll()}
      */
     @Test
-    public void whenCalledAllSummaryPosition_thenReturnPositionsSummaryResponse() throws Exception {
+    void whenCalledAllSummaryPosition_thenReturnPositionsSummaryResponse() throws Exception {
 
         //Given
         List<PositionSummaryResponse> mockPositionsSummaryResponse = List.of(
@@ -211,7 +211,7 @@ class PositionControllerTest extends BaseTest {
     }
 
     @Test
-    public void whenNotFoundPositionsSummaryAll_thenReturnEmptyList() throws Exception {
+    void whenNotFoundPositionsSummaryAll_thenReturnEmptyList() throws Exception {
 
         //When
         List<PositionSummaryResponse> emptyList = Collections.emptyList();
@@ -342,7 +342,7 @@ class PositionControllerTest extends BaseTest {
      * {@link PositionController#update(Long, PositionUpdateRequest)}
      */
     @Test
-    public void givenValidIdAndPositionUpdateRequest_whenFindPositionById_thenUpdatePositionSuccessfully() throws Exception {
+    void givenValidIdAndPositionUpdateRequest_whenFindPositionById_thenUpdatePositionSuccessfully() throws Exception {
 
         //Given
         Long mockId = 10L;

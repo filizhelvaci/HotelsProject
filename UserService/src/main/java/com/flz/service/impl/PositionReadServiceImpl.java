@@ -16,8 +16,7 @@ class PositionReadServiceImpl implements PositionReadService {
 
     private final PositionReadPort positionReadPort;
 
-    private final PositionToPositionSummaryResponseMapper
-            positionToPositionSummaryResponseMapper = PositionToPositionSummaryResponseMapper.INSTANCE;
+    private final PositionToPositionSummaryResponseMapper positionToPositionSummaryResponseMapper;
 
 
     @Override

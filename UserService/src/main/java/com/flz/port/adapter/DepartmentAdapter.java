@@ -21,8 +21,8 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
 
     private final DepartmentRepository departmentRepository;
 
-    private final DepartmentToEntityMapper departmentToEntityMapper = DepartmentToEntityMapper.INSTANCE;
-    private final DepartmentEntityToDomainMapper departmentEntityToDomainMapper = DepartmentEntityToDomainMapper.INSTANCE;
+    private final DepartmentToEntityMapper departmentToEntityMapper;
+    private final DepartmentEntityToDomainMapper departmentEntityToDomainMapper;
 
 
     @Override

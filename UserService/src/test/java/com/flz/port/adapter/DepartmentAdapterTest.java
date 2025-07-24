@@ -132,7 +132,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#findById(Long)}
      */
     @Test
-    public void givenValidId_whenDepartmentEntityFoundAccordingById_thenReturnDepartment() {
+    void givenValidId_whenDepartmentEntityFoundAccordingById_thenReturnDepartment() {
 
         //Given
         Long mockId = 1L;
@@ -158,7 +158,7 @@ class DepartmentAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidId_whenDepartmentEntityNotFoundById_returnOptionalEmpty() {
+    void givenValidId_whenDepartmentEntityNotFoundById_returnOptionalEmpty() {
 
         //Given
         Long mockId = 10L;
@@ -182,7 +182,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#existsByName(String)}
      */
     @Test
-    public void givenValidName_whenDepartmentEntityFoundAccordingByName_thenReturnTrue() {
+    void givenValidName_whenDepartmentEntityFoundAccordingByName_thenReturnTrue() {
 
         //Given
         String mockName = "TestName";
@@ -204,7 +204,7 @@ class DepartmentAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidName_whenDepartmentEntityNotFoundAccordingByName_thenReturnFalse() {
+    void givenValidName_whenDepartmentEntityNotFoundAccordingByName_thenReturnFalse() {
 
         //Given
         String mockName = "TestName";
@@ -228,7 +228,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#save(Department)}
      */
     @Test
-    public void givenDepartment_whenCalledSave_thenSaveDepartmentEntity() {
+    void givenDepartment_whenCalledSave_thenSaveDepartmentEntity() {
 
         //Given
         Department mockDepartment = Department.builder()
@@ -255,7 +255,7 @@ class DepartmentAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenDepartment_whenRepositoryThrowsException_thenPropagateException() {
+    void givenDepartment_whenRepositoryThrowsException_thenPropagateException() {
         //Given
         Department mockDepartment = Department.builder()
                 .name("TestName")
