@@ -2,8 +2,13 @@ package com.flz.service.impl;
 
 import com.flz.BaseTest;
 import com.flz.exception.EmployeeNotFoundException;
+import com.flz.model.Department;
 import com.flz.model.Employee;
+import com.flz.model.EmployeeExperience;
+import com.flz.model.Position;
 import com.flz.model.enums.Gender;
+import com.flz.model.mapper.EmployeeExperienceToResponseMapper;
+import com.flz.model.mapper.EmployeeToEmployeeSummaryResponseMapper;
 import com.flz.model.response.EmployeeDetailsResponse;
 import com.flz.model.response.EmployeeExperienceResponse;
 import com.flz.model.response.EmployeeSummaryResponse;
@@ -30,6 +35,12 @@ class EmployeeReadServiceImplTest extends BaseTest {
     @Mock
     EmployeeExperienceReadPort employeeExperienceReadPort;
 
+    @Mock
+    EmployeeToEmployeeSummaryResponseMapper employeeToEmployeeSummaryResponseMapper;
+
+    @Mock
+    EmployeeExperienceToResponseMapper employeeExperienceToResponseMapper;
+
     @InjectMocks
     EmployeeReadServiceImpl employeeReadServiceImpl;
 
@@ -55,27 +66,54 @@ class EmployeeReadServiceImplTest extends BaseTest {
                 .nationality("TR")
                 .build();
 
-        List<EmployeeExperienceResponse> mockExperienceList = List.of(
-                EmployeeExperienceResponse.builder()
-                        .positionName("Developer")
-                        .supervisorName("Ahmet Yilmaz")
-                        .salary(BigDecimal.valueOf(55000))
-                        .startDate(LocalDate.of(2022, 1, 1))
-                        .build(),
-                EmployeeExperienceResponse.builder()
-                        .positionName("Product Owner")
-                        .supervisorName("Mehmet Yildirim")
-                        .salary(BigDecimal.valueOf(35000))
-                        .startDate(LocalDate.of(2021, 1, 1))
-                        .build()
-        );
+        EmployeeExperience empExp1 = EmployeeExperience.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(55000))
+                .startDate(LocalDate.of(2021, 11, 12))
+                .endDate(LocalDate.of(2022, 11, 12))
+                .position(Position.builder().id(20L).name("Kat Sorumlusu").department(Department.builder().id(18L).name("Düzen ve Tedarik Departmanı").build()).build())
+                .employee(mockEmployee)
+                .supervisor(Employee.builder().id(85L).firstName("Ayhan").lastName("Kaymaz").build())
+                .build();
+
+        EmployeeExperience empExp2 = EmployeeExperience.builder()
+                .id(2L)
+                .salary(BigDecimal.valueOf(75000))
+                .startDate(LocalDate.of(2022, 11, 13))
+                .endDate(LocalDate.of(2023, 11, 13))
+                .position(Position.builder().id(28L).name("Departman Sorumlusu").department(Department.builder().id(18L).name("Düzen ve Tedarik Departmanı").build()).build())
+                .employee(mockEmployee)
+                .supervisor(Employee.builder().id(85L).firstName("Ayhan").lastName("Kaymaz").build())
+                .build();
+
+        List<EmployeeExperience> mockExperienceList = List.of(empExp1, empExp2);
 
         //When
         Mockito.when(employeeReadPort.findById(mockId))
                 .thenReturn(Optional.of(mockEmployee));
 
-        Mockito.when(employeeExperienceReadPort.findAllByEmployee_Id(mockId))
+        Mockito.when(employeeExperienceReadPort.findAllByEmployeeId(mockId))
                 .thenReturn(mockExperienceList);
+
+        Mockito.when(employeeExperienceToResponseMapper.map(empExp1))
+                .thenReturn(EmployeeExperienceResponse.builder()
+                        .id(empExp1.getId())
+                        .positionName(empExp1.getPosition().getName())
+                        .salary(empExp1.getSalary())
+                        .startDate(empExp1.getStartDate())
+                        .endDate(empExp1.getEndDate())
+                        .supervisorName(empExp1.getSupervisor().getFirstName() + " " + empExp1.getSupervisor().getLastName())
+                        .build());
+
+        Mockito.when(employeeExperienceToResponseMapper.map(empExp2))
+                .thenReturn(EmployeeExperienceResponse.builder()
+                        .id(empExp2.getId())
+                        .positionName(empExp2.getPosition().getName())
+                        .salary(empExp2.getSalary())
+                        .startDate(empExp2.getStartDate())
+                        .endDate(empExp2.getEndDate())
+                        .supervisorName(empExp2.getSupervisor().getFirstName() + " " + empExp2.getSupervisor().getLastName())
+                        .build());
 
         //Then
         EmployeeDetailsResponse response = employeeReadServiceImpl.findById(mockId);
@@ -84,7 +122,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
         Assertions.assertEquals(mockEmployee, response.getEmployee());
         Assertions.assertEquals(2, response.getExperiences()
                 .size());
-        Assertions.assertEquals("Developer", response.getExperiences()
+        Assertions.assertEquals("Kat Sorumlusu", response.getExperiences()
                 .get(0)
                 .getPositionName());
 
@@ -92,7 +130,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(mockId);
         Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
-                .findAllByEmployee_Id(mockId);
+                .findAllByEmployeeId(mockId);
     }
 
     @Test
@@ -113,7 +151,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(invalidEmployeeId);
         Mockito.verify(employeeExperienceReadPort, Mockito.never())
-                .findAllByEmployee_Id(invalidEmployeeId);
+                .findAllByEmployeeId(invalidEmployeeId);
     }
 
 
@@ -121,7 +159,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
      * {@link EmployeeReadServiceImpl#findSummaryAll()}
      */
     @Test
-    public void whenCalledAllSummaryEmployee_thenReturnListOfEmployeesSummaryResponse() {
+    void whenCalledAllSummaryEmployee_thenReturnListOfEmployeesSummaryResponse() {
 
         //When
         List<Employee> mockEmployees = List.of(
@@ -142,14 +180,16 @@ class EmployeeReadServiceImplTest extends BaseTest {
                         .build()
         );
 
+        List<EmployeeSummaryResponse> mockSummaryEmployees = employeeToEmployeeSummaryResponseMapper
+                .map(mockEmployees);
+
         Mockito.when(employeeReadPort.findSummaryAll())
                 .thenReturn(mockEmployees);
 
         //Then
-        List<EmployeeSummaryResponse> result = employeeReadServiceImpl
-                .findSummaryAll();
-        Assertions.assertEquals(mockEmployees.size(), result.size());
-        Assertions.assertNotNull(result);
+        List<EmployeeSummaryResponse> response = employeeReadServiceImpl.findSummaryAll();
+        Assertions.assertEquals(mockSummaryEmployees.size(), response.size());
+        Assertions.assertNotNull(response);
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
@@ -158,7 +198,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
 
 
     @Test
-    public void whenCalledAllSummaryEmployeeIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
+    void whenCalledAllSummaryEmployeeIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
 
         //When
         Mockito.when(employeeReadPort.findSummaryAll())
@@ -182,7 +222,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
      * {@link EmployeeReadServiceImpl#findAll(Integer, Integer)}
      */
     @Test
-    public void givenValidPagePageSize_whenCalledAllEmployee_thenReturnListAllOfEmployees() {
+    void givenValidPagePageSize_whenCalledAllEmployee_thenReturnListAllOfEmployees() {
 
         //Given
         Integer mockPage = 1;
@@ -205,7 +245,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    public void givenValidPagePageSize_whenCalledAllEmployeeIfAllEmployeeIsEmpty_thenReturnEmptyList() {
+    void givenValidPagePageSize_whenCalledAllEmployeeIfAllEmployeeIsEmpty_thenReturnEmptyList() {
 
         //Given
         Integer mockPage = 1;

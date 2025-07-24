@@ -2,6 +2,8 @@ package com.flz.service.impl;
 
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.model.Employee;
+import com.flz.model.EmployeeExperience;
+import com.flz.model.mapper.EmployeeExperienceToResponseMapper;
 import com.flz.model.mapper.EmployeeToEmployeeSummaryResponseMapper;
 import com.flz.model.response.EmployeeDetailsResponse;
 import com.flz.model.response.EmployeeExperienceResponse;
@@ -23,8 +25,8 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
     private final EmployeeReadPort employeeReadPort;
     private final EmployeeExperienceReadPort employeeExperienceReadPort;
 
-    private final EmployeeToEmployeeSummaryResponseMapper
-            employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
+    private final EmployeeToEmployeeSummaryResponseMapper employeeToEmployeeSummaryResponseMapper;
+    private final EmployeeExperienceToResponseMapper employeeExperienceToResponseMapper;
 
     @Override
     public EmployeeDetailsResponse findById(Long id) {
@@ -32,10 +34,14 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        List<EmployeeExperienceResponse> employeeExperiences = Optional.ofNullable(
-                        employeeExperienceReadPort.findAllByEmployee_Id(id)
+        List<EmployeeExperience> experiences = Optional.ofNullable(
+                        employeeExperienceReadPort.findAllByEmployeeId(id)
                 )
                 .orElse(Collections.emptyList());
+
+        List<EmployeeExperienceResponse> employeeExperiences = experiences.stream()
+                .map(employeeExperienceToResponseMapper::map)
+                .toList();
 
         if (employeeExperiences.isEmpty()) {
             System.out.println("No employee experiences found, " +
