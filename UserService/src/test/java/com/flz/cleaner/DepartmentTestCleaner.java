@@ -18,4 +18,5 @@ public class DepartmentTestCleaner {
 
         departmentRepository.deleteAllByNameContainingIgnoreCase("test");
     }
+
 }

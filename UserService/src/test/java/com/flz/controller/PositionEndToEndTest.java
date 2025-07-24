@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PositionEndToEndTest {
+class PositionEndToEndTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -330,4 +330,5 @@ public class PositionEndToEndTest {
         Assertions.assertNotNull(positions.get(0)
                 .getId());
     }
+
 }

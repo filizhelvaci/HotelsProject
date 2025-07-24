@@ -30,8 +30,8 @@ class DepartmentAdapterTest extends BaseTest {
     @Mock
     DepartmentRepository departmentRepository;
 
-    private final DepartmentToEntityMapper departmentToEntityMapper = DepartmentToEntityMapper.INSTANCE;
-    private final DepartmentEntityToDomainMapper departmentEntityToDomainMapper = DepartmentEntityToDomainMapper.INSTANCE;
+    private final DepartmentEntityToDomainMapper
+            departmentEntityToDomainMapper = DepartmentEntityToDomainMapper.INSTANCE;
 
     /**
      * {@link DepartmentAdapter#findAll(Integer, Integer)}
@@ -40,13 +40,13 @@ class DepartmentAdapterTest extends BaseTest {
     void givenValidPageAndPageSize_whenDepartmentFound_thenReturnListDepartments() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        int mockPage = 1;
+        int mockPageSize = 10;
 
         //When
         List<DepartmentEntity> mockDepartmentEntities = getDepartmentEntities();
 
-        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
 
         Page<DepartmentEntity> mockDepartmentEntitiesPage = new PageImpl<>(mockDepartmentEntities);
         Mockito.when(departmentRepository.findAll(mockPageable))
@@ -67,11 +67,11 @@ class DepartmentAdapterTest extends BaseTest {
     void givenValidPageAndPageSize_whenDepartmentNotFound_thenReturnEmptyDepartment() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        int mockPage = 1;
+        int mockPageSize = 10;
 
         //When
-        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
         Mockito.when(departmentRepository.findAll(mockPageable))
                 .thenReturn(Page.empty());
 
@@ -132,7 +132,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#findById(Long)}
      */
     @Test
-    public void givenValidId_whenDepartmentEntityFoundAccordingById_thenReturnDepartment() {
+    void givenValidId_whenDepartmentEntityFoundAccordingById_thenReturnDepartment() {
 
         //Given
         Long mockId = 1L;
@@ -158,7 +158,7 @@ class DepartmentAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidId_whenDepartmentEntityNotFoundById_returnOptionalEmpty() {
+    void givenValidId_whenDepartmentEntityNotFoundById_returnOptionalEmpty() {
 
         //Given
         Long mockId = 10L;
@@ -182,7 +182,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#existsByName(String)}
      */
     @Test
-    public void givenValidName_whenDepartmentEntityFoundAccordingByName_thenReturnTrue() {
+    void givenValidName_whenDepartmentEntityFoundAccordingByName_thenReturnTrue() {
 
         //Given
         String mockName = "TestName";
@@ -204,7 +204,7 @@ class DepartmentAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidName_whenDepartmentEntityNotFoundAccordingByName_thenReturnFalse() {
+    void givenValidName_whenDepartmentEntityNotFoundAccordingByName_thenReturnFalse() {
 
         //Given
         String mockName = "TestName";
@@ -228,7 +228,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#save(Department)}
      */
     @Test
-    public void givenDepartment_whenCalledSave_thenSaveDepartmentEntity() {
+    void givenDepartment_whenCalledSave_thenSaveDepartmentEntity() {
 
         //Given
         Department mockDepartment = Department.builder()
@@ -255,7 +255,7 @@ class DepartmentAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenDepartment_whenRepositoryThrowsException_thenPropagateException() {
+    void givenDepartment_whenRepositoryThrowsException_thenPropagateException() {
         //Given
         Department mockDepartment = Department.builder()
                 .name("TestName")
@@ -264,17 +264,19 @@ class DepartmentAdapterTest extends BaseTest {
                 .createdBy("TestAdmin")
                 .build();
 
-        DepartmentEntity mockDepartmentEntity = DepartmentToEntityMapper.INSTANCE.map(mockDepartment);
+        DepartmentToEntityMapper.INSTANCE.map(mockDepartment);
 
         //When
         Mockito.when(departmentRepository.save(Mockito.any(DepartmentEntity.class)))
                 .thenThrow(new RuntimeException("Database error"));
 
         //Then
-        Assertions.assertThrows(RuntimeException.class, () -> adapter.save(mockDepartment));
+        Assertions.assertThrows(RuntimeException.class,
+                () -> adapter.save(mockDepartment));
 
         //Verify
-        Mockito.verify(departmentRepository, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .save(Mockito.any());
     }
 
 
@@ -298,6 +300,5 @@ class DepartmentAdapterTest extends BaseTest {
                         .createdAt(LocalDateTime.now()).createdBy("testAdmin").build()
         );
     }
-
 
 }

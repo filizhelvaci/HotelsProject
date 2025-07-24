@@ -16,8 +16,7 @@ class DepartmentReadServiceImpl implements DepartmentReadService {
 
     private final DepartmentReadPort departmentReadPort;
 
-    private final DepartmentToDepartmentSummaryResponseMapper
-            departmentToDepartmentSummaryResponseMapper = DepartmentToDepartmentSummaryResponseMapper.INSTANCE;
+    private final DepartmentToDepartmentSummaryResponseMapper departmentToDepartmentSummaryResponseMapper;
 
     @Override
     public List<DepartmentSummaryResponse> findSummaryAll() {

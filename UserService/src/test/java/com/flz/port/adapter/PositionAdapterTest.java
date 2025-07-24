@@ -44,12 +44,12 @@ class PositionAdapterTest extends BaseTest {
     void givenValidPageAndPageSize_whenPositionFound_thenReturnListPositions() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        int mockPage = 1;
+        int mockPageSize = 10;
 
         //When
         List<PositionEntity> mockPositionEntities = getPositionEntities();
-        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
 
         Page<PositionEntity> mockPositionEntitiesPage = new PageImpl<>(mockPositionEntities);
         Mockito.when(positionRepository.findAll(mockPageable))
@@ -69,11 +69,11 @@ class PositionAdapterTest extends BaseTest {
     void givenValidPageAndPageSize_whenPositionNotFound_thenReturnEmptyPositions() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        int mockPage = 1;
+        int mockPageSize = 10;
 
         //When
-        Pageable mockPageable = PageRequest.of(mockPage - 1, mockPageSize);
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
         Mockito.when(positionRepository.findAll(mockPageable))
                 .thenReturn(Page.empty());
 
@@ -135,7 +135,7 @@ class PositionAdapterTest extends BaseTest {
      * {@link PositionAdapter#findById(Long)}
      */
     @Test
-    public void givenValidId_whenPositionEntityFoundAccordingById_thenReturnPosition() {
+    void givenValidId_whenPositionEntityFoundAccordingById_thenReturnPosition() {
 
         //Given
         Long mockId = 1L;
@@ -162,7 +162,7 @@ class PositionAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidId_whenPositionEntityNotFoundById_returnOptionalEmpty() {
+    void givenValidId_whenPositionEntityNotFoundById_returnOptionalEmpty() {
 
         //Given
         Long mockId = 10L;
@@ -186,7 +186,7 @@ class PositionAdapterTest extends BaseTest {
      * {@link PositionAdapter#existsByName(String)}
      */
     @Test
-    public void givenValidName_whenPositionEntityFoundAccordingByName_thenReturnTrue() {
+    void givenValidName_whenPositionEntityFoundAccordingByName_thenReturnTrue() {
 
         //Given
         String mockName = "TestName";
@@ -208,7 +208,7 @@ class PositionAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenValidName_whenPositionEntityNotFoundAccordingByName_thenReturnFalse() {
+    void givenValidName_whenPositionEntityNotFoundAccordingByName_thenReturnFalse() {
 
         //Given
         String mockName = "TestName";
@@ -232,7 +232,7 @@ class PositionAdapterTest extends BaseTest {
      * {@link PositionAdapter#save(Position)}
      */
     @Test
-    public void givenPosition_whenCalledSave_thenSavePositionEntity() {
+    void givenPosition_whenCalledSave_thenSavePositionEntity() {
 
         //Given
         Position mockPosition = getPosition();
@@ -252,11 +252,11 @@ class PositionAdapterTest extends BaseTest {
 
 
     @Test
-    public void givenPosition_whenRepositoryThrowsException_thenReturnException() {
+    void givenPosition_whenRepositoryThrowsException_thenReturnException() {
 
         //Given
         Position mockPosition = getPosition();
-        PositionEntity mockPositionEntity = PositionToEntityMapper.INSTANCE.map(mockPosition);
+        PositionToEntityMapper.INSTANCE.map(mockPosition);
 
         //When
         Mockito.when(positionRepository.save(Mockito.any(PositionEntity.class)))

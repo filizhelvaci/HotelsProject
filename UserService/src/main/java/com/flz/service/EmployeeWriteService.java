@@ -3,7 +3,7 @@ package com.flz.service;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
 
-public interface EmployeeCreateService {
+public interface EmployeeWriteService {
 
     void create(EmployeeCreateRequest employeeCreateRequest);
 

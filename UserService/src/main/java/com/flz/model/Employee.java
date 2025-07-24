@@ -7,8 +7,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -27,17 +25,6 @@ public class Employee extends BaseDomainModel {
     private Gender gender;
     private String nationality;
 
-    private List<EmployeeExperience> experiences;
-
-
-    public void addExperience(EmployeeExperience experience) {
-        if (this.experiences == null) {
-            this.experiences = new ArrayList<>();
-        }
-        experience.setEmployee(this);
-        this.experiences.add(experience);
-    }
-
     public void update(String firstName, String lastName, String identityNumber, String email, String phoneNumber, String address, LocalDate birthDate, Gender gender, String nationality) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -48,6 +35,12 @@ public class Employee extends BaseDomainModel {
         this.birthDate = birthDate;
         this.gender = gender;
         this.nationality = nationality;
+    }
+
+    public Employee(Long id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
 }

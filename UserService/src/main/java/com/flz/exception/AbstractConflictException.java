@@ -7,7 +7,7 @@ public abstract class AbstractConflictException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public AbstractConflictException(String message) {
+    protected AbstractConflictException(String message) {
 
         super(message);
     }

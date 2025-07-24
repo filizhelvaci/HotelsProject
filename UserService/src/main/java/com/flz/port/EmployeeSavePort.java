@@ -2,7 +2,10 @@ package com.flz.port;
 
 import com.flz.model.Employee;
 
+import java.util.Optional;
+
 public interface EmployeeSavePort {
 
-    void save(Employee employee);
+    Optional<Employee> save(Employee employee);
+
 }
