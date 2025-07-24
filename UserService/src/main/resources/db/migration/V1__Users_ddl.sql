@@ -10,17 +10,28 @@ create table if not exists ru_department
     name
     varchar
 (
-    100) not null unique,
+    100
+) not null unique,
     status varchar
-    (25) not null default 'ACTIVE',
+(
+    25
+) not null default 'ACTIVE',
     created_at timestamp
-    (0) not null default current_timestamp,
+(
+    0
+) not null default current_timestamp,
     created_by varchar
-    (120) not null,
+(
+    120
+) not null,
     updated_at timestamp
-    (0),
+(
+    0
+),
     updated_by varchar
-    (120)
+(
+    120
+)
 );
 
 create table if not exists ru_employee
@@ -65,20 +76,31 @@ create table if not exists ru_position
     name
     varchar
 (
-    100) not null unique,
+    100
+) not null unique,
     department_id bigint not null references ru_department
-    (id),
+(
+    id
+),
     status varchar
-    (25) not null check
-    (status
-     in
-    (
-     'ACTIVE',
-     'DELETED')),
+(
+    25
+) not null check
+(
+    status
+    in
+(
+    'ACTIVE',
+    'DELETED'
+)),
     created_at timestamp
-    (0) not null default current_timestamp,
+(
+    0
+) not null default current_timestamp,
     created_by varchar
-    (120) not null,
+(
+    120
+) not null,
     updated_at    timestamp(0),
     updated_by    varchar(120)
 );
@@ -90,19 +112,30 @@ create table if not exists ru_employee_experience
     numeric
 (
     12,
-    2) not null,
+    2
+) not null,
     employee_id bigint not null references ru_employee
-    (id),
+(
+    id
+),
     position_id bigint not null references ru_position
-    (id),
+(
+    id
+),
     supervisor_id bigint not null references ru_employee
-    (id),
+(
+    id
+),
     start_date date not null,
     end_date      date,
     created_at timestamp
-    (0) not null default current_timestamp,
+(
+    0
+) not null default current_timestamp,
     created_by varchar
-    (120) not null,
+(
+    120
+) not null,
     updated_at    timestamp(0),
     updated_by    varchar(120)
 );
