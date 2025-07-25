@@ -11,7 +11,7 @@ import com.flz.port.EmployeeExperienceReadPort;
 import com.flz.port.EmployeeExperienceSavePort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.PositionReadPort;
-import com.flz.service.EmployeeExperienceCreateService;
+import com.flz.service.EmployeeExperienceWriteService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-class EmployeeExperienceCreateServiceImpl implements EmployeeExperienceCreateService {
+class EmployeeExperienceCreateServiceImpl implements EmployeeExperienceWriteService {
 
     private final EmployeeExperienceSavePort employeeExperienceSavePort;
     private final EmployeeExperienceReadPort employeeExperienceReadPort;

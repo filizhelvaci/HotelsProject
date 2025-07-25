@@ -3,7 +3,7 @@ package com.flz.controller;
 
 import com.flz.model.request.EmployeeExperienceCreateRequest;
 import com.flz.model.response.HotelResponse;
-import com.flz.service.EmployeeExperienceCreateService;
+import com.flz.service.EmployeeExperienceWriteService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 class EmployeeExperienceController {
 
-    private final EmployeeExperienceCreateService employeeExperienceCreateService;
+    private final EmployeeExperienceWriteService employeeExperienceCreateService;
 
     @PostMapping("/employee/{id}/experience")
     public HotelResponse<Void> create(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid EmployeeExperienceCreateRequest createRequest) {

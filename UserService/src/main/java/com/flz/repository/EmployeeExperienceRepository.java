@@ -18,4 +18,6 @@ public interface EmployeeExperienceRepository extends JpaRepository<EmployeeExpe
 
     List<EmployeeExperienceEntity> findAllByEmployee_Id(Long employeeId);
 
+    void deleteAllByEmployee_Id(Long employeeId);
+
 }

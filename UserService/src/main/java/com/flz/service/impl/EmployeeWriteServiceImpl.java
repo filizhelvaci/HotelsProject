@@ -7,12 +7,27 @@ import com.flz.model.Employee;
 import com.flz.model.EmployeeExperience;
 import com.flz.model.Position;
 import com.flz.model.mapper.EmployeeCreateRequestToDomainMapper;
+import com.flz.model.mapper.EmployeeExperienceToEmployeeOldExperienceMapper;
+import com.flz.model.mapper.EmployeeToEmployeeOldMapper;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
-import com.flz.port.*;
+import com.flz.port.EmployeeDeletePort;
+import com.flz.port.EmployeeExperienceDeletePort;
+import com.flz.port.EmployeeExperienceReadPort;
+import com.flz.port.EmployeeExperienceSavePort;
+import com.flz.port.EmployeeOldExperienceSavePort;
+import com.flz.port.EmployeeOldSavePort;
+import com.flz.port.EmployeeReadPort;
+import com.flz.port.EmployeeSavePort;
+import com.flz.port.PositionReadPort;
 import com.flz.service.EmployeeWriteService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +38,14 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
     private final EmployeeDeletePort employeeDeletePort;
     private final PositionReadPort positionReadPort;
     private final EmployeeExperienceSavePort employeeExperienceSavePort;
+    private final EmployeeExperienceReadPort employeeExperienceReadPort;
+    private final EmployeeExperienceDeletePort employeeExperienceDeletePort;
+    private final EmployeeOldSavePort employeeOldSavePort;
+    private final EmployeeOldExperienceSavePort employeeOldExperienceSavePort;
 
     private final EmployeeCreateRequestToDomainMapper employeeCreateRequestToDomainMapper;
+    private final EmployeeToEmployeeOldMapper employeeToEmployeeOldMapper;
+    private final EmployeeExperienceToEmployeeOldExperienceMapper employeeExperienceToEmployeeOldExperienceMapper;
 
     @Override
     public void create(EmployeeCreateRequest createRequest) {
@@ -109,11 +130,26 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
 
 
     @Override
+    @Transactional
     public void delete(Long id) {
 
-        employeeReadPort.findById(id)
+        Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
+
+        List<EmployeeExperience> experiences = Optional.ofNullable(
+                        employeeExperienceReadPort.findAllByEmployeeId(id)
+                )
+                .orElse(Collections.emptyList());
+
+        if (!experiences.isEmpty()) {
+            employeeOldExperienceSavePort.saveAll(employeeExperienceToEmployeeOldExperienceMapper
+                    .map(experiences));
+            employeeExperienceDeletePort.deleteAllByEmployeeId(id);
+        }
+
+        employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee));
         employeeDeletePort.delete(id);
+
     }
 
 }
