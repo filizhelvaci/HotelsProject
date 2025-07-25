@@ -4,6 +4,7 @@ import com.flz.model.EmployeeExperience;
 import com.flz.model.entity.EmployeeExperienceEntity;
 import com.flz.model.mapper.EmployeeExperienceEntityToDomainMapper;
 import com.flz.model.mapper.EmployeeExperienceToEntityMapper;
+import com.flz.port.EmployeeExperienceDeletePort;
 import com.flz.port.EmployeeExperienceReadPort;
 import com.flz.port.EmployeeExperienceSavePort;
 import com.flz.repository.EmployeeExperienceRepository;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, EmployeeExperienceReadPort {
+public class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, EmployeeExperienceReadPort, EmployeeExperienceDeletePort {
 
     private final EmployeeExperienceRepository employeeExperienceRepository;
 
@@ -51,6 +52,12 @@ public class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, Em
     public Optional<EmployeeExperience> findTopByEmployeeIdOrderByStartDateDesc(Long employeeId) {
         return employeeExperienceRepository
                 .findTopByEmployeeIdOrderByStartDateDesc(employeeId).map(employeeExperienceEntityToDomainMapper::map);
+    }
+
+
+    public void deleteAllByEmployeeId(Long employeeId) {
+
+        employeeExperienceRepository.deleteAllByEmployee_Id(employeeId);
     }
 
 }
