@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
                 .toList();
 
         if (employeeExperiences.isEmpty()) {
-            System.out.println("No employee experiences found, " +
+            Logger.getLogger("No employee experiences found, " +
                     "so please add employee experience for this employee.");
         }
 
