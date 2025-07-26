@@ -23,7 +23,8 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
     private final DepartmentSavePort departmentSavePort;
     private final DepartmentReadPort departmentReadPort;
 
-    private final DepartmentCreateRequestToDomainMapper departmentCreateRequestToDomainMapper;
+    private final DepartmentCreateRequestToDomainMapper
+            departmentCreateRequestToDomainMapper = DepartmentCreateRequestToDomainMapper.INSTANCE;
 
     @Override
     public void create(DepartmentCreateRequest createRequest) {

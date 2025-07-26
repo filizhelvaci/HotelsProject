@@ -22,8 +22,8 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
 
     private final EmployeeRepository employeeRepository;
 
-    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper;
-    private final EmployeeToEntityMapper employeeToEntityMapper;
+    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
+    private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
 
 
     @Override

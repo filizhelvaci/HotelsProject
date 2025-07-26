@@ -3,28 +3,19 @@ package com.flz.service.impl;
 import com.flz.exception.EmployeeAlreadyExistsException;
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.exception.PositionNotFoundException;
-import com.flz.model.Employee;
-import com.flz.model.EmployeeExperience;
-import com.flz.model.Position;
+import com.flz.model.*;
 import com.flz.model.mapper.EmployeeCreateRequestToDomainMapper;
 import com.flz.model.mapper.EmployeeExperienceToEmployeeOldExperienceMapper;
 import com.flz.model.mapper.EmployeeToEmployeeOldMapper;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
-import com.flz.port.EmployeeDeletePort;
-import com.flz.port.EmployeeExperienceDeletePort;
-import com.flz.port.EmployeeExperienceReadPort;
-import com.flz.port.EmployeeExperienceSavePort;
-import com.flz.port.EmployeeOldExperienceSavePort;
-import com.flz.port.EmployeeOldSavePort;
-import com.flz.port.EmployeeReadPort;
-import com.flz.port.EmployeeSavePort;
-import com.flz.port.PositionReadPort;
+import com.flz.port.*;
 import com.flz.service.EmployeeWriteService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +34,12 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
     private final EmployeeOldSavePort employeeOldSavePort;
     private final EmployeeOldExperienceSavePort employeeOldExperienceSavePort;
 
-    private final EmployeeCreateRequestToDomainMapper employeeCreateRequestToDomainMapper;
-    private final EmployeeToEmployeeOldMapper employeeToEmployeeOldMapper;
-    private final EmployeeExperienceToEmployeeOldExperienceMapper employeeExperienceToEmployeeOldExperienceMapper;
+    private final EmployeeCreateRequestToDomainMapper
+            employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
+    private final EmployeeToEmployeeOldMapper
+            employeeToEmployeeOldMapper = EmployeeToEmployeeOldMapper.INSTANCE;
+    private final EmployeeExperienceToEmployeeOldExperienceMapper
+            employeeExperienceToEmployeeOldExperienceMapper = EmployeeExperienceToEmployeeOldExperienceMapper.INSTANCE;
 
     @Override
     public void create(EmployeeCreateRequest createRequest) {
@@ -136,18 +130,33 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
+        EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee))
+                .orElseThrow(() -> new RuntimeException("Employee kaydedilemedi"));
+
         List<EmployeeExperience> experiences = Optional.ofNullable(
                         employeeExperienceReadPort.findAllByEmployeeId(id)
                 )
                 .orElse(Collections.emptyList());
 
         if (!experiences.isEmpty()) {
-            employeeOldExperienceSavePort.saveAll(employeeExperienceToEmployeeOldExperienceMapper
-                    .map(experiences));
+
+            for (EmployeeExperience experience : experiences) {
+                if (experience.getEndDate() == null) {
+                    experience.setEndDate(LocalDate.now());
+                }
+            }
+
+            List<EmployeeOldExperience> oldExperiences = employeeExperienceToEmployeeOldExperienceMapper
+                    .map(experiences);
+
+            for (EmployeeOldExperience oldExperience : oldExperiences) {
+                oldExperience.setEmployeeOld(employeeOld);
+            }
+
+            employeeOldExperienceSavePort.saveAll(oldExperiences);
             employeeExperienceDeletePort.deleteAllByEmployeeId(id);
         }
 
-        employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee));
         employeeDeletePort.delete(id);
 
     }

@@ -18,13 +18,13 @@ public class EmployeeOldExperienceAdapter implements EmployeeOldExperienceReadPo
 
     private final EmployeeOldExperienceRepository employeeOldExperienceRepository;
 
-    private final EmployeeOldExperienceToEntityMapper employeeOldExperienceToEntityMapper;
-    private final EmployeeOldExperienceEntityToDomainMapper employeeOldExperienceEntityToDomainMapper;
+    private final EmployeeOldExperienceToEntityMapper employeeOldExperienceToEntityMapper = EmployeeOldExperienceToEntityMapper.INSTANCE;
+    private final EmployeeOldExperienceEntityToDomainMapper employeeOldExperienceEntityToDomainMapper = EmployeeOldExperienceEntityToDomainMapper.INSTANCE;
 
     @Override
-    public List<EmployeeOldExperience> findAllByEmployeeId(Long employeeId) {
+    public List<EmployeeOldExperience> findAllByEmployeeOldId(Long employeeOldId) {
         List<EmployeeOldExperienceEntity> employeeOldExperienceEntities = employeeOldExperienceRepository
-                .findAllByEmployee_Id(employeeId);
+                .findAllByEmployeeOld_Id(employeeOldId);
         return employeeOldExperienceEntityToDomainMapper.map(employeeOldExperienceEntities);
     }
 

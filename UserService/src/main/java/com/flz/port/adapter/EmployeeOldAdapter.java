@@ -21,8 +21,8 @@ public class EmployeeOldAdapter implements EmployeeOldReadPort, EmployeeOldSaveP
 
     private final EmployeeOldRepository employeeOldRepository;
 
-    private final EmployeeOldEntityToDomainMapper employeeOldEntityToDomainMapper;
-    private final EmployeeOldToEntityMapper employeeOldToEntityMapper;
+    private final EmployeeOldEntityToDomainMapper employeeOldEntityToDomainMapper = EmployeeOldEntityToDomainMapper.INSTANCE;
+    private final EmployeeOldToEntityMapper employeeOldToEntityMapper = EmployeeOldToEntityMapper.INSTANCE;
 
 
     @Override

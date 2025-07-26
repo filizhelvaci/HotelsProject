@@ -47,43 +47,110 @@ create table if not exists ru_employee_old
 
 create table if not exists ru_position
     (
-        id            bigint generated always as identity primary key,
-        name          varchar(100) not null unique,
-        department_id bigint       not null references ru_department (id),
-        status        varchar(25)  not null check (status in ('ACTIVE', 'DELETED')),
-        created_at    timestamp(0) not null default current_timestamp,
-        created_by    varchar(120) not null,
-        updated_at    timestamp(0),
-        updated_by    varchar(120)
+        id
+        bigint
+        generated
+        always as
+        identity
+        primary
+        key,
+        name
+        varchar
+(
+        100
+) not null unique,
+    department_id bigint not null references ru_department
+(
+    id
+),
+    status varchar
+(
+    25
+) not null check
+(
+    status
+    in
+(
+    'ACTIVE',
+    'DELETED'
+)),
+    created_at timestamp
+(
+    0
+) not null default current_timestamp,
+    created_by varchar
+(
+    120
+) not null,
+    updated_at timestamp
+(
+    0
+),
+    updated_by varchar
+(
+    120
+)
     );
 
 create table if not exists ru_employee_experience
     (
-        id            bigint generated always as identity primary key,
-        salary        numeric(12, 2) not null,
-        employee_id   bigint         not null references ru_employee (id),
-        position_id   bigint         not null references ru_position (id),
-        supervisor_id bigint         not null references ru_employee (id),
-        start_date    date           not null,
-        end_date      date,
-        created_at    timestamp(0)   not null default current_timestamp,
-        created_by    varchar(120)   not null,
-        updated_at    timestamp(0),
-        updated_by    varchar(120)
+        id
+        bigint
+        generated
+        always as
+        identity
+        primary
+        key,
+        salary
+        numeric
+(
+        12,
+        2
+) not null,
+    employee_id bigint not null references ru_employee
+(
+    id
+),
+    position_id bigint not null references ru_position
+(
+    id
+),
+    supervisor_id bigint not null references ru_employee
+(
+    id
+),
+    start_date date not null,
+    end_date date,
+    created_at timestamp
+(
+    0
+) not null default current_timestamp,
+    created_by varchar
+(
+    120
+) not null,
+    updated_at timestamp
+(
+    0
+),
+    updated_by varchar
+(
+    120
+)
     );
 
 create table ru_employee_old_experience
     (
-        id            bigint generated always as identity primary key,
-        salary        numeric(12, 2) not null,
-        employee_id   bigint         not null references ru_employee_old (id),
-        position_id   bigint         not null references ru_position (id),
-        supervisor_id bigint         not null references ru_employee_old (id),
-        start_date    date           not null,
-        end_date      date           not null,
-        created_at    timestamp(0)   not null default current_timestamp,
-        created_by    varchar(120)   not null,
-        updated_at    timestamp(0),
-        updated_by    varchar(120)
+        id              bigint generated always as identity primary key,
+        salary          numeric(12, 2) not null,
+        employee_old_id bigint         not null references ru_employee_old (id),
+        position_id     bigint         not null references ru_position (id),
+        supervisor_id   bigint         not null references ru_employee_old (id),
+        start_date      date           not null,
+        end_date        date           not null,
+        created_at      timestamp(0)   not null default current_timestamp,
+        created_by      varchar(120)   not null,
+        updated_at      timestamp(0),
+        updated_by      varchar(120)
     );
 

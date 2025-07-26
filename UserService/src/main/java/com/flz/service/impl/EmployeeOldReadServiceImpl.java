@@ -24,7 +24,8 @@ class EmployeeOldReadServiceImpl implements EmployeeOldReadService {
     private final EmployeeOldReadPort employeeOldReadPort;
     private final EmployeeOldExperienceReadPort employeeOldExperienceReadPort;
 
-    private final EmployeeOldExperienceToResponseMapper employeeOldExperienceToResponseMapper;
+    private final EmployeeOldExperienceToResponseMapper
+            employeeOldExperienceToResponseMapper = EmployeeOldExperienceToResponseMapper.INSTANCE;
 
     @Override
     public EmployeeOldDetailsResponse findById(Long id) {
@@ -33,7 +34,7 @@ class EmployeeOldReadServiceImpl implements EmployeeOldReadService {
                 .orElseThrow(() -> new EmployeeOldNotFoundException(id));
 
         List<EmployeeOldExperience> experiences = Optional.ofNullable(
-                        employeeOldExperienceReadPort.findAllByEmployeeId(id)
+                        employeeOldExperienceReadPort.findAllByEmployeeOldId(id)
                 )
                 .orElse(Collections.emptyList());
 

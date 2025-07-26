@@ -21,8 +21,8 @@ public class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, Em
 
     private final EmployeeExperienceRepository employeeExperienceRepository;
 
-    private final EmployeeExperienceEntityToDomainMapper employeeExperienceEntityToDomainMapper;
-    private final EmployeeExperienceToEntityMapper employeeExperienceToEntityMapper;
+    private final EmployeeExperienceEntityToDomainMapper employeeExperienceEntityToDomainMapper = EmployeeExperienceEntityToDomainMapper.INSTANCE;
+    private final EmployeeExperienceToEntityMapper employeeExperienceToEntityMapper = EmployeeExperienceToEntityMapper.INSTANCE;
 
     @Override
     public List<EmployeeExperience> findAllByEmployeeId(Long employeeId) {
