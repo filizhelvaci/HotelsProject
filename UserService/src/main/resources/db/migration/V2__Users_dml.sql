@@ -266,63 +266,63 @@ values (45000.00, 15, 15, 7, '2024-03-15', 'Admin');
 -- -----------------------------------------------------------------------------------
 -- DML for Old Employee Experience Data
 -- -----------------------------------------------------------------------------------
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (9000.00, 1, 11, 5, '2020-01-01', '2024-01-01',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (12000.00, 2, 11, 5, '2020-02-15', '2024-01-15',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (10000.00, 3, 11, 5, '2023-03-10', '2024-01-05',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (5000.00, 4, 11, 5, '2020-05-01', '2022-01-01',
         'Admin', 'Admin');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (15000.00, 5, 13, 14, '2021-05-05', '2023-05-05',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (12000.00, 6, 13, 14, '2021-06-20', '2022-05-02',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (13000.00, 7, 12, 14, '2018-07-15', '2020-07-15',
         'Admin', 'Admin');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (15000.00, 8, 13, 14, '2020-08-01', '2021-08-01',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (12000.00, 9, 15, 6, '2020-09-12', '2020-12-12',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (10000.00, 10, 15, 6, '2019-11-03', '2021-11-05',
         'Admin', 'Admin');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (15000.00, 11, 11, 13, '2018-11-18', '2021-10-20',
         'Admin', 'Admin');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (16000.00, 12, 12, 13, '2020-12-01', '2022-01-30',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (28000.00, 13, 13, 1, '2018-01-05', '2020-02-06',
         'Admin', 'flz');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (15000.00, 14, 14, 6, '2017-02-20', '2021-10-10',
         'Admin', 'Admin');
-insert into ru_employee_old_experience (salary, employee_id, position_id, supervisor_id, start_date, end_date,
+insert into ru_employee_old_experience (salary, employee_old_id, position_id, supervisor_id, start_date, end_date,
                                         created_by, updated_by)
 values (25000.00, 15, 15, 7, '2018-03-15', '2023-10-25',
         'Admin', 'flz');
