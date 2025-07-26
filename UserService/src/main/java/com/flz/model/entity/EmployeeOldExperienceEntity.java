@@ -35,7 +35,7 @@ public class EmployeeOldExperienceEntity extends BaseEntity {
 
     /**
      * ----------------------------------------------------------------
-     * EmployeeExperienceEntity      PositionEntity
+     * EmployeeOldExperienceEntity      PositionEntity
      * M                       1
      */
     @ManyToOne(fetch = FetchType.EAGER)
@@ -44,16 +44,16 @@ public class EmployeeOldExperienceEntity extends BaseEntity {
 
     /**
      * ----------------------------------------------------------------
-     * EmployeeExperienceEntity      EmployeeEntity
+     * EmployeeOldExperienceEntity      EmployeeOldEntity
      * M                       1
      */
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
-    private EmployeeEntity employee;
+    @JoinColumn(name = "employee_old_id", referencedColumnName = "id", nullable = false)
+    private EmployeeOldEntity employeeOld;
 
     /**
      * ----------------------------------------------------------------
-     * EmployeeExperienceEntity      EmployeeEntity
+     * EmployeeOldExperienceEntity      EmployeeEntity
      * M                       1
      */
     @ManyToOne(fetch = FetchType.EAGER)

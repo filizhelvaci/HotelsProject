@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @Builder
 public class EmployeeOldExperienceResponse {
 
-
     private Long id;
     private BigDecimal salary;
     private LocalDate startDate;

@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface EmployeeOldExperienceReadPort {
 
-    List<EmployeeOldExperience> findAllByEmployeeId(Long employeeId);
+    List<EmployeeOldExperience> findAllByEmployeeOldId(Long employeeOldId);
 
 }

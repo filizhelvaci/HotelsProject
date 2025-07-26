@@ -20,7 +20,7 @@ public class EmployeeOldExperience extends BaseDomainModel {
     private LocalDate endDate;
 
     private Position position;
-    private Employee employee;
+    private EmployeeOld employeeOld;
     private Employee supervisor;
 
 }
