@@ -23,9 +23,9 @@ class PositionAdapter implements PositionSavePort, PositionReadPort {
 
     private final PositionRepository positionRepository;
 
-    private final PositionToEntityMapper positionToEntityMapper;
-    private final PositionEntityToDomainMapper positionEntityToDomainMapper;
-    private final DepartmentToEntityMapper departmentToEntityMapper;
+    private final PositionToEntityMapper positionToEntityMapper = PositionToEntityMapper.INSTANCE;
+    private final PositionEntityToDomainMapper positionEntityToDomainMapper = PositionEntityToDomainMapper.INSTANCE;
+    private final DepartmentToEntityMapper departmentToEntityMapper = DepartmentToEntityMapper.INSTANCE;
 
 
     @Override
