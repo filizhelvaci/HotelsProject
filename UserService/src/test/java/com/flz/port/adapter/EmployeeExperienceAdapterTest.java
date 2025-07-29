@@ -216,6 +216,63 @@ class EmployeeExperienceAdapterTest extends BaseTest {
 
     }
 
+    /**
+     * {@link EmployeeExperienceAdapter#existsByEmployeeIdAndPositionIdAndStartDate(Long, Long, LocalDate)}
+     */
+    @Test
+    void givenValidEmployeeIdAndPositionIdAndStartDate_whenEmployeeExperienceCalledWithGiving_thenReturnFalse() {
+
+        //Given
+        Long mockEmployeeId = 10L;
+        Long mockPositionId = 20L;
+        LocalDate mockStartDate = LocalDate.of(2020, 1, 15);
+
+        //When
+        Mockito.when(employeeExperienceRepository
+                        .existsByEmployeeIdAndPositionIdAndStartDate(mockEmployeeId, mockPositionId, mockStartDate))
+                .thenReturn(Boolean.FALSE);
+
+        //Then
+        employeeExperienceAdapter
+                .existsByEmployeeIdAndPositionIdAndStartDate(mockEmployeeId, mockPositionId, mockStartDate);
+
+        //Verify
+        Mockito.verify(employeeExperienceRepository, Mockito.times(1))
+                .existsByEmployeeIdAndPositionIdAndStartDate(
+                        Mockito.anyLong(),
+                        Mockito.anyLong(),
+                        Mockito.any(LocalDate.class)
+                );
+
+    }
+
+    @Test
+    void givenRepositoryThrowsException_whenExistsMethodCalled_thenPropagateException() {
+
+        //Given
+        Long mockEmployeeId = 10L;
+        Long mockPositionId = 20L;
+        LocalDate mockStartDate = LocalDate.of(2020, 1, 15);
+
+        //When
+        Mockito.when(employeeExperienceRepository
+                        .existsByEmployeeIdAndPositionIdAndStartDate(mockEmployeeId, mockPositionId, mockStartDate))
+                .thenThrow(new RuntimeException("Simulated DB failure"));
+
+        //Then
+        Assertions.assertThrows(RuntimeException.class,
+                () -> employeeExperienceAdapter
+                        .existsByEmployeeIdAndPositionIdAndStartDate(mockEmployeeId, mockPositionId, mockStartDate));
+
+        //Verify
+        Mockito.verify(employeeExperienceRepository, Mockito.times(1))
+                .existsByEmployeeIdAndPositionIdAndStartDate(
+                        Mockito.anyLong(),
+                        Mockito.anyLong(),
+                        Mockito.any(LocalDate.class)
+                );
+    }
+
 
     private static EmployeeExperience getEmployeeExperience() {
         Long mockId = 101L;
