@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 class EmployeeExperienceAdapterTest extends BaseTest {
 
@@ -273,11 +274,186 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                 );
     }
 
+    /**
+     * {@link EmployeeExperienceAdapter#findTopByEmployeeIdOrderByStartDateDesc(Long)}
+     */
+    @Test
+    void givenValidEmployeeId_whenLastEmployeeExperienceCalled_thenReturnEmployeeExperience() {
+
+        //Given
+        Long mockEmployeeId = 101L;
+
+        //When
+        Optional<EmployeeExperienceEntity> employeeExperienceEntity = getEmployeeExperienceEntity();
+
+        Mockito.when(employeeExperienceRepository.findTopByEmployeeIdOrderByStartDateDesc(mockEmployeeId))
+                .thenReturn(employeeExperienceEntity);
+
+        EmployeeExperience expected = employeeExperienceEntity
+                .map(employeeExperienceEntityToDomainMapper::map)
+                .orElseThrow();
+
+        //Then
+        Optional<EmployeeExperience> actual = employeeExperienceAdapter
+                .findTopByEmployeeIdOrderByStartDateDesc(mockEmployeeId);
+
+
+        Assertions.assertTrue(actual.isPresent());
+        Assertions.assertEquals(expected.getEmployee().getId(),
+                actual.get().getEmployee().getId());
+        Assertions.assertEquals(expected.getEmployee().getIdentityNumber(),
+                actual.get().getEmployee().getIdentityNumber());
+        Assertions.assertEquals(expected.getPosition().getName(),
+                actual.get().getPosition().getName());
+        Assertions.assertEquals(expected.getPosition().getDepartment().getName(),
+                actual.get().getPosition().getDepartment().getName());
+        Assertions.assertEquals(expected.getSupervisor().getId(),
+                actual.get().getSupervisor().getId());
+
+        //Verify
+        Mockito.verify(employeeExperienceRepository, Mockito.times(1))
+                .findTopByEmployeeIdOrderByStartDateDesc(mockEmployeeId);
+    }
+
+    @Test
+    void givenRepositoryThrowsException_whenLastEmployeeExperienceCalled_thenReturnException() {
+
+        //Given
+        Long mockEmployeeId = 101L;
+
+        //When
+        Mockito.when(employeeExperienceRepository
+                        .findTopByEmployeeIdOrderByStartDateDesc(mockEmployeeId))
+                .thenThrow(new RuntimeException("Simulated DB failure"));
+
+        //Then
+        Assertions.assertThrows(RuntimeException.class,
+                () -> employeeExperienceAdapter
+                        .findTopByEmployeeIdOrderByStartDateDesc(mockEmployeeId));
+
+        //Verify
+        Mockito.verify(employeeExperienceRepository, Mockito.times(1))
+                .findTopByEmployeeIdOrderByStartDateDesc(Mockito.anyLong());
+
+    }
+
+    /**
+     * {@link EmployeeExperienceAdapter#deleteAllByEmployeeId(Long)}
+     */
+    @Test
+    void givenValidEmployeeId_whenDeleteAllEmployeeExperience_thenDeleteAllExperienceSuccess() {
+
+        //Given
+        Long mockEmployeeId = 101L;
+
+        //When
+        Mockito.doNothing().when(employeeExperienceRepository)
+                .deleteAllByEmployee_Id(mockEmployeeId);
+
+        //Then
+        employeeExperienceAdapter.deleteAllByEmployeeId(mockEmployeeId);
+
+        //Verify
+        Mockito.verify(employeeExperienceRepository, Mockito.times(1))
+                .deleteAllByEmployee_Id(mockEmployeeId);
+    }
+
+    @Test
+    void givenValidEmployeeId_whenRepositoryThrowsException_thenExceptionIsPropagated() {
+
+        //Given
+        Long mockEmployeeId = 101L;
+
+        //When
+        Mockito.doThrow(new RuntimeException("Database error"))
+                .when(employeeExperienceRepository)
+                .deleteAllByEmployee_Id(mockEmployeeId);
+
+        //Then
+        RuntimeException thrownException = Assertions.assertThrows(RuntimeException.class,
+                () -> employeeExperienceAdapter.deleteAllByEmployeeId(mockEmployeeId));
+
+        Assertions.assertEquals("Database error", thrownException.getMessage());
+
+        //Verify
+        Mockito.verify(employeeExperienceRepository, Mockito.times(1))
+                .deleteAllByEmployee_Id(mockEmployeeId);
+    }
 
     private static EmployeeExperience getEmployeeExperience() {
         Long mockId = 101L;
 
-        Position position = Position.builder()
+        Position position = getPosition(mockId);
+
+        Employee employee = getEmployee();
+
+        Employee supervisor = getSupervisor();
+
+        return EmployeeExperience.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(65000))
+                .startDate(LocalDate.of(2020, 1, 15))
+                .endDate(LocalDate.of(2023, 12, 31))
+                .position(position)
+                .employee(employee)
+                .supervisor(supervisor)
+                .build();
+    }
+
+    private Optional<EmployeeExperienceEntity> getEmployeeExperienceEntity() {
+
+        Long mockId = 101L;
+
+        Position position = getPosition(mockId);
+
+        Employee employee = getEmployee();
+
+        Employee supervisor = getSupervisor();
+
+        EmployeeExperience employeeExperience = EmployeeExperience.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(65000))
+                .startDate(LocalDate.of(2020, 1, 15))
+                .position(position)
+                .employee(employee)
+                .supervisor(supervisor)
+                .build();
+
+        return Optional.of(employeeExperienceToEntityMapper.map(employeeExperience));
+    }
+
+    private static Employee getSupervisor() {
+
+        return Employee.builder()
+                .id(201L)
+                .firstName("Jane")
+                .lastName("Smith")
+                .identityNumber("987654321478")
+                .email("jane.smith@example.com")
+                .phoneNumber("05053213232")
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .gender(Gender.FEMALE)
+                .build();
+    }
+
+    private static Employee getEmployee() {
+
+        return Employee.builder()
+                .id(101L)
+                .firstName("John")
+                .lastName("Doe")
+                .identityNumber("25896314785")
+                .email("john.doe@example.com")
+                .phoneNumber("05456566565")
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .build();
+    }
+
+    private static Position getPosition(Long mockId) {
+
+        return Position.builder()
                 .id(mockId)
                 .name("Test")
                 .department(Department.builder()
@@ -290,57 +466,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                 .status(PositionStatus.ACTIVE)
                 .createdBy("SYSTEM")
                 .createdAt(LocalDateTime.now())
-                .build();
-
-        Employee employee = Employee.builder()
-                .id(101L)
-                .firstName("John")
-                .lastName("Doe")
-                .identityNumber("25896314785")
-                .email("john.doe@example.com")
-                .phoneNumber("05456566565")
-                .gender(Gender.MALE)
-                .nationality("USA")
-                .build();
-
-        Employee supervisor = Employee.builder()
-                .id(201L)
-                .firstName("Jane")
-                .lastName("Smith")
-                .identityNumber("987654321478")
-                .email("jane.smith@example.com")
-                .phoneNumber("05053213232")
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .gender(Gender.FEMALE)
-                .build();
-
-        EmployeeExperience employeeExperience = EmployeeExperience.builder()
-                .id(1L)
-                .salary(BigDecimal.valueOf(65000))
-                .startDate(LocalDate.of(2020, 1, 15))
-                .endDate(LocalDate.of(2023, 12, 31))
-                .position(position)
-                .employee(employee)
-                .supervisor(supervisor)
-                .build();
-
-        return employeeExperience;
-    }
-
-    private static Employee getEmployeeDomain() {
-        return Employee.builder()
-                .id(2L)
-                .address("test address")
-                .firstName("test first name")
-                .lastName("test last name")
-                .birthDate(LocalDate.parse("2000-01-01"))
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .email("test@gmail.com")
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .phoneNumber("05465321456")
                 .build();
     }
 
