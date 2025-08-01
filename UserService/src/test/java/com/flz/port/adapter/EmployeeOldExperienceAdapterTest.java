@@ -47,7 +47,7 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
      * {@link EmployeeOldExperienceAdapter#findAllByEmployeeOldId(Long)}
      */
     @Test
-    void givenValidId_whenEmployeeOldExperienceListFoundAccordingById_thenReturnEmployeeExperienceList() {
+    void givenValidId_whenEmployeeOldExperienceListFoundAccordingById_thenReturnEmployeeOldExperienceList() {
 
         //Given
         Long mockId = 101L;
