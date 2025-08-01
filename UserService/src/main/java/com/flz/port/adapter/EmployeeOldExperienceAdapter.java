@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class EmployeeOldExperienceAdapter implements EmployeeOldExperienceReadPort, EmployeeOldExperienceSavePort {
+class EmployeeOldExperienceAdapter implements EmployeeOldExperienceReadPort, EmployeeOldExperienceSavePort {
 
     private final EmployeeOldExperienceRepository employeeOldExperienceRepository;
 
