@@ -18,8 +18,10 @@ class EmployeeOldExperienceAdapter implements EmployeeOldExperienceReadPort, Emp
 
     private final EmployeeOldExperienceRepository employeeOldExperienceRepository;
 
-    private final EmployeeOldExperienceToEntityMapper employeeOldExperienceToEntityMapper = EmployeeOldExperienceToEntityMapper.INSTANCE;
-    private final EmployeeOldExperienceEntityToDomainMapper employeeOldExperienceEntityToDomainMapper = EmployeeOldExperienceEntityToDomainMapper.INSTANCE;
+    private final EmployeeOldExperienceToEntityMapper
+            employeeOldExperienceToEntityMapper = EmployeeOldExperienceToEntityMapper.INSTANCE;
+    private final EmployeeOldExperienceEntityToDomainMapper
+            employeeOldExperienceEntityToDomainMapper = EmployeeOldExperienceEntityToDomainMapper.INSTANCE;
 
     @Override
     public List<EmployeeOldExperience> findAllByEmployeeOldId(Long employeeOldId) {
