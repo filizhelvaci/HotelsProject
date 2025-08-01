@@ -36,6 +36,7 @@ import org.mockito.Mockito;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,7 +77,6 @@ class EmployeeWriteServiceImplTest extends BaseTest {
 
     EmployeeExperienceToEmployeeOldExperienceMapper
             employeeExperienceToEmployeeOldExperienceMapper = EmployeeExperienceToEmployeeOldExperienceMapper.INSTANCE;
-
 
     /**
      * {@link EmployeeWriteServiceImpl#create(EmployeeCreateRequest)}
@@ -495,6 +495,165 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         employeeWriteServiceImpl.delete(mockId);
 
         //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeOldSavePort, Mockito.times(1))
+                .save(Mockito.any(EmployeeOld.class));
+        Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
+                .findAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeOldExperienceSavePort, Mockito.times(1))
+                .saveAll(Mockito.anyList());
+        Mockito.verify(employeeExperienceDeletePort, Mockito.times(1))
+                .deleteAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeDeletePort, Mockito.times(1))
+                .delete(Mockito.anyLong());
+    }
+
+    @Test
+    void givenEmployeeId_whenDeleteCalledWithEmptyExperienceList_thenSucceed() {
+
+        //Given
+        Long mockId = 101L;
+
+        Employee employee = getEmployee();
+        EmployeeOld employeeOldSaved = getSavedEmployeeOld();
+
+        //When
+        List<EmployeeExperience> emptyExperiences = Collections.emptyList();
+
+        Mockito.when(employeeReadPort.findById(mockId))
+                .thenReturn(Optional.of(employee));
+
+        EmployeeOld employeeOld = employeeToEmployeeOldMapper.map(employee);
+
+        Mockito.when(employeeOldSavePort.save(employeeOld))
+                .thenReturn(Optional.of(employeeOldSaved));
+
+        Mockito.when(employeeExperienceReadPort.findAllByEmployeeId(mockId))
+                .thenReturn(emptyExperiences);
+
+        Mockito.doNothing().when(employeeDeletePort).delete(mockId);
+
+        //Then
+        employeeWriteServiceImpl.delete(mockId);
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeOldSavePort, Mockito.times(1))
+                .save(Mockito.any(EmployeeOld.class));
+        Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
+                .findAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeOldExperienceSavePort, Mockito.never())
+                .saveAll(Mockito.anyList());
+        Mockito.verify(employeeExperienceDeletePort, Mockito.never())
+                .deleteAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeDeletePort, Mockito.times(1))
+                .delete(Mockito.anyLong());
+    }
+
+    @Test
+    void givenNonExistingEmployeeId_whenDeleteCalled_thenThrowsEmployeeNotFoundException() {
+
+        //Given
+        Long mockId = 999L;
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockId))
+                .thenReturn(Optional.empty());
+        //Then
+        Assertions.assertThrows(EmployeeNotFoundException.class,
+                () -> employeeWriteServiceImpl.delete(mockId));
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeOldSavePort, Mockito.never())
+                .save(Mockito.any(EmployeeOld.class));
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
+                .findAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeOldExperienceSavePort, Mockito.never())
+                .saveAll(Mockito.anyList());
+        Mockito.verify(employeeExperienceDeletePort, Mockito.never())
+                .deleteAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeDeletePort, Mockito.never())
+                .delete(Mockito.anyLong());
+    }
+
+    @Test
+    void givenEmployeeId_whenSaveEmployeeOldFails_thenThrowsRuntimeException() {
+
+        //Given
+        Long mockId = 101L;
+
+        Employee employee = getEmployee();
+        EmployeeOld employeeOld = employeeToEmployeeOldMapper.map(employee);
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockId))
+                .thenReturn(Optional.of(employee));
+
+        Mockito.when(employeeOldSavePort.save(employeeOld))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(RuntimeException.class,
+                () -> employeeWriteServiceImpl.delete(mockId)
+        );
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeOldSavePort, Mockito.times(1))
+                .save(Mockito.any(EmployeeOld.class));
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
+                .findAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeOldExperienceSavePort, Mockito.never())
+                .saveAll(Mockito.anyList());
+        Mockito.verify(employeeExperienceDeletePort, Mockito.never())
+                .deleteAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeDeletePort, Mockito.never())
+                .delete(Mockito.anyLong());
+    }
+
+    @Test
+    void givenEmployeeExperienceWithNullEndDate_whenDeleteCalled_thenEndDateIsSetAndSucceeds() {
+
+        //Given
+        Long mockId = 101L;
+
+        Employee employee = getEmployee();
+        EmployeeOld employeeOldSaved = getSavedEmployeeOld();
+
+        EmployeeExperience experienceWithNullEndDate = getEmployeeExperience();
+        experienceWithNullEndDate.setEndDate(null);
+
+        List<EmployeeExperience> experiences = List.of(experienceWithNullEndDate);
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockId))
+                .thenReturn(Optional.of(employee));
+        Mockito.when(employeeOldSavePort.save(Mockito.any(EmployeeOld.class)))
+                .thenReturn(Optional.of(employeeOldSaved));
+        Mockito.when(employeeExperienceReadPort.findAllByEmployeeId(mockId))
+                .thenReturn(experiences);
+
+        List<EmployeeOldExperience>
+                employeeOldExperiences = employeeExperienceToEmployeeOldExperienceMapper
+                .map(experiences);
+
+        Mockito.when(employeeOldExperienceSavePort.saveAll(employeeOldExperiences))
+                .thenReturn(employeeOldExperiences);
+
+        Mockito.doNothing().when(employeeExperienceDeletePort)
+                .deleteAllByEmployeeId(mockId);
+
+        Mockito.doNothing().when(employeeDeletePort).delete(mockId);
+
+        //Then
+        employeeWriteServiceImpl.delete(mockId);
+
+        // Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(Mockito.anyLong());
         Mockito.verify(employeeOldSavePort, Mockito.times(1))
