@@ -3,13 +3,25 @@ package com.flz.service.impl;
 import com.flz.exception.EmployeeAlreadyExistsException;
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.exception.PositionNotFoundException;
-import com.flz.model.*;
+import com.flz.model.Employee;
+import com.flz.model.EmployeeExperience;
+import com.flz.model.EmployeeOld;
+import com.flz.model.EmployeeOldExperience;
+import com.flz.model.Position;
 import com.flz.model.mapper.EmployeeCreateRequestToDomainMapper;
 import com.flz.model.mapper.EmployeeExperienceToEmployeeOldExperienceMapper;
 import com.flz.model.mapper.EmployeeToEmployeeOldMapper;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
-import com.flz.port.*;
+import com.flz.port.EmployeeDeletePort;
+import com.flz.port.EmployeeExperienceDeletePort;
+import com.flz.port.EmployeeExperienceReadPort;
+import com.flz.port.EmployeeExperienceSavePort;
+import com.flz.port.EmployeeOldExperienceSavePort;
+import com.flz.port.EmployeeOldSavePort;
+import com.flz.port.EmployeeReadPort;
+import com.flz.port.EmployeeSavePort;
+import com.flz.port.PositionReadPort;
 import com.flz.service.EmployeeWriteService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -131,7 +143,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
         EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee))
-                .orElseThrow(() -> new RuntimeException("Employee kaydedilemedi"));
+                .orElseThrow(() -> new RuntimeException("EmployeeOld kaydedilemedi"));
 
         List<EmployeeExperience> experiences = Optional.ofNullable(
                         employeeExperienceReadPort.findAllByEmployeeId(id)
