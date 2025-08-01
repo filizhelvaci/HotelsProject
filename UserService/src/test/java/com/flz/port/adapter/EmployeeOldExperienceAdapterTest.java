@@ -1,7 +1,7 @@
 package com.flz.port.adapter;
 
 import com.flz.BaseTest;
-import com.flz.model.EmployeeOldExperience;
+import com.flz.model.*;
 import com.flz.model.entity.*;
 import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.enums.Gender;
@@ -164,4 +164,185 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
                 .findAllByEmployeeOld_Id(Mockito.anyLong());
 
     }
+
+    /**
+     * {@link EmployeeOldExperienceAdapter#saveAll(List)}
+     */
+    @Test
+    void givenEmployeeOldExperienceList_whenEmployeeOldExperienceSaveAll_thenEmployeeOldExperienceEntitySuccessSaveAll() {
+
+        //Given
+        List<EmployeeOldExperience> mockEmployeeOldExperiences = getEmployeeOldExperiences();
+
+        //When
+        List<EmployeeOldExperienceEntity> mockEmployeeOldExperienceEntities = employeeOldExperienceToEntityMapper
+                .map(mockEmployeeOldExperiences);
+
+        Mockito.when(employeeOldExperienceRepository.saveAll(mockEmployeeOldExperienceEntities))
+                .thenReturn(mockEmployeeOldExperienceEntities);
+
+        List<EmployeeOldExperience> oldExperiences = employeeOldExperienceEntityToDomainMapper
+                .map(mockEmployeeOldExperienceEntities);
+
+        //Then
+        List<EmployeeOldExperience> results = employeeOldExperienceAdapter
+                .saveAll(mockEmployeeOldExperiences);
+
+        Assertions.assertNotNull(results);
+        Assertions.assertNotNull(oldExperiences);
+
+        //Verify
+        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
+                .saveAll(Mockito.anyList());
+
+    }
+
+    @Test
+    void givenEmployeeOldExperienceList_whenCalledSaveAll_thenRepositoryReturnsEmptyList() {
+
+        //Given
+        List<EmployeeOldExperience> mockEmployeeOldExperiences = getEmployeeOldExperiences();
+
+        //When
+        List<EmployeeOldExperienceEntity> entityList = employeeOldExperienceToEntityMapper
+                .map(mockEmployeeOldExperiences);
+
+        Mockito.when(employeeOldExperienceRepository.saveAll(entityList))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<EmployeeOldExperience> result = employeeOldExperienceAdapter
+                .saveAll(mockEmployeeOldExperiences);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.isEmpty());
+
+        //Verify
+        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
+                .saveAll(Mockito.anyList());
+
+    }
+
+    private static EmployeeOldExperience getEmployeeOldExperience() {
+
+        Position position = getPosition();
+
+        EmployeeOld employeeOld = getEmployeeOld();
+
+        Employee supervisor = getSupervisor();
+
+        return EmployeeOldExperience.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(65000))
+                .startDate(LocalDate.of(2020, 1, 15))
+                .endDate(LocalDate.of(2022, 11, 17))
+                .position(position)
+                .employeeOld(employeeOld)
+                .supervisor(supervisor)
+                .build();
+    }
+
+    private static EmployeeOldExperience getEmployeeOldExperience2() {
+
+        Position position = getPosition2();
+
+        EmployeeOld employeeOld = getEmployeeOld();
+
+        Employee supervisor = getSupervisor2();
+
+        return EmployeeOldExperience.builder()
+                .id(2L)
+                .salary(BigDecimal.valueOf(85000))
+                .startDate(LocalDate.of(2022, 12, 15))
+                .endDate(LocalDate.of(2023, 12, 18))
+                .position(position)
+                .employeeOld(employeeOld)
+                .supervisor(supervisor)
+                .build();
+    }
+
+    private static Position getPosition() {
+
+        return Position.builder()
+                .id(5L)
+                .name("Test")
+                .department(Department.builder()
+                        .id(1L)
+                        .name("TestDepartment")
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Position getPosition2() {
+
+        return Position.builder()
+                .id(8L)
+                .name("TestPosition")
+                .department(Department.builder()
+                        .id(5L)
+                        .name("Test")
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Employee getSupervisor() {
+
+        return Employee.builder()
+                .id(201L)
+                .firstName("Jane")
+                .lastName("Smith")
+                .identityNumber("987654321478")
+                .email("jane.smith@example.com")
+                .phoneNumber("05053213232")
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+    }
+
+    private static Employee getSupervisor2() {
+
+        return Employee.builder()
+                .id(205L)
+                .firstName("Joe")
+                .lastName("Smith")
+                .identityNumber("111654321478")
+                .email("joe.smith@example.com")
+                .phoneNumber("05323213232")
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+    }
+
+
+    private static EmployeeOld getEmployeeOld() {
+
+        return EmployeeOld.builder()
+                .id(101L)
+                .firstName("John")
+                .lastName("Doe")
+                .identityNumber("25896314785")
+                .email("john.doe@example.com")
+                .phoneNumber("05456566565")
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .build();
+    }
+
+    private static List<EmployeeOldExperience> getEmployeeOldExperiences() {
+
+        return List.of(getEmployeeOldExperience(), getEmployeeOldExperience2());
+    }
+
 }
