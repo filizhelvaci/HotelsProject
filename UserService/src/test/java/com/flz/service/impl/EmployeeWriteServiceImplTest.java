@@ -444,6 +444,57 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .save(Mockito.any(Employee.class));
     }
 
+    @Test
+    void givenValidIdAndIdenticalUpdateRequest_whenUpdateEmployee_thenEmployeeSaved() {
+
+        //Given
+        Long mockEmployeeId = 1L;
+
+        EmployeeUpdateRequest request = EmployeeUpdateRequest.builder()
+                .firstName("OldName")
+                .lastName("OldSurname")
+                .identityNumber("12345678901")
+                .email("old@example.com")
+                .phoneNumber("05551231212")
+                .address("Old Address")
+                .birthDate(LocalDate.of(1985, 1, 1))
+                .gender(Gender.MALE)
+                .nationality("OldCountry")
+                .build();
+
+        Employee mockEmployee = Employee.builder()
+                .id(mockEmployeeId)
+                .firstName("OldName")
+                .lastName("OldSurname")
+                .identityNumber("12345678901")
+                .email("old@example.com")
+                .phoneNumber("05551231212")
+                .address("Old Address")
+                .birthDate(LocalDate.of(1985, 1, 1))
+                .gender(Gender.MALE)
+                .nationality("OldCountry")
+                .build();
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockEmployeeId))
+                .thenReturn(Optional.of(mockEmployee));
+        Mockito.when(employeeSavePort.save(mockEmployee))
+                .thenReturn(Optional.of(mockEmployee));
+
+        //Then
+        employeeWriteServiceImpl.update(mockEmployeeId, request);
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(mockEmployeeId);
+        Mockito.verify(employeeReadPort, Mockito.never())
+                .existsByIdentity(Mockito.anyString());
+        Mockito.verify(employeeReadPort, Mockito.never())
+                .existsByPhoneNumber(Mockito.anyString());
+        Mockito.verify(employeeSavePort, Mockito.times(1))
+                .save(Mockito.any(Employee.class));
+    }
+
     /**
      * {@link EmployeeWriteServiceImpl#delete(Long)}
      */
