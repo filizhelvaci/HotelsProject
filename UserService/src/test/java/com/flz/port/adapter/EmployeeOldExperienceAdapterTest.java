@@ -1,8 +1,16 @@
 package com.flz.port.adapter;
 
 import com.flz.BaseTest;
-import com.flz.model.*;
-import com.flz.model.entity.*;
+import com.flz.model.Department;
+import com.flz.model.Employee;
+import com.flz.model.EmployeeOld;
+import com.flz.model.EmployeeOldExperience;
+import com.flz.model.Position;
+import com.flz.model.entity.DepartmentEntity;
+import com.flz.model.entity.EmployeeEntity;
+import com.flz.model.entity.EmployeeOldEntity;
+import com.flz.model.entity.EmployeeOldExperienceEntity;
+import com.flz.model.entity.PositionEntity;
 import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.enums.Gender;
 import com.flz.model.enums.PositionStatus;
