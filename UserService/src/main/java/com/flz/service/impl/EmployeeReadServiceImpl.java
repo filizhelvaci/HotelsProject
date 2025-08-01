@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -45,11 +44,6 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
         List<EmployeeExperienceResponse> employeeExperiences = experiences.stream()
                 .map(employeeExperienceToResponseMapper::map)
                 .toList();
-
-        if (employeeExperiences.isEmpty()) {
-            Logger.getLogger("No employee experiences found, " +
-                    "so please add employee experience for this employee.");
-        }
 
         return EmployeeDetailsResponse.builder()
                 .employee(employee)
