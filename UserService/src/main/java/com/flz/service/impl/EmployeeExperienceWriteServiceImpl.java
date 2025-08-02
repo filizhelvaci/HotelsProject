@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-class EmployeeExperienceCreateServiceImpl implements EmployeeExperienceWriteService {
+class EmployeeExperienceWriteServiceImpl implements EmployeeExperienceWriteService {
 
     private final EmployeeExperienceSavePort employeeExperienceSavePort;
     private final EmployeeExperienceReadPort employeeExperienceReadPort;
