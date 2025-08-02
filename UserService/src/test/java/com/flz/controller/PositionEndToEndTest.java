@@ -1,19 +1,15 @@
 package com.flz.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flz.cleaner.PositionTestCleaner;
+import com.flz.BaseEndToEndTest;
 import com.flz.model.Position;
 import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
 import com.flz.port.PositionReadPort;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -22,23 +18,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class PositionEndToEndTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+class PositionEndToEndTest extends BaseEndToEndTest {
 
     @Autowired
     private PositionReadPort positionReadPort;
-
-    @Autowired
-    private PositionTestCleaner testCleaner;
-
-    @BeforeEach
-    void cleanBeforeTest() {
-        testCleaner.cleanTestPositions();
-    }
 
     private static final String BASE_PATH = "/api/v1";
 
