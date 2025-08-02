@@ -14,7 +14,8 @@ public class EmployeeTestCleaner {
     }
 
     @Transactional
-    public void cleanEmployees() {
+    public void cleanTestEmployees() {
+
         employeeRepository.deleteAllByFirstNameContainingIgnoreCase("test");
     }
 
