@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,66 @@ class EmployeeAdapterTest extends BaseTest {
 
     @Mock
     EmployeeEntityToDomainMapper employeeEntityToDomainMapper;
+
+    /**
+     * {@link EmployeeAdapter#findById(Long)}
+     */
+    @Test
+    void givenValidId_whenEmployeeEntityFoundAccordingById_thenReturnEmployee() {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Optional<EmployeeEntity> mockEmployeeEntity = Optional.of(getEmployeeEntity(mockId));
+
+        Mockito.when(employeeRepository.findById(mockId))
+                .thenReturn(mockEmployeeEntity);
+
+        //Then
+        Optional<Employee> employee = employeeAdapter.findById(mockId);
+
+        Assertions.assertNotNull(employee);
+        Assertions.assertTrue(employee.isPresent());
+        Assertions.assertEquals(mockId, employee.get()
+                .getId());
+        Assertions.assertNotNull(employee.get()
+                .getId());
+        Assertions.assertNotNull(employee.get()
+                .getFirstName());
+        Assertions.assertNotNull(employee.get()
+                .getLastName());
+        Assertions.assertNotNull(employee.get()
+                .getGender());
+        Assertions.assertNotNull(employee.get()
+                .getBirthDate());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .findById(mockId);
+    }
+
+
+    @Test
+    void givenValidId_whenEmployeeEntityNotFoundById_returnOptionalEmpty() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(employeeRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Optional<Employee> employee = employeeAdapter.findById(mockId);
+
+        Assertions.assertFalse(employee.isPresent());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
 
     /**
      * {@link EmployeeAdapter#findAll(Integer, Integer)}
@@ -65,7 +126,7 @@ class EmployeeAdapterTest extends BaseTest {
     }
 
     @Test
-    void givenValidPageAndPageSize_whenEmployeeNotFound_thenReturnEmptyPositions() {
+    void givenValidPageAndPageSize_whenEmployeeNotFound_thenReturnEmptyEmployees() {
 
         //Given
         int mockPage = 1;
@@ -141,66 +202,6 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .findEmployeeSummaries();
-    }
-
-    /**
-     * {@link EmployeeAdapter#findById(Long)}
-     */
-    @Test
-    void givenValidId_whenEmployeeEntityFoundAccordingById_thenReturnEmployee() {
-
-        //Given
-        Long mockId = 1L;
-
-        //When
-        Optional<EmployeeEntity> mockEmployeeEntity = Optional.of(getEmployeeEntity(mockId));
-
-        Mockito.when(employeeRepository.findById(mockId))
-                .thenReturn(mockEmployeeEntity);
-
-        //Then
-        Optional<Employee> employee = employeeAdapter.findById(mockId);
-
-        Assertions.assertNotNull(employee);
-        Assertions.assertTrue(employee.isPresent());
-        Assertions.assertEquals(mockId, employee.get()
-                .getId());
-        Assertions.assertNotNull(employee.get()
-                .getId());
-        Assertions.assertNotNull(employee.get()
-                .getFirstName());
-        Assertions.assertNotNull(employee.get()
-                .getLastName());
-        Assertions.assertNotNull(employee.get()
-                .getGender());
-        Assertions.assertNotNull(employee.get()
-                .getBirthDate());
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .findById(mockId);
-    }
-
-
-    @Test
-    void givenValidId_whenEmployeeEntityNotFoundById_returnOptionalEmpty() {
-
-        //Given
-        Long mockId = 10L;
-
-        //When
-        Mockito.when(employeeRepository.findById(mockId))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Optional<Employee> employee = employeeAdapter.findById(mockId);
-
-        Assertions.assertFalse(employee.isPresent());
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .findById(mockId);
-
     }
 
     /**
@@ -326,7 +327,6 @@ class EmployeeAdapterTest extends BaseTest {
                 .save(Mockito.any());
     }
 
-
     @Test
     void givenEmployee_whenRepositoryThrowsException_thenExceptionIsPropagated() {
 
@@ -347,6 +347,46 @@ class EmployeeAdapterTest extends BaseTest {
 
         Mockito.verify(employeeEntityToDomainMapper, Mockito.never())
                 .map(Mockito.any(EmployeeEntity.class));
+    }
+
+    /**
+     * {@link EmployeeAdapter#delete(Long)}
+     */
+    @Test
+    void givenValidId_whenEmployeeEntityFoundAccordingByPhoneNumber_thenDeleteEmployeeEntity() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.doNothing().when(employeeRepository).deleteById(mockId);
+
+        //Then
+        employeeRepository.deleteById(mockId);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .deleteById(mockId);
+
+    }
+
+    @Test
+    void givenInvalidId_whenDeleteByIdFails_thenThrowEmptyResultDataAccessException() {
+
+        //Given
+        Long invalidId = 9999L;
+
+        //When
+        Mockito.doThrow(new EmptyResultDataAccessException(1))
+                .when(employeeRepository).deleteById(invalidId);
+
+        //Then
+        Assertions.assertThrows(EmptyResultDataAccessException.class,
+                () -> employeeAdapter.delete(invalidId));
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .deleteById(invalidId);
     }
 
     private static EmployeeEntity getEmployeeEntity(Long id) {

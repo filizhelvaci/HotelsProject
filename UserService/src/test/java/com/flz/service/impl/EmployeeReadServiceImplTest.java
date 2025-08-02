@@ -35,8 +35,8 @@ class EmployeeReadServiceImplTest extends BaseTest {
     @Mock
     EmployeeExperienceReadPort employeeExperienceReadPort;
 
-    @Mock
-    EmployeeToEmployeeSummaryResponseMapper employeeToEmployeeSummaryResponseMapper;
+    EmployeeToEmployeeSummaryResponseMapper
+            employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
 
     @Mock
     EmployeeExperienceToResponseMapper employeeExperienceToResponseMapper;
@@ -167,16 +167,25 @@ class EmployeeReadServiceImplTest extends BaseTest {
                         .id(1L)
                         .firstName("John")
                         .lastName("Doe")
+                        .gender(Gender.MALE)
+                        .nationality("Italian")
+                        .address("Ankara")
                         .build(),
                 Employee.builder()
                         .id(2L)
                         .firstName("Jane")
                         .lastName("Boe")
+                        .gender(Gender.FEMALE)
+                        .nationality("German")
+                        .address("Ankara")
                         .build(),
                 Employee.builder()
                         .id(3L)
                         .firstName("Bob")
                         .lastName("Joe")
+                        .gender(Gender.MALE)
+                        .nationality("TC")
+                        .address("Mersin")
                         .build()
         );
 
@@ -188,8 +197,11 @@ class EmployeeReadServiceImplTest extends BaseTest {
 
         //Then
         List<EmployeeSummaryResponse> response = employeeReadServiceImpl.findSummaryAll();
-        Assertions.assertEquals(mockSummaryEmployees.size(), response.size());
+
         Assertions.assertNotNull(response);
+        Assertions.assertNotNull(mockSummaryEmployees);
+        Assertions.assertEquals(mockEmployees.size(), 3);
+        Assertions.assertEquals(mockSummaryEmployees.size(), response.size());
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +40,6 @@ class EmployeeOldReadServiceImpl implements EmployeeOldReadService {
         List<EmployeeOldExperienceResponse> employeeOldExperiences = experiences.stream()
                 .map(employeeOldExperienceToResponseMapper::map)
                 .toList();
-
-        if (employeeOldExperiences.isEmpty()) {
-            Logger.getLogger("No employee old experiences found !");
-        }
 
         return EmployeeOldDetailsResponse.builder()
                 .employeeOld(employeeOld)
