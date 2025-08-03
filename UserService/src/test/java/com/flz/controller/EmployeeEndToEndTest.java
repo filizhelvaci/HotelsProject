@@ -154,8 +154,8 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     void givenUpdateRequest_whenUpdateEmployee_thenReturnSuccess() throws Exception {
 
         Employee employee = Employee.builder()
-                .firstName("Test First Name")
-                .lastName("Test Last Name")
+                .firstName("Test First")
+                .lastName("Test Last")
                 .identityNumber("99999999999")
                 .email("old@test.com")
                 .phoneNumber("05551234567")
@@ -166,8 +166,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .build();
         Optional<Employee> savedEmployee = employeeSavePort.save(employee);
 
-        Long employeeId = savedEmployee.get().getId();
-
+        Long employeeId = savedEmployee.orElseThrow().getId();
 
         EmployeeUpdateRequest updateRequest = EmployeeUpdateRequest.builder()
                 .firstName("Updated Name")
@@ -192,6 +191,57 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
+        Optional<Employee> updatedEmployee = employeeReadPort.findById(employeeId);
+
+        Assertions.assertNotNull(updatedEmployee);
+        Assertions.assertTrue(updatedEmployee.isPresent());
+        Assertions.assertEquals(updatedEmployee.get().getIdentityNumber(),
+                updateRequest.getIdentityNumber());
+        Assertions.assertEquals(updatedEmployee.get().getFirstName(),
+                updateRequest.getFirstName());
+        Assertions.assertEquals(updatedEmployee.get().getLastName(),
+                updateRequest.getLastName());
+        Assertions.assertEquals(updatedEmployee.get().getAddress(),
+                updateRequest.getAddress());
+        Assertions.assertEquals(updatedEmployee.get().getEmail(),
+                updateRequest.getEmail());
+
     }
 
+    @Test
+    void givenEmployeeId_whenDeleteEmployee_thenDeleted() throws Exception {
+
+        //Given
+        Employee employee = Employee.builder()
+                .firstName("Test First")
+                .lastName("Test Last")
+                .identityNumber("99999999999")
+                .email("old@test.com")
+                .phoneNumber("05551234567")
+                .address("Old Address")
+                .birthDate(LocalDate.parse("2000-10-01"))
+                .gender(Gender.MALE)
+                .nationality("TR")
+                .build();
+        Optional<Employee> savedEmployee = employeeSavePort.save(employee);
+
+        Long employeeId = savedEmployee.orElseThrow().getId();
+
+        //When
+        MockHttpServletRequestBuilder deleteRequestBuilder = MockMvcRequestBuilders
+                .delete(BASE_PATH + "/employee/" + employeeId);
+
+        mockMvc.perform(deleteRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Then
+        Optional<Employee> deletedEmployee = employeeReadPort.findById(employeeId);
+
+        Assertions.assertFalse(deletedEmployee.isPresent());
+
+    }
 }
