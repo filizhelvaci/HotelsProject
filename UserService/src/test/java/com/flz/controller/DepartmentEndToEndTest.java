@@ -3,9 +3,11 @@ package com.flz.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseEndToEndTest;
 import com.flz.model.Department;
+import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.port.DepartmentReadPort;
+import com.flz.port.DepartmentTestPort;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
     @Autowired
     private DepartmentReadPort departmentReadPort;
 
+    @Autowired
+    private DepartmentTestPort departmentTestPort;
+
     private static final String BASE_PATH = "/api/v1";
 
     @Test
@@ -30,7 +35,7 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
 
         //Given
         DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
-                .name("test - temizlik")
+                .name("Otopark Bakım")
                 .build();
 
         //When
@@ -39,6 +44,7 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(createRequest));
 
+        //Then
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
@@ -46,49 +52,34 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
-        //Then
-        boolean isExistsDepartment = departmentReadPort
-                .existsByName(createRequest.getName());
-
         //Verify
-        Assertions.assertTrue(isExistsDepartment);
+        Department createdDepartment = departmentTestPort.findByName("Otopark Bakım");
+
+        Assertions.assertNotNull(createdDepartment);
+        Assertions.assertNotNull(createdDepartment.getId());
+        Assertions.assertNotNull(createdDepartment.getName());
+        Assertions.assertNotNull(createdDepartment.getStatus());
+        Assertions.assertEquals(createdDepartment.getName(), createRequest.getName());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, createdDepartment.getStatus());
 
     }
 
     @Test
     void givenUpdateRequest_whenUpdateDepartment_thenReturnSuccess() throws Exception {
 
+        //Initialize
+        Department departmentSaved = departmentTestPort.save(
+                Department.builder()
+                        .name("Kat Güvenlik")
+                        .status(DepartmentStatus.ACTIVE)
+                        .build());
+
         //Given
-        DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
-                .name("test - Reklam")
-                .build();
-
-        MockHttpServletRequestBuilder createRequestBuilder = MockMvcRequestBuilders
-                .post(BASE_PATH + "/department")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(createRequest));
-
-        mockMvc.perform(createRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true));
-
-        Thread.sleep(5000);
-
-        List<Department> departments = departmentReadPort.findSummaryAll();
-        Department createdDepartment = departments.stream()
-                .filter(d -> d.getName()
-                        .equals("test - Reklam"))
-                .findFirst()
-                .orElseThrow();
-
-        Long departmentId = createdDepartment.getId();
+        Long departmentId = departmentSaved.getId();
 
         //When
         DepartmentUpdateRequest updateRequest = DepartmentUpdateRequest.builder()
-                .name("test - updated")
+                .name("Kat Güvenlik Departmani")
                 .build();
 
         MockHttpServletRequestBuilder updateRequestBuilder = MockMvcRequestBuilders
@@ -96,6 +87,7 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateRequest));
 
+        //Then
         mockMvc.perform(updateRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
@@ -103,49 +95,36 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
-        //Then
-        boolean isOldNameStillExists = departmentReadPort.existsByName("test - Reklam");
-        boolean isUpdatedNameExists = departmentReadPort.existsByName("test - updated");
+        //Verify
+        Department department = departmentTestPort.findByName(updateRequest.getName());
 
-        Assertions.assertFalse(isOldNameStillExists);
-        Assertions.assertTrue(isUpdatedNameExists);
+        Assertions.assertNotNull(department);
+        Assertions.assertNotNull(department.getId());
+        Assertions.assertNotNull(department.getName());
+        Assertions.assertNotNull(department.getStatus());
+        Assertions.assertEquals(department.getName(), updateRequest.getName());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, department.getStatus());
+
     }
 
     @Test
     void givenDepartmentId_whenDeleteDepartment_thenSoftDeleted() throws Exception {
 
+        //Initialize
+        Department departmentSaved = departmentTestPort.save(
+                Department.builder()
+                        .name("Teras Güvenlik")
+                        .status(DepartmentStatus.ACTIVE)
+                        .build());
+
         //Given
-        DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
-                .name("test - request")
-                .build();
-
-        MockHttpServletRequestBuilder createRequestBuilder = MockMvcRequestBuilders
-                .post(BASE_PATH + "/department")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(createRequest));
-
-        mockMvc.perform(createRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true));
-
-        Thread.sleep(5000);
-
-        List<Department> departments = departmentReadPort.findSummaryAll();
-        Department createdDepartment = departments.stream()
-                .filter(d -> d.getName()
-                        .equals("test - request"))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Created department not found"));
-
-        Long departmentId = createdDepartment.getId();
+        Long departmentId = departmentSaved.getId();
 
         //When
         MockHttpServletRequestBuilder deleteRequestBuilder = MockMvcRequestBuilders
                 .delete(BASE_PATH + "/department/" + departmentId);
 
+        //Then
         mockMvc.perform(deleteRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
@@ -153,18 +132,16 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
-        //Then
+        //Verify
         Optional<Department> deletedDepartment = departmentReadPort.findById(departmentId);
 
         Assertions.assertTrue(deletedDepartment.isPresent());
-        Assertions.assertEquals(deletedDepartment.get()
-                .getId(), departmentId);
-        Assertions.assertNotEquals(deletedDepartment.get()
-                .getStatus(), createdDepartment.getStatus());
-        Assertions.assertNotNull(deletedDepartment.get()
-                .getCreatedAt());
-        Assertions.assertNotNull(deletedDepartment.get()
-                .getCreatedBy());
+        Assertions.assertEquals(departmentId, deletedDepartment.get().getId());
+        Assertions.assertEquals(departmentSaved.getName(), deletedDepartment.get().getName());
+        Assertions.assertNotEquals(departmentSaved.getStatus(), deletedDepartment.get().getStatus());
+        Assertions.assertEquals(DepartmentStatus.DELETED, deletedDepartment.get().getStatus());
+        Assertions.assertNotNull(deletedDepartment.get().getCreatedAt());
+        Assertions.assertNotNull(deletedDepartment.get().getCreatedBy());
     }
 
     @Test
