@@ -43,10 +43,10 @@ public class EmployeeOldAdapter implements EmployeeOldReadPort, EmployeeOldSaveP
     }
 
     @Override
-    public Optional<EmployeeOld> save(final EmployeeOld employeeOld) {
+    public EmployeeOld save(final EmployeeOld employeeOld) {
         final EmployeeOldEntity employeeOldEntity = employeeOldToEntityMapper.map(employeeOld);
-        return Optional.ofNullable(employeeOldEntityToDomainMapper
-                .map(employeeOldRepository.save(employeeOldEntity)));
+        return employeeOldEntityToDomainMapper
+                .map(employeeOldRepository.save(employeeOldEntity));
     }
 
 }

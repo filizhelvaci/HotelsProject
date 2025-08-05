@@ -173,17 +173,12 @@ class EmployeeOldAdapterTest extends BaseTest {
                 .thenReturn(mockEmployeeOldEntity);
 
         //Then
-        Optional<EmployeeOld> result = employeeOldAdapter.save(mockEmployeeOld);
+        EmployeeOld result = employeeOldAdapter.save(mockEmployeeOld);
         Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(mockEmployeeOld.getFirstName(), result.get()
-                .getFirstName());
-        Assertions.assertEquals(mockEmployeeOld.getLastName(), result.get()
-                .getLastName());
-        Assertions.assertEquals(mockEmployeeOld.getGender(), result.get()
-                .getGender());
-        Assertions.assertEquals(mockEmployeeOld.getBirthDate(), result.get()
-                .getBirthDate());
+        Assertions.assertEquals(mockEmployeeOld.getFirstName(), result.getFirstName());
+        Assertions.assertEquals(mockEmployeeOld.getLastName(), result.getLastName());
+        Assertions.assertEquals(mockEmployeeOld.getGender(), result.getGender());
+        Assertions.assertEquals(mockEmployeeOld.getBirthDate(), result.getBirthDate());
 
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))
@@ -202,10 +197,9 @@ class EmployeeOldAdapterTest extends BaseTest {
                 .thenReturn(null);
 
         //Then
-        Optional<EmployeeOld> result = employeeOldAdapter.save(mockEmployeeOld);
+        EmployeeOld result = employeeOldAdapter.save(mockEmployeeOld);
 
         Assertions.assertNotNull(result);
-        Assertions.assertFalse(result.isPresent());
 
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))
