@@ -2,10 +2,13 @@ package com.flz.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseEndToEndTest;
+import com.flz.model.Department;
 import com.flz.model.Position;
+import com.flz.model.enums.PositionStatus;
 import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
 import com.flz.port.PositionReadPort;
+import com.flz.port.PositionTestPort;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +28,16 @@ class PositionEndToEndTest extends BaseEndToEndTest {
 
     private static final String BASE_PATH = "/api/v1";
 
+    @Autowired
+    private PositionTestPort positionTestPort;
+
     @Test
     void givenCreateRequest_whenCreatePosition_thenReturnSuccess() throws Exception {
 
         //Given
         PositionCreateRequest createRequest = PositionCreateRequest.builder()
-                .name("test - request")
-                .departmentId(1L)
+                .name("Otopark - Güvenlik")
+                .departmentId(5L)
                 .build();
 
         //When
@@ -45,89 +51,48 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.status()
                         .isOk());
 
-        Thread.sleep(5000);
-
-        List<Position> positions = positionReadPort.findSummaryAll();
-        Position createdPosition = positions.stream()
-                .filter(d -> d.getName()
-                        .equals("test - request"))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Created position not found"));
+        Position createdPosition = positionTestPort.findByName(createRequest.getName());
 
         Long positionId = createdPosition.getId();
 
         //Then
         Optional<Position> position = positionReadPort.findById(positionId);
         Assertions.assertTrue(position.isPresent());
-        Assertions.assertNotNull(position.get()
-                .getCreatedBy());
-        Assertions.assertNotNull(position.get()
-                .getCreatedAt());
-        Assertions.assertNotNull(position.get()
-                .getName());
-        Assertions.assertNotNull(position.get()
-                .getDepartment());
-        Assertions.assertNotNull(position.get()
-                .getId());
+        Assertions.assertNotNull(position.get().getCreatedBy());
+        Assertions.assertNotNull(position.get().getCreatedAt());
+        Assertions.assertNotNull(position.get().getName());
+        Assertions.assertNotNull(position.get().getDepartment());
+        Assertions.assertNotNull(position.get().getId());
         Assertions.assertEquals(createdPosition.getName(),
-                position.get()
-                        .getName());
-        Assertions.assertEquals(createdPosition.getDepartment()
-                        .getId(),
-                position.get()
-                        .getDepartment()
-                        .getId());
-        Assertions.assertEquals(createdPosition.getDepartment()
-                        .getName(),
-                position.get()
-                        .getDepartment()
-                        .getName());
+                position.get().getName());
+        Assertions.assertEquals(createdPosition.getDepartment().getId(),
+                position.get().getDepartment().getId());
+        Assertions.assertEquals(createdPosition.getDepartment().getName(),
+                position.get().getDepartment().getName());
         Assertions.assertEquals(createdPosition.getCreatedAt(),
-                position.get()
-                        .getCreatedAt());
+                position.get().getCreatedAt());
         Assertions.assertEquals(createdPosition.getCreatedBy(),
-                position.get()
-                        .getCreatedBy());
+                position.get().getCreatedBy());
         Assertions.assertEquals(createdPosition.getStatus(),
-                position.get()
-                        .getStatus());
+                position.get().getStatus());
     }
 
     @Test
     void givenUpdateRequest_whenUpdatePosition_thenReturnSuccess() throws Exception {
 
+        //Initialize
+        Position positionSaved = positionTestPort.save(Position.builder()
+                .department(Department.builder().id(4L).build())
+                .name("Revir Hemsiresi")
+                .status(PositionStatus.ACTIVE)
+                .build());
+
         //Given
-        PositionCreateRequest createRequest = PositionCreateRequest.builder()
-                .name("test - request")
-                .departmentId(2L)
-                .build();
-
-        MockHttpServletRequestBuilder createRequestBuilder = MockMvcRequestBuilders
-                .post(BASE_PATH + "/position")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(createRequest));
-
-        mockMvc.perform(createRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true));
-
-        Thread.sleep(5000);
-
-        List<Position> positions = positionReadPort.findSummaryAll();
-        Position createdPosition = positions.stream()
-                .filter(d -> d.getName()
-                        .equals("test - request"))
-                .findFirst()
-                .orElseThrow();
-
-        Long positionId = createdPosition.getId();
+        Long positionId = positionSaved.getId();
 
         //When
         PositionUpdateRequest updateRequest = PositionUpdateRequest.builder()
-                .name("test - updated")
+                .name("Revir Saglık Personeli")
                 .departmentId(1L)
                 .build();
 
@@ -135,7 +100,7 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                 .put(BASE_PATH + "/position/" + positionId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(updateRequest));
-
+        //Then
         mockMvc.perform(updateRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
@@ -143,69 +108,43 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
-        //Then
+        //Verify
         Optional<Position> position = positionReadPort.findById(positionId);
+
         Assertions.assertTrue(position.isPresent());
         Assertions.assertNotNull(position.get());
-        Assertions.assertNotNull(position.get()
-                .getName());
-        Assertions.assertNotNull(position.get()
-                .getDepartment());
-        Assertions.assertNotNull(position.get()
-                .getId());
-        Assertions.assertNotNull(position.get()
-                .getCreatedBy());
-        Assertions.assertNotNull(position.get()
-                .getCreatedAt());
-        Assertions.assertNotNull(position.get()
-                .getStatus());
-        Assertions.assertEquals(position.get()
-                .getId(), positionId);
-        Assertions.assertEquals(position.get()
-                        .getName(),
-                updateRequest.getName());
-        Assertions.assertEquals(position.get()
-                        .getDepartment()
-                        .getId(),
+        Assertions.assertNotNull(position.get().getName());
+        Assertions.assertNotNull(position.get().getDepartment());
+        Assertions.assertNotNull(position.get().getId());
+        Assertions.assertNotNull(position.get().getCreatedBy());
+        Assertions.assertNotNull(position.get().getCreatedAt());
+        Assertions.assertNotNull(position.get().getUpdatedAt());
+        Assertions.assertNotNull(position.get().getUpdatedBy());
+        Assertions.assertNotNull(position.get().getStatus());
+        Assertions.assertEquals(position.get().getId(), positionId);
+        Assertions.assertEquals(position.get().getName(), updateRequest.getName());
+        Assertions.assertEquals(position.get().getDepartment().getId(),
                 updateRequest.getDepartmentId());
     }
 
     @Test
     void givenPositionId_whenDeletePosition_thenSoftDeleted() throws Exception {
 
+        //Initialize
+        Position positionSaved = positionTestPort.save(Position.builder()
+                .department(Department.builder().id(4L).build())
+                .name("Revir Temizlik Görevlisi")
+                .status(PositionStatus.ACTIVE)
+                .build());
+
         //Given
-        PositionCreateRequest createRequest = PositionCreateRequest.builder()
-                .name("test - request")
-                .departmentId(2L)
-                .build();
-
-        MockHttpServletRequestBuilder createRequestBuilder = MockMvcRequestBuilders
-                .post(BASE_PATH + "/position")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(createRequest));
-
-        mockMvc.perform(createRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true));
-
-        Thread.sleep(5000);
-
-        List<Position> positions = positionReadPort.findSummaryAll();
-        Position createdPosition = positions.stream()
-                .filter(d -> d.getName()
-                        .equals("test - request"))
-                .findFirst()
-                .orElseThrow();
-
-        Long positionId = createdPosition.getId();
+        Long positionId = positionSaved.getId();
 
         //When
         MockHttpServletRequestBuilder deleteRequestBuilder = MockMvcRequestBuilders
                 .delete(BASE_PATH + "/position/" + positionId);
 
+        //Then
         mockMvc.perform(deleteRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
@@ -213,18 +152,14 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
-        //Then
+        //Verify
         Optional<Position> deletedPosition = positionReadPort.findById(positionId);
 
         Assertions.assertTrue(deletedPosition.isPresent());
-        Assertions.assertEquals(deletedPosition.get()
-                .getId(), positionId);
-        Assertions.assertNotEquals(deletedPosition.get()
-                .getStatus(), createdPosition.getStatus());
-        Assertions.assertNotNull(deletedPosition.get()
-                .getCreatedAt());
-        Assertions.assertNotNull(deletedPosition.get()
-                .getCreatedBy());
+        Assertions.assertEquals(deletedPosition.get().getId(), positionId);
+        Assertions.assertNotEquals(deletedPosition.get().getStatus(), positionSaved.getStatus());
+        Assertions.assertNotNull(deletedPosition.get().getCreatedAt());
+        Assertions.assertNotNull(deletedPosition.get().getCreatedBy());
     }
 
     @Test
@@ -236,7 +171,7 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                 .param("page", "1")
                 .param("pageSize", "10")
                 .contentType(MediaType.APPLICATION_JSON);
-
+        //Then
         mockMvc.perform(request)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
@@ -264,18 +199,14 @@ class PositionEndToEndTest extends BaseEndToEndTest {
 
         //Then
         List<Position> positions = positionReadPort.findAll(1, 10);
+
         Assertions.assertNotNull(positions);
         Assertions.assertFalse(positions.isEmpty());
-        Assertions.assertNotNull(positions.get(0)
-                .getName());
-        Assertions.assertNotNull(positions.get(0)
-                .getStatus());
-        Assertions.assertNotNull(positions.get(0)
-                .getCreatedAt());
-        Assertions.assertNotNull(positions.get(0)
-                .getCreatedBy());
-        Assertions.assertNotNull(positions.get(0)
-                .getId());
+        Assertions.assertNotNull(positions.get(0).getName());
+        Assertions.assertNotNull(positions.get(0).getStatus());
+        Assertions.assertNotNull(positions.get(0).getCreatedAt());
+        Assertions.assertNotNull(positions.get(0).getCreatedBy());
+        Assertions.assertNotNull(positions.get(0).getId());
 
     }
 
