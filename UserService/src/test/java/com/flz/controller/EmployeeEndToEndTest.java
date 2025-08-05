@@ -32,6 +32,65 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     private static final String BASE_PATH = "/api/v1";
 
     @Test
+    void whenFindByIdEmployee_thenReturnEmployeeVerifyContent() throws Exception {
+
+        //Initialize
+        Employee employee = Employee.builder()
+                .firstName("Cemal")
+                .lastName("Sureyya")
+                .identityNumber("55591119999")
+                .email("cemil@test.com")
+                .phoneNumber("055531234567")
+                .address("Ankara")
+                .birthDate(LocalDate.parse("2000-10-01"))
+                .gender(Gender.MALE)
+                .nationality("TR")
+                .build();
+
+        Employee savedEmployee = employeeSavePort.save(employee);
+
+        //Given
+        Long employeeId = savedEmployee.getId();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employee/" + employeeId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.id")
+                        .value(employeeId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.firstName")
+                        .value("Cemal"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.lastName")
+                        .value("Sureyya"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.identityNumber")
+                        .value("55591119999"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.email")
+                        .value("cemil@test.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.phoneNumber")
+                        .value("055531234567"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.address")
+                        .value("Ankara"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.birthDate")
+                        .value("2000-10-01"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.gender")
+                        .value("MALE"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.nationality")
+                        .value("TR"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences.length()")
+                        .value(0));
+    }
+
+    @Test
     void whenFindAllEmployees_thenReturnListAndVerifyContent() throws Exception {
 
         //When
@@ -153,6 +212,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     @Test
     void givenUpdateRequest_whenUpdateEmployee_thenReturnSuccess() throws Exception {
 
+        //Initialize
         Employee employee = Employee.builder()
                 .firstName("Hasan")
                 .lastName("Turan")
@@ -164,9 +224,10 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .gender(Gender.MALE)
                 .nationality("TR")
                 .build();
-        Optional<Employee> savedEmployee = employeeSavePort.save(employee);
+        Employee savedEmployee = employeeSavePort.save(employee);
 
-        Long employeeId = savedEmployee.orElseThrow().getId();
+        //Given
+        Long employeeId = savedEmployee.getId();
 
         EmployeeUpdateRequest updateRequest = EmployeeUpdateRequest.builder()
                 .firstName("Mahmut")
@@ -179,18 +240,20 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .birthDate(LocalDate.parse("2000-10-01"))
                 .gender(Gender.MALE)
                 .build();
-
+        //When
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .put(BASE_PATH + "/employee/" + employeeId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest));
 
+        //Then
         mockMvc.perform(request)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
+        //Verify
         Optional<Employee> updatedEmployee = employeeReadPort.findById(employeeId);
 
         Assertions.assertNotNull(updatedEmployee);
@@ -223,15 +286,16 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .gender(Gender.MALE)
                 .nationality("TR")
                 .build();
-        Optional<Employee> savedEmployee = employeeSavePort.save(employee);
+        Employee savedEmployee = employeeSavePort.save(employee);
 
         //Given
-        Long employeeId = savedEmployee.orElseThrow().getId();
+        Long employeeId = savedEmployee.getId();
 
         //When
         MockHttpServletRequestBuilder deleteRequestBuilder = MockMvcRequestBuilders
                 .delete(BASE_PATH + "/employee/" + employeeId);
 
+        //Then
         mockMvc.perform(deleteRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
@@ -239,7 +303,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
-        //Then
+        //Verify
         Optional<Employee> deletedEmployee = employeeReadPort.findById(employeeId);
 
         Assertions.assertFalse(deletedEmployee.isPresent());
