@@ -3,9 +3,6 @@ package com.flz;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.flz.cleaner.DepartmentTestCleaner;
-import com.flz.cleaner.EmployeeTestCleaner;
-import com.flz.cleaner.PositionTestCleaner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,20 +54,5 @@ public abstract class BaseEndToEndTest {
     @Autowired
     protected MockMvc mockMvc;
 
-    @Autowired
-    protected DepartmentTestCleaner departmentTestCleaner;
-
-    @Autowired
-    protected PositionTestCleaner positionTestCleaner;
-
-    @Autowired
-    protected EmployeeTestCleaner employeeTestCleaner;
-
-    @BeforeEach
-    void clean() {
-        departmentTestCleaner.cleanTestDepartments();
-        positionTestCleaner.cleanTestPositions();
-        employeeTestCleaner.cleanTestEmployees();
-    }
 
 }
