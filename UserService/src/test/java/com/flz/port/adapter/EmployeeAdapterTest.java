@@ -310,17 +310,12 @@ class EmployeeAdapterTest extends BaseTest {
                 .thenReturn(mockEmployeeEntity);
 
         //Then
-        Optional<Employee> result = employeeAdapter.save(mockEmployee);
+        Employee result = employeeAdapter.save(mockEmployee);
         Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(mockEmployee.getFirstName(), result.get()
-                .getFirstName());
-        Assertions.assertEquals(mockEmployee.getLastName(), result.get()
-                .getLastName());
-        Assertions.assertEquals(mockEmployee.getGender(), result.get()
-                .getGender());
-        Assertions.assertEquals(mockEmployee.getBirthDate(), result.get()
-                .getBirthDate());
+        Assertions.assertEquals(mockEmployee.getFirstName(), result.getFirstName());
+        Assertions.assertEquals(mockEmployee.getLastName(), result.getLastName());
+        Assertions.assertEquals(mockEmployee.getGender(), result.getGender());
+        Assertions.assertEquals(mockEmployee.getBirthDate(), result.getBirthDate());
 
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
