@@ -62,10 +62,10 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
     }
 
     @Override
-    public Optional<Employee> save(final Employee employee) {
+    public Employee save(final Employee employee) {
         final EmployeeEntity employeeEntity = employeeToEntityMapper.map(employee);
-        return Optional.ofNullable(employeeEntityToDomainMapper
-                .map(employeeRepository.save(employeeEntity)));
+        return employeeEntityToDomainMapper
+                .map(employeeRepository.save(employeeEntity));
     }
 
     @Override

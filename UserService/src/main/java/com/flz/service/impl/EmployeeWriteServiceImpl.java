@@ -64,8 +64,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
 
         Employee employee = employeeCreateRequestToDomainMapper.map(createRequest);
 
-        Employee savedEmployee = employeeSavePort.save(employee)
-                .orElseThrow(() -> new RuntimeException("Employee could not be saved"));
+        Employee savedEmployee = employeeSavePort.save(employee);
 
         if (createRequest.getPositionId() != null && createRequest.getStartDate() != null) {
             Position position = positionReadPort.findById(createRequest.getPositionId())
@@ -142,8 +141,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee))
-                .orElseThrow(() -> new RuntimeException("EmployeeOld kaydedilemedi"));
+        EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee));
 
         List<EmployeeExperience> experiences = Optional.ofNullable(
                         employeeExperienceReadPort.findAllByEmployeeId(id)
