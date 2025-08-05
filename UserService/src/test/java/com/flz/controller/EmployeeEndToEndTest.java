@@ -119,13 +119,13 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
         //Given
         EmployeeCreateRequest mockCreateRequest = EmployeeCreateRequest.builder()
-                .identityNumber("25996700465")
-                .firstName("test - Ali")
+                .identityNumber("25996700777")
+                .firstName("Ali Veli")
                 .lastName("Semih")
-                .phoneNumber("05332221133")
-                .email("alisemih@gmail.com")
+                .phoneNumber("05052221133")
+                .email("alivelisemih@gmail.com")
                 .address("Bursa")
-                .birthDate(LocalDate.parse("2000-10-01"))
+                .birthDate(LocalDate.parse("1999-10-01"))
                 .gender(Gender.MALE)
                 .nationality("TC")
                 .salary(BigDecimal.valueOf(20000))
@@ -154,12 +154,12 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     void givenUpdateRequest_whenUpdateEmployee_thenReturnSuccess() throws Exception {
 
         Employee employee = Employee.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .identityNumber("99999999999")
-                .email("old@test.com")
-                .phoneNumber("05551234567")
-                .address("Old Address")
+                .firstName("Hasan")
+                .lastName("Turan")
+                .identityNumber("99991119999")
+                .email("hasan@test.com")
+                .phoneNumber("05051234567")
+                .address("Ankara")
                 .birthDate(LocalDate.parse("2000-10-01"))
                 .gender(Gender.MALE)
                 .nationality("TR")
@@ -169,13 +169,13 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         Long employeeId = savedEmployee.orElseThrow().getId();
 
         EmployeeUpdateRequest updateRequest = EmployeeUpdateRequest.builder()
-                .firstName("Updated Name")
-                .lastName("Updated Last")
-                .email("updated@test.com")
-                .phoneNumber("05559876543")
-                .address("Updated Address")
-                .nationality("Updated Country")
-                .identityNumber("1234569789")
+                .firstName("Mahmut")
+                .lastName("Korur")
+                .email("mahmut@gmail.com")
+                .phoneNumber("05327776543")
+                .address("Adana")
+                .nationality("Almanya")
+                .identityNumber("1234554321")
                 .birthDate(LocalDate.parse("2000-10-01"))
                 .gender(Gender.MALE)
                 .build();
@@ -211,20 +211,21 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     @Test
     void givenEmployeeId_whenDeleteEmployee_thenDeleted() throws Exception {
 
-        //Given
+        //Initialize
         Employee employee = Employee.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .identityNumber("99999999999")
-                .email("old@test.com")
-                .phoneNumber("05551234567")
-                .address("Old Address")
-                .birthDate(LocalDate.parse("2000-10-01"))
+                .firstName("Bayram")
+                .lastName("Seyran")
+                .identityNumber("99988877111")
+                .email("bayram@yahoo.com")
+                .phoneNumber("05051231236")
+                .address("Konya")
+                .birthDate(LocalDate.parse("1999-10-01"))
                 .gender(Gender.MALE)
                 .nationality("TR")
                 .build();
         Optional<Employee> savedEmployee = employeeSavePort.save(employee);
 
+        //Given
         Long employeeId = savedEmployee.orElseThrow().getId();
 
         //When
