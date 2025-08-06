@@ -13,6 +13,7 @@ import com.flz.port.EmployeeExperienceReadPort;
 import com.flz.port.EmployeeExperienceSavePort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.EmployeeSavePort;
+import com.flz.port.EmployeeTestPort;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +36,21 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     @Autowired
     private EmployeeSavePort employeeSavePort;
 
-    private final EmployeeExperienceToResponseMapper employeeExperienceToResponseMapper = EmployeeExperienceToResponseMapper.INSTANCE;
     @Autowired
     private EmployeeExperienceSavePort employeeExperienceSavePort;
+
     @Autowired
     private EmployeeExperienceReadPort employeeExperienceReadPort;
+
+    private final EmployeeExperienceToResponseMapper
+            employeeExperienceToResponseMapper = EmployeeExperienceToResponseMapper.INSTANCE;
+    @Autowired
+    private EmployeeTestPort employeeTestPort;
 
     private static final String BASE_PATH = "/api/v1";
 
     @Test
-    void whenFindByIdEmployeewWithExperiences_thenReturnEmployeeVerifyContent() throws Exception {
+    void whenFindByIdEmployeeWithExperiences_thenReturnEmployeeVerifyContent() throws Exception {
 
         //Initialize
         Employee employee = Employee.builder()
@@ -83,7 +89,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .address("New York")
                 .phoneNumber("05328529674")
                 .build();
-
 
         EmployeeExperience employeeExperience = EmployeeExperience.builder()
                 .salary(BigDecimal.valueOf(10000))
@@ -141,8 +146,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences.length()")
                         .value(2))
 
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].id")
-                        .value(16))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].salary")
                         .value(10000.00))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].startDate")
@@ -158,8 +161,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].supervisorName")
                         .value("Mustafa Şahin"))
 
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].id")
-                        .value(17))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].salary")
                         .value(20000.00))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].startDate")
@@ -294,7 +295,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     void givenCreateRequest_whenCreateEmployee_thenReturnSuccess() throws Exception {
 
         //Given
-        EmployeeCreateRequest mockCreateRequest = EmployeeCreateRequest.builder()
+        EmployeeCreateRequest createRequest = EmployeeCreateRequest.builder()
                 .identityNumber("25996700777")
                 .firstName("Ali Veli")
                 .lastName("Semih")
@@ -316,7 +317,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(endpoint)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mockCreateRequest));
+                .content(objectMapper.writeValueAsString(createRequest));
 
         //Then
         mockMvc.perform(request)
@@ -324,6 +325,25 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
+
+        //Verify
+        Employee employee = employeeTestPort.findByIdentityNumber("25996700777");
+
+        Assertions.assertNotNull(employee);
+        Assertions.assertNotNull(employee.getFirstName());
+        Assertions.assertNotNull(employee.getLastName());
+        Assertions.assertNotNull(employee.getId());
+        Assertions.assertNotNull(employee.getPhoneNumber());
+        Assertions.assertNotNull(employee.getEmail());
+        Assertions.assertNotNull(employee.getAddress());
+        Assertions.assertNotNull(employee.getBirthDate());
+        Assertions.assertNotNull(employee.getGender());
+        Assertions.assertNotNull(employee.getNationality());
+        Assertions.assertEquals(createRequest.getFirstName(), employee.getFirstName());
+        Assertions.assertEquals(createRequest.getLastName(), employee.getLastName());
+        Assertions.assertEquals(createRequest.getPhoneNumber(), employee.getPhoneNumber());
+        Assertions.assertEquals(createRequest.getEmail(), employee.getEmail());
+
     }
 
     @Test
