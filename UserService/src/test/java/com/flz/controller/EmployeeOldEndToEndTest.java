@@ -5,6 +5,7 @@ import com.flz.model.EmployeeOld;
 import com.flz.model.enums.Gender;
 import com.flz.port.EmployeeOldReadPort;
 import com.flz.port.EmployeeOldSavePort;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,12 +15,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
+import java.util.List;
 
 class EmployeeOldEndToEndTest extends BaseEndToEndTest {
 
     private static final String BASE_PATH = "/api/v1";
+
     @Autowired
     private EmployeeOldReadPort employeeOldReadPort;
+
     @Autowired
     private EmployeeOldSavePort employeeOldSavePort;
 
@@ -80,4 +84,51 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
 
     }
 
+    @Test
+    void whenFindAllEmployeeOlds_thenReturnListAndVerifyContent() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employees-old")
+                .param("page", "1")
+                .param("pageSize", "10")
+                .contentType(MediaType.APPLICATION_JSON);
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].firstName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].firstName")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].lastName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].lastName")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdAt")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdBy")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdBy")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdAt")
+                        .isNotEmpty());
+
+        //Then
+        List<EmployeeOld> employeeList = employeeOldReadPort.findAll(1, 10);
+
+        Assertions.assertNotNull(employeeList);
+        Assertions.assertFalse(employeeList.isEmpty());
+        Assertions.assertNotNull(employeeList.get(0).getFirstName());
+        Assertions.assertNotNull(employeeList.get(0).getLastName());
+        Assertions.assertNotNull(employeeList.get(0).getCreatedAt());
+        Assertions.assertNotNull(employeeList.get(0).getCreatedBy());
+        Assertions.assertNotNull(employeeList.get(0).getId());
+
+    }
 }
