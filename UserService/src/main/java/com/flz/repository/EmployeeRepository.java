@@ -15,7 +15,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 
     boolean existsByPhoneNumber(String phoneNumber);
 
-    void deleteAllByFirstNameContainingIgnoreCase(String firstName);
+    EmployeeEntity findByIdentityNumber(String identityNumber);
 
     @Query("SELECT new com.flz.model.Employee(e.id, e.firstName, e.lastName) FROM EmployeeEntity e")
     List<Employee> findEmployeeSummaries();
