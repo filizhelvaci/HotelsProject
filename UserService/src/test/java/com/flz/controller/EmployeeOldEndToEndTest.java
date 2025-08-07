@@ -1,8 +1,15 @@
 package com.flz.controller;
 
 import com.flz.BaseEndToEndTest;
+import com.flz.model.Employee;
 import com.flz.model.EmployeeOld;
+import com.flz.model.EmployeeOldExperience;
+import com.flz.model.Position;
 import com.flz.model.enums.Gender;
+import com.flz.model.mapper.EmployeeOldExperienceToResponseMapper;
+import com.flz.model.response.EmployeeOldDetailsResponse;
+import com.flz.port.EmployeeOldExperienceReadPort;
+import com.flz.port.EmployeeOldExperienceSavePort;
 import com.flz.port.EmployeeOldReadPort;
 import com.flz.port.EmployeeOldSavePort;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,6 +34,13 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
 
     @Autowired
     private EmployeeOldSavePort employeeOldSavePort;
+
+    private final EmployeeOldExperienceToResponseMapper
+            employeeOldExperienceToResponseMapper = EmployeeOldExperienceToResponseMapper.INSTANCE;
+    @Autowired
+    private EmployeeOldExperienceSavePort employeeOldExperienceSavePort;
+    @Autowired
+    private EmployeeOldExperienceReadPort employeeOldExperienceReadPort;
 
     @Test
     void whenFindByIdEmployeeOld_thenReturnEmployeeOldVerifyContent() throws Exception {
@@ -44,6 +59,49 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
                 .build();
 
         EmployeeOld savedEmployee = employeeOldSavePort.save(employee);
+
+        Position position = Position.builder()
+                .id(15L)
+                .name("Grafic Designer")
+                .build();
+
+        Position position2 = Position.builder()
+                .id(16L)
+                .name("Design Team Leader")
+                .build();
+
+        Employee supervisor = Employee.builder()
+                .id(8L)
+                .identityNumber("5465465485465")
+                .firstName("Emma")
+                .lastName("Corner")
+                .gender(Gender.FEMALE)
+                .nationality("France")
+                .address("Paris")
+                .phoneNumber("4285098529674")
+                .build();
+
+        EmployeeOldExperience employeeOldExperience1 = EmployeeOldExperience.builder()
+                .salary(BigDecimal.valueOf(10000))
+                .startDate(LocalDate.parse("2000-10-01"))
+                .endDate(LocalDate.parse("2001-10-31"))
+                .position(position)
+                .employeeOld(savedEmployee)
+                .supervisor(supervisor)
+                .build();
+
+        EmployeeOldExperience employeeOldExperience2 = EmployeeOldExperience.builder()
+                .salary(BigDecimal.valueOf(20000))
+                .startDate(LocalDate.parse("2002-10-01"))
+                .endDate(LocalDate.parse("2003-10-25"))
+                .position(position2)
+                .employeeOld(savedEmployee)
+                .supervisor(supervisor)
+                .build();
+
+        List<EmployeeOldExperience> employeeOldExperiences = List.of(employeeOldExperience1, employeeOldExperience2);
+
+        employeeOldExperienceSavePort.saveAll(employeeOldExperiences);
 
         //Given
         Long id = savedEmployee.getId();
@@ -80,7 +138,38 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
                         .isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences.length()")
-                        .value(0));
+                        .value(2));
+
+        //Verify
+        EmployeeOld employeeFromDatabase = employeeOldReadPort.findById(id)
+                .orElseThrow(() -> new RuntimeException("EmployeeOld not found with id: " + id));
+
+        EmployeeOldDetailsResponse employeeDetailsResponse = EmployeeOldDetailsResponse.builder()
+                .employeeOld(employeeFromDatabase)
+                .experiences(employeeOldExperienceToResponseMapper.map(employeeOldExperienceReadPort.findAllByEmployeeOldId(id)))
+                .build();
+
+        Assertions.assertNotNull(employeeDetailsResponse);
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences());
+        Assertions.assertNotNull(employeeDetailsResponse.getEmployeeOld().getFirstName());
+        Assertions.assertNotNull(employeeDetailsResponse.getEmployeeOld().getLastName());
+        Assertions.assertNotNull(employeeDetailsResponse.getEmployeeOld().getIdentityNumber());
+        Assertions.assertNotNull(employeeDetailsResponse.getEmployeeOld().getPhoneNumber());
+        Assertions.assertNotNull(employeeDetailsResponse.getEmployeeOld().getBirthDate());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getId());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getStartDate());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getEndDate());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getPositionName());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getSupervisorName());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getStartDate());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getEndDate());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getPositionName());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getSupervisorName());
+        Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeFromDatabase.getIdentityNumber());
+        Assertions.assertEquals(savedEmployee.getEmail(), employeeFromDatabase.getEmail());
+        Assertions.assertEquals(savedEmployee.getPhoneNumber(), employeeFromDatabase.getPhoneNumber());
+        Assertions.assertEquals(savedEmployee.getBirthDate(), employeeFromDatabase.getBirthDate());
+
 
     }
 
