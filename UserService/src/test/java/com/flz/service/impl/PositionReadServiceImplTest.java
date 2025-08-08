@@ -20,112 +20,14 @@ import java.util.List;
 
 class PositionReadServiceImplTest extends BaseTest {
 
-
     @Mock
     PositionReadPort positionReadPort;
 
     @InjectMocks
     PositionReadServiceImpl positionReadServiceImpl;
 
-    /**
-     * {@link PositionReadServiceImpl#findSummaryAll()}
-     */
-    @Test
-    void whenCalledAllSummaryPosition_thenReturnListOfPositionsSummaryResponse() {
 
-        //When
-        List<Position> mockPositions = getPositions();
-
-        Mockito.when(positionReadPort.findSummaryAll())
-                .thenReturn(mockPositions);
-
-        List<PositionSummaryResponse> mockPositionSummaryResponses = PositionToPositionSummaryResponseMapper
-                .INSTANCE.map(mockPositions);
-
-        //Then
-        List<PositionSummaryResponse> result = positionReadServiceImpl
-                .findSummaryAll();
-        Assertions.assertEquals(mockPositionSummaryResponses, result);
-
-        //Verify
-        Mockito.verify(positionReadPort, Mockito.times(1))
-                .findSummaryAll();
-    }
-
-
-    @Test
-    void whenCalledAllSummaryPositionIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
-
-        //When
-        Mockito.when(positionReadPort.findSummaryAll())
-                .thenReturn(Collections.emptyList());
-
-        //Then
-        List<PositionSummaryResponse> positionSummaryResponses =
-                positionReadServiceImpl.findSummaryAll();
-
-        Assertions.assertNotNull(positionReadPort);
-        Assertions.assertEquals(0, positionSummaryResponses.size());
-        Assertions.assertTrue(positionSummaryResponses.isEmpty());
-
-        //Verify
-        Mockito.verify(positionReadPort, Mockito.times(1))
-                .findSummaryAll();
-
-    }
-
-    /**
-     * {@link PositionReadServiceImpl#findAll(Integer, Integer)}
-     */
-    @Test
-    void givenValidPagePageSize_whenCalledAllPosition_thenReturnListAllOfPositions() {
-
-        //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
-
-        //When
-        List<Position> mockPositions = getPositions();
-
-        Mockito.when(positionReadPort.findAll(mockPage, mockPageSize))
-                .thenReturn(mockPositions);
-
-        //Then
-        List<Position> result = positionReadServiceImpl
-                .findAll(mockPage, mockPageSize);
-        Assertions.assertEquals(mockPositions.size(), result.size());
-
-        //Verify
-        Mockito.verify(positionReadPort, Mockito.times(1))
-                .findAll(Mockito.anyInt(), Mockito.anyInt());
-    }
-
-
-    @Test
-    void givenValidPagePageSize_whenCalledAllPositionIfAllPositionEntitiesIsEmpty_thenReturnEmptyList() {
-
-        //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
-
-        //When
-        Mockito.when(positionReadPort.findAll(mockPage, mockPageSize))
-                .thenReturn(Collections.emptyList());
-
-        //Then
-        List<Position> result = positionReadServiceImpl
-                .findAll(mockPage, mockPageSize);
-
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(0, result.size());
-        Assertions.assertTrue(result.isEmpty());
-
-        //Verify
-        Mockito.verify(positionReadPort, Mockito.times(1))
-                .findAll(mockPage, mockPageSize);
-
-    }
-
+    //Initialize
     private static List<Position> getPositions() {
         return List.of(
                 Position.builder()
@@ -170,6 +72,108 @@ class PositionReadServiceImplTest extends BaseTest {
                         .createdBy("SYSTEM")
                         .createdAt(LocalDateTime.now())
                         .build());
+    }
+
+
+    @Test
+    void whenCalledAllSummaryPositionIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(positionReadPort.findSummaryAll())
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<PositionSummaryResponse> positionSummaryResponses =
+                positionReadServiceImpl.findSummaryAll();
+
+        Assertions.assertNotNull(positionReadPort);
+        Assertions.assertEquals(0, positionSummaryResponses.size());
+        Assertions.assertTrue(positionSummaryResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findSummaryAll();
+
+    }
+
+    /**
+     * {@link PositionReadServiceImpl#findSummaryAll()}
+     */
+    @Test
+    void whenCalledAllSummaryPosition_thenReturnListOfPositionsSummaryResponse() {
+
+        //Initialize
+        List<Position> mockPositions = getPositions();
+
+        //When
+        Mockito.when(positionReadPort.findSummaryAll())
+                .thenReturn(mockPositions);
+
+        List<PositionSummaryResponse> mockPositionSummaryResponses = PositionToPositionSummaryResponseMapper
+                .INSTANCE.map(mockPositions);
+
+        //Then
+        List<PositionSummaryResponse> result = positionReadServiceImpl
+                .findSummaryAll();
+        Assertions.assertEquals(mockPositionSummaryResponses, result);
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findSummaryAll();
+
+    }
+
+
+    @Test
+    void givenValidPagePageSize_whenCalledAllPositionIfAllPositionEntitiesIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        Mockito.when(positionReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<Position> result = positionReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.size());
+        Assertions.assertTrue(result.isEmpty());
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findAll(mockPage, mockPageSize);
+
+    }
+
+    /**
+     * {@link PositionReadServiceImpl#findAll(Integer, Integer)}
+     */
+    @Test
+    void givenValidPagePageSize_whenCalledAllPosition_thenReturnListAllOfPositions() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        List<Position> mockPositions = getPositions();
+
+        Mockito.when(positionReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(mockPositions);
+
+        //Then
+        List<Position> result = positionReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+        Assertions.assertEquals(mockPositions.size(), result.size());
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
 }

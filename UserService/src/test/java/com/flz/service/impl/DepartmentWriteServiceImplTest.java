@@ -22,15 +22,14 @@ import java.util.Optional;
 
 class DepartmentWriteServiceImplTest extends BaseTest {
 
-
-    @InjectMocks
-    DepartmentWriteServiceImpl departmentWriteService;
-
     @Mock
     DepartmentSavePort departmentSavePort;
 
     @Mock
     DepartmentReadPort departmentReadPort;
+
+    @InjectMocks
+    DepartmentWriteServiceImpl departmentWriteService;
 
 
     /**
@@ -85,6 +84,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
     }
 
+
     /**
      * {@link DepartmentWriteServiceImpl#update(Long, DepartmentUpdateRequest)}
      */
@@ -126,6 +126,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .existsByName(mockDepartmentUpdateRequest.getName());
         Mockito.verify(departmentSavePort, Mockito.times(1))
                 .save(Mockito.any(Department.class));
+
     }
 
 
@@ -151,7 +152,9 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .findById(mockId);
         Mockito.verify(departmentSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
+
 
     @Test
     void givenValidDepartmentIdAndSameName_whenDepartmentExists_thenUpdateWithoutNameCheck() {
@@ -186,7 +189,9 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .existsByName(Mockito.any());
         Mockito.verify(departmentSavePort)
                 .save(Mockito.any());
+
     }
+
 
     @Test
     void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityAlreadyExists_thenThrowsDepartmentAlreadyExistsException() {
@@ -222,7 +227,9 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .existsByName(mockRequest.getName());
         Mockito.verify(departmentSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
+
 
     /**
      * {@link DepartmentWriteServiceImpl#delete(Long)}
@@ -233,7 +240,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         //Given
         Long mockId = 1L;
 
-        //When
+        //Initialize
         Department mockDepartment = Department.builder()
                 .id(mockId)
                 .name("updatedDepartment")
@@ -250,6 +257,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .createdBy(mockDepartment.getCreatedBy())
                 .build();
 
+        //When
         Mockito.when(departmentReadPort.findById(mockId))
                 .thenReturn(Optional.of(mockDepartment));
 
@@ -261,12 +269,12 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
         Assertions.assertEquals(DepartmentStatus.DELETED, mockDeletedDepartment.getStatus());
 
-
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .findById(mockId);
         Mockito.verify(departmentSavePort, Mockito.times(1))
                 .save(Mockito.any(Department.class));
+
     }
 
 
@@ -289,7 +297,9 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .findById(mockId);
         Mockito.verify(departmentSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
+
 
     @Test
     void givenDeletedDepartment_whenDeleteCalled_thenThrowDepartmentAlreadyDeletedException() {
@@ -318,6 +328,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .findById(mockId);
         Mockito.verify(departmentSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
 
 }
