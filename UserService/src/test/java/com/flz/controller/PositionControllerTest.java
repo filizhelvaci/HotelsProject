@@ -31,16 +31,42 @@ import java.util.List;
 @WebMvcTest(PositionController.class)
 class PositionControllerTest extends BaseTest {
 
+    @Autowired
+    MockMvc mockMvc;
+
     @MockBean
     PositionWriteService positionWriteService;
 
     @MockBean
     PositionReadService positionReadService;
 
-    @Autowired
-    MockMvc mockMvc;
-
     private static final String BASE_PATH = "/api/v1";
+
+    //Initialize
+    private static List<Position> getPositions() {
+        return List.of(
+                Position.builder()
+                        .id(11L)
+                        .name("TEST1")
+                        .status(PositionStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Position.builder()
+                        .id(12L)
+                        .name("TEST2")
+                        .status(PositionStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Position.builder()
+                        .id(13L)
+                        .name("TEST3")
+                        .status(PositionStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build());
+    }
 
     /**
      * {@link PositionController#findAll(com.flz.model.request.PageRequest)}
@@ -80,6 +106,7 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -103,6 +130,7 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -126,6 +154,7 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -160,6 +189,7 @@ class PositionControllerTest extends BaseTest {
         // Verify
         Mockito.verify(positionReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     /**
@@ -168,7 +198,7 @@ class PositionControllerTest extends BaseTest {
     @Test
     void whenCalledAllSummaryPosition_thenReturnPositionsSummaryResponse() throws Exception {
 
-        //Given
+        //Initialize
         List<PositionSummaryResponse> mockPositionsSummaryResponse = List.of(
                 PositionSummaryResponse.builder()
                         .id(11L)
@@ -208,36 +238,9 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionReadService, Mockito.times(1))
                 .findSummaryAll();
+
     }
 
-    @Test
-    void whenNotFoundPositionsSummaryAll_thenReturnEmptyList() throws Exception {
-
-        //When
-        List<PositionSummaryResponse> emptyList = Collections.emptyList();
-
-        Mockito.when(positionReadService.findSummaryAll())
-                .thenReturn(emptyList);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/positions/summary")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isEmpty());
-
-        //Verify
-        Mockito.verify(positionReadService, Mockito.times(1))
-                .findSummaryAll();
-    }
 
     /**
      * {@link PositionController#create(PositionCreateRequest)}
@@ -276,6 +279,37 @@ class PositionControllerTest extends BaseTest {
 
     }
 
+    @Test
+    void whenNotFoundPositionsSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //Initialize
+        List<PositionSummaryResponse> emptyList = Collections.emptyList();
+
+        //When
+        Mockito.when(positionReadService.findSummaryAll())
+                .thenReturn(emptyList);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/positions/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isEmpty());
+
+        //Verify
+        Mockito.verify(positionReadService, Mockito.times(1))
+                .findSummaryAll();
+
+    }
+
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {
@@ -306,6 +340,7 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionWriteService, Mockito.never())
                 .create(Mockito.any(PositionCreateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -336,6 +371,7 @@ class PositionControllerTest extends BaseTest {
 
         //Verify
         Mockito.verifyNoInteractions(positionWriteService);
+
     }
 
     /**
@@ -373,6 +409,7 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionWriteService, Mockito.times(1))
                 .update(Mockito.any(), Mockito.any(PositionUpdateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -409,6 +446,7 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionWriteService, Mockito.never())
                 .update(Mockito.any(), Mockito.any(PositionUpdateRequest.class));
+
     }
 
     @Test
@@ -431,6 +469,7 @@ class PositionControllerTest extends BaseTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(false));
+
     }
 
     /**
@@ -461,6 +500,7 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionWriteService, Mockito.times(1))
                 .delete(Mockito.anyLong());
+
     }
 
     @Test
@@ -483,31 +523,7 @@ class PositionControllerTest extends BaseTest {
         //Verify
         Mockito.verify(positionWriteService, Mockito.never())
                 .delete(Mockito.anyLong());
-    }
 
-    private static List<Position> getPositions() {
-        return List.of(
-                Position.builder()
-                        .id(11L)
-                        .name("TEST1")
-                        .status(PositionStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Position.builder()
-                        .id(12L)
-                        .name("TEST2")
-                        .status(PositionStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Position.builder()
-                        .id(13L)
-                        .name("TEST3")
-                        .status(PositionStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build());
     }
 
 }

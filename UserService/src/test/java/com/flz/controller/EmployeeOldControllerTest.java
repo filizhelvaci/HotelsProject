@@ -27,13 +27,57 @@ import java.util.List;
 @WebMvcTest(EmployeeOldController.class)
 class EmployeeOldControllerTest extends BaseTest {
 
-    @MockBean
-    EmployeeOldReadService employeeOldReadService;
-
     @Autowired
     MockMvc mockMvc;
 
+    @MockBean
+    EmployeeOldReadService employeeOldReadService;
+
     private static final String BASE_PATH = "/api/v1";
+
+    //Initialize
+    private static List<EmployeeOld> getEmployeeOlds() {
+        return List.of(
+                EmployeeOld.builder()
+                        .id(1L)
+                        .firstName("test first name 1")
+                        .lastName("test last name 1")
+                        .address("test address 1")
+                        .birthDate(LocalDate.parse("2000-01-01"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test1@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321456")
+                        .build(),
+                EmployeeOld.builder()
+                        .id(2L)
+                        .firstName("test first name 2")
+                        .lastName("test last name 2 ")
+                        .address("test address 2")
+                        .birthDate(LocalDate.parse("2000-02-02"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test2@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321465")
+                        .build(),
+                EmployeeOld.builder()
+                        .id(3L)
+                        .firstName("test first name 3")
+                        .lastName("test last name 3")
+                        .address("test address 3")
+                        .birthDate(LocalDate.parse("2000-03-03"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test3@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321499")
+                        .build());
+    }
 
     /**
      * {@link EmployeeOldController#findById(Long)} ()}
@@ -104,6 +148,7 @@ class EmployeeOldControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldReadService, Mockito.times(1))
                 .findById(Mockito.anyLong());
+
     }
 
     @Test
@@ -134,6 +179,7 @@ class EmployeeOldControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldReadService, Mockito.times(1))
                 .findById(Mockito.anyLong());
+
     }
 
     @Test
@@ -142,6 +188,7 @@ class EmployeeOldControllerTest extends BaseTest {
         //Given
         String invalidId = "abc";
 
+        //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .get(BASE_PATH + "/employee-old/{id}", invalidId)
                 .contentType(MediaType.APPLICATION_JSON);
@@ -159,8 +206,8 @@ class EmployeeOldControllerTest extends BaseTest {
         // Verify
         Mockito.verify(employeeOldReadService, Mockito.never())
                 .findById(Mockito.anyLong());
-    }
 
+    }
 
     /**
      * {@link EmployeeOldController#findAll(com.flz.model.request.PageRequest)}
@@ -206,6 +253,7 @@ class EmployeeOldControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -229,6 +277,7 @@ class EmployeeOldControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -252,6 +301,7 @@ class EmployeeOldControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -288,49 +338,7 @@ class EmployeeOldControllerTest extends BaseTest {
         // Verify
         Mockito.verify(employeeOldReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
-    }
 
-    private static List<EmployeeOld> getEmployeeOlds() {
-        return List.of(
-                EmployeeOld.builder()
-                        .id(1L)
-                        .firstName("test first name 1")
-                        .lastName("test last name 1")
-                        .address("test address 1")
-                        .birthDate(LocalDate.parse("2000-01-01"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test1@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321456")
-                        .build(),
-                EmployeeOld.builder()
-                        .id(2L)
-                        .firstName("test first name 2")
-                        .lastName("test last name 2 ")
-                        .address("test address 2")
-                        .birthDate(LocalDate.parse("2000-02-02"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test2@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321465")
-                        .build(),
-                EmployeeOld.builder()
-                        .id(3L)
-                        .firstName("test first name 3")
-                        .lastName("test last name 3")
-                        .address("test address 3")
-                        .birthDate(LocalDate.parse("2000-03-03"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test3@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321499")
-                        .build());
     }
 
     private static EmployeeOld getEmployeeOld() {
@@ -363,6 +371,5 @@ class EmployeeOldControllerTest extends BaseTest {
                 .supervisorName("Supervisor name")
                 .build();
     }
-
 
 }
