@@ -354,24 +354,6 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
         Mockito.verify(employeeExperienceSavePort, Mockito.times(2)).save(Mockito.any());
     }
 
-
-    private static EmployeeExperience getEmployeeExperience() {
-
-        Position position = getPosition();
-        Employee employee = getEmployee();
-        Employee supervisor = getSupervisor();
-
-        return EmployeeExperience.builder()
-                .id(1L)
-                .salary(BigDecimal.valueOf(65000))
-                .startDate(LocalDate.of(2020, 1, 15))
-                .endDate(LocalDate.of(2023, 1, 28))
-                .position(position)
-                .employee(employee)
-                .supervisor(supervisor)
-                .build();
-    }
-
     private static EmployeeExperience getEmployeeExperience2() {
 
         Position position = getPosition2();

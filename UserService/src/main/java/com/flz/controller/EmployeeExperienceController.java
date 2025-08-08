@@ -1,6 +1,5 @@
 package com.flz.controller;
 
-
 import com.flz.model.request.EmployeeExperienceCreateRequest;
 import com.flz.model.response.HotelResponse;
 import com.flz.service.EmployeeExperienceWriteService;
@@ -23,7 +22,8 @@ class EmployeeExperienceController {
     private final EmployeeExperienceWriteService employeeExperienceCreateService;
 
     @PostMapping("/employee/{id}/experience")
-    public HotelResponse<Void> create(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid EmployeeExperienceCreateRequest createRequest) {
+    public HotelResponse<Void> create(@PathVariable(value = "id") @Positive Long id,
+                                      @RequestBody @Valid EmployeeExperienceCreateRequest createRequest) {
         employeeExperienceCreateService.create(id, createRequest);
         return HotelResponse.success();
     }

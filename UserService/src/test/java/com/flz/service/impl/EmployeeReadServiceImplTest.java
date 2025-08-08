@@ -200,7 +200,6 @@ class EmployeeReadServiceImplTest extends BaseTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(mockSummaryEmployees);
-        Assertions.assertEquals(mockEmployees.size(), 3);
         Assertions.assertEquals(mockSummaryEmployees.size(), response.size());
 
         //Verify

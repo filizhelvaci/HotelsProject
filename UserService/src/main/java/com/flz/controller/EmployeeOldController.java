@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class EmployeeOldController {
+class EmployeeOldController {
 
     private final EmployeeOldReadService employeeOldReadService;
 
@@ -32,7 +32,8 @@ public class EmployeeOldController {
 
     @GetMapping("/employees-old")
     public HotelResponse<List<EmployeeOld>> findAll(@Valid PageRequest pageRequest) {
-        List<EmployeeOld> employeesOld = employeeOldReadService.findAll(pageRequest.getPage(), pageRequest.getPageSize());
+        List<EmployeeOld> employeesOld = employeeOldReadService
+                .findAll(pageRequest.getPage(), pageRequest.getPageSize());
         return HotelResponse.successOf(employeesOld);
     }
 

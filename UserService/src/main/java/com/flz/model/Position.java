@@ -27,6 +27,7 @@ public class Position extends BaseDomainModel {
     }
 
     public boolean isDeleted() {
+
         return this.getStatus() == PositionStatus.DELETED;
     }
 

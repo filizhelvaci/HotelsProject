@@ -46,12 +46,13 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
     private final EmployeeOldSavePort employeeOldSavePort;
     private final EmployeeOldExperienceSavePort employeeOldExperienceSavePort;
 
-    private final EmployeeCreateRequestToDomainMapper
+    private static final EmployeeCreateRequestToDomainMapper
             employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
-    private final EmployeeToEmployeeOldMapper
+    private static final EmployeeToEmployeeOldMapper
             employeeToEmployeeOldMapper = EmployeeToEmployeeOldMapper.INSTANCE;
-    private final EmployeeExperienceToEmployeeOldExperienceMapper
+    private static final EmployeeExperienceToEmployeeOldExperienceMapper
             employeeExperienceToEmployeeOldExperienceMapper = EmployeeExperienceToEmployeeOldExperienceMapper.INSTANCE;
+
 
     @Override
     public void create(EmployeeCreateRequest createRequest) {
@@ -85,6 +86,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
 
     }
 
+
     @Override
     public void update(Long id, EmployeeUpdateRequest employeeUpdateRequest) {
 
@@ -115,6 +117,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         employeeSavePort.save(employee);
     }
 
+
     private void checkIfExistsByIdentity(EmployeeUpdateRequest employeeUpdateRequest) {
 
         boolean existsByIdentity = employeeReadPort
@@ -123,6 +126,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
             throw new EmployeeAlreadyExistsException(employeeUpdateRequest.getIdentityNumber());
         }
     }
+
 
     private void checkIfExistsByPhoneNumber(EmployeeUpdateRequest employeeUpdateRequest) {
 
@@ -168,7 +172,6 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         }
 
         employeeDeletePort.delete(id);
-
     }
 
 }

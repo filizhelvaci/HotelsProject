@@ -23,20 +23,26 @@ class PositionAdapter implements PositionSavePort, PositionReadPort {
 
     private final PositionRepository positionRepository;
 
-    private final PositionToEntityMapper positionToEntityMapper = PositionToEntityMapper.INSTANCE;
-    private final PositionEntityToDomainMapper positionEntityToDomainMapper = PositionEntityToDomainMapper.INSTANCE;
-    private final DepartmentToEntityMapper departmentToEntityMapper = DepartmentToEntityMapper.INSTANCE;
+    private static final PositionToEntityMapper
+            positionToEntityMapper = PositionToEntityMapper.INSTANCE;
+    private static final PositionEntityToDomainMapper
+            positionEntityToDomainMapper = PositionEntityToDomainMapper.INSTANCE;
+    private static final DepartmentToEntityMapper
+            departmentToEntityMapper = DepartmentToEntityMapper.INSTANCE;
 
 
     @Override
     public List<Position> findAll(Integer page, Integer pageSize) {
+
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         List<PositionEntity> positionEntities = positionRepository.findAll(pageable).getContent();
         return positionEntities.stream().map(positionEntityToDomainMapper::map).toList();
     }
 
+
     @Override
     public List<Position> findSummaryAll() {
+
         List<PositionEntity> positionEntities = positionRepository.findAll();
         return positionEntityToDomainMapper.map(positionEntities);
     }
@@ -44,9 +50,11 @@ class PositionAdapter implements PositionSavePort, PositionReadPort {
 
     @Override
     public Optional<Position> findById(Long id) {
+
         Optional<PositionEntity> positionEntity = positionRepository.findById(id);
         return positionEntity.map(positionEntityToDomainMapper::map);
     }
+
 
     @Override
     public boolean existsByName(String name) {
@@ -54,8 +62,10 @@ class PositionAdapter implements PositionSavePort, PositionReadPort {
         return positionRepository.existsByName(name);
     }
 
+
     @Override
     public void save(final Position position) {
+
         final PositionEntity positionEntity = positionToEntityMapper.map(position);
         final DepartmentEntity departmentEntity = departmentToEntityMapper.map(position.getDepartment());
         positionEntity.setDepartment(departmentEntity);

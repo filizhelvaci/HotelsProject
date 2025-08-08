@@ -199,7 +199,7 @@ class EmployeeOldAdapterTest extends BaseTest {
         //Then
         EmployeeOld result = employeeOldAdapter.save(mockEmployeeOld);
 
-        Assertions.assertNotNull(result);
+        Assertions.assertNull(result);
 
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))

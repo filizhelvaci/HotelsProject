@@ -21,18 +21,22 @@ public class EmployeeOldAdapter implements EmployeeOldReadPort, EmployeeOldSaveP
 
     private final EmployeeOldRepository employeeOldRepository;
 
-    private final EmployeeOldEntityToDomainMapper employeeOldEntityToDomainMapper = EmployeeOldEntityToDomainMapper.INSTANCE;
-    private final EmployeeOldToEntityMapper employeeOldToEntityMapper = EmployeeOldToEntityMapper.INSTANCE;
-
+    private static final EmployeeOldEntityToDomainMapper
+            employeeOldEntityToDomainMapper = EmployeeOldEntityToDomainMapper.INSTANCE;
+    private static final EmployeeOldToEntityMapper
+            employeeOldToEntityMapper = EmployeeOldToEntityMapper.INSTANCE;
 
     @Override
     public Optional<EmployeeOld> findById(Long id) {
+
         Optional<EmployeeOldEntity> employeeOldEntity = employeeOldRepository.findById(id);
         return employeeOldEntity.map(employeeOldEntityToDomainMapper::map);
     }
 
+
     @Override
     public List<EmployeeOld> findAll(Integer page, Integer pageSize) {
+
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         List<EmployeeOldEntity> employeeOldEntities = employeeOldRepository
                 .findAll(pageable)
@@ -42,11 +46,14 @@ public class EmployeeOldAdapter implements EmployeeOldReadPort, EmployeeOldSaveP
                 .toList();
     }
 
+
     @Override
     public EmployeeOld save(final EmployeeOld employeeOld) {
+
         final EmployeeOldEntity employeeOldEntity = employeeOldToEntityMapper.map(employeeOld);
         return employeeOldEntityToDomainMapper
                 .map(employeeOldRepository.save(employeeOldEntity));
+
     }
 
 }
