@@ -37,6 +37,9 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     private EmployeeSavePort employeeSavePort;
 
     @Autowired
+    private EmployeeTestPort employeeTestPort;
+
+    @Autowired
     private EmployeeExperienceSavePort employeeExperienceSavePort;
 
     @Autowired
@@ -44,10 +47,9 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
     private final EmployeeExperienceToResponseMapper
             employeeExperienceToResponseMapper = EmployeeExperienceToResponseMapper.INSTANCE;
-    @Autowired
-    private EmployeeTestPort employeeTestPort;
 
     private static final String BASE_PATH = "/api/v1";
+
 
     @Test
     void whenFindByIdEmployeeWithExperiences_thenReturnEmployeeVerifyContent() throws Exception {
@@ -65,9 +67,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .nationality("TR")
                 .build();
         Employee savedEmployee = employeeSavePort.save(employee);
-
-        //Given
-        Long employeeId = savedEmployee.getId();
 
         Position position = Position.builder()
                 .id(10L)
@@ -108,6 +107,9 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .supervisor(supervisor)
                 .build();
         employeeExperienceSavePort.save(employeeExperience2);
+
+        //Given
+        Long employeeId = savedEmployee.getId();
 
         //When
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -208,6 +210,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
     }
 
+
     @Test
     void whenFindAllEmployees_thenReturnListAndVerifyContent() throws Exception {
 
@@ -256,6 +259,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
     }
 
+
     @Test
     void whenFindSummaryAllEmployees_thenReturnListAndVerifyContent() throws Exception {
 
@@ -289,7 +293,9 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(employees.get(0).getFirstName());
         Assertions.assertNotNull(employees.get(0).getLastName());
         Assertions.assertNotNull(employees.get(0).getId());
+
     }
+
 
     @Test
     void givenCreateRequest_whenCreateEmployee_thenReturnSuccess() throws Exception {
@@ -346,6 +352,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
     }
 
+
     @Test
     void givenUpdateRequest_whenUpdateEmployee_thenReturnSuccess() throws Exception {
 
@@ -363,9 +370,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .build();
         Employee savedEmployee = employeeSavePort.save(employee);
 
-        //Given
-        Long employeeId = savedEmployee.getId();
-
         EmployeeUpdateRequest updateRequest = EmployeeUpdateRequest.builder()
                 .firstName("Mahmut")
                 .lastName("Korur")
@@ -377,6 +381,10 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .birthDate(LocalDate.parse("2000-10-01"))
                 .gender(Gender.MALE)
                 .build();
+
+        //Given
+        Long employeeId = savedEmployee.getId();
+
         //When
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .put(BASE_PATH + "/employee/" + employeeId)
@@ -407,6 +415,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 updateRequest.getEmail());
 
     }
+
 
     @Test
     void givenEmployeeId_whenDeleteEmployee_thenDeleted() throws Exception {
@@ -446,4 +455,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         Assertions.assertFalse(deletedEmployee.isPresent());
 
     }
+
+
 }

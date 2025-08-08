@@ -19,9 +19,11 @@ import java.util.Optional;
 
 class EmployeeExperienceEndToEndTest extends BaseEndToEndTest {
 
-    private static final String BASE_PATH = "/api/v1";
     @Autowired
     private EmployeeExperienceReadPort employeeExperienceReadPort;
+
+    private static final String BASE_PATH = "/api/v1";
+
 
     @Test
     void givenCreateRequest_whenCreateEmployeeExperience_thenReturnSuccess() throws Exception {
@@ -64,4 +66,6 @@ class EmployeeExperienceEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(employeeExperience.get().getCreatedBy());
 
     }
+
+
 }

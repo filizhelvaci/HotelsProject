@@ -26,10 +26,10 @@ class PositionEndToEndTest extends BaseEndToEndTest {
     @Autowired
     private PositionReadPort positionReadPort;
 
-    private static final String BASE_PATH = "/api/v1";
-
     @Autowired
     private PositionTestPort positionTestPort;
+
+    private static final String BASE_PATH = "/api/v1";
 
     @Test
     void givenCreateRequest_whenCreatePosition_thenReturnSuccess() throws Exception {
@@ -57,6 +57,7 @@ class PositionEndToEndTest extends BaseEndToEndTest {
 
         //Then
         Optional<Position> position = positionReadPort.findById(positionId);
+
         Assertions.assertTrue(position.isPresent());
         Assertions.assertNotNull(position.get().getCreatedBy());
         Assertions.assertNotNull(position.get().getCreatedAt());
@@ -75,7 +76,9 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                 position.get().getCreatedBy());
         Assertions.assertEquals(createdPosition.getStatus(),
                 position.get().getStatus());
+
     }
+
 
     @Test
     void givenUpdateRequest_whenUpdatePosition_thenReturnSuccess() throws Exception {
@@ -87,15 +90,15 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                 .status(PositionStatus.ACTIVE)
                 .build());
 
-        //Given
-        Long positionId = positionSaved.getId();
-
-        //When
         PositionUpdateRequest updateRequest = PositionUpdateRequest.builder()
                 .name("Revir Saglık Personeli")
                 .departmentId(1L)
                 .build();
 
+        //Given
+        Long positionId = positionSaved.getId();
+
+        //When
         MockHttpServletRequestBuilder updateRequestBuilder = MockMvcRequestBuilders
                 .put(BASE_PATH + "/position/" + positionId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -125,7 +128,9 @@ class PositionEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(position.get().getName(), updateRequest.getName());
         Assertions.assertEquals(position.get().getDepartment().getId(),
                 updateRequest.getDepartmentId());
+
     }
+
 
     @Test
     void givenPositionId_whenDeletePosition_thenSoftDeleted() throws Exception {
@@ -160,7 +165,9 @@ class PositionEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotEquals(deletedPosition.get().getStatus(), positionSaved.getStatus());
         Assertions.assertNotNull(deletedPosition.get().getCreatedAt());
         Assertions.assertNotNull(deletedPosition.get().getCreatedBy());
+
     }
+
 
     @Test
     void whenFindAllPositions_thenReturnListAndVerifyContent() throws Exception {
@@ -210,6 +217,7 @@ class PositionEndToEndTest extends BaseEndToEndTest {
 
     }
 
+
     @Test
     void whenFindSummaryAllPositions_thenReturnListAndVerifyContent() throws Exception {
 
@@ -237,12 +245,15 @@ class PositionEndToEndTest extends BaseEndToEndTest {
 
         //Then
         List<Position> positions = positionReadPort.findSummaryAll();
+
         Assertions.assertNotNull(positions);
         Assertions.assertFalse(positions.isEmpty());
         Assertions.assertNotNull(positions.get(0)
                 .getName());
         Assertions.assertNotNull(positions.get(0)
                 .getId());
+
     }
+
 
 }

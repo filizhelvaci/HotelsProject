@@ -64,6 +64,7 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
 
     }
 
+
     @Test
     void givenUpdateRequest_whenUpdateDepartment_thenReturnSuccess() throws Exception {
 
@@ -74,14 +75,14 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                         .status(DepartmentStatus.ACTIVE)
                         .build());
 
-        //Given
-        Long departmentId = departmentSaved.getId();
-
-        //When
         DepartmentUpdateRequest updateRequest = DepartmentUpdateRequest.builder()
                 .name("Kat Güvenlik Departmani")
                 .build();
 
+        //Given
+        Long departmentId = departmentSaved.getId();
+
+        //When
         MockHttpServletRequestBuilder updateRequestBuilder = MockMvcRequestBuilders
                 .put(BASE_PATH + "/department/" + departmentId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,6 +107,7 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(DepartmentStatus.ACTIVE, department.getStatus());
 
     }
+
 
     @Test
     void givenDepartmentId_whenDeleteDepartment_thenSoftDeleted() throws Exception {
@@ -142,7 +144,9 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(DepartmentStatus.DELETED, deletedDepartment.get().getStatus());
         Assertions.assertNotNull(deletedDepartment.get().getCreatedAt());
         Assertions.assertNotNull(deletedDepartment.get().getCreatedBy());
+
     }
+
 
     @Test
     void whenFindAllDepartments_thenReturnListAndVerifyContent() throws Exception {
@@ -183,6 +187,7 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
 
         //Then
         List<Department> departments = departmentReadPort.findAll(1, 10);
+
         Assertions.assertNotNull(departments);
         Assertions.assertFalse(departments.isEmpty());
         Assertions.assertNotNull(departments.get(0)
@@ -197,6 +202,7 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .getId());
 
     }
+
 
     @Test
     void whenFindSummaryAllDepartments_thenReturnListAndVerifyContent() throws Exception {
@@ -225,12 +231,14 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
 
         //Then
         List<Department> departments = departmentReadPort.findSummaryAll();
+
         Assertions.assertNotNull(departments);
         Assertions.assertFalse(departments.isEmpty());
         Assertions.assertNotNull(departments.get(0)
                 .getName());
         Assertions.assertNotNull(departments.get(0)
                 .getId());
+
     }
 
 }

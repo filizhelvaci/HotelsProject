@@ -27,20 +27,22 @@ import java.util.List;
 
 class EmployeeOldEndToEndTest extends BaseEndToEndTest {
 
-    private static final String BASE_PATH = "/api/v1";
-
     @Autowired
     private EmployeeOldReadPort employeeOldReadPort;
 
     @Autowired
     private EmployeeOldSavePort employeeOldSavePort;
 
-    private final EmployeeOldExperienceToResponseMapper
-            employeeOldExperienceToResponseMapper = EmployeeOldExperienceToResponseMapper.INSTANCE;
     @Autowired
     private EmployeeOldExperienceSavePort employeeOldExperienceSavePort;
+
     @Autowired
     private EmployeeOldExperienceReadPort employeeOldExperienceReadPort;
+
+    private static final String BASE_PATH = "/api/v1";
+    private final EmployeeOldExperienceToResponseMapper
+            employeeOldExperienceToResponseMapper = EmployeeOldExperienceToResponseMapper.INSTANCE;
+
 
     @Test
     void whenFindByIdEmployeeOld_thenReturnEmployeeOldVerifyContent() throws Exception {
@@ -170,8 +172,8 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(savedEmployee.getPhoneNumber(), employeeFromDatabase.getPhoneNumber());
         Assertions.assertEquals(savedEmployee.getBirthDate(), employeeFromDatabase.getBirthDate());
 
-
     }
+
 
     @Test
     void whenFindAllEmployeeOlds_thenReturnListAndVerifyContent() throws Exception {
@@ -220,4 +222,6 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(employeeList.get(0).getId());
 
     }
+
+
 }
