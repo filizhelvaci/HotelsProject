@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, EmployeeExperienceReadPort, EmployeeExperienceDeletePort {
+class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, EmployeeExperienceReadPort, EmployeeExperienceDeletePort {
 
     private final EmployeeExperienceRepository employeeExperienceRepository;
 

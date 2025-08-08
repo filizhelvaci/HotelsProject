@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmployeeOldAdapter implements EmployeeOldReadPort, EmployeeOldSavePort {
+class EmployeeOldAdapter implements EmployeeOldReadPort, EmployeeOldSavePort {
 
     private final EmployeeOldRepository employeeOldRepository;
 

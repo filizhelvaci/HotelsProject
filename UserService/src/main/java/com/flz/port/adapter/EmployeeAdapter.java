@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, EmployeeDeletePort {
+class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, EmployeeDeletePort {
 
     private final EmployeeRepository employeeRepository;
 
