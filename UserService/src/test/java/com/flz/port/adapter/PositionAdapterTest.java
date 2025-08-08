@@ -27,15 +27,31 @@ import java.util.Optional;
 
 class PositionAdapterTest extends BaseTest {
 
-    @InjectMocks
-    PositionAdapter adapter;
-
     @Mock
     PositionRepository positionRepository;
+
+    @InjectMocks
+    PositionAdapter adapter;
 
     private final PositionToEntityMapper positionToEntityMapper = PositionToEntityMapper.INSTANCE;
     private final PositionEntityToDomainMapper positionEntityToDomainMapper = PositionEntityToDomainMapper.INSTANCE;
 
+    //Initialize
+    private static Position getPosition() {
+        return Position.builder()
+                .name("Test")
+                .department(Department.builder()
+                        .id(1L)
+                        .name("TestDepartment")
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 
     /**
      * {@link PositionAdapter#findAll(Integer, Integer)}
@@ -63,6 +79,7 @@ class PositionAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(positionRepository, Mockito.times(1))
                 .findAll(mockPageable);
+
     }
 
     @Test
@@ -87,6 +104,7 @@ class PositionAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(positionRepository, Mockito.times(1))
                 .findAll(mockPageable);
+
     }
 
     /**
@@ -110,26 +128,9 @@ class PositionAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(positionRepository, Mockito.times(1))
                 .findAll();
+
     }
 
-
-    @Test
-    void whenCalledAllSummaryPositionsIfPositionListIsEmpty_thenReturnEmptyList() {
-
-        //When
-        Mockito.when(positionRepository.findAll())
-                .thenReturn(Collections.emptyList());
-
-        //Then
-        List<Position> positions = adapter.findSummaryAll();
-
-        Assertions.assertEquals(0, positions.size());
-        Assertions.assertTrue(positions.isEmpty());
-
-        //Verify
-        Mockito.verify(positionRepository, Mockito.times(1))
-                .findAll();
-    }
 
     /**
      * {@link PositionAdapter#findById(Long)}
@@ -182,6 +183,7 @@ class PositionAdapterTest extends BaseTest {
 
     }
 
+
     /**
      * {@link PositionAdapter#existsByName(String)}
      */
@@ -228,6 +230,25 @@ class PositionAdapterTest extends BaseTest {
 
     }
 
+    @Test
+    void whenCalledAllSummaryPositionsIfPositionListIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(positionRepository.findAll())
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<Position> positions = adapter.findSummaryAll();
+
+        Assertions.assertEquals(0, positions.size());
+        Assertions.assertTrue(positions.isEmpty());
+
+        //Verify
+        Mockito.verify(positionRepository, Mockito.times(1))
+                .findAll();
+
+    }
+
     /**
      * {@link PositionAdapter#save(Position)}
      */
@@ -248,8 +269,8 @@ class PositionAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(positionRepository, Mockito.times(1))
                 .save(Mockito.any());
-    }
 
+    }
 
     @Test
     void givenPosition_whenRepositoryThrowsException_thenReturnException() {
@@ -268,22 +289,7 @@ class PositionAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(positionRepository, Mockito.times(1))
                 .save(Mockito.any());
-    }
 
-    private static Position getPosition() {
-        return Position.builder()
-                .name("Test")
-                .department(Department.builder()
-                        .id(1L)
-                        .name("TestDepartment")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("TestSystem")
-                        .build())
-                .status(PositionStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
     }
 
     private static PositionEntity getPositionEntity(Long mockId) {
