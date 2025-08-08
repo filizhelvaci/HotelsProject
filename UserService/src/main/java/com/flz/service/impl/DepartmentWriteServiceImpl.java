@@ -60,7 +60,7 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         departmentSavePort.save(department);
     }
 
-    void checkIfDepartmentNameExists(DepartmentUpdateRequest departmentUpdateRequest) {
+    private void checkIfDepartmentNameExists(DepartmentUpdateRequest departmentUpdateRequest) {
 
         boolean existsByName = departmentReadPort
                 .existsByName(departmentUpdateRequest.getName());

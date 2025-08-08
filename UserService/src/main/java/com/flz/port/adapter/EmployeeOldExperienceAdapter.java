@@ -23,6 +23,7 @@ class EmployeeOldExperienceAdapter implements EmployeeOldExperienceReadPort, Emp
     private static final EmployeeOldExperienceEntityToDomainMapper
             employeeOldExperienceEntityToDomainMapper = EmployeeOldExperienceEntityToDomainMapper.INSTANCE;
 
+
     @Override
     public List<EmployeeOldExperience> findAllByEmployeeOldId(Long employeeOldId) {
 
