@@ -9,6 +9,6 @@ public interface PositionRepository extends JpaRepository<PositionEntity, Long> 
 
     boolean existsByName(String name);
 
-    void deleteAllByNameContainingIgnoreCase(String name);
+    PositionEntity findByName(String name);
 
 }

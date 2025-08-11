@@ -27,7 +27,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
     private final PositionReadPort positionReadPort;
     private final DepartmentReadPort departmentReadPort;
 
-    private final PositionCreateRequestToPositionDomainMapper
+    private static final PositionCreateRequestToPositionDomainMapper
             positionCreateRequestToPositionDomainMapper = PositionCreateRequestToPositionDomainMapper.INSTANCE;
 
 
@@ -44,7 +44,6 @@ class PositionWriteServiceImpl implements PositionWriteService {
         position.setDepartment(department);
         position.setStatus(PositionStatus.ACTIVE);
         positionSavePort.save(position);
-
     }
 
 
@@ -79,6 +78,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
     }
 
     private void checkIfPositionNameExists(String positionUpdateRequest) {
+
         boolean existsByName = positionReadPort
                 .existsByName(positionUpdateRequest);
         if (existsByName) {

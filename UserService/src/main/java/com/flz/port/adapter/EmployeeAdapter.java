@@ -18,22 +18,27 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, EmployeeDeletePort {
+class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, EmployeeDeletePort {
 
     private final EmployeeRepository employeeRepository;
 
-    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
-    private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
+    private static final EmployeeEntityToDomainMapper
+            employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
+    private static final EmployeeToEntityMapper
+            employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
 
 
     @Override
     public Optional<Employee> findById(Long id) {
+
         Optional<EmployeeEntity> employeeEntity = employeeRepository.findById(id);
         return employeeEntity.map(employeeEntityToDomainMapper::map);
     }
 
+
     @Override
     public List<Employee> findAll(Integer page, Integer pageSize) {
+
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         List<EmployeeEntity> employeeEntities = employeeRepository
                 .findAll(pageable)
@@ -43,11 +48,13 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
                 .toList();
     }
 
+
     @Override
     public List<Employee> findSummaryAll() {
 
         return employeeRepository.findEmployeeSummaries();
     }
+
 
     @Override
     public boolean existsByIdentity(String identity) {
@@ -55,22 +62,27 @@ public class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, Empl
         return employeeRepository.existsByIdentityNumber(identity);
     }
 
+
     @Override
     public boolean existsByPhoneNumber(String phoneNumber) {
 
         return employeeRepository.existsByPhoneNumber(phoneNumber);
     }
 
+
     @Override
-    public Optional<Employee> save(final Employee employee) {
+    public Employee save(final Employee employee) {
+
         final EmployeeEntity employeeEntity = employeeToEntityMapper.map(employee);
-        return Optional.ofNullable(employeeEntityToDomainMapper
-                .map(employeeRepository.save(employeeEntity)));
+        return employeeEntityToDomainMapper
+                .map(employeeRepository.save(employeeEntity));
     }
+
 
     @Override
     public void delete(Long id) {
 
         employeeRepository.deleteById(id);
     }
+
 }

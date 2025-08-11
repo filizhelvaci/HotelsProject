@@ -16,7 +16,7 @@ class PositionReadServiceImpl implements PositionReadService {
 
     private final PositionReadPort positionReadPort;
 
-    private final PositionToPositionSummaryResponseMapper
+    private static final PositionToPositionSummaryResponseMapper
             positionToPositionSummaryResponseMapper = PositionToPositionSummaryResponseMapper.INSTANCE;
 
 
@@ -33,6 +33,5 @@ class PositionReadServiceImpl implements PositionReadService {
 
         return positionReadPort.findAll(page, pageSize);
     }
-
 
 }

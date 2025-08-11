@@ -26,16 +26,54 @@ import java.util.Optional;
 
 class EmployeeAdapterTest extends BaseTest {
 
-    @InjectMocks
-    EmployeeAdapter employeeAdapter;
-
     @Mock
     EmployeeRepository employeeRepository;
 
-    private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
-
     @Mock
     EmployeeEntityToDomainMapper employeeEntityToDomainMapper;
+
+    private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
+    @InjectMocks
+    EmployeeAdapter employeeAdapter;
+
+    //Initialize
+    private static EmployeeEntity getEmployeeEntity(Long id) {
+        return EmployeeEntity.builder()
+                .id(id)
+                .address("test address")
+                .firstName("test first name")
+                .lastName("test last name")
+                .birthDate(LocalDate.parse("2000-01-01"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321456")
+                .build();
+    }
+
+
+    @Test
+    void givenValidId_whenEmployeeEntityNotFoundById_returnOptionalEmpty() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(employeeRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Optional<Employee> employee = employeeAdapter.findById(mockId);
+
+        Assertions.assertFalse(employee.isPresent());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
 
     /**
      * {@link EmployeeAdapter#findById(Long)}
@@ -73,27 +111,6 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .findById(mockId);
-    }
-
-
-    @Test
-    void givenValidId_whenEmployeeEntityNotFoundById_returnOptionalEmpty() {
-
-        //Given
-        Long mockId = 10L;
-
-        //When
-        Mockito.when(employeeRepository.findById(mockId))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Optional<Employee> employee = employeeAdapter.findById(mockId);
-
-        Assertions.assertFalse(employee.isPresent());
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .findById(mockId);
 
     }
 
@@ -123,6 +140,7 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .findAll(mockPageable);
+
     }
 
     @Test
@@ -147,6 +165,120 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .findAll(mockPageable);
+
+    }
+
+
+    @Test
+    void whenCalledAllSummaryEmployeeIfEmployeeListIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(employeeRepository.findEmployeeSummaries())
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<Employee> responses = employeeAdapter.findSummaryAll();
+
+        Assertions.assertEquals(0, responses.size());
+        Assertions.assertTrue(responses.isEmpty());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .findEmployeeSummaries();
+    }
+
+
+    /**
+     * {@link EmployeeAdapter#existsByIdentity(String)}
+     */
+    @Test
+    void givenValidIdentityNumber_whenEmployeeEntityFoundAccordingByIdentity_thenReturnTrue() {
+
+        //Given
+        String mockIdentity = "test";
+
+        //When
+        Mockito.when(employeeRepository.existsByIdentityNumber(mockIdentity))
+                .thenReturn(Boolean.TRUE);
+
+        //Then
+        boolean result = employeeAdapter.existsByIdentity("test");
+
+        Assertions.assertTrue(result);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .existsByIdentityNumber(Mockito.anyString());
+
+    }
+
+
+    @Test
+    void givenValidIdentityNumber_whenEmployeeEntityNotFoundAccordingByIdentityNumber_thenReturnFalse() {
+
+        //Given
+        String mockIdentity = "TestIdentity";
+
+        //When
+        Mockito.when(employeeRepository.existsByIdentityNumber(mockIdentity))
+                .thenReturn(Boolean.FALSE);
+
+        //Then
+        boolean result = employeeAdapter.existsByIdentity(mockIdentity);
+
+        Assertions.assertFalse(result);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .existsByIdentityNumber(Mockito.anyString());
+
+    }
+
+
+    /**
+     * {@link EmployeeAdapter#existsByPhoneNumber(String)}
+     */
+    @Test
+    void givenValidPhoneNumber_whenEmployeeEntityFoundAccordingByPhoneNumber_thenReturnTrue() {
+
+        //Given
+        String mockPhoneNumber = "05558978978";
+
+        //When
+        Mockito.when(employeeRepository.existsByPhoneNumber(mockPhoneNumber))
+                .thenReturn(Boolean.TRUE);
+
+        //Then
+        boolean result = employeeAdapter.existsByPhoneNumber(mockPhoneNumber);
+
+        Assertions.assertTrue(result);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .existsByPhoneNumber(Mockito.anyString());
+
+    }
+
+
+    @Test
+    void givenValidPhoneNumber_whenEmployeeEntityNotFoundAccordingByPhoneNumber_thenReturnFalse() {
+
+        //Given
+        String mockPhoneNumber = "5551111111";
+
+        //When
+        Mockito.when(employeeRepository.existsByPhoneNumber(mockPhoneNumber))
+                .thenReturn(Boolean.FALSE);
+
+        //Then
+        boolean result = employeeAdapter.existsByPhoneNumber(mockPhoneNumber);
+
+        Assertions.assertFalse(result);
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .existsByPhoneNumber(Mockito.anyString());
+
     }
 
     /**
@@ -183,114 +315,6 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .findEmployeeSummaries();
-    }
-
-
-    @Test
-    void whenCalledAllSummaryEmployeeIfEmployeeListIsEmpty_thenReturnEmptyList() {
-
-        //When
-        Mockito.when(employeeRepository.findEmployeeSummaries())
-                .thenReturn(Collections.emptyList());
-
-        //Then
-        List<Employee> responses = employeeAdapter.findSummaryAll();
-
-        Assertions.assertEquals(0, responses.size());
-        Assertions.assertTrue(responses.isEmpty());
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .findEmployeeSummaries();
-    }
-
-    /**
-     * {@link EmployeeAdapter#existsByIdentity(String)}
-     */
-    @Test
-    void givenValidIdentityNumber_whenEmployeeEntityFoundAccordingByIdentity_thenReturnTrue() {
-
-        //Given
-        String mockIdentity = "test";
-
-        //When
-        Mockito.when(employeeRepository.existsByIdentityNumber(mockIdentity))
-                .thenReturn(Boolean.TRUE);
-
-        //Then
-        boolean result = employeeAdapter.existsByIdentity("test");
-
-        Assertions.assertTrue(result);
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .existsByIdentityNumber(Mockito.anyString());
-
-    }
-
-    @Test
-    void givenValidIdentityNumber_whenEmployeeEntityNotFoundAccordingByIdentityNumber_thenReturnFalse() {
-
-        //Given
-        String mockIdentity = "TestIdentity";
-
-        //When
-        Mockito.when(employeeRepository.existsByIdentityNumber(mockIdentity))
-                .thenReturn(Boolean.FALSE);
-
-        //Then
-        boolean result = employeeAdapter.existsByIdentity(mockIdentity);
-
-        Assertions.assertFalse(result);
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .existsByIdentityNumber(Mockito.anyString());
-
-    }
-
-    /**
-     * {@link EmployeeAdapter#existsByPhoneNumber(String)}
-     */
-    @Test
-    void givenValidPhoneNumber_whenEmployeeEntityFoundAccordingByPhoneNumber_thenReturnTrue() {
-
-        //Given
-        String mockPhoneNumber = "05558978978";
-
-        //When
-        Mockito.when(employeeRepository.existsByPhoneNumber(mockPhoneNumber))
-                .thenReturn(Boolean.TRUE);
-
-        //Then
-        boolean result = employeeAdapter.existsByPhoneNumber(mockPhoneNumber);
-
-        Assertions.assertTrue(result);
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .existsByPhoneNumber(Mockito.anyString());
-
-    }
-
-    @Test
-    void givenValidPhoneNumber_whenEmployeeEntityNotFoundAccordingByPhoneNumber_thenReturnFalse() {
-
-        //Given
-        String mockPhoneNumber = "5551111111";
-
-        //When
-        Mockito.when(employeeRepository.existsByPhoneNumber(mockPhoneNumber))
-                .thenReturn(Boolean.FALSE);
-
-        //Then
-        boolean result = employeeAdapter.existsByPhoneNumber(mockPhoneNumber);
-
-        Assertions.assertFalse(result);
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .existsByPhoneNumber(Mockito.anyString());
 
     }
 
@@ -310,44 +334,19 @@ class EmployeeAdapterTest extends BaseTest {
                 .thenReturn(mockEmployeeEntity);
 
         //Then
-        Optional<Employee> result = employeeAdapter.save(mockEmployee);
+        Employee result = employeeAdapter.save(mockEmployee);
         Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(mockEmployee.getFirstName(), result.get()
-                .getFirstName());
-        Assertions.assertEquals(mockEmployee.getLastName(), result.get()
-                .getLastName());
-        Assertions.assertEquals(mockEmployee.getGender(), result.get()
-                .getGender());
-        Assertions.assertEquals(mockEmployee.getBirthDate(), result.get()
-                .getBirthDate());
+        Assertions.assertEquals(mockEmployee.getFirstName(), result.getFirstName());
+        Assertions.assertEquals(mockEmployee.getLastName(), result.getLastName());
+        Assertions.assertEquals(mockEmployee.getGender(), result.getGender());
+        Assertions.assertEquals(mockEmployee.getBirthDate(), result.getBirthDate());
 
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .save(Mockito.any());
+
     }
 
-    @Test
-    void givenEmployee_whenRepositoryThrowsException_thenExceptionIsPropagated() {
-
-        //Given
-        Employee mockEmployee = getEmployee();
-
-        //When
-        Mockito.when(employeeRepository.save(Mockito.any(EmployeeEntity.class)))
-                .thenThrow(new RuntimeException("Simulated database connection error"));
-
-        //Then
-        Assertions.assertThrows(RuntimeException.class,
-                () -> employeeAdapter.save(mockEmployee));
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .save(Mockito.any(EmployeeEntity.class));
-
-        Mockito.verify(employeeEntityToDomainMapper, Mockito.never())
-                .map(Mockito.any(EmployeeEntity.class));
-    }
 
     /**
      * {@link EmployeeAdapter#delete(Long)}
@@ -371,6 +370,29 @@ class EmployeeAdapterTest extends BaseTest {
     }
 
     @Test
+    void givenEmployee_whenRepositoryThrowsException_thenExceptionIsPropagated() {
+
+        //Given
+        Employee mockEmployee = getEmployee();
+
+        //When
+        Mockito.when(employeeRepository.save(Mockito.any(EmployeeEntity.class)))
+                .thenThrow(new RuntimeException("Simulated database connection error"));
+
+        //Then
+        Assertions.assertThrows(RuntimeException.class,
+                () -> employeeAdapter.save(mockEmployee));
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .save(Mockito.any(EmployeeEntity.class));
+
+        Mockito.verify(employeeEntityToDomainMapper, Mockito.never())
+                .map(Mockito.any(EmployeeEntity.class));
+
+    }
+
+    @Test
     void givenInvalidId_whenDeleteByIdFails_thenThrowEmptyResultDataAccessException() {
 
         //Given
@@ -387,22 +409,7 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .deleteById(invalidId);
-    }
 
-    private static EmployeeEntity getEmployeeEntity(Long id) {
-        return EmployeeEntity.builder()
-                .id(id)
-                .address("test address")
-                .firstName("test first name")
-                .lastName("test last name")
-                .birthDate(LocalDate.parse("2000-01-01"))
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .email("test@gmail.com")
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .phoneNumber("05465321456")
-                .build();
     }
 
     private static Employee getEmployee() {

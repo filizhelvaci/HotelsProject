@@ -24,16 +24,54 @@ import java.util.Optional;
 
 class EmployeeOldAdapterTest extends BaseTest {
 
-    @InjectMocks
-    EmployeeOldAdapter employeeOldAdapter;
-
     @Mock
     EmployeeOldRepository employeeOldRepository;
+
+    @InjectMocks
+    EmployeeOldAdapter employeeOldAdapter;
 
     private final EmployeeOldEntityToDomainMapper
             employeeOldEntityToDomainMapper = EmployeeOldEntityToDomainMapper.INSTANCE;
     private final EmployeeOldToEntityMapper
             employeeOldToEntityMapper = EmployeeOldToEntityMapper.INSTANCE;
+
+    //Initialize
+    private static EmployeeOld getEmployeeOld() {
+        return EmployeeOld.builder()
+                .address("test address")
+                .firstName("test first name")
+                .lastName("test last name")
+                .birthDate(LocalDate.parse("2000-01-01"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321456")
+                .build();
+    }
+
+
+    @Test
+    void givenValidId_whenEmployeeOldEntityNotFoundById_returnOptionalEmpty() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(employeeOldRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Optional<EmployeeOld> result = employeeOldAdapter.findById(mockId);
+
+        Assertions.assertFalse(result.isPresent());
+
+        //Verify
+        Mockito.verify(employeeOldRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
 
     /**
      * {@link EmployeeOldAdapter#findById(Long)}
@@ -80,27 +118,6 @@ class EmployeeOldAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))
                 .findById(mockId);
-    }
-
-
-    @Test
-    void givenValidId_whenEmployeeOldEntityNotFoundById_returnOptionalEmpty() {
-
-        //Given
-        Long mockId = 10L;
-
-        //When
-        Mockito.when(employeeOldRepository.findById(mockId))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Optional<EmployeeOld> result = employeeOldAdapter.findById(mockId);
-
-        Assertions.assertFalse(result.isPresent());
-
-        //Verify
-        Mockito.verify(employeeOldRepository, Mockito.times(1))
-                .findById(mockId);
 
     }
 
@@ -130,6 +147,7 @@ class EmployeeOldAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))
                 .findAll(mockPageable);
+
     }
 
     @Test
@@ -154,6 +172,30 @@ class EmployeeOldAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))
                 .findAll(mockPageable);
+
+    }
+
+
+    @Test
+    void givenEmployeeOld_whenRepositoryReturnsNull_thenReturnEmptyOptional() {
+
+        //Given
+        EmployeeOld mockEmployeeOld = getEmployeeOld();
+        employeeOldToEntityMapper.map(mockEmployeeOld);
+
+        //When
+        Mockito.when(employeeOldRepository.save(Mockito.any(EmployeeOldEntity.class)))
+                .thenReturn(null);
+
+        //Then
+        EmployeeOld result = employeeOldAdapter.save(mockEmployeeOld);
+
+        Assertions.assertNull(result);
+
+        //Verify
+        Mockito.verify(employeeOldRepository, Mockito.times(1))
+                .save(Mockito.any(EmployeeOldEntity.class));
+
     }
 
     /**
@@ -173,59 +215,17 @@ class EmployeeOldAdapterTest extends BaseTest {
                 .thenReturn(mockEmployeeOldEntity);
 
         //Then
-        Optional<EmployeeOld> result = employeeOldAdapter.save(mockEmployeeOld);
+        EmployeeOld result = employeeOldAdapter.save(mockEmployeeOld);
         Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(mockEmployeeOld.getFirstName(), result.get()
-                .getFirstName());
-        Assertions.assertEquals(mockEmployeeOld.getLastName(), result.get()
-                .getLastName());
-        Assertions.assertEquals(mockEmployeeOld.getGender(), result.get()
-                .getGender());
-        Assertions.assertEquals(mockEmployeeOld.getBirthDate(), result.get()
-                .getBirthDate());
+        Assertions.assertEquals(mockEmployeeOld.getFirstName(), result.getFirstName());
+        Assertions.assertEquals(mockEmployeeOld.getLastName(), result.getLastName());
+        Assertions.assertEquals(mockEmployeeOld.getGender(), result.getGender());
+        Assertions.assertEquals(mockEmployeeOld.getBirthDate(), result.getBirthDate());
 
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))
                 .save(Mockito.any());
-    }
 
-    @Test
-    void givenEmployeeOld_whenRepositoryReturnsNull_thenReturnEmptyOptional() {
-
-        //Given
-        EmployeeOld mockEmployeeOld = getEmployeeOld();
-        employeeOldToEntityMapper.map(mockEmployeeOld);
-
-        //When
-        Mockito.when(employeeOldRepository.save(Mockito.any(EmployeeOldEntity.class)))
-                .thenReturn(null);
-
-        //Then
-        Optional<EmployeeOld> result = employeeOldAdapter.save(mockEmployeeOld);
-
-        Assertions.assertNotNull(result);
-        Assertions.assertFalse(result.isPresent());
-
-        //Verify
-        Mockito.verify(employeeOldRepository, Mockito.times(1))
-                .save(Mockito.any(EmployeeOldEntity.class));
-
-    }
-
-    private static EmployeeOld getEmployeeOld() {
-        return EmployeeOld.builder()
-                .address("test address")
-                .firstName("test first name")
-                .lastName("test last name")
-                .birthDate(LocalDate.parse("2000-01-01"))
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .email("test@gmail.com")
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .phoneNumber("05465321456")
-                .build();
     }
 
     private static EmployeeOldEntity getEmployeeOldEntity(Long id) {

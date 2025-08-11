@@ -58,7 +58,8 @@ class EmployeeController {
     }
 
     @PutMapping("/employee/{id}")
-    public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id, @RequestBody @Valid EmployeeUpdateRequest employeeUpdateRequest) {
+    public HotelResponse<Void> update(@PathVariable(value = "id") @Positive Long id,
+                                      @RequestBody @Valid EmployeeUpdateRequest employeeUpdateRequest) {
         employeeWriteService.update(id, employeeUpdateRequest);
         return HotelResponse.success();
     }

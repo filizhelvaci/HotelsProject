@@ -24,14 +24,25 @@ import java.util.Optional;
 
 class DepartmentAdapterTest extends BaseTest {
 
-    @InjectMocks
-    DepartmentAdapter adapter;
-
     @Mock
     DepartmentRepository departmentRepository;
 
+    @InjectMocks
+    DepartmentAdapter adapter;
+
     private final DepartmentEntityToDomainMapper
             departmentEntityToDomainMapper = DepartmentEntityToDomainMapper.INSTANCE;
+
+    //Initialize
+    private static DepartmentEntity getDepartment(Long mockId) {
+        return DepartmentEntity.builder()
+                .id(mockId)
+                .name("Test")
+                .status(DepartmentStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 
     /**
      * {@link DepartmentAdapter#findAll(Integer, Integer)}
@@ -60,8 +71,8 @@ class DepartmentAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findAll(mockPageable);
-    }
 
+    }
 
     @Test
     void givenValidPageAndPageSize_whenDepartmentNotFound_thenReturnEmptyDepartment() {
@@ -85,6 +96,7 @@ class DepartmentAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findAll(mockPageable);
+
     }
 
     /**
@@ -107,26 +119,9 @@ class DepartmentAdapterTest extends BaseTest {
 
         //Verify
         Mockito.verify(departmentRepository, Mockito.times(1)).findAll();
+
     }
 
-
-    @Test
-    void whenCalledAllSummaryDepartmentsIfDepartmentListIsEmpty_thenReturnEmptyList() {
-
-        //When
-        Mockito.when(departmentRepository.findAll())
-                .thenReturn(Collections.emptyList());
-
-        //Then
-        List<Department> departments = adapter.findSummaryAll();
-
-        Assertions.assertEquals(0, departments.size());
-        Assertions.assertTrue(departments.isEmpty());
-
-        //Verify
-        Mockito.verify(departmentRepository, Mockito.times(1))
-                .findAll();
-    }
 
     /**
      * {@link DepartmentAdapter#findById(Long)}
@@ -178,6 +173,7 @@ class DepartmentAdapterTest extends BaseTest {
 
     }
 
+
     /**
      * {@link DepartmentAdapter#existsByName(String)}
      */
@@ -224,6 +220,25 @@ class DepartmentAdapterTest extends BaseTest {
 
     }
 
+    @Test
+    void whenCalledAllSummaryDepartmentsIfDepartmentListIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(departmentRepository.findAll())
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<Department> departments = adapter.findSummaryAll();
+
+        Assertions.assertEquals(0, departments.size());
+        Assertions.assertTrue(departments.isEmpty());
+
+        //Verify
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .findAll();
+
+    }
+
     /**
      * {@link DepartmentAdapter#save(Department)}
      */
@@ -251,11 +266,12 @@ class DepartmentAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .save(Mockito.any());
-    }
 
+    }
 
     @Test
     void givenDepartment_whenRepositoryThrowsException_thenPropagateException() {
+
         //Given
         Department mockDepartment = Department.builder()
                 .name("TestName")
@@ -277,17 +293,7 @@ class DepartmentAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .save(Mockito.any());
-    }
 
-
-    private static DepartmentEntity getDepartment(Long mockId) {
-        return DepartmentEntity.builder()
-                .id(mockId)
-                .name("Test")
-                .status(DepartmentStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
     }
 
     private static List<DepartmentEntity> getDepartmentEntities() {

@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmployeeOldRepository extends JpaRepository<EmployeeOldEntity, Long> {
 
+    EmployeeOldEntity findByIdentityNumber(String identityNumber);
+
 }

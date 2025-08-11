@@ -17,26 +17,29 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, EmployeeExperienceReadPort, EmployeeExperienceDeletePort {
+class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, EmployeeExperienceReadPort, EmployeeExperienceDeletePort {
 
     private final EmployeeExperienceRepository employeeExperienceRepository;
 
-    private final EmployeeExperienceEntityToDomainMapper
+    private static final EmployeeExperienceEntityToDomainMapper
             employeeExperienceEntityToDomainMapper = EmployeeExperienceEntityToDomainMapper.INSTANCE;
-    private final EmployeeExperienceToEntityMapper
+    private static final EmployeeExperienceToEntityMapper
             employeeExperienceToEntityMapper = EmployeeExperienceToEntityMapper.INSTANCE;
+
 
     @Override
     public List<EmployeeExperience> findAllByEmployeeId(Long employeeId) {
+
         List<EmployeeExperienceEntity> employeeExperienceEntities = employeeExperienceRepository
                 .findAllByEmployee_Id(employeeId);
 
         return employeeExperienceEntityToDomainMapper.map(employeeExperienceEntities);
-
     }
+
 
     @Override
     public void save(final EmployeeExperience employeeExperience) {
+
         final EmployeeExperienceEntity employeeExperienceEntity = employeeExperienceToEntityMapper
                 .map(employeeExperience);
         employeeExperienceRepository.save(employeeExperienceEntity);
@@ -45,6 +48,7 @@ public class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, Em
 
     @Override
     public boolean existsByEmployeeIdAndPositionIdAndStartDate(Long employeeId, Long positionId, LocalDate startDate) {
+
         return employeeExperienceRepository
                 .existsByEmployeeIdAndPositionIdAndStartDate(employeeId, positionId, startDate);
     }
@@ -52,6 +56,7 @@ public class EmployeeExperienceAdapter implements EmployeeExperienceSavePort, Em
 
     @Override
     public Optional<EmployeeExperience> findTopByEmployeeIdOrderByStartDateDesc(Long employeeId) {
+
         return employeeExperienceRepository
                 .findTopByEmployeeIdOrderByStartDateDesc(employeeId)
                 .map(employeeExperienceEntityToDomainMapper::map);

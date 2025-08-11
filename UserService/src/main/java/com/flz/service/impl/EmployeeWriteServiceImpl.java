@@ -46,12 +46,13 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
     private final EmployeeOldSavePort employeeOldSavePort;
     private final EmployeeOldExperienceSavePort employeeOldExperienceSavePort;
 
-    private final EmployeeCreateRequestToDomainMapper
+    private static final EmployeeCreateRequestToDomainMapper
             employeeCreateRequestToDomainMapper = EmployeeCreateRequestToDomainMapper.INSTANCE;
-    private final EmployeeToEmployeeOldMapper
+    private static final EmployeeToEmployeeOldMapper
             employeeToEmployeeOldMapper = EmployeeToEmployeeOldMapper.INSTANCE;
-    private final EmployeeExperienceToEmployeeOldExperienceMapper
+    private static final EmployeeExperienceToEmployeeOldExperienceMapper
             employeeExperienceToEmployeeOldExperienceMapper = EmployeeExperienceToEmployeeOldExperienceMapper.INSTANCE;
+
 
     @Override
     public void create(EmployeeCreateRequest createRequest) {
@@ -64,8 +65,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
 
         Employee employee = employeeCreateRequestToDomainMapper.map(createRequest);
 
-        Employee savedEmployee = employeeSavePort.save(employee)
-                .orElseThrow(() -> new RuntimeException("Employee could not be saved"));
+        Employee savedEmployee = employeeSavePort.save(employee);
 
         if (createRequest.getPositionId() != null && createRequest.getStartDate() != null) {
             Position position = positionReadPort.findById(createRequest.getPositionId())
@@ -86,6 +86,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
 
     }
 
+
     @Override
     public void update(Long id, EmployeeUpdateRequest employeeUpdateRequest) {
 
@@ -93,14 +94,16 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
         String identityNumber = employeeUpdateRequest.getIdentityNumber();
-        if (!employee.getIdentityNumber()
-                .equals(identityNumber)) {
+        boolean identityNumberChanged = !employee.getIdentityNumber().equals(identityNumber);
+
+        if (identityNumberChanged) {
             checkIfExistsByIdentity(employeeUpdateRequest);
         }
 
         String phoneNumber = employeeUpdateRequest.getPhoneNumber();
-        if (!(employee.getPhoneNumber()
-                .equals(phoneNumber))) {
+        boolean phoneNumberChanged = !employee.getPhoneNumber().equals(phoneNumber);
+
+        if (phoneNumberChanged) {
             checkIfExistsByPhoneNumber(employeeUpdateRequest);
         }
 
@@ -116,6 +119,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         employeeSavePort.save(employee);
     }
 
+
     private void checkIfExistsByIdentity(EmployeeUpdateRequest employeeUpdateRequest) {
 
         boolean existsByIdentity = employeeReadPort
@@ -124,6 +128,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
             throw new EmployeeAlreadyExistsException(employeeUpdateRequest.getIdentityNumber());
         }
     }
+
 
     private void checkIfExistsByPhoneNumber(EmployeeUpdateRequest employeeUpdateRequest) {
 
@@ -142,35 +147,33 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee))
-                .orElseThrow(() -> new RuntimeException("EmployeeOld kaydedilemedi"));
+        EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee));
 
         List<EmployeeExperience> experiences = Optional.ofNullable(
-                        employeeExperienceReadPort.findAllByEmployeeId(id)
-                )
+                        employeeExperienceReadPort.findAllByEmployeeId(id))
                 .orElse(Collections.emptyList());
 
-        if (!experiences.isEmpty()) {
-
-            for (EmployeeExperience experience : experiences) {
-                if (experience.getEndDate() == null) {
-                    experience.setEndDate(LocalDate.now());
-                }
-            }
-
-            List<EmployeeOldExperience> oldExperiences = employeeExperienceToEmployeeOldExperienceMapper
-                    .map(experiences);
-
-            for (EmployeeOldExperience oldExperience : oldExperiences) {
-                oldExperience.setEmployeeOld(employeeOld);
-            }
-
-            employeeOldExperienceSavePort.saveAll(oldExperiences);
-            employeeExperienceDeletePort.deleteAllByEmployeeId(id);
+        if (experiences.isEmpty()) {
+            employeeDeletePort.delete(id);
+            return;
         }
 
-        employeeDeletePort.delete(id);
+        for (EmployeeExperience experience : experiences) {
+            if (experience.getEndDate() == null) {
+                experience.setEndDate(LocalDate.now());
+            }
+        }
 
+        List<EmployeeOldExperience> oldExperiences = employeeExperienceToEmployeeOldExperienceMapper
+                .map(experiences);
+
+        for (EmployeeOldExperience oldExperience : oldExperiences) {
+            oldExperience.setEmployeeOld(employeeOld);
+        }
+
+        employeeOldExperienceSavePort.saveAll(oldExperiences);
+        employeeExperienceDeletePort.deleteAllByEmployeeId(id);
+        employeeDeletePort.delete(id);
     }
 
 }

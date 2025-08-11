@@ -42,6 +42,50 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
     EmployeeOldReadServiceImpl employeeOldReadServiceImpl;
 
 
+    //Initialize
+    private static List<EmployeeOld> getEmployeeOlds() {
+        return List.of(
+                EmployeeOld.builder()
+                        .id(1L)
+                        .firstName("test first name 1")
+                        .lastName("test last name 1")
+                        .address("test address 1")
+                        .birthDate(LocalDate.parse("2000-01-01"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test1@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321456")
+                        .build(),
+                EmployeeOld.builder()
+                        .id(2L)
+                        .firstName("test first name 2")
+                        .lastName("test last name 2 ")
+                        .address("test address 2")
+                        .birthDate(LocalDate.parse("2000-02-02"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test2@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321465")
+                        .build(),
+                EmployeeOld.builder()
+                        .id(3L)
+                        .firstName("test first name 3")
+                        .lastName("test last name 3")
+                        .address("test address 3")
+                        .birthDate(LocalDate.parse("2000-03-03"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test3@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321499")
+                        .build());
+    }
+
     /**
      * {@link EmployeeOldReadServiceImpl#findById(Long)}
      */
@@ -51,6 +95,7 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
         //Given
         Long mockId = 1L;
 
+        //Initialize
         EmployeeOld mockEmployeeOld = EmployeeOld.builder()
                 .id(mockId)
                 .firstName("Filiz")
@@ -129,6 +174,7 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
                 .findById(mockId);
         Mockito.verify(employeeOldExperienceReadPort, Mockito.times(1))
                 .findAllByEmployeeOldId(mockId);
+
     }
 
     @Test
@@ -150,33 +196,9 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
                 .findById(Mockito.anyLong());
         Mockito.verify(employeeOldExperienceReadPort, Mockito.never())
                 .findAllByEmployeeOldId(Mockito.anyLong());
+
     }
 
-    /**
-     * {@link EmployeeOldReadServiceImpl#findAll(Integer, Integer)}
-     */
-    @Test
-    void givenValidPagePageSize_whenCalledAllEmployeeOld_thenReturnListAllOfEmployeesOld() {
-
-        //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
-
-        //When
-        List<EmployeeOld> mockEmployeeOlds = getEmployeeOlds();
-
-        Mockito.when(employeeOldReadPort.findAll(mockPage, mockPageSize))
-                .thenReturn(mockEmployeeOlds);
-
-        //Then
-        List<EmployeeOld> result = employeeOldReadServiceImpl
-                .findAll(mockPage, mockPageSize);
-        Assertions.assertEquals(mockEmployeeOlds.size(), result.size());
-
-        //Verify
-        Mockito.verify(employeeOldReadPort, Mockito.times(1))
-                .findAll(Mockito.anyInt(), Mockito.anyInt());
-    }
 
     @Test
     void givenValidPagePageSize_whenCalledAllEmployeeOldIfAllEmployeeOldIsEmpty_thenReturnEmptyList() {
@@ -203,48 +225,31 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
 
     }
 
-    private static List<EmployeeOld> getEmployeeOlds() {
-        return List.of(
-                EmployeeOld.builder()
-                        .id(1L)
-                        .firstName("test first name 1")
-                        .lastName("test last name 1")
-                        .address("test address 1")
-                        .birthDate(LocalDate.parse("2000-01-01"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test1@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321456")
-                        .build(),
-                EmployeeOld.builder()
-                        .id(2L)
-                        .firstName("test first name 2")
-                        .lastName("test last name 2 ")
-                        .address("test address 2")
-                        .birthDate(LocalDate.parse("2000-02-02"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test2@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321465")
-                        .build(),
-                EmployeeOld.builder()
-                        .id(3L)
-                        .firstName("test first name 3")
-                        .lastName("test last name 3")
-                        .address("test address 3")
-                        .birthDate(LocalDate.parse("2000-03-03"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test3@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321499")
-                        .build());
-    }
+    /**
+     * {@link EmployeeOldReadServiceImpl#findAll(Integer, Integer)}
+     */
+    @Test
+    void givenValidPagePageSize_whenCalledAllEmployeeOld_thenReturnListAllOfEmployeesOld() {
 
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        List<EmployeeOld> mockEmployeeOlds = getEmployeeOlds();
+
+        Mockito.when(employeeOldReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(mockEmployeeOlds);
+
+        //Then
+        List<EmployeeOld> result = employeeOldReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+        Assertions.assertEquals(mockEmployeeOlds.size(), result.size());
+
+        //Verify
+        Mockito.verify(employeeOldReadPort, Mockito.times(1))
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+
+    }
 
 }

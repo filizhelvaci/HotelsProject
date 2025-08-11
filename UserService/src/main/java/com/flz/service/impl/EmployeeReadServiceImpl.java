@@ -25,10 +25,11 @@ class EmployeeReadServiceImpl implements EmployeeReadService {
     private final EmployeeReadPort employeeReadPort;
     private final EmployeeExperienceReadPort employeeExperienceReadPort;
 
-    private final EmployeeToEmployeeSummaryResponseMapper
+    private static final EmployeeToEmployeeSummaryResponseMapper
             employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
-    private final EmployeeExperienceToResponseMapper
+    private static final EmployeeExperienceToResponseMapper
             employeeExperienceToResponseMapper = EmployeeExperienceToResponseMapper.INSTANCE;
+
 
     @Override
     public EmployeeDetailsResponse findById(Long id) {

@@ -21,19 +21,24 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
 
     private final DepartmentRepository departmentRepository;
 
-    private final DepartmentToEntityMapper departmentToEntityMapper = DepartmentToEntityMapper.INSTANCE;
-    private final DepartmentEntityToDomainMapper departmentEntityToDomainMapper = DepartmentEntityToDomainMapper.INSTANCE;
+    private static final DepartmentToEntityMapper
+            departmentToEntityMapper = DepartmentToEntityMapper.INSTANCE;
+    private static final DepartmentEntityToDomainMapper
+            departmentEntityToDomainMapper = DepartmentEntityToDomainMapper.INSTANCE;
 
 
     @Override
     public List<Department> findAll(Integer page, Integer pageSize) {
+
         Pageable pageable = PageRequest.of(page - 1, pageSize);
         List<DepartmentEntity> departmentEntities = departmentRepository.findAll(pageable).getContent();
         return departmentEntityToDomainMapper.map(departmentEntities);
     }
 
+
     @Override
     public List<Department> findSummaryAll() {
+
         List<DepartmentEntity> departmentEntities = departmentRepository.findAll();
         return departmentEntityToDomainMapper.map(departmentEntities);
     }
@@ -41,17 +46,22 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
 
     @Override
     public Optional<Department> findById(Long id) {
+
         Optional<DepartmentEntity> departmentEntity = departmentRepository.findById(id);
         return departmentEntity.map(departmentEntityToDomainMapper::map);
     }
 
+
     @Override
     public boolean existsByName(String name) {
+
         return departmentRepository.existsByName(name);
     }
 
+
     @Override
     public void save(final Department department) {
+
         final DepartmentEntity departmentEntity = departmentToEntityMapper.map(department);
         departmentRepository.save(departmentEntity);
     }

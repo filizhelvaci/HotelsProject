@@ -23,6 +23,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
     @InjectMocks
     DepartmentReadServiceImpl departmentReadServiceImpl;
 
+
     /**
      * {@link DepartmentReadServiceImpl#findSummaryAll()}
      */
@@ -36,7 +37,6 @@ class DepartmentReadServiceImplTest extends BaseTest {
         Department mockDepartment2 = Department.builder().name("Test2").build();
         mockDepartments.add(mockDepartment1);
         mockDepartments.add(mockDepartment2);
-
 
         Mockito.when(departmentReadPort.findSummaryAll()).thenReturn(mockDepartments);
 
@@ -52,6 +52,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .findSummaryAll();
+
     }
 
 
@@ -76,6 +77,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
     }
 
+
     /**
      * {@link DepartmentReadServiceImpl#findAll(Integer, Integer)}
      */
@@ -94,7 +96,6 @@ class DepartmentReadServiceImplTest extends BaseTest {
         mockDepartments.add(mockDepartment1);
         mockDepartments.add(mockDepartment2);
 
-
         Mockito.when(departmentReadPort.findAll(mockPage, mockPageSize))
                 .thenReturn(mockDepartments);
 
@@ -106,6 +107,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
 
@@ -133,5 +135,6 @@ class DepartmentReadServiceImplTest extends BaseTest {
                 .findAll(mockPage, mockPageSize);
 
     }
+
 
 }

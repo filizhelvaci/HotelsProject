@@ -37,16 +37,60 @@ import java.util.stream.Stream;
 @WebMvcTest(EmployeeController.class)
 class EmployeeControllerTest extends BaseTest {
 
+    @Autowired
+    MockMvc mockMvc;
+
     @MockBean
     EmployeeReadService employeeReadService;
 
     @MockBean
     EmployeeWriteService employeeWriteService;
 
-    @Autowired
-    MockMvc mockMvc;
-
     private static final String BASE_PATH = "/api/v1";
+
+    //Initialize
+    private static List<Employee> getEmployees() {
+        return List.of(
+                Employee.builder()
+                        .id(1L)
+                        .firstName("test first name 1")
+                        .lastName("test last name 1")
+                        .address("test address 1")
+                        .birthDate(LocalDate.parse("2000-01-01"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test1@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321456")
+                        .build(),
+                Employee.builder()
+                        .id(2L)
+                        .firstName("test first name 2")
+                        .lastName("test last name 2 ")
+                        .address("test address 2")
+                        .birthDate(LocalDate.parse("2000-02-02"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test2@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321465")
+                        .build(),
+                Employee.builder()
+                        .id(3L)
+                        .firstName("test first name 3")
+                        .lastName("test last name 3")
+                        .address("test address 3")
+                        .birthDate(LocalDate.parse("2000-03-03"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test3@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321499")
+                        .build());
+    }
 
     /**
      * {@link EmployeeController#findById(Long)} ()}
@@ -117,6 +161,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadService, Mockito.times(1))
                 .findById(Mockito.anyLong());
+
     }
 
     @Test
@@ -147,6 +192,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadService, Mockito.times(1))
                 .findById(Mockito.anyLong());
+
     }
 
     @Test
@@ -172,6 +218,7 @@ class EmployeeControllerTest extends BaseTest {
         // Verify
         Mockito.verify(employeeReadService, Mockito.never())
                 .findById(Mockito.anyLong());
+
     }
 
     /**
@@ -218,6 +265,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -241,6 +289,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -264,6 +313,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -300,6 +350,7 @@ class EmployeeControllerTest extends BaseTest {
         // Verify
         Mockito.verify(employeeReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     /**
@@ -308,7 +359,7 @@ class EmployeeControllerTest extends BaseTest {
     @Test
     void whenCalledAllSummaryEmployee_thenReturnEmployeesSummaryResponse() throws Exception {
 
-        //Given
+        //Initialize
         List<EmployeeSummaryResponse> mockEmployeeSummaryResponse = List.of(
                 EmployeeSummaryResponse.builder()
                         .id(11L)
@@ -354,37 +405,9 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadService, Mockito.times(1))
                 .findSummaryAll();
+
     }
 
-    @Test
-    void whenNotFoundEmployeesSummaryAll_thenReturnEmptyList() throws Exception {
-
-        //When
-        List<EmployeeSummaryResponse> emptyList = Collections.emptyList();
-
-        Mockito.when(employeeReadService.findSummaryAll())
-                .thenReturn(emptyList);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/employees/summary")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isEmpty());
-
-        //Verify
-        Mockito.verify(employeeReadService, Mockito.times(1))
-                .findSummaryAll();
-    }
 
     /**
      * {@link EmployeeController#create(EmployeeCreateRequest)}
@@ -436,6 +459,38 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
+    @Test
+    void whenNotFoundEmployeesSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //Initialize
+        List<EmployeeSummaryResponse> emptyList = Collections.emptyList();
+
+        //When
+        Mockito.when(employeeReadService.findSummaryAll())
+                .thenReturn(emptyList);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employees/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isEmpty());
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.times(1))
+                .findSummaryAll();
+
+    }
+
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {
@@ -479,6 +534,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -524,6 +580,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -571,6 +628,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -621,6 +679,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -671,6 +730,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -719,6 +779,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @Test
@@ -732,8 +793,7 @@ class EmployeeControllerTest extends BaseTest {
                 .phoneNumber("05332221133")
                 .email("alisemih@gmail.com")
                 .address("Bursa")
-                .birthDate(LocalDate.now()
-                        .plusDays(1))
+                .birthDate(LocalDate.now().plusDays(1))
                 .gender(Gender.MALE)
                 .nationality("TC")
                 .salary(BigDecimal.valueOf(20000))
@@ -758,6 +818,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @Test
@@ -796,6 +857,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @Test
@@ -834,6 +896,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -881,6 +944,15 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
+    }
+
+    private static Stream<BigDecimal> provideInvalidSalaries() {
+        return Stream.of(
+                new BigDecimal("-1"),
+                new BigDecimal("0"),
+                new BigDecimal("10000000.01")
+        );
     }
 
     @ParameterizedTest
@@ -919,14 +991,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
-    }
 
-    private static Stream<BigDecimal> provideInvalidSalaries() {
-        return Stream.of(
-                new BigDecimal("-1"),
-                new BigDecimal("0"),
-                new BigDecimal("10000000.01")
-        );
     }
 
     @Test
@@ -965,6 +1030,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @Test
@@ -1003,6 +1069,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @Test
@@ -1041,6 +1108,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @Test
@@ -1079,6 +1147,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @Test
@@ -1117,6 +1186,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     @Test
@@ -1155,6 +1225,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
+
     }
 
     /**
@@ -1199,6 +1270,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.times(1))
                 .update(Mockito.any(), Mockito.any(EmployeeUpdateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -1242,6 +1314,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .update(Mockito.any(), Mockito.any(EmployeeUpdateRequest.class));
+
     }
 
     @Test
@@ -1271,6 +1344,7 @@ class EmployeeControllerTest extends BaseTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(false));
+
     }
 
     /**
@@ -1301,6 +1375,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.times(1))
                 .delete(Mockito.anyLong());
+
     }
 
     @Test
@@ -1323,49 +1398,7 @@ class EmployeeControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeWriteService, Mockito.never())
                 .delete(Mockito.anyLong());
-    }
 
-    private static List<Employee> getEmployees() {
-        return List.of(
-                Employee.builder()
-                        .id(1L)
-                        .firstName("test first name 1")
-                        .lastName("test last name 1")
-                        .address("test address 1")
-                        .birthDate(LocalDate.parse("2000-01-01"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test1@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321456")
-                        .build(),
-                Employee.builder()
-                        .id(2L)
-                        .firstName("test first name 2")
-                        .lastName("test last name 2 ")
-                        .address("test address 2")
-                        .birthDate(LocalDate.parse("2000-02-02"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test2@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321465")
-                        .build(),
-                Employee.builder()
-                        .id(3L)
-                        .firstName("test first name 3")
-                        .lastName("test last name 3")
-                        .address("test address 3")
-                        .birthDate(LocalDate.parse("2000-03-03"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test3@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321499")
-                        .build());
     }
 
     private static Employee getEmployee() {

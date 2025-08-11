@@ -31,17 +31,121 @@ import java.util.List;
 
 class EmployeeOldExperienceAdapterTest extends BaseTest {
 
-    @InjectMocks
-    EmployeeOldExperienceAdapter employeeOldExperienceAdapter;
-
     @Mock
     EmployeeOldExperienceRepository employeeOldExperienceRepository;
+
+    @InjectMocks
+    EmployeeOldExperienceAdapter employeeOldExperienceAdapter;
 
     private final EmployeeOldExperienceEntityToDomainMapper
             employeeOldExperienceEntityToDomainMapper = EmployeeOldExperienceEntityToDomainMapper.INSTANCE;
 
     private final EmployeeOldExperienceToEntityMapper
             employeeOldExperienceToEntityMapper = EmployeeOldExperienceToEntityMapper.INSTANCE;
+
+    //Initialize
+    private static EmployeeOldExperience getEmployeeOldExperience() {
+
+        Position position = getPosition();
+
+        EmployeeOld employeeOld = getEmployeeOld();
+
+        Employee supervisor = getSupervisor();
+
+        return EmployeeOldExperience.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(65000))
+                .startDate(LocalDate.of(2020, 1, 15))
+                .endDate(LocalDate.of(2022, 11, 17))
+                .position(position)
+                .employeeOld(employeeOld)
+                .supervisor(supervisor)
+                .build();
+    }
+
+
+    @Test
+    void givenValidId_whenEmployeeOldExperienceEntityNotFoundById_returnEmptyList() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(employeeOldExperienceRepository.findAllByEmployeeOld_Id(mockId))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<EmployeeOldExperience> result = employeeOldExperienceAdapter
+                .findAllByEmployeeOldId(mockId);
+
+        Assertions.assertTrue(result.isEmpty());
+        Assertions.assertNotNull(result);
+
+        //Verify
+        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
+                .findAllByEmployeeOld_Id(Mockito.anyLong());
+
+    }
+
+
+    /**
+     * {@link EmployeeOldExperienceAdapter#saveAll(List)}
+     */
+    @Test
+    void givenEmployeeOldExperienceList_whenEmployeeOldExperienceSaveAll_thenEmployeeOldExperienceEntitySuccessSaveAll() {
+
+        //Given
+        List<EmployeeOldExperience> mockEmployeeOldExperiences = getEmployeeOldExperiences();
+
+        //When
+        List<EmployeeOldExperienceEntity> mockEmployeeOldExperienceEntities = employeeOldExperienceToEntityMapper
+                .map(mockEmployeeOldExperiences);
+
+        Mockito.when(employeeOldExperienceRepository.saveAll(mockEmployeeOldExperienceEntities))
+                .thenReturn(mockEmployeeOldExperienceEntities);
+
+        List<EmployeeOldExperience> oldExperiences = employeeOldExperienceEntityToDomainMapper
+                .map(mockEmployeeOldExperienceEntities);
+
+        //Then
+        List<EmployeeOldExperience> results = employeeOldExperienceAdapter
+                .saveAll(mockEmployeeOldExperiences);
+
+        Assertions.assertNotNull(results);
+        Assertions.assertNotNull(oldExperiences);
+
+        //Verify
+        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
+                .saveAll(Mockito.anyList());
+
+    }
+
+
+    @Test
+    void givenEmployeeOldExperienceList_whenCalledSaveAll_thenRepositoryReturnsEmptyList() {
+
+        //Given
+        List<EmployeeOldExperience> mockEmployeeOldExperiences = getEmployeeOldExperiences();
+
+        //When
+        List<EmployeeOldExperienceEntity> entityList = employeeOldExperienceToEntityMapper
+                .map(mockEmployeeOldExperiences);
+
+        Mockito.when(employeeOldExperienceRepository.saveAll(entityList))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<EmployeeOldExperience> result = employeeOldExperienceAdapter
+                .saveAll(mockEmployeeOldExperiences);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.isEmpty());
+
+        //Verify
+        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
+                .saveAll(Mockito.anyList());
+
+    }
 
     /**
      * {@link EmployeeOldExperienceAdapter#findAllByEmployeeOldId(Long)}
@@ -52,6 +156,7 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
         //Given
         Long mockId = 101L;
 
+        //Initialize
         PositionEntity position = PositionEntity.builder()
                 .id(mockId)
                 .name("Test")
@@ -110,6 +215,7 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
                         .supervisor(supervisor)
                         .build());
 
+        //When
         Mockito.when(employeeOldExperienceRepository.findAllByEmployeeOld_Id(mockId))
                 .thenReturn(mockEmployeeOldExperienceEntities);
 
@@ -148,106 +254,6 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
         Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
                 .findAllByEmployeeOld_Id(Mockito.anyLong());
 
-    }
-
-    @Test
-    void givenValidId_whenEmployeeOldExperienceEntityNotFoundById_returnEmptyList() {
-
-        //Given
-        Long mockId = 10L;
-
-        //When
-        Mockito.when(employeeOldExperienceRepository.findAllByEmployeeOld_Id(mockId))
-                .thenReturn(Collections.emptyList());
-
-        //Then
-        List<EmployeeOldExperience> result = employeeOldExperienceAdapter
-                .findAllByEmployeeOldId(mockId);
-
-        Assertions.assertTrue(result.isEmpty());
-        Assertions.assertNotNull(result);
-
-        //Verify
-        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
-                .findAllByEmployeeOld_Id(Mockito.anyLong());
-
-    }
-
-    /**
-     * {@link EmployeeOldExperienceAdapter#saveAll(List)}
-     */
-    @Test
-    void givenEmployeeOldExperienceList_whenEmployeeOldExperienceSaveAll_thenEmployeeOldExperienceEntitySuccessSaveAll() {
-
-        //Given
-        List<EmployeeOldExperience> mockEmployeeOldExperiences = getEmployeeOldExperiences();
-
-        //When
-        List<EmployeeOldExperienceEntity> mockEmployeeOldExperienceEntities = employeeOldExperienceToEntityMapper
-                .map(mockEmployeeOldExperiences);
-
-        Mockito.when(employeeOldExperienceRepository.saveAll(mockEmployeeOldExperienceEntities))
-                .thenReturn(mockEmployeeOldExperienceEntities);
-
-        List<EmployeeOldExperience> oldExperiences = employeeOldExperienceEntityToDomainMapper
-                .map(mockEmployeeOldExperienceEntities);
-
-        //Then
-        List<EmployeeOldExperience> results = employeeOldExperienceAdapter
-                .saveAll(mockEmployeeOldExperiences);
-
-        Assertions.assertNotNull(results);
-        Assertions.assertNotNull(oldExperiences);
-
-        //Verify
-        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
-                .saveAll(Mockito.anyList());
-
-    }
-
-    @Test
-    void givenEmployeeOldExperienceList_whenCalledSaveAll_thenRepositoryReturnsEmptyList() {
-
-        //Given
-        List<EmployeeOldExperience> mockEmployeeOldExperiences = getEmployeeOldExperiences();
-
-        //When
-        List<EmployeeOldExperienceEntity> entityList = employeeOldExperienceToEntityMapper
-                .map(mockEmployeeOldExperiences);
-
-        Mockito.when(employeeOldExperienceRepository.saveAll(entityList))
-                .thenReturn(Collections.emptyList());
-
-        //Then
-        List<EmployeeOldExperience> result = employeeOldExperienceAdapter
-                .saveAll(mockEmployeeOldExperiences);
-
-        Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.isEmpty());
-
-        //Verify
-        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
-                .saveAll(Mockito.anyList());
-
-    }
-
-    private static EmployeeOldExperience getEmployeeOldExperience() {
-
-        Position position = getPosition();
-
-        EmployeeOld employeeOld = getEmployeeOld();
-
-        Employee supervisor = getSupervisor();
-
-        return EmployeeOldExperience.builder()
-                .id(1L)
-                .salary(BigDecimal.valueOf(65000))
-                .startDate(LocalDate.of(2020, 1, 15))
-                .endDate(LocalDate.of(2022, 11, 17))
-                .position(position)
-                .employeeOld(employeeOld)
-                .supervisor(supervisor)
-                .build();
     }
 
     private static EmployeeOldExperience getEmployeeOldExperience2() {
@@ -332,7 +338,6 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
                 .nationality("TC")
                 .build();
     }
-
 
     private static EmployeeOld getEmployeeOld() {
 

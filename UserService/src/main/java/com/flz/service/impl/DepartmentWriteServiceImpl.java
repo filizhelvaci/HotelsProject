@@ -23,8 +23,9 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
     private final DepartmentSavePort departmentSavePort;
     private final DepartmentReadPort departmentReadPort;
 
-    private final DepartmentCreateRequestToDomainMapper
+    private static final DepartmentCreateRequestToDomainMapper
             departmentCreateRequestToDomainMapper = DepartmentCreateRequestToDomainMapper.INSTANCE;
+
 
     @Override
     public void create(DepartmentCreateRequest createRequest) {
@@ -38,7 +39,6 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         department.setStatus(DepartmentStatus.ACTIVE);
 
         departmentSavePort.save(department);
-
     }
 
 
@@ -60,7 +60,7 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         departmentSavePort.save(department);
     }
 
-    void checkIfDepartmentNameExists(DepartmentUpdateRequest departmentUpdateRequest) {
+    private void checkIfDepartmentNameExists(DepartmentUpdateRequest departmentUpdateRequest) {
 
         boolean existsByName = departmentReadPort
                 .existsByName(departmentUpdateRequest.getName());
@@ -83,6 +83,5 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         department.delete();
         departmentSavePort.save(department);
     }
-
 
 }

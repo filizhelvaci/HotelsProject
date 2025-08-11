@@ -16,8 +16,9 @@ class DepartmentReadServiceImpl implements DepartmentReadService {
 
     private final DepartmentReadPort departmentReadPort;
 
-    private final DepartmentToDepartmentSummaryResponseMapper
+    private static final DepartmentToDepartmentSummaryResponseMapper
             departmentToDepartmentSummaryResponseMapper = DepartmentToDepartmentSummaryResponseMapper.INSTANCE;
+
 
     @Override
     public List<DepartmentSummaryResponse> findSummaryAll() {
@@ -32,6 +33,5 @@ class DepartmentReadServiceImpl implements DepartmentReadService {
 
         return departmentReadPort.findAll(page, pageSize);
     }
-
 
 }

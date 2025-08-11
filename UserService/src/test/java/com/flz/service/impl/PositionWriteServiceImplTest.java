@@ -26,9 +26,6 @@ import java.util.Optional;
 
 class PositionWriteServiceImplTest extends BaseTest {
 
-    @InjectMocks
-    PositionWriteServiceImpl positionWriteServiceImpl;
-
     @Mock
     PositionReadPort positionReadPort;
 
@@ -37,6 +34,10 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     @Mock
     DepartmentReadPort departmentReadPort;
+
+    @InjectMocks
+    PositionWriteServiceImpl positionWriteServiceImpl;
+
 
     /**
      * {@link PositionWriteServiceImpl#create(PositionCreateRequest)}
@@ -86,6 +87,7 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     }
 
+
     @Test
     void givenPositionCreateRequest_whenCreateRequestNameAlreadyExists_thenThrowPositionAlreadyExists() {
 
@@ -109,6 +111,7 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .save(Mockito.any(Position.class));
 
     }
+
 
     /**
      * {@link PositionWriteServiceImpl#update(Long, PositionUpdateRequest)}
@@ -165,6 +168,7 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     }
 
+
     @Test
     void givenInvalidId_whenUpdatePosition_thenThrowPositionNotFoundException() {
 
@@ -189,7 +193,9 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .findById(mockId);
         Mockito.verify(positionSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
+
 
     @Test
     void givenValidIdAndInValidDepartmentId_whenUpdatePosition_thenThrowDepartmentNotFoundException() {
@@ -198,6 +204,7 @@ class PositionWriteServiceImplTest extends BaseTest {
         Long mockDepartmentId = -9L;
         Long mockPositionId = 1L;
 
+        //Initialize
         PositionUpdateRequest request = PositionUpdateRequest.builder()
                 .name("Any Name")
                 .departmentId(mockDepartmentId)
@@ -237,7 +244,9 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .findById(mockDepartmentId);
         Mockito.verify(positionSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
+
 
     @Test
     void givenSameNameAndSameDepartmentId_whenUpdatePosition_thenThrowPositionAlreadyExistsException() {
@@ -246,6 +255,7 @@ class PositionWriteServiceImplTest extends BaseTest {
         Long positionId = 1L;
         Long departmentId = 2L;
 
+        //Initialize
         PositionUpdateRequest request = PositionUpdateRequest.builder()
                 .name("SamePositionName")
                 .departmentId(departmentId)
@@ -285,7 +295,9 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .findById(Mockito.anyLong());
         Mockito.verify(positionSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
+
 
     /**
      * {@link PositionWriteServiceImpl#delete(Long)}
@@ -297,7 +309,7 @@ class PositionWriteServiceImplTest extends BaseTest {
         Long mockPositionId = 1L;
         Long mockDepartmentId = 2L;
 
-        //When
+        //Initialize
         Department mockDepartment = Department.builder()
                 .id(mockDepartmentId)
                 .name("TestDepartment")
@@ -323,6 +335,7 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .createdBy(mockPosition.getCreatedBy())
                 .build();
 
+        //When
         Mockito.when(positionReadPort.findById(mockPositionId))
                 .thenReturn(Optional.of(mockPosition));
 
@@ -334,7 +347,6 @@ class PositionWriteServiceImplTest extends BaseTest {
         positionWriteServiceImpl.delete(mockPositionId);
 
         Assertions.assertEquals(PositionStatus.DELETED, mockDeletedPosition.getStatus());
-
 
         //Verify
         Mockito.verify(positionReadPort, Mockito.times(1))
@@ -363,7 +375,9 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .findById(mockId);
         Mockito.verify(positionSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
+
 
     @Test
     void givenDeletedPosition_whenDeleteCalled_thenThrowPositionAlreadyDeletedException() {
@@ -372,6 +386,7 @@ class PositionWriteServiceImplTest extends BaseTest {
         Long mockId = 1L;
         Long mockDepartmentId = 2L;
 
+        //Initialize
         Department mockDepartment = Department.builder()
                 .id(mockDepartmentId)
                 .name("TestDepartment")
@@ -403,6 +418,7 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .findById(mockId);
         Mockito.verify(positionSavePort, Mockito.never())
                 .save(Mockito.any());
+
     }
 
 }

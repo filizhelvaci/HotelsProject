@@ -23,8 +23,9 @@ class EmployeeOldReadServiceImpl implements EmployeeOldReadService {
     private final EmployeeOldReadPort employeeOldReadPort;
     private final EmployeeOldExperienceReadPort employeeOldExperienceReadPort;
 
-    private final EmployeeOldExperienceToResponseMapper
+    private static final EmployeeOldExperienceToResponseMapper
             employeeOldExperienceToResponseMapper = EmployeeOldExperienceToResponseMapper.INSTANCE;
+
 
     @Override
     public EmployeeOldDetailsResponse findById(Long id) {
@@ -46,6 +47,7 @@ class EmployeeOldReadServiceImpl implements EmployeeOldReadService {
                 .experiences(employeeOldExperiences)
                 .build();
     }
+
 
     @Override
     public List<EmployeeOld> findAll(Integer page, Integer pageSize) {

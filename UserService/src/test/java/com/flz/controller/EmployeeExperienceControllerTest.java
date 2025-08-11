@@ -25,13 +25,14 @@ import java.util.stream.Stream;
 @WebMvcTest(EmployeeExperienceController.class)
 class EmployeeExperienceControllerTest extends BaseTest {
 
-    @MockBean
-    EmployeeExperienceWriteService employeeExperienceWriteService;
-
     @Autowired
     MockMvc mockMvc;
 
+    @MockBean
+    EmployeeExperienceWriteService employeeExperienceWriteService;
+
     private static final String BASE_PATH = "/api/v1";
+
 
     /**
      * {@link EmployeeExperienceController#create(Long, EmployeeExperienceCreateRequest)}
@@ -75,6 +76,7 @@ class EmployeeExperienceControllerTest extends BaseTest {
 
     }
 
+
     @Test
     void givenInvalidStartDateCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
 
@@ -104,7 +106,9 @@ class EmployeeExperienceControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeExperienceWriteService, Mockito.never())
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
     }
+
 
     @ParameterizedTest
     @MethodSource("provideInvalidSalaries")
@@ -135,6 +139,7 @@ class EmployeeExperienceControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeExperienceWriteService, Mockito.never())
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
     }
 
     private static Stream<BigDecimal> provideInvalidSalaries() {
@@ -143,6 +148,7 @@ class EmployeeExperienceControllerTest extends BaseTest {
                 new BigDecimal("100000000")
         );
     }
+
 
     @Test
     void givenNullSalaryCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
@@ -172,7 +178,9 @@ class EmployeeExperienceControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeExperienceWriteService, Mockito.never())
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
     }
+
 
     @Test
     void givenNullPositionIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
@@ -202,7 +210,9 @@ class EmployeeExperienceControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeExperienceWriteService, Mockito.never())
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
     }
+
 
     @Test
     void givenInvalidPositionIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
@@ -232,7 +242,9 @@ class EmployeeExperienceControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeExperienceWriteService, Mockito.never())
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
     }
+
 
     @Test
     void givenNullSupervisorIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
@@ -262,7 +274,9 @@ class EmployeeExperienceControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeExperienceWriteService, Mockito.never())
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
     }
+
 
     @Test
     void givenInvalidSupervisorIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
@@ -292,7 +306,9 @@ class EmployeeExperienceControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeExperienceWriteService, Mockito.never())
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
     }
+
 
     @Test
     void givenNullStartDateCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
@@ -322,5 +338,7 @@ class EmployeeExperienceControllerTest extends BaseTest {
         //Verify
         Mockito.verify(employeeExperienceWriteService, Mockito.never())
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
     }
+
 }

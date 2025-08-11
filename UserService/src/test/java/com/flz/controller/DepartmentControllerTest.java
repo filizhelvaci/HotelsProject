@@ -31,16 +31,42 @@ import java.util.List;
 @WebMvcTest(DepartmentController.class)
 class DepartmentControllerTest extends BaseTest {
 
+    @Autowired
+    MockMvc mockMvc;
+
     @MockBean
     DepartmentWriteService departmentWriteService;
 
     @MockBean
     DepartmentReadService departmentReadService;
 
-    @Autowired
-    MockMvc mockMvc;
-
     private static final String BASE_PATH = "/api/v1";
+
+    //Initialize
+    private static List<Department> getDepartments() {
+        return List.of(
+                Department.builder()
+                        .id(11L)
+                        .name("TEST1")
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Department.builder()
+                        .id(12L)
+                        .name("TEST2")
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Department.builder()
+                        .id(13L)
+                        .name("TEST3")
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build());
+    }
 
     /**
      * {@link DepartmentController#findAll(com.flz.model.request.PageRequest)}
@@ -81,6 +107,7 @@ class DepartmentControllerTest extends BaseTest {
         //Verify
         Mockito.verify(departmentReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -104,6 +131,7 @@ class DepartmentControllerTest extends BaseTest {
         //Verify
         Mockito.verify(departmentReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -127,6 +155,7 @@ class DepartmentControllerTest extends BaseTest {
         //Verify
         Mockito.verify(departmentReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     @Test
@@ -162,6 +191,7 @@ class DepartmentControllerTest extends BaseTest {
         // Verify
         Mockito.verify(departmentReadService, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
     }
 
     /**
@@ -210,36 +240,9 @@ class DepartmentControllerTest extends BaseTest {
         //Verify
         Mockito.verify(departmentReadService, Mockito.times(1))
                 .findSummaryAll();
+
     }
 
-    @Test
-    void whenNotFoundDepartmentsSummaryAll_thenReturnEmptyList() throws Exception {
-
-        //When
-        List<DepartmentSummaryResponse> emptyList = Collections.emptyList();
-
-        Mockito.when(departmentReadService.findSummaryAll())
-                .thenReturn(emptyList);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/departments/summary")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isEmpty());
-
-        //Verify
-        Mockito.verify(departmentReadService, Mockito.times(1))
-                .findSummaryAll();
-    }
 
     /**
      * {@link DepartmentController#create(DepartmentCreateRequest)}
@@ -277,6 +280,37 @@ class DepartmentControllerTest extends BaseTest {
 
     }
 
+    @Test
+    void whenNotFoundDepartmentsSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //Initialize
+        List<DepartmentSummaryResponse> emptyList = Collections.emptyList();
+
+        //When
+        Mockito.when(departmentReadService.findSummaryAll())
+                .thenReturn(emptyList);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isEmpty());
+
+        //Verify
+        Mockito.verify(departmentReadService, Mockito.times(1))
+                .findSummaryAll();
+
+    }
+
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {
@@ -305,6 +339,7 @@ class DepartmentControllerTest extends BaseTest {
 
         //Verify
         Mockito.verifyNoInteractions(departmentWriteService);
+
     }
 
     /**
@@ -338,6 +373,7 @@ class DepartmentControllerTest extends BaseTest {
         //Verify
         Mockito.verify(departmentWriteService, Mockito.times(1))
                 .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
+
     }
 
     @ParameterizedTest
@@ -372,6 +408,7 @@ class DepartmentControllerTest extends BaseTest {
         //Verify
         Mockito.verify(departmentWriteService, Mockito.never())
                 .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
+
     }
 
     @Test
@@ -393,6 +430,7 @@ class DepartmentControllerTest extends BaseTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(false));
+
     }
 
     /**
@@ -420,6 +458,7 @@ class DepartmentControllerTest extends BaseTest {
         //Verify
         Mockito.verify(departmentWriteService, Mockito.times(1))
                 .delete(Mockito.anyLong());
+
     }
 
     @Test
@@ -440,31 +479,7 @@ class DepartmentControllerTest extends BaseTest {
 
         //Verify
         Mockito.verify(departmentWriteService, Mockito.never()).delete(Mockito.anyLong());
-    }
 
-    private static List<Department> getDepartments() {
-        return List.of(
-                Department.builder()
-                        .id(11L)
-                        .name("TEST1")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Department.builder()
-                        .id(12L)
-                        .name("TEST2")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Department.builder()
-                        .id(13L)
-                        .name("TEST3")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build());
     }
 
 }

@@ -9,6 +9,6 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
 
     boolean existsByName(String name);
 
-    void deleteAllByNameContainingIgnoreCase(String name);
+    DepartmentEntity findByName(String name);
 
 }
