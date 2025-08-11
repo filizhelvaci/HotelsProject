@@ -1,19 +1,28 @@
 package com.flz.controller;
 
 import com.flz.BaseEndToEndTest;
+import com.flz.model.Department;
 import com.flz.model.Employee;
 import com.flz.model.EmployeeExperience;
+import com.flz.model.EmployeeOld;
+import com.flz.model.EmployeeOldExperience;
 import com.flz.model.Position;
+import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.enums.Gender;
+import com.flz.model.enums.PositionStatus;
 import com.flz.model.mapper.EmployeeExperienceToResponseMapper;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
 import com.flz.model.response.EmployeeDetailsResponse;
+import com.flz.port.DepartmentTestPort;
 import com.flz.port.EmployeeExperienceReadPort;
 import com.flz.port.EmployeeExperienceSavePort;
+import com.flz.port.EmployeeOldExperienceReadPort;
+import com.flz.port.EmployeeOldTestPort;
 import com.flz.port.EmployeeReadPort;
 import com.flz.port.EmployeeSavePort;
 import com.flz.port.EmployeeTestPort;
+import com.flz.port.PositionTestPort;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +49,22 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     private EmployeeTestPort employeeTestPort;
 
     @Autowired
+    private EmployeeOldTestPort employeeOldTestPort;
+
+    @Autowired
+    private PositionTestPort positionTestPort;
+
+    @Autowired
+    private DepartmentTestPort departmentTestPort;
+
+    @Autowired
     private EmployeeExperienceSavePort employeeExperienceSavePort;
 
     @Autowired
     private EmployeeExperienceReadPort employeeExperienceReadPort;
+
+    @Autowired
+    private EmployeeOldExperienceReadPort employeeOldExperienceReadPort;
 
     private final EmployeeExperienceToResponseMapper
             employeeExperienceToResponseMapper = EmployeeExperienceToResponseMapper.INSTANCE;
@@ -428,11 +449,70 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .email("bayram@yahoo.com")
                 .phoneNumber("05051231236")
                 .address("Konya")
-                .birthDate(LocalDate.parse("1999-10-01"))
+                .birthDate(LocalDate.of(2000, 2, 20))
                 .gender(Gender.MALE)
                 .nationality("TR")
                 .build();
         Employee savedEmployee = employeeSavePort.save(employee);
+
+        Department department = departmentTestPort.save(
+                Department.builder()
+                        .name("Siber Security")
+                        .status(DepartmentStatus.ACTIVE)
+                        .build());
+
+        Position position = positionTestPort.save(Position.builder()
+                .name("Graphic Designer")
+                .department(department)
+                .status(PositionStatus.ACTIVE)
+                .build());
+
+        Position position2 = positionTestPort.save(Position.builder()
+                .name("FrontEnd Team Leader")
+                .department(department)
+                .status(PositionStatus.ACTIVE)
+                .build());
+
+        Employee supervisor = employeeSavePort.save(Employee.builder()
+                .identityNumber("99965432109")
+                .firstName("Nazli")
+                .lastName("Kenar")
+                .birthDate(LocalDate.of(1998, 4, 17))
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .address("Bursa")
+                .phoneNumber("05051229674")
+                .build());
+
+        Employee supervisor2 = employeeSavePort.save(Employee.builder()
+                .identityNumber("98765432999")
+                .firstName("Kamil")
+                .lastName("Kemal")
+                .birthDate(LocalDate.of(1998, 4, 17))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .address("Edirne")
+                .phoneNumber("05058859674")
+                .build());
+
+        EmployeeExperience employeeExperience = EmployeeExperience.builder()
+                .salary(BigDecimal.valueOf(10000))
+                .startDate(LocalDate.parse("2005-10-01"))
+                .endDate(LocalDate.parse("2007-10-20"))
+                .position(position)
+                .employee(savedEmployee)
+                .supervisor(supervisor)
+                .build();
+        employeeExperienceSavePort.save(employeeExperience);
+
+        EmployeeExperience employeeExperience2 = EmployeeExperience.builder()
+                .salary(BigDecimal.valueOf(20000))
+                .startDate(LocalDate.parse("2007-10-30"))
+                .position(position2)
+                .employee(savedEmployee)
+                .supervisor(supervisor2)
+                .build();
+        employeeExperienceSavePort.save(employeeExperience2);
 
         //Given
         Long employeeId = savedEmployee.getId();
@@ -450,11 +530,19 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                         .value(true));
 
         //Verify
-        Optional<Employee> deletedEmployee = employeeReadPort.findById(employeeId);
+        EmployeeOld employeeOldSaved = employeeOldTestPort.findByIdentityNumber("99988877111");
+        List<EmployeeOldExperience> employeeOldExperiences = employeeOldExperienceReadPort.findAllByEmployeeOldId(employeeOldSaved.getId());
 
-        Assertions.assertFalse(deletedEmployee.isPresent());
+        Assertions.assertNotNull(employeeOldSaved);
+        Assertions.assertNotNull(employeeOldSaved.getId());
+        Assertions.assertEquals(employee.getFirstName(), employeeOldSaved.getFirstName());
+        Assertions.assertEquals(employee.getLastName(), employeeOldSaved.getLastName());
+        Assertions.assertNotNull(employeeOldExperiences.get(0).getId());
+        Assertions.assertNotNull(employeeOldExperiences.get(1).getId());
+        Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeOldExperiences.get(0).getEmployeeOld().getIdentityNumber());
+        Assertions.assertEquals(position.getName(), employeeOldExperiences.get(0).getPosition().getName());
+
 
     }
-
 
 }
