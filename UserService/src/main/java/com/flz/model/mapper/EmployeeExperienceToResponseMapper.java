@@ -11,10 +11,9 @@ public interface EmployeeExperienceToResponseMapper extends BaseMapper<EmployeeE
 
     EmployeeExperienceToResponseMapper INSTANCE = Mappers.getMapper(EmployeeExperienceToResponseMapper.class);
 
-    @Mapping(target = "positionId", source = "position.id")
     @Mapping(target = "positionName", source = "position.name")
-    @Mapping(target = "supervisorId", source = "supervisor.id")
-    @Mapping(target = "supervisorName", expression = "java(source.getSupervisor().getFirstName() + \" \" + source.getSupervisor().getLastName())")
+    @Mapping(target = "departmentName", source = "position.department.name")
+    @Mapping(target = "managerName", expression = "java(source.position.department.getManager().getFirstName() + \" \" + source.position.department.getManager().getLastName())")
     EmployeeExperienceResponse map(EmployeeExperience source);
 
 }
