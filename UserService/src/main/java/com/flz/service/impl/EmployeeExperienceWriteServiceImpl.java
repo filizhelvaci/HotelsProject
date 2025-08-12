@@ -36,9 +36,6 @@ class EmployeeExperienceWriteServiceImpl implements EmployeeExperienceWriteServi
         Employee employee = employeeReadPort.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
 
-        Employee employeeSupervisor = employeeReadPort.findById(createRequest.getSupervisorId())
-                .orElseThrow(() -> new EmployeeNotFoundException(createRequest.getSupervisorId()));
-
         Position position = positionReadPort.findById(createRequest.getPositionId())
                 .orElseThrow(() -> new PositionNotFoundException(createRequest.getPositionId()));
 
@@ -66,7 +63,6 @@ class EmployeeExperienceWriteServiceImpl implements EmployeeExperienceWriteServi
                 .startDate(createRequest.getStartDate())
                 .position(position)
                 .employee(employee)
-                .supervisor(employeeSupervisor)
                 .build();
         employeeExperienceSavePort.save(employeeExperience);
     }
