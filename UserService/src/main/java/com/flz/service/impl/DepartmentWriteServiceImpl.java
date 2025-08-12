@@ -64,13 +64,22 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
 
-        String name = departmentUpdateRequest.getName();
+        Long managerId = departmentUpdateRequest.getManagerId();
 
+        Employee manager = employeeReadPort.findById(managerId)
+                .orElseThrow(() -> new EmployeeNotFoundException(managerId));
+
+        if (!(department.getManager().getId().equals(managerId))) {
+            checkIfManagerExists(departmentUpdateRequest);
+        }
+
+        String name = departmentUpdateRequest.getName();
         if (!(department.getName().equals(name))) {
             checkIfDepartmentNameExists(departmentUpdateRequest);
         }
 
         department.setName(departmentUpdateRequest.getName());
+        department.setManager(manager);
         department.setUpdatedAt(LocalDateTime.now());
         department.setUpdatedBy("SYSTEM");
         departmentSavePort.save(department);
@@ -82,6 +91,14 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
                 .existsByName(departmentUpdateRequest.getName());
         if (existsByName) {
             throw new DepartmentAlreadyExistsException(departmentUpdateRequest.getName());
+        }
+    }
+
+    private void checkIfManagerExists(DepartmentUpdateRequest departmentUpdateRequest) {
+
+        boolean existsByManager = departmentReadPort.existsByManagerId(departmentUpdateRequest.getManagerId());
+        if (existsByManager) {
+            throw new EmployeeAlreadyExistsException(departmentUpdateRequest.getManagerId().toString());
         }
     }
 
