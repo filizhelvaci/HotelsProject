@@ -3,13 +3,17 @@ package com.flz.service.impl;
 import com.flz.exception.DepartmentAlreadyDeletedException;
 import com.flz.exception.DepartmentAlreadyExistsException;
 import com.flz.exception.DepartmentNotFoundException;
+import com.flz.exception.EmployeeAlreadyExistsException;
+import com.flz.exception.EmployeeNotFoundException;
 import com.flz.model.Department;
+import com.flz.model.Employee;
 import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.mapper.DepartmentCreateRequestToDomainMapper;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.port.DepartmentReadPort;
 import com.flz.port.DepartmentSavePort;
+import com.flz.port.EmployeeReadPort;
 import com.flz.service.DepartmentWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
 
     private final DepartmentSavePort departmentSavePort;
     private final DepartmentReadPort departmentReadPort;
+    private final EmployeeReadPort employeeReadPort;
 
     private static final DepartmentCreateRequestToDomainMapper
             departmentCreateRequestToDomainMapper = DepartmentCreateRequestToDomainMapper.INSTANCE;
@@ -35,7 +40,18 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
             throw new DepartmentAlreadyExistsException(createRequest.getName());
         }
 
+        Long managerId = createRequest.getManagerId();
+
+        Employee manager = employeeReadPort.findById(managerId)
+                .orElseThrow(() -> new EmployeeNotFoundException(managerId));
+
+        boolean existsByManagerId = departmentReadPort.existsByManagerId(managerId);
+        if (existsByManagerId) {
+            throw new EmployeeAlreadyExistsException("As manager " + manager.getFirstName() + manager.getLastName());
+        }
+
         Department department = departmentCreateRequestToDomainMapper.map(createRequest);
+        department.setManager(manager);
         department.setStatus(DepartmentStatus.ACTIVE);
 
         departmentSavePort.save(department);
