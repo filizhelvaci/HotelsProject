@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,5 +39,14 @@ public class DepartmentEntity extends BaseEntity {
     @Column(name = "status", nullable = false)
     @Builder.Default
     private DepartmentStatus status = DepartmentStatus.ACTIVE;
+
+    /**
+     * ----------------------------------------------------------------
+     * DepartmentEntity      EmployeeEntity
+     * 1                     1
+     */
+    @OneToOne
+    @JoinColumn(name = "employee_id")
+    private EmployeeEntity manager;
 
 }
