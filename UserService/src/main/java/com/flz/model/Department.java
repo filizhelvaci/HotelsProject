@@ -18,6 +18,8 @@ public class Department extends BaseDomainModel {
     private String name;
     private DepartmentStatus status;
 
+    private Employee manager;
+
     public void delete() {
         this.setStatus(DepartmentStatus.DELETED);
         this.setUpdatedAt(LocalDateTime.now());
@@ -25,6 +27,7 @@ public class Department extends BaseDomainModel {
     }
 
     public boolean isDeleted() {
+
         return this.getStatus() == DepartmentStatus.DELETED;
     }
 
