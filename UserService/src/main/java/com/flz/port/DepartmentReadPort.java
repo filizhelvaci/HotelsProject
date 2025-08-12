@@ -15,4 +15,6 @@ public interface DepartmentReadPort {
 
     boolean existsByName(String name);
 
+    boolean existsByManagerId(Long id);
+
 }
