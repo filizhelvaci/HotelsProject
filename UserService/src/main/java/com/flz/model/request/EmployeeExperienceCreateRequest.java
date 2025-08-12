@@ -29,10 +29,6 @@ public class EmployeeExperienceCreateRequest {
     private Long positionId;
 
     @NotNull
-    @Positive
-    private Long supervisorId;
-
-    @NotNull
     @FutureOrPresent
     private LocalDate startDate;
 
