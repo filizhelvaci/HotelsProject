@@ -48,120 +48,20 @@ class EmployeeControllerTest extends BaseTest {
 
     private static final String BASE_PATH = "/api/v1";
 
-    //Initialize
-    private static List<Employee> getEmployees() {
-        return List.of(
-                Employee.builder()
-                        .id(1L)
-                        .firstName("test first name 1")
-                        .lastName("test last name 1")
-                        .address("test address 1")
-                        .birthDate(LocalDate.parse("2000-01-01"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test1@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321456")
-                        .build(),
-                Employee.builder()
-                        .id(2L)
-                        .firstName("test first name 2")
-                        .lastName("test last name 2 ")
-                        .address("test address 2")
-                        .birthDate(LocalDate.parse("2000-02-02"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test2@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321465")
-                        .build(),
-                Employee.builder()
-                        .id(3L)
-                        .firstName("test first name 3")
-                        .lastName("test last name 3")
-                        .address("test address 3")
-                        .birthDate(LocalDate.parse("2000-03-03"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test3@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321499")
-                        .build());
-    }
 
-    /**
-     * {@link EmployeeController#findById(Long)} ()}
-     */
-    @Test
-    void givenValidId_whenCalledFindByIdEmployee_thenReturnEmployeeDetailResponseSuccessful() throws Exception {
+    private static EmployeeExperienceResponse getEmployeeExperienceResponse() {
 
-        //Given
-        Long mockId = 1L;
-
-        EmployeeDetailsResponse mockEmployeeDetailsResponse = EmployeeDetailsResponse.builder()
-                .employee(getEmployee())
-                .experiences(List.of(getEmployeeExperienceResponse()))
+        return EmployeeExperienceResponse.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(100000))
+                .startDate(LocalDate.now()
+                        .plusDays(2))
+                .endDate(LocalDate.now()
+                        .plusMonths(6))
+                .positionName("Test position")
+                .departmentName("Test department")
+                .managerName("Test Manager")
                 .build();
-
-        //When
-        Mockito.when(employeeReadService.findById(mockId))
-                .thenReturn(mockEmployeeDetailsResponse);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/employee/{id}", mockId)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isMap())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
-                        .exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.firstName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.lastName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.phoneNumber")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.address")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.birthDate")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.gender")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
-                        .isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].salary")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].startDate")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].id")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].positionName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].supervisorName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true));
-
-        //Verify
-        Mockito.verify(employeeReadService, Mockito.times(1))
-                .findById(Mockito.anyLong());
-
     }
 
     @Test
@@ -429,7 +329,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.parse("2025-10-01"))
                 .build();
 
@@ -515,7 +414,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -561,7 +459,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -609,7 +506,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -660,7 +556,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -711,7 +606,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -760,7 +654,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -799,7 +692,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -838,7 +730,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -877,7 +768,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -925,7 +815,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -972,7 +861,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(invalidSalary)
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -1011,7 +899,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(null)
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -1050,7 +937,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(null)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -1089,7 +975,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(1L)
                 .departmentId(null)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -1111,44 +996,6 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
-    @Test
-    void givenNullSupervisorIdCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
-
-        //Given
-        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
-                .identityNumber("1111111111111")
-                .firstName("Semih")
-                .lastName("Ay")
-                .phoneNumber("05332221133")
-                .email("semihh@gmail.com")
-                .address("Bursa")
-                .birthDate(LocalDate.of(2000, 9, 1))
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .salary(BigDecimal.valueOf(25000))
-                .positionId(3L)
-                .departmentId(5L)
-                .supervisorId(null)
-                .startDate(LocalDate.of(2025, 9, 1))
-                .build();
-
-        //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/employee")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest());
-
-        //Verify
-        Mockito.verify(employeeWriteService, Mockito.never())
-                .create(Mockito.any(EmployeeCreateRequest.class));
-
-    }
 
     @Test
     void givenNullStartDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
@@ -1167,7 +1014,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(null)
                 .build();
 
@@ -1206,7 +1052,6 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.of(2020, 9, 1))
                 .build();
 
@@ -1417,20 +1262,122 @@ class EmployeeControllerTest extends BaseTest {
                 .build();
     }
 
-    private static EmployeeExperienceResponse getEmployeeExperienceResponse() {
+    //Initialize
+    private static List<Employee> getEmployees() {
+        return List.of(
+                Employee.builder()
+                        .id(1L)
+                        .firstName("test first name 1")
+                        .lastName("test last name 1")
+                        .address("test address 1")
+                        .birthDate(LocalDate.parse("2000-01-01"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test1@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321456")
+                        .build(),
+                Employee.builder()
+                        .id(2L)
+                        .firstName("test first name 2")
+                        .lastName("test last name 2 ")
+                        .address("test address 2")
+                        .birthDate(LocalDate.parse("2000-02-02"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test2@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321465")
+                        .build(),
+                Employee.builder()
+                        .id(3L)
+                        .firstName("test first name 3")
+                        .lastName("test last name 3")
+                        .address("test address 3")
+                        .birthDate(LocalDate.parse("2000-03-03"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test3@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321499")
+                        .build());
+    }
 
-        return EmployeeExperienceResponse.builder()
-                .id(1L)
-                .salary(BigDecimal.valueOf(100000))
-                .startDate(LocalDate.now()
-                        .plusDays(2))
-                .endDate(LocalDate.now()
-                        .plusMonths(6))
-                .positionId(2L)
-                .positionName("Test position")
-                .supervisorId(5L)
-                .supervisorName("Supervisor name")
+    /**
+     * {@link EmployeeController#findById(Long)} ()}
+     */
+    @Test
+    void givenValidId_whenCalledFindByIdEmployee_thenReturnEmployeeDetailResponseSuccessful() throws Exception {
+
+        //Given
+        Long mockId = 1L;
+
+        EmployeeDetailsResponse mockEmployeeDetailsResponse = EmployeeDetailsResponse.builder()
+                .employee(getEmployee())
+                .experiences(List.of(getEmployeeExperienceResponse()))
                 .build();
+
+        //When
+        Mockito.when(employeeReadService.findById(mockId))
+                .thenReturn(mockEmployeeDetailsResponse);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employee/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isMap())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.firstName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.lastName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.phoneNumber")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.address")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.birthDate")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.gender")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].salary")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].startDate")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].positionName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].departmentName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].managerName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
     }
 
 }
