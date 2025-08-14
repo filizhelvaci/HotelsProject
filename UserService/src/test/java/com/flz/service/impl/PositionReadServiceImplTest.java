@@ -2,8 +2,10 @@ package com.flz.service.impl;
 
 import com.flz.BaseTest;
 import com.flz.model.Department;
+import com.flz.model.Employee;
 import com.flz.model.Position;
 import com.flz.model.enums.DepartmentStatus;
+import com.flz.model.enums.Gender;
 import com.flz.model.enums.PositionStatus;
 import com.flz.model.mapper.PositionToPositionSummaryResponseMapper;
 import com.flz.model.response.PositionSummaryResponse;
@@ -14,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +40,18 @@ class PositionReadServiceImplTest extends BaseTest {
                                 .id(1L)
                                 .name("Test1Department")
                                 .status(DepartmentStatus.ACTIVE)
+                                .manager(Employee.builder()
+                                        .id(127L)
+                                        .firstName("Jessica")
+                                        .lastName("Dua")
+                                        .identityNumber("25896311181")
+                                        .email("jessica@example.com")
+                                        .phoneNumber("05456511165")
+                                        .address("Aksaray")
+                                        .birthDate(LocalDate.of(1998, 1, 15))
+                                        .gender(Gender.FEMALE)
+                                        .nationality("British")
+                                        .build())
                                 .createdAt(LocalDateTime.now())
                                 .createdBy("TestSystem")
                                 .build())
@@ -48,9 +63,21 @@ class PositionReadServiceImplTest extends BaseTest {
                         .id(12L)
                         .name("Test2")
                         .department(Department.builder()
-                                .id(1L)
+                                .id(2L)
                                 .name("Test2Department")
                                 .status(DepartmentStatus.ACTIVE)
+                                .manager(Employee.builder()
+                                        .id(128L)
+                                        .firstName("Johny")
+                                        .lastName("Dual")
+                                        .identityNumber("85876311181")
+                                        .email("johnyDual@example.com")
+                                        .phoneNumber("05056511111")
+                                        .address("Balikesir")
+                                        .birthDate(LocalDate.of(1995, 1, 15))
+                                        .gender(Gender.MALE)
+                                        .nationality("Brazil")
+                                        .build())
                                 .createdAt(LocalDateTime.now())
                                 .createdBy("TestSystem")
                                 .build())
@@ -65,6 +92,18 @@ class PositionReadServiceImplTest extends BaseTest {
                                 .id(2L)
                                 .name("Test3Department")
                                 .status(DepartmentStatus.ACTIVE)
+                                .manager(Employee.builder()
+                                        .id(129L)
+                                        .firstName("Billy")
+                                        .lastName("Eilish")
+                                        .identityNumber("11116311181")
+                                        .email("billyeilish@example.com")
+                                        .phoneNumber("05323331165")
+                                        .address("Konya")
+                                        .birthDate(LocalDate.of(1987, 7, 15))
+                                        .gender(Gender.FEMALE)
+                                        .nationality("Norway")
+                                        .build())
                                 .createdAt(LocalDateTime.now())
                                 .createdBy("TestSystem")
                                 .build())
