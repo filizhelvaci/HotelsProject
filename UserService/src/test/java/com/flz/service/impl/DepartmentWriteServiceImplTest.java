@@ -40,21 +40,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
     @InjectMocks
     DepartmentWriteServiceImpl departmentWriteService;
 
-    private static Employee getEmployee() {
-
-        return Employee.builder()
-                .id(119L)
-                .firstName("John")
-                .lastName("Doe")
-                .identityNumber("25896314785")
-                .email("john.doe@example.com")
-                .phoneNumber("05456566565")
-                .address("Ankara")
-                .birthDate(LocalDate.of(2020, 1, 15))
-                .gender(Gender.MALE)
-                .nationality("USA")
-                .build();
-    }
 
     /**
      * {@link DepartmentWriteServiceImpl#create(DepartmentCreateRequest)}
@@ -159,12 +144,65 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
     }
 
+    //Initialize
+    private static Employee getEmployee() {
+
+        return Employee.builder()
+                .id(119L)
+                .firstName("John")
+                .lastName("Doe")
+                .identityNumber("25896314785")
+                .email("john.doe@example.com")
+                .phoneNumber("05456566565")
+                .address("Ankara")
+                .birthDate(LocalDate.of(2020, 1, 15))
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .build();
+    }
+
+    @Test
+    void givenDepartmentCreateRequest_whenCreateRequestManagerFoundInDepartments_thenThrowEmployeeAlreadyExistsException() {
+
+        //Given
+        DepartmentCreateRequest mockDepartmentCreateRequest = DepartmentCreateRequest.builder()
+                .name("test")
+                .managerId(850L)
+                .build();
+
+        Optional<Employee> mockManager = Optional.of(getEmployee());
+
+        //When
+        Mockito.when(departmentReadPort.existsByName(mockDepartmentCreateRequest.getName()))
+                .thenReturn(false);
+
+        Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
+                .thenReturn(mockManager);
+
+        Mockito.when(departmentReadPort.existsByManagerId(Mockito.anyLong()))
+                .thenReturn(true);
+
+        //Then
+        Assertions.assertThrows(EmployeeAlreadyExistsException.class,
+                () -> departmentWriteService.create(mockDepartmentCreateRequest));
+
+        //Verify
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .existsByName(Mockito.any());
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .existsByManagerId(Mockito.anyLong());
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any(Department.class));
+
+    }
 
     /**
      * {@link DepartmentWriteServiceImpl#update(Long, DepartmentUpdateRequest)}
      */
     @Test
-    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentExists_thenUpdateDepartment() {
+    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenUpdateDepartmentName_thenUpdateDepartment() {
 
         //Given
         Long mockId = 1L;
@@ -172,38 +210,56 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Department mockDepartment = Department.builder()
                 .id(mockId)
                 .name("Department")
+                .manager(getEmployee())
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .createdBy("createdUser")
                 .build();
 
-        DepartmentUpdateRequest mockDepartmentUpdateRequest = new DepartmentUpdateRequest();
-        mockDepartmentUpdateRequest.setName("updatedDepartment");
+        Optional<Employee> mockManager = Optional.of(getEmployee());
+
+        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
+                .name("UpdatedDepartment")
+                .managerId(119L)
+                .build();
 
         //When
         Mockito.when(departmentReadPort.findById(mockId))
                 .thenReturn(Optional.of(mockDepartment));
 
+        Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
+                .thenReturn(mockManager);
+
+        Mockito.when(departmentReadPort.existsByName("UpdatedDepartment"))
+                .thenReturn(false);
+
         Mockito.doNothing().when(departmentSavePort)
                 .save(Mockito.any(Department.class));
 
-        //Then
+        // Then
         departmentWriteService.update(mockId, mockDepartmentUpdateRequest);
 
-        Assertions.assertEquals("updatedDepartment", mockDepartment.getName());
+        Assertions.assertEquals("UpdatedDepartment", mockDepartment.getName());
         Assertions.assertEquals("SYSTEM", mockDepartment.getUpdatedBy());
         Assertions.assertNotNull(mockDepartment.getUpdatedAt());
 
-        //Verify
+        // Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
-                .findById(mockId);
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(departmentReadPort, Mockito.never())
+                .existsByManagerId(Mockito.anyLong());
+
         Mockito.verify(departmentReadPort, Mockito.times(1))
-                .existsByName(mockDepartmentUpdateRequest.getName());
+                .existsByName("UpdatedDepartment");
+
         Mockito.verify(departmentSavePort, Mockito.times(1))
                 .save(Mockito.any(Department.class));
 
     }
-
 
     @Test
     void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
@@ -230,78 +286,179 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
     }
 
-
     @Test
-    void givenValidDepartmentIdAndSameName_whenDepartmentExists_thenUpdateWithoutNameCheck() {
-
-        //Given
-        Long mockId = 2L;
-
-        Department mockDepartment = Department.builder()
-                .id(mockId)
-                .name("SameName")
-                .status(DepartmentStatus.ACTIVE)
-                .createdAt(LocalDateTime.now())
-                .createdBy("SYSTEM")
-                .build();
-
-        DepartmentUpdateRequest mockRequest = new DepartmentUpdateRequest();
-        mockRequest.setName("SameName");
-
-        //When
-        Mockito.when(departmentReadPort.findById(mockId))
-                .thenReturn(Optional.of(mockDepartment));
-        Mockito.doNothing().when(departmentSavePort)
-                .save(Mockito.any());
-
-        //Then
-        departmentWriteService.update(mockId, mockRequest);
-
-        //Verify
-        Mockito.verify(departmentReadPort, Mockito.times(1))
-                .findById(mockId);
-        Mockito.verify(departmentReadPort, Mockito.never())
-                .existsByName(Mockito.any());
-        Mockito.verify(departmentSavePort)
-                .save(Mockito.any());
-
-    }
-
-
-    @Test
-    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenDepartmentEntityAlreadyExists_thenThrowsDepartmentAlreadyExistsException() {
+    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenUpdateManagerInDepartments_thenUpdateDepartment() {
 
         //Given
         Long mockId = 1L;
 
         Department mockDepartment = Department.builder()
                 .id(mockId)
-                .name("SameName")
+                .name("Department")
+                .manager(getEmployee())
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
-                .createdBy("SYSTEM")
+                .createdBy("createdUser")
                 .build();
 
-        DepartmentUpdateRequest mockRequest = new DepartmentUpdateRequest();
-        mockRequest.setName("DifferentName");
+        Employee mockUpdateManager = Employee.builder()
+                .id(150L)
+                .firstName("Sara")
+                .lastName("Sweet")
+                .identityNumber("25891114785")
+                .email("sara@example.com")
+                .phoneNumber("05458858585")
+                .address("Ankara")
+                .birthDate(LocalDate.of(1982, 1, 15))
+                .gender(Gender.FEMALE)
+                .nationality("Switzerland")
+                .build();
+
+        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
+                .name("Department")
+                .managerId(mockUpdateManager.getId())
+                .build();
 
         //When
         Mockito.when(departmentReadPort.findById(mockId))
                 .thenReturn(Optional.of(mockDepartment));
-        Mockito.when(departmentReadPort.existsByName(mockRequest.getName()))
+
+        Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
+                .thenReturn(Optional.of(mockUpdateManager));
+
+        Mockito.when(departmentReadPort.existsByManagerId(Mockito.anyLong()))
+                .thenReturn(false);
+
+        Mockito.doNothing().when(departmentSavePort)
+                .save(Mockito.any(Department.class));
+
+        // Then
+        departmentWriteService.update(mockId, mockDepartmentUpdateRequest);
+
+        Assertions.assertEquals(mockDepartmentUpdateRequest.getName(), mockDepartment.getName());
+        Assertions.assertEquals(mockDepartmentUpdateRequest.getManagerId(), mockUpdateManager.getId());
+        Assertions.assertEquals(mockDepartmentUpdateRequest.getManagerId(), mockDepartment.getManager().getId());
+        Assertions.assertNotNull(mockDepartment.getUpdatedAt());
+        Assertions.assertNotNull(mockDepartment.getUpdatedBy());
+
+        // Verify
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .existsByManagerId(Mockito.anyLong());
+
+        Mockito.verify(departmentReadPort, Mockito.never())
+                .existsByName(Mockito.any());
+
+        Mockito.verify(departmentSavePort, Mockito.times(1))
+                .save(Mockito.any(Department.class));
+
+    }
+
+    @Test
+    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenUpdateManagerNotFound_thenEmployeeNotFoundException() {
+
+        //Given
+        Long mockId = 1L;
+
+        Department mockDepartment = Department.builder()
+                .id(mockId)
+                .name("Department")
+                .manager(getEmployee())
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdBy("createdUser")
+                .build();
+
+        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
+                .name("UpdatedDepartment")
+                .managerId(180L)
+                .build();
+
+        //When
+        Mockito.when(departmentReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockDepartment));
+
+        Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(EmployeeNotFoundException.class,
+                () -> departmentWriteService.update(mockId, mockDepartmentUpdateRequest));
+
+        // Verify
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(departmentReadPort, Mockito.never())
+                .existsByManagerId(Mockito.anyLong());
+
+        Mockito.verify(departmentReadPort, Mockito.never())
+                .existsByName(Mockito.anyString());
+
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any(Department.class));
+
+    }
+
+    @Test
+    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenUpdateDifferentDepartmentNameExists_thenDepartmentAlreadyExistsException() {
+
+        //Given
+        Long mockId = 1L;
+
+        Department mockDepartment = Department.builder()
+                .id(mockId)
+                .name("Department")
+                .manager(getEmployee())
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdBy("createdUser")
+                .build();
+
+        Optional<Employee> mockManager = Optional.of(getEmployee());
+
+        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
+                .name("UpdatedDepartment")
+                .managerId(119L)
+                .build();
+
+        //When
+        Mockito.when(departmentReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockDepartment));
+
+        Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
+                .thenReturn(mockManager);
+
+        Mockito.when(departmentReadPort.existsByName("UpdatedDepartment"))
                 .thenReturn(true);
 
         //Then
         Assertions.assertThrows(DepartmentAlreadyExistsException.class,
-                () -> departmentWriteService.update(mockId, mockRequest));
+                () -> departmentWriteService.update(mockId, mockDepartmentUpdateRequest));
 
-        //Verify
+        // Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
-                .findById(mockId);
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(departmentReadPort, Mockito.never())
+                .existsByManagerId(Mockito.anyLong());
+
         Mockito.verify(departmentReadPort, Mockito.times(1))
-                .existsByName(mockRequest.getName());
+                .existsByName("UpdatedDepartment");
+
         Mockito.verify(departmentSavePort, Mockito.never())
-                .save(Mockito.any());
+                .save(Mockito.any(Department.class));
 
     }
 
@@ -438,6 +595,60 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .findById(Mockito.anyLong());
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .existsByManagerId(Mockito.anyLong());
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any(Department.class));
+
+    }
+
+    @Test
+    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenUpdateDifferentManagerExists_thenEmployeeAlreadyExistsException() {
+
+        //Given
+        Long mockId = 1L;
+
+        Department mockDepartment = Department.builder()
+                .id(mockId)
+                .name("Department")
+                .manager(getEmployee())
+                .status(DepartmentStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .createdBy("createdUser")
+                .build();
+
+        Optional<Employee> mockManager = Optional.of(getEmployee());
+
+        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
+                .name("UpdatedDepartment")
+                .managerId(150L)
+                .build();
+
+        //When
+        Mockito.when(departmentReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockDepartment));
+
+        Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
+                .thenReturn(mockManager);
+
+        Mockito.when(departmentReadPort.existsByManagerId(Mockito.anyLong()))
+                .thenReturn(true);
+
+        //Then
+        Assertions.assertThrows(EmployeeAlreadyExistsException.class,
+                () -> departmentWriteService.update(mockId, mockDepartmentUpdateRequest));
+
+        // Verify
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .existsByManagerId(Mockito.anyLong());
+
+        Mockito.verify(departmentReadPort, Mockito.never())
+                .existsByName("UpdatedDepartment");
+
         Mockito.verify(departmentSavePort, Mockito.never())
                 .save(Mockito.any(Department.class));
 
