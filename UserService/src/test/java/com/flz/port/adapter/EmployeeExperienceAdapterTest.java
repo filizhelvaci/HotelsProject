@@ -50,8 +50,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
 
         Employee employee = getEmployee();
 
-        Employee supervisor = getSupervisor();
-
         return EmployeeExperience.builder()
                 .id(1L)
                 .salary(BigDecimal.valueOf(65000))
@@ -59,7 +57,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                 .endDate(LocalDate.of(2023, 12, 31))
                 .position(position)
                 .employee(employee)
-                .supervisor(supervisor)
                 .build();
     }
 
@@ -226,8 +223,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                 actual.get().getPosition().getName());
         Assertions.assertEquals(expected.getPosition().getDepartment().getName(),
                 actual.get().getPosition().getDepartment().getName());
-        Assertions.assertEquals(expected.getSupervisor().getId(),
-                actual.get().getSupervisor().getId());
 
         //Verify
         Mockito.verify(employeeExperienceRepository, Mockito.times(1))
@@ -338,18 +333,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                 .nationality("USA")
                 .build();
 
-        EmployeeEntity supervisor = EmployeeEntity.builder()
-                .id(201L)
-                .firstName("Jane")
-                .lastName("Smith")
-                .identityNumber("987654321478")
-                .email("jane.smith@example.com")
-                .phoneNumber("05053213232")
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .gender(Gender.FEMALE)
-                .build();
-
         List<EmployeeExperienceEntity> mockEmployeeExperienceEntities = List.of(
                 EmployeeExperienceEntity.builder()
                         .id(1L)
@@ -358,7 +341,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                         .endDate(LocalDate.of(2023, 12, 31))
                         .position(position)
                         .employee(employee)
-                        .supervisor(supervisor)
                         .build(),
                 EmployeeExperienceEntity.builder()
                         .id(1L)
@@ -367,7 +349,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                         .endDate(LocalDate.of(2025, 1, 31))
                         .position(position)
                         .employee(employee)
-                        .supervisor(supervisor)
                         .build());
 
         //When
@@ -384,8 +365,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
         Assertions.assertNotNull(mockEmployeeExperiences);
         Assertions.assertNotNull(mockEmployeeExperiences.get(0)
                 .getEmployee());
-        Assertions.assertNotNull(mockEmployeeExperiences.get(0)
-                .getSupervisor());
         Assertions.assertNotNull(mockEmployeeExperiences.get(0)
                 .getPosition());
         Assertions.assertNotNull(mockEmployeeExperiences.get(0)
@@ -419,33 +398,15 @@ class EmployeeExperienceAdapterTest extends BaseTest {
 
         Employee employee = getEmployee();
 
-        Employee supervisor = getSupervisor();
-
         EmployeeExperience employeeExperience = EmployeeExperience.builder()
                 .id(1L)
                 .salary(BigDecimal.valueOf(65000))
                 .startDate(LocalDate.of(2020, 1, 15))
                 .position(position)
                 .employee(employee)
-                .supervisor(supervisor)
                 .build();
 
         return Optional.of(employeeExperienceToEntityMapper.map(employeeExperience));
-    }
-
-    private static Employee getSupervisor() {
-
-        return Employee.builder()
-                .id(201L)
-                .firstName("Jane")
-                .lastName("Smith")
-                .identityNumber("987654321478")
-                .email("jane.smith@example.com")
-                .phoneNumber("05053213232")
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .gender(Gender.FEMALE)
-                .build();
     }
 
     private static Employee getEmployee() {
@@ -463,6 +424,16 @@ class EmployeeExperienceAdapterTest extends BaseTest {
     }
 
     private static Position getPosition(Long mockId) {
+        Employee manager = Employee.builder()
+                .id(118L)
+                .firstName("John")
+                .lastName("Doe")
+                .identityNumber("25896314785")
+                .email("john.doe@example.com")
+                .phoneNumber("05456566565")
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .build();
 
         return Position.builder()
                 .id(mockId)
@@ -470,6 +441,7 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                 .department(Department.builder()
                         .id(1L)
                         .name("TestDepartment")
+                        .manager(manager)
                         .status(DepartmentStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
                         .createdBy("TestSystem")

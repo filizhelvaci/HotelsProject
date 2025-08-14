@@ -111,14 +111,33 @@ class EmployeeReadServiceImplTest extends BaseTest {
                 .nationality("TR")
                 .build();
 
+        Employee manager = Employee.builder()
+                .firstName("Edip")
+                .lastName("Cansever")
+                .identityNumber("55885678901")
+                .phoneNumber("05551234454")
+                .address("Edirne")
+                .email("edipcan@example.com")
+                .gender(Gender.MALE)
+                .birthDate(LocalDate.of(1975, 2, 1))
+                .nationality("TR")
+                .build();
+
         EmployeeExperience empExp1 = EmployeeExperience.builder()
                 .id(1L)
                 .salary(BigDecimal.valueOf(55000))
                 .startDate(LocalDate.of(2021, 11, 12))
                 .endDate(LocalDate.of(2022, 11, 12))
-                .position(Position.builder().id(20L).name("Kat Sorumlusu").department(Department.builder().id(18L).name("Düzen ve Tedarik Departmanı").build()).build())
+                .position(Position.builder()
+                        .id(20L)
+                        .name("Kat Sorumlusu")
+                        .department(Department.builder()
+                                .id(18L)
+                                .name("Düzen ve Tedarik Departmanı")
+                                .manager(manager)
+                                .build())
+                        .build())
                 .employee(mockEmployee)
-                .supervisor(Employee.builder().id(85L).firstName("Ayhan").lastName("Kaymaz").build())
                 .build();
 
         EmployeeExperience empExp2 = EmployeeExperience.builder()
@@ -126,9 +145,16 @@ class EmployeeReadServiceImplTest extends BaseTest {
                 .salary(BigDecimal.valueOf(75000))
                 .startDate(LocalDate.of(2022, 11, 13))
                 .endDate(LocalDate.of(2023, 11, 13))
-                .position(Position.builder().id(28L).name("Departman Sorumlusu").department(Department.builder().id(18L).name("Düzen ve Tedarik Departmanı").build()).build())
+                .position(Position.builder()
+                        .id(28L)
+                        .name("Departman Sorumlusu")
+                        .department(Department.builder()
+                                .id(18L)
+                                .name("Düzen ve Tedarik Departmanı")
+                                .manager(manager)
+                                .build())
+                        .build())
                 .employee(mockEmployee)
-                .supervisor(Employee.builder().id(85L).firstName("Ayhan").lastName("Kaymaz").build())
                 .build();
 
         List<EmployeeExperience> mockExperienceList = List.of(empExp1, empExp2);
@@ -143,21 +169,25 @@ class EmployeeReadServiceImplTest extends BaseTest {
         Mockito.when(employeeExperienceToResponseMapper.map(empExp1))
                 .thenReturn(EmployeeExperienceResponse.builder()
                         .id(empExp1.getId())
-                        .positionName(empExp1.getPosition().getName())
                         .salary(empExp1.getSalary())
                         .startDate(empExp1.getStartDate())
                         .endDate(empExp1.getEndDate())
-                        .supervisorName(empExp1.getSupervisor().getFirstName() + " " + empExp1.getSupervisor().getLastName())
+                        .positionName(empExp1.getPosition().getName())
+                        .departmentName(empExp1.getPosition().getDepartment().getName())
+                        .managerName(empExp1.getPosition().getDepartment().getManager().getFirstName() + " " +
+                                empExp1.getPosition().getDepartment().getManager().getLastName())
                         .build());
 
         Mockito.when(employeeExperienceToResponseMapper.map(empExp2))
                 .thenReturn(EmployeeExperienceResponse.builder()
                         .id(empExp2.getId())
-                        .positionName(empExp2.getPosition().getName())
                         .salary(empExp2.getSalary())
                         .startDate(empExp2.getStartDate())
                         .endDate(empExp2.getEndDate())
-                        .supervisorName(empExp2.getSupervisor().getFirstName() + " " + empExp2.getSupervisor().getLastName())
+                        .positionName(empExp2.getPosition().getName())
+                        .departmentName(empExp2.getPosition().getDepartment().getName())
+                        .managerName(empExp2.getPosition().getDepartment().getManager().getFirstName() + " " +
+                                empExp2.getPosition().getDepartment().getManager().getLastName())
                         .build());
 
         //Then

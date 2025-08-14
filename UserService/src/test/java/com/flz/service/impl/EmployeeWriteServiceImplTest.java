@@ -78,21 +78,6 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     EmployeeExperienceToEmployeeOldExperienceMapper
             employeeExperienceToEmployeeOldExperienceMapper = EmployeeExperienceToEmployeeOldExperienceMapper.INSTANCE;
 
-    //Initialize
-    private static EmployeeCreateRequest getEmployeeCreateRequest() {
-        return EmployeeCreateRequest.builder()
-                .identityNumber("12345678901")
-                .firstName("John")
-                .lastName("Doe")
-                .gender(Gender.MALE)
-                .nationality("USA")
-                .address("Ankara")
-                .phoneNumber("05468529674")
-                .positionId(1L)
-                .supervisorId(5L)
-                .startDate(LocalDate.parse("2025-10-01"))
-                .build();
-    }
 
     /**
      * {@link EmployeeWriteServiceImpl#create(EmployeeCreateRequest)}
@@ -124,19 +109,6 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         Mockito.when(positionReadPort.findById(1L))
                 .thenReturn(Optional.of(mockPosition));
 
-        Employee mockSupervisor = Employee.builder()
-                .id(5L)
-                .identityNumber("98765432109")
-                .firstName("Eric")
-                .lastName("Smith")
-                .gender(Gender.MALE)
-                .nationality("USA")
-                .address("New York")
-                .phoneNumber("05328529674")
-                .build();
-
-        Mockito.when(employeeReadPort.findById(5L))
-                .thenReturn(Optional.of(mockSupervisor));
 
         //Then
         employeeWriteServiceImpl.create(mockEmployeeCreateRequest);
@@ -212,60 +184,6 @@ class EmployeeWriteServiceImplTest extends BaseTest {
 
     }
 
-    @Test
-    void givenInvalidSupervisorId_whenCreateEmployee_thenThrowsEmployeeNotFoundException() {
-
-        //Given
-        EmployeeCreateRequest request = EmployeeCreateRequest.builder()
-                .identityNumber("12345678901")
-                .firstName("John")
-                .lastName("Doe")
-                .gender(Gender.MALE)
-                .nationality("USA")
-                .address("Ankara")
-                .phoneNumber("05468529674")
-                .positionId(1000L)
-                .supervisorId(5L)
-                .startDate(LocalDate.parse("2025-10-01"))
-                .build();
-
-        Position mockPosition = Position.builder()
-                .id(1L)
-                .name("Developer")
-                .build();
-
-        //When
-        Mockito.when(employeeReadPort.existsByIdentity("12345678901"))
-                .thenReturn(false);
-
-        Employee mappedEmployee = EmployeeCreateRequestToDomainMapper.INSTANCE
-                .map(request);
-
-        Employee savedEmployee = getSavedEmployee();
-
-        Mockito.when(employeeSavePort.save(mappedEmployee))
-                .thenReturn(savedEmployee);
-        Mockito.when(positionReadPort.findById(Mockito.anyLong()))
-                .thenReturn(Optional.of(mockPosition));
-        Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Assertions.assertThrows(EmployeeNotFoundException.class,
-
-                () -> employeeWriteServiceImpl.create(request));
-
-        //Verify
-        Mockito.verify(employeeReadPort, Mockito.times(1))
-                .existsByIdentity(Mockito.anyString());
-        Mockito.verify(employeeSavePort, Mockito.times(1))
-                .save(Mockito.any(Employee.class));
-        Mockito.verify(positionReadPort, Mockito.times(1))
-                .findById(Mockito.anyLong());
-        Mockito.verify(employeeReadPort, Mockito.times(1))
-                .findById(Mockito.anyLong());
-
-    }
 
     /**
      * {@link EmployeeWriteServiceImpl#update(Long, EmployeeUpdateRequest)}
@@ -690,6 +608,23 @@ class EmployeeWriteServiceImplTest extends BaseTest {
 
     }
 
+    //Initialize
+    private static EmployeeCreateRequest getEmployeeCreateRequest() {
+        return EmployeeCreateRequest.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .identityNumber("12345678901")
+                .phoneNumber("05468529674")
+                .address("Ankara")
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(1L)
+                .departmentId(5L)
+                .startDate(LocalDate.parse("2025-10-01"))
+                .build();
+    }
+
     private static Employee getSavedEmployee() {
         return Employee.builder()
                 .id(10L)
@@ -706,10 +641,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     private static EmployeeExperience getEmployeeExperience() {
 
         Position position = getPosition();
-
         Employee employee = getEmployee();
-
-        Employee supervisor = getSupervisor();
 
         return EmployeeExperience.builder()
                 .id(1L)
@@ -718,17 +650,13 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .endDate(LocalDate.of(2023, 1, 28))
                 .position(position)
                 .employee(employee)
-                .supervisor(supervisor)
                 .build();
     }
 
     private static EmployeeExperience getEmployeeExperience2() {
 
         Position position = getPosition2();
-
         Employee employee = getEmployee();
-
-        Employee supervisor = getSupervisor();
 
         return EmployeeExperience.builder()
                 .id(2L)
@@ -737,7 +665,6 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .endDate(LocalDate.of(2024, 1, 28))
                 .position(position)
                 .employee(employee)
-                .supervisor(supervisor)
                 .build();
     }
 
@@ -792,10 +719,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     private static EmployeeOldExperience getEmployeeOldExperience() {
 
         Position position = getPosition();
-
         EmployeeOld employee = getEmployeeOld();
-
-        Employee supervisor = getSupervisor();
 
         return EmployeeOldExperience.builder()
                 .id(1L)
@@ -804,17 +728,13 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .endDate(LocalDate.of(2023, 1, 28))
                 .position(position)
                 .employeeOld(employee)
-                .supervisor(supervisor)
                 .build();
     }
 
     private static EmployeeOldExperience getEmployeeOldExperience2() {
 
         Position position = getPosition2();
-
         EmployeeOld employee = getEmployeeOld();
-
-        Employee supervisor = getSupervisor();
 
         return EmployeeOldExperience.builder()
                 .id(2L)
@@ -823,11 +743,10 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .endDate(LocalDate.of(2024, 1, 28))
                 .position(position)
                 .employeeOld(employee)
-                .supervisor(supervisor)
                 .build();
     }
 
-    private static Employee getSupervisor() {
+    private static Employee getManager() {
 
         return Employee.builder()
                 .id(201L)
@@ -851,6 +770,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .department(Department.builder()
                         .id(1L)
                         .name("TestDepartment")
+                        .manager(getManager())
                         .status(DepartmentStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
                         .createdBy("TestSystem")

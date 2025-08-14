@@ -72,9 +72,6 @@ public class EmployeeCreateRequest {
     private Long departmentId;
 
     @NotNull
-    private Long supervisorId;
-
-    @NotNull
     @FutureOrPresent
     private LocalDate startDate;
 

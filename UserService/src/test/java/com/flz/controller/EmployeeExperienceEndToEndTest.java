@@ -32,7 +32,6 @@ class EmployeeExperienceEndToEndTest extends BaseEndToEndTest {
         EmployeeExperienceCreateRequest createRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(50000))
                 .positionId(5L)
-                .supervisorId(2L)
                 .startDate(LocalDate.now().plusDays(5))
                 .build();
 
@@ -58,8 +57,6 @@ class EmployeeExperienceEndToEndTest extends BaseEndToEndTest {
         Assertions.assertTrue(employeeExperience.isPresent());
         Assertions.assertEquals(createRequest.getPositionId(),
                 employeeExperience.get().getPosition().getId());
-        Assertions.assertEquals(createRequest.getSupervisorId(),
-                employeeExperience.get().getSupervisor().getId());
         Assertions.assertEquals(createRequest.getStartDate(),
                 employeeExperience.get().getStartDate());
         Assertions.assertNotNull(employeeExperience.get().getCreatedAt());

@@ -89,7 +89,6 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
                 .endDate(LocalDate.parse("2001-10-31"))
                 .position(position)
                 .employeeOld(savedEmployee)
-                .supervisor(supervisor)
                 .build();
 
         EmployeeOldExperience employeeOldExperience2 = EmployeeOldExperience.builder()
@@ -98,7 +97,6 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
                 .endDate(LocalDate.parse("2003-10-25"))
                 .position(position2)
                 .employeeOld(savedEmployee)
-                .supervisor(supervisor)
                 .build();
 
         List<EmployeeOldExperience> employeeOldExperiences = List.of(employeeOldExperience1, employeeOldExperience2);
@@ -162,11 +160,9 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getStartDate());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getEndDate());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getPositionName());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getSupervisorName());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getStartDate());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getEndDate());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getPositionName());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getSupervisorName());
         Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeFromDatabase.getIdentityNumber());
         Assertions.assertEquals(savedEmployee.getEmail(), employeeFromDatabase.getEmail());
         Assertions.assertEquals(savedEmployee.getPhoneNumber(), employeeFromDatabase.getPhoneNumber());

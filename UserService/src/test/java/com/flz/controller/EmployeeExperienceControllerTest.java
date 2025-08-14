@@ -46,7 +46,6 @@ class EmployeeExperienceControllerTest extends BaseTest {
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(10000))
                 .positionId(10L)
-                .supervisorId(20L)
                 .startDate(LocalDate.of(2025, 10, 2))
                 .build();
 
@@ -87,7 +86,6 @@ class EmployeeExperienceControllerTest extends BaseTest {
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(10000))
                 .positionId(10L)
-                .supervisorId(20L)
                 .startDate(mockStartDate)
                 .build();
 
@@ -120,7 +118,6 @@ class EmployeeExperienceControllerTest extends BaseTest {
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(invalidSalary)
                 .positionId(10L)
-                .supervisorId(20L)
                 .startDate(LocalDate.now())
                 .build();
 
@@ -159,7 +156,6 @@ class EmployeeExperienceControllerTest extends BaseTest {
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(null)
                 .positionId(10L)
-                .supervisorId(20L)
                 .startDate(LocalDate.now())
                 .build();
 
@@ -191,7 +187,6 @@ class EmployeeExperienceControllerTest extends BaseTest {
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(10000))
                 .positionId(null)
-                .supervisorId(20L)
                 .startDate(LocalDate.now())
                 .build();
 
@@ -223,71 +218,6 @@ class EmployeeExperienceControllerTest extends BaseTest {
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(10000))
                 .positionId(-10L)
-                .supervisorId(20L)
-                .startDate(LocalDate.now())
-                .build();
-
-        //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/employee/{id}/experience", mockId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mockCreateRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest());
-
-        //Verify
-        Mockito.verify(employeeExperienceWriteService, Mockito.never())
-                .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
-
-    }
-
-
-    @Test
-    void givenNullSupervisorIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
-
-        //Given
-        Long mockId = 1L;
-
-        EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
-                .salary(BigDecimal.valueOf(10000))
-                .positionId(10L)
-                .supervisorId(null)
-                .startDate(LocalDate.now())
-                .build();
-
-        //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/employee/{id}/experience", mockId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mockCreateRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest());
-
-        //Verify
-        Mockito.verify(employeeExperienceWriteService, Mockito.never())
-                .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
-
-    }
-
-
-    @Test
-    void givenInvalidSupervisorIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
-
-        //Given
-        Long mockId = 1L;
-
-        EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
-                .salary(BigDecimal.valueOf(10000))
-                .positionId(10L)
-                .supervisorId(-20L)
                 .startDate(LocalDate.now())
                 .build();
 
@@ -319,7 +249,6 @@ class EmployeeExperienceControllerTest extends BaseTest {
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(10000))
                 .positionId(10L)
-                .supervisorId(20L)
                 .startDate(null)
                 .build();
 

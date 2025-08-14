@@ -45,23 +45,6 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
     @InjectMocks
     EmployeeExperienceWriteServiceImpl employeeExperienceWriteServiceImpl;
 
-    //Initialize
-    private static EmployeeExperience getEmployeeExperience2() {
-
-        Position position = getPosition2();
-        Employee employee = getEmployee();
-        Employee supervisor = getSupervisor();
-
-        return EmployeeExperience.builder()
-                .id(2L)
-                .salary(BigDecimal.valueOf(85000))
-                .startDate(LocalDate.of(2023, 2, 15))
-                .position(position)
-                .employee(employee)
-                .supervisor(supervisor)
-                .build();
-    }
-
     /**
      * {@link EmployeeExperienceWriteServiceImpl#create(Long, EmployeeExperienceCreateRequest)}
      */
@@ -70,18 +53,15 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
 
         //Given
         Long employeeId = 101L;
-        Long supervisorId = 201L;
         Long positionId = 11L;
 
         //Initialize
         Employee employee = getEmployee();
-        Employee supervisor = getSupervisor();
         Position position = getPosition();
 
         EmployeeExperience lastExperience = getEmployeeExperience2();
 
         EmployeeExperienceCreateRequest request = EmployeeExperienceCreateRequest.builder()
-                .supervisorId(supervisorId)
                 .positionId(positionId)
                 .startDate(LocalDate.of(2024, 1, 1))
                 .salary(BigDecimal.valueOf(10000))
@@ -93,8 +73,6 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
         //When
         Mockito.when(employeeReadPort.findById(employeeId))
                 .thenReturn(Optional.of(employee));
-        Mockito.when(employeeReadPort.findById(supervisorId))
-                .thenReturn(Optional.of(supervisor));
         Mockito.when(positionReadPort.findById(positionId))
                 .thenReturn(Optional.of(position));
         Mockito.when(employeeExperienceReadPort.existsByEmployeeIdAndPositionIdAndStartDate(
@@ -130,7 +108,6 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
         Long mockEmployeeId = 1L;
 
         EmployeeExperienceCreateRequest request = EmployeeExperienceCreateRequest.builder()
-                .supervisorId(201L)
                 .positionId(11L)
                 .startDate(LocalDate.of(2024, 1, 1))
                 .build();
@@ -165,7 +142,6 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
         Long mockSupervisorId = 1L;
 
         EmployeeExperienceCreateRequest request = EmployeeExperienceCreateRequest.builder()
-                .supervisorId(mockSupervisorId)
                 .positionId(11L)
                 .startDate(LocalDate.of(2024, 1, 1))
                 .build();
@@ -197,95 +173,49 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
     }
 
 
-    @Test
-    void givenValidEmployeeIdAndRequest_whenEmployeeExperienceCreateCalled_thenThrowException() {
+    //Initialize
+    private static EmployeeExperience getEmployeeExperience2() {
 
-        //Given
-        Long mockEmployeeId = 101L;
-        Long mockSupervisorId = 201L;
-        Long mockPositionId = 11L;
-        LocalDate mockStartDate = LocalDate.of(2020, 1, 15);
+        Position position = getPosition2();
+        Employee employee = getEmployee();
 
-        EmployeeExperienceCreateRequest mockRequest = EmployeeExperienceCreateRequest.builder()
-                .supervisorId(mockSupervisorId)
-                .positionId(mockPositionId)
-                .salary(BigDecimal.valueOf(65000))
-                .startDate(mockStartDate)
+        return EmployeeExperience.builder()
+                .id(2L)
+                .salary(BigDecimal.valueOf(85000))
+                .startDate(LocalDate.of(2023, 2, 15))
+                .position(position)
+                .employee(employee)
                 .build();
-
-        //When
-        Employee mockEmployee = getEmployee();
-        Employee mockSupervisor = getSupervisor();
-        Position mockPosition = getPosition();
-
-        Mockito.when(employeeReadPort.findById(mockEmployeeId))
-                .thenReturn(Optional.of(mockEmployee));
-        Mockito.when(employeeReadPort.findById(mockSupervisorId))
-                .thenReturn(Optional.of(mockSupervisor));
-        Mockito.when(positionReadPort.findById(mockPositionId))
-                .thenReturn(Optional.of(mockPosition));
-        Mockito.when(employeeExperienceReadPort
-                        .existsByEmployeeIdAndPositionIdAndStartDate(mockEmployeeId, mockPositionId, mockStartDate))
-                .thenReturn(true);
-
-        //Then
-        Assertions.assertThrows(EmployeeExperienceAlreadyExistsException.class,
-                () -> employeeExperienceWriteServiceImpl.create(mockEmployeeId, mockRequest));
-
-        //Verify
-        Mockito.verify(employeeReadPort, Mockito.times(2))
-                .findById(Mockito.anyLong());
-        Mockito.verify(positionReadPort, Mockito.times(1))
-                .findById(Mockito.anyLong());
-        Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
-                .existsByEmployeeIdAndPositionIdAndStartDate(Mockito.anyLong(), Mockito.anyLong(), Mockito.any());
-        Mockito.verify(employeeExperienceReadPort, Mockito.never())
-                .findTopByEmployeeIdOrderByStartDateDesc(Mockito.anyLong());
-        Mockito.verify(employeeExperienceSavePort, Mockito.never())
-                .save(Mockito.any(EmployeeExperience.class));
-
     }
 
-    @Test
-    void givenValidEmployeeIdAndCreateRequest_whenEmployeeExperienceCreateCalledButPositionNotFound_thenThrowException() {
+    private static Position getPosition() {
 
-        //Given
-        Long mockEmployeeId = 101L;
-        Long mockSupervisorId = 201L;
-        Long mockPositionId = 1111L;
-
-        EmployeeExperienceCreateRequest mockRequest = EmployeeExperienceCreateRequest.builder()
-                .supervisorId(mockSupervisorId)
-                .positionId(mockPositionId)
-                .startDate(LocalDate.of(2024, 1, 1))
+        Employee manager = Employee.builder()
+                .id(201L)
+                .firstName("Denis")
+                .lastName("Smith")
+                .identityNumber("987111321118")
+                .email("denisSS@example.com")
+                .phoneNumber("05057744232")
+                .gender(Gender.MALE)
+                .nationality("TC")
                 .build();
 
-        //When
-        Employee mockEmployee = getEmployee();
-        Employee mockSupervisor = getSupervisor();
-
-        Mockito.when(employeeReadPort.findById(mockEmployeeId))
-                .thenReturn(Optional.of(mockEmployee));
-        Mockito.when(employeeReadPort.findById(mockSupervisorId))
-                .thenReturn(Optional.of(mockSupervisor));
-        Mockito.when(positionReadPort.findById(mockPositionId))
-                .thenReturn(Optional.empty());
-        //Then
-        Assertions.assertThrows(PositionNotFoundException.class,
-                () -> employeeExperienceWriteServiceImpl.create(mockEmployeeId, mockRequest));
-
-        //Verify
-        Mockito.verify(employeeReadPort, Mockito.times(2))
-                .findById(Mockito.anyLong());
-        Mockito.verify(positionReadPort, Mockito.times(1))
-                .findById(Mockito.anyLong());
-        Mockito.verify(employeeExperienceReadPort, Mockito.never())
-                .existsByEmployeeIdAndPositionIdAndStartDate(Mockito.anyLong(), Mockito.anyLong(), Mockito.any());
-        Mockito.verify(employeeExperienceReadPort, Mockito.never())
-                .findTopByEmployeeIdOrderByStartDateDesc(Mockito.anyLong());
-        Mockito.verify(employeeExperienceSavePort, Mockito.never())
-                .save(Mockito.any(EmployeeExperience.class));
-
+        return Position.builder()
+                .id(11L)
+                .name("Test")
+                .department(Department.builder()
+                        .id(1L)
+                        .name("TestDepartment")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     @Test
@@ -293,15 +223,12 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
 
         //Given
         Long employeeId = 101L;
-        Long supervisorId = 201L;
         Long positionId = 11L;
 
         Employee employee = getEmployee();
-        Employee supervisor = getSupervisor();
         Position position = getPosition();
 
         EmployeeExperienceCreateRequest request = EmployeeExperienceCreateRequest.builder()
-                .supervisorId(supervisorId)
                 .positionId(positionId)
                 .startDate(LocalDate.of(2024, 6, 1))
                 .salary(BigDecimal.valueOf(10000))
@@ -310,8 +237,6 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
         //When
         Mockito.when(employeeReadPort.findById(employeeId))
                 .thenReturn(Optional.of(employee));
-        Mockito.when(employeeReadPort.findById(supervisorId))
-                .thenReturn(Optional.of(supervisor));
         Mockito.when(positionReadPort.findById(positionId))
                 .thenReturn(Optional.of(position));
         Mockito.when(employeeExperienceReadPort.existsByEmployeeIdAndPositionIdAndStartDate(
@@ -340,54 +265,79 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
 
     }
 
+    private static Position getPosition2() {
+
+        Employee manager = Employee.builder()
+                .id(221L)
+                .firstName("Jenifer")
+                .lastName("See")
+                .identityNumber("955555551478")
+                .email("jenyjeny@example.com")
+                .phoneNumber("053212333332")
+                .nationality("TC")
+                .gender(Gender.FEMALE)
+                .build();
+
+        return Position.builder()
+                .id(12L)
+                .name("TestPosition2")
+                .department(Department.builder()
+                        .id(1L)
+                        .name("TestDepartment2")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
     @Test
-    void givenStartDateBeforeLastExperienceStartDate_whenCreate_thenAllowOrThrowDependingOnRule() {
+    void givenValidEmployeeIdAndRequest_whenEmployeeExperienceCreateCalled_thenThrowException() {
 
         //Given
-        Long employeeId = 101L;
-        Long supervisorId = 201L;
-        Long positionId = 11L;
+        Long mockEmployeeId = 101L;
+        Long mockPositionId = 11L;
+        LocalDate mockStartDate = LocalDate.of(2020, 1, 15);
 
-        //Initialize
-        Employee employee = getEmployee();
-        Employee supervisor = getSupervisor();
-        Position position = getPosition();
-
-        LocalDate newStartDate = LocalDate.of(2020, 1, 1);
-        LocalDate lastStartDate = LocalDate.of(2023, 1, 1);
-
-        EmployeeExperience lastExperience = getEmployeeExperience2();
-        lastExperience.setStartDate(lastStartDate);
-
-        EmployeeExperienceCreateRequest request = EmployeeExperienceCreateRequest.builder()
-                .supervisorId(supervisorId)
-                .positionId(positionId)
-                .startDate(newStartDate)
-                .salary(BigDecimal.valueOf(10000))
+        EmployeeExperienceCreateRequest mockRequest = EmployeeExperienceCreateRequest.builder()
+                .positionId(mockPositionId)
+                .salary(BigDecimal.valueOf(65000))
+                .startDate(mockStartDate)
                 .build();
 
         //When
-        Mockito.when(employeeReadPort.findById(employeeId))
-                .thenReturn(Optional.of(employee));
-        Mockito.when(employeeReadPort.findById(supervisorId))
-                .thenReturn(Optional.of(supervisor));
-        Mockito.when(positionReadPort.findById(positionId))
-                .thenReturn(Optional.of(position));
+        Employee mockEmployee = getEmployee();
+        Position mockPosition = getPosition();
+
+        Mockito.when(employeeReadPort.findById(mockEmployeeId))
+                .thenReturn(Optional.of(mockEmployee));
+        Mockito.when(positionReadPort.findById(mockPositionId))
+                .thenReturn(Optional.of(mockPosition));
         Mockito.when(employeeExperienceReadPort
-                        .existsByEmployeeIdAndPositionIdAndStartDate(employeeId, positionId, newStartDate))
-                .thenReturn(false);
-        Mockito.when(employeeExperienceReadPort.findTopByEmployeeIdOrderByStartDateDesc(employeeId))
-                .thenReturn(Optional.of(lastExperience));
+                        .existsByEmployeeIdAndPositionIdAndStartDate(mockEmployeeId, mockPositionId, mockStartDate))
+                .thenReturn(true);
 
         //Then
-        employeeExperienceWriteServiceImpl.create(employeeId, request);
+        Assertions.assertThrows(EmployeeExperienceAlreadyExistsException.class,
+                () -> employeeExperienceWriteServiceImpl.create(mockEmployeeId, mockRequest));
 
         //Verify
-        Mockito.verify(employeeExperienceSavePort, Mockito.times(2))
-                .save(Mockito.any());
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
+                .existsByEmployeeIdAndPositionIdAndStartDate(Mockito.anyLong(), Mockito.anyLong(), Mockito.any());
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
+                .findTopByEmployeeIdOrderByStartDateDesc(Mockito.anyLong());
+        Mockito.verify(employeeExperienceSavePort, Mockito.never())
+                .save(Mockito.any(EmployeeExperience.class));
 
     }
-
     private static Employee getEmployee() {
 
         return Employee.builder()
@@ -404,55 +354,84 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
                 .build();
     }
 
-    private static Employee getSupervisor() {
+    @Test
+    void givenValidEmployeeIdAndCreateRequest_whenEmployeeExperienceCreateCalledButPositionNotFound_thenThrowException() {
 
-        return Employee.builder()
-                .id(201L)
-                .firstName("Jane")
-                .lastName("Smith")
-                .identityNumber("987654321478")
-                .email("jane.smith@example.com")
-                .phoneNumber("05053213232")
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .gender(Gender.FEMALE)
+        //Given
+        Long mockEmployeeId = 101L;
+        Long mockPositionId = 1111L;
+
+        EmployeeExperienceCreateRequest mockRequest = EmployeeExperienceCreateRequest.builder()
+                .positionId(mockPositionId)
+                .startDate(LocalDate.of(2024, 1, 1))
                 .build();
+
+        //When
+        Employee mockEmployee = getEmployee();
+
+        Mockito.when(employeeReadPort.findById(mockEmployeeId))
+                .thenReturn(Optional.of(mockEmployee));
+        Mockito.when(positionReadPort.findById(mockPositionId))
+                .thenReturn(Optional.empty());
+        //Then
+        Assertions.assertThrows(PositionNotFoundException.class,
+                () -> employeeExperienceWriteServiceImpl.create(mockEmployeeId, mockRequest));
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
+                .existsByEmployeeIdAndPositionIdAndStartDate(Mockito.anyLong(), Mockito.anyLong(), Mockito.any());
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
+                .findTopByEmployeeIdOrderByStartDateDesc(Mockito.anyLong());
+        Mockito.verify(employeeExperienceSavePort, Mockito.never())
+                .save(Mockito.any(EmployeeExperience.class));
+
     }
 
-    private static Position getPosition() {
+    @Test
+    void givenStartDateBeforeLastExperienceStartDate_whenCreate_thenAllowOrThrowDependingOnRule() {
 
-        return Position.builder()
-                .id(11L)
-                .name("Test")
-                .department(Department.builder()
-                        .id(1L)
-                        .name("TestDepartment")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("TestSystem")
-                        .build())
-                .status(PositionStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
+        //Given
+        Long employeeId = 101L;
+        Long positionId = 11L;
+
+        //Initialize
+        Employee employee = getEmployee();
+        Position position = getPosition();
+
+        LocalDate newStartDate = LocalDate.of(2020, 1, 1);
+        LocalDate lastStartDate = LocalDate.of(2023, 1, 1);
+
+        EmployeeExperience lastExperience = getEmployeeExperience2();
+        lastExperience.setStartDate(lastStartDate);
+
+        EmployeeExperienceCreateRequest request = EmployeeExperienceCreateRequest.builder()
+                .salary(BigDecimal.valueOf(10000))
+                .positionId(positionId)
+                .startDate(newStartDate)
                 .build();
-    }
 
-    private static Position getPosition2() {
+        //When
+        Mockito.when(employeeReadPort.findById(employeeId))
+                .thenReturn(Optional.of(employee));
+        Mockito.when(positionReadPort.findById(positionId))
+                .thenReturn(Optional.of(position));
+        Mockito.when(employeeExperienceReadPort
+                        .existsByEmployeeIdAndPositionIdAndStartDate(employeeId, positionId, newStartDate))
+                .thenReturn(false);
+        Mockito.when(employeeExperienceReadPort.findTopByEmployeeIdOrderByStartDateDesc(employeeId))
+                .thenReturn(Optional.of(lastExperience));
 
-        return Position.builder()
-                .id(12L)
-                .name("TestPosition2")
-                .department(Department.builder()
-                        .id(1L)
-                        .name("TestDepartment2")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("TestSystem")
-                        .build())
-                .status(PositionStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
+        //Then
+        employeeExperienceWriteServiceImpl.create(employeeId, request);
+
+        //Verify
+        Mockito.verify(employeeExperienceSavePort, Mockito.times(2))
+                .save(Mockito.any());
+
     }
 
 }

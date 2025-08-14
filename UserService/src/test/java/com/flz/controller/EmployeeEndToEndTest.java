@@ -89,17 +89,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .build();
         Employee savedEmployee = employeeSavePort.save(employee);
 
-        Position position = Position.builder()
-                .id(10L)
-                .name("Developer")
-                .build();
-
-        Position position2 = Position.builder()
-                .id(11L)
-                .name("Team Leader")
-                .build();
-
-        Employee supervisor = Employee.builder()
+        Employee manager = employeeSavePort.save(Employee.builder()
                 .id(5L)
                 .identityNumber("98765432109")
                 .firstName("Eric")
@@ -108,6 +98,24 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .nationality("USA")
                 .address("New York")
                 .phoneNumber("05328529674")
+                .build());
+
+        Department department = Department.builder()
+                .status(DepartmentStatus.ACTIVE)
+                .name("Department 1")
+                .manager(manager)
+                .build();
+
+        Position position = Position.builder()
+                .id(10L)
+                .name("Developer")
+                .department(department)
+                .build();
+
+        Position position2 = Position.builder()
+                .id(11L)
+                .name("Team Leader")
+                .department(department)
                 .build();
 
         EmployeeExperience employeeExperience = EmployeeExperience.builder()
@@ -116,7 +124,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .endDate(LocalDate.parse("2001-10-31"))
                 .position(position)
                 .employee(savedEmployee)
-                .supervisor(supervisor)
                 .build();
         employeeExperienceSavePort.save(employeeExperience);
 
@@ -125,7 +132,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .startDate(LocalDate.parse("2002-10-01"))
                 .position(position2)
                 .employee(savedEmployee)
-                .supervisor(supervisor)
                 .build();
         employeeExperienceSavePort.save(employeeExperience2);
 
@@ -179,11 +185,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                         .value(10))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].positionName")
                         .value("Konsiyerj"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].supervisorId")
-                        .value(5))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].supervisorName")
-                        .value("Mustafa Şahin"))
-
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].salary")
                         .value(20000.00))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].startDate")
@@ -193,11 +194,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].positionId")
                         .value(11))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].positionName")
-                        .value("Kat Görevlisi"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].supervisorId")
-                        .value(5))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].supervisorName")
-                        .value("Mustafa Şahin"));
+                        .value("Kat Görevlisi"));
 
         //Verify
         Employee employeeFromDatabase = employeeReadPort.findById(employeeId)
@@ -218,12 +215,9 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getId());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getStartDate());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getEndDate());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getPositionId());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getSupervisorName());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getStartDate());
         Assertions.assertNull(employeeDetailsResponse.getExperiences().get(1).getEndDate());
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getPositionName());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getSupervisorName());
         Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeFromDatabase.getIdentityNumber());
         Assertions.assertEquals(savedEmployee.getEmail(), employeeFromDatabase.getEmail());
         Assertions.assertEquals(savedEmployee.getPhoneNumber(), employeeFromDatabase.getPhoneNumber());
@@ -335,7 +329,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .supervisorId(2L)
                 .startDate(LocalDate.parse("2025-10-01"))
                 .build();
 
@@ -455,9 +448,20 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .build();
         Employee savedEmployee = employeeSavePort.save(employee);
 
+        Employee manager = employeeSavePort.save(Employee.builder()
+                .identityNumber("91265532109")
+                .firstName("Emma")
+                .lastName("Sawyer")
+                .gender(Gender.FEMALE)
+                .nationality("USA")
+                .address("New York")
+                .phoneNumber("05328521174")
+                .build());
+
         Department department = departmentTestPort.save(
                 Department.builder()
                         .name("Siber Security")
+                        .manager(manager)
                         .status(DepartmentStatus.ACTIVE)
                         .build());
 
@@ -473,35 +477,12 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .status(PositionStatus.ACTIVE)
                 .build());
 
-        Employee supervisor = employeeSavePort.save(Employee.builder()
-                .identityNumber("99965432109")
-                .firstName("Nazli")
-                .lastName("Kenar")
-                .birthDate(LocalDate.of(1998, 4, 17))
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .address("Bursa")
-                .phoneNumber("05051229674")
-                .build());
-
-        Employee supervisor2 = employeeSavePort.save(Employee.builder()
-                .identityNumber("98765432999")
-                .firstName("Kamil")
-                .lastName("Kemal")
-                .birthDate(LocalDate.of(1998, 4, 17))
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .address("Edirne")
-                .phoneNumber("05058859674")
-                .build());
-
         EmployeeExperience employeeExperience = EmployeeExperience.builder()
                 .salary(BigDecimal.valueOf(10000))
                 .startDate(LocalDate.parse("2005-10-01"))
                 .endDate(LocalDate.parse("2007-10-20"))
                 .position(position)
                 .employee(savedEmployee)
-                .supervisor(supervisor)
                 .build();
         employeeExperienceSavePort.save(employeeExperience);
 
@@ -510,7 +491,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .startDate(LocalDate.parse("2007-10-30"))
                 .position(position2)
                 .employee(savedEmployee)
-                .supervisor(supervisor2)
                 .build();
         employeeExperienceSavePort.save(employeeExperience2);
 

@@ -43,26 +43,6 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
     private final EmployeeOldExperienceToEntityMapper
             employeeOldExperienceToEntityMapper = EmployeeOldExperienceToEntityMapper.INSTANCE;
 
-    //Initialize
-    private static EmployeeOldExperience getEmployeeOldExperience() {
-
-        Position position = getPosition();
-
-        EmployeeOld employeeOld = getEmployeeOld();
-
-        Employee supervisor = getSupervisor();
-
-        return EmployeeOldExperience.builder()
-                .id(1L)
-                .salary(BigDecimal.valueOf(65000))
-                .startDate(LocalDate.of(2020, 1, 15))
-                .endDate(LocalDate.of(2022, 11, 17))
-                .position(position)
-                .employeeOld(employeeOld)
-                .supervisor(supervisor)
-                .build();
-    }
-
 
     @Test
     void givenValidId_whenEmployeeOldExperienceEntityNotFoundById_returnEmptyList() {
@@ -147,6 +127,105 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
 
     }
 
+    //Initialize
+    private static EmployeeOldExperience getEmployeeOldExperience2() {
+
+        Position position = getPosition2();
+
+        EmployeeOld employeeOld = getEmployeeOld();
+
+        return EmployeeOldExperience.builder()
+                .id(2L)
+                .salary(BigDecimal.valueOf(85000))
+                .startDate(LocalDate.of(2022, 12, 15))
+                .endDate(LocalDate.of(2023, 12, 18))
+                .position(position)
+                .employeeOld(employeeOld)
+                .build();
+    }
+
+    private static Position getPosition() {
+
+        return Position.builder()
+                .id(5L)
+                .name("Test")
+                .department(Department.builder()
+                        .id(1L)
+                        .name("TestDepartment")
+                        .manager(getManager2())
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Position getPosition2() {
+
+        return Position.builder()
+                .id(8L)
+                .name("TestPosition")
+                .department(Department.builder()
+                        .id(5L)
+                        .name("Test")
+                        .manager(getManager())
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Employee getManager2() {
+
+        return Employee.builder()
+                .id(201L)
+                .firstName("Jane")
+                .lastName("Smith")
+                .identityNumber("987654321478")
+                .email("jane.smith@example.com")
+                .phoneNumber("05053213232")
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+    }
+
+    private static Employee getManager() {
+
+        return Employee.builder()
+                .id(205L)
+                .firstName("Joe")
+                .lastName("Smith")
+                .identityNumber("111654321478")
+                .email("joe.smith@example.com")
+                .phoneNumber("05323213232")
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+    }
+
+    private static EmployeeOldExperience getEmployeeOldExperience() {
+
+        Position position = getPosition();
+
+        EmployeeOld employeeOld = getEmployeeOld();
+
+        return EmployeeOldExperience.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(65000))
+                .startDate(LocalDate.of(2020, 1, 15))
+                .endDate(LocalDate.of(2022, 11, 17))
+                .position(position)
+                .employeeOld(employeeOld)
+                .build();
+    }
+
     /**
      * {@link EmployeeOldExperienceAdapter#findAllByEmployeeOldId(Long)}
      */
@@ -157,12 +236,24 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
         Long mockId = 101L;
 
         //Initialize
+        EmployeeEntity manager = EmployeeEntity.builder()
+                .id(217L)
+                .firstName("Daniel")
+                .lastName("Doe")
+                .identityNumber("98888821478")
+                .email("danieldd@example.com")
+                .phoneNumber("05463221232")
+                .gender(Gender.MALE)
+                .nationality("Brazil")
+                .build();
+
         PositionEntity position = PositionEntity.builder()
                 .id(mockId)
                 .name("Test")
                 .department(DepartmentEntity.builder()
                         .id(1L)
                         .name("TestDepartment")
+                        .manager(manager)
                         .status(DepartmentStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
                         .createdBy("TestSystem")
@@ -183,18 +274,6 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
                 .nationality("USA")
                 .build();
 
-        EmployeeEntity supervisor = EmployeeEntity.builder()
-                .id(201L)
-                .firstName("Jane")
-                .lastName("Smith")
-                .identityNumber("987654321478")
-                .email("jane.smith@example.com")
-                .phoneNumber("05053213232")
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .gender(Gender.FEMALE)
-                .build();
-
         List<EmployeeOldExperienceEntity> mockEmployeeOldExperienceEntities = List.of(
                 EmployeeOldExperienceEntity.builder()
                         .id(1L)
@@ -203,7 +282,6 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
                         .endDate(LocalDate.of(2023, 12, 31))
                         .position(position)
                         .employeeOld(employee)
-                        .supervisor(supervisor)
                         .build(),
                 EmployeeOldExperienceEntity.builder()
                         .id(1L)
@@ -212,7 +290,6 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
                         .endDate(LocalDate.of(2025, 1, 31))
                         .position(position)
                         .employeeOld(employee)
-                        .supervisor(supervisor)
                         .build());
 
         //When
@@ -229,8 +306,6 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
         Assertions.assertNotNull(mockEmployeeOldExperiences);
         Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
                 .getEmployeeOld());
-        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
-                .getSupervisor());
         Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
                 .getPosition());
         Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
@@ -254,89 +329,6 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
         Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
                 .findAllByEmployeeOld_Id(Mockito.anyLong());
 
-    }
-
-    private static EmployeeOldExperience getEmployeeOldExperience2() {
-
-        Position position = getPosition2();
-
-        EmployeeOld employeeOld = getEmployeeOld();
-
-        Employee supervisor = getSupervisor2();
-
-        return EmployeeOldExperience.builder()
-                .id(2L)
-                .salary(BigDecimal.valueOf(85000))
-                .startDate(LocalDate.of(2022, 12, 15))
-                .endDate(LocalDate.of(2023, 12, 18))
-                .position(position)
-                .employeeOld(employeeOld)
-                .supervisor(supervisor)
-                .build();
-    }
-
-    private static Position getPosition() {
-
-        return Position.builder()
-                .id(5L)
-                .name("Test")
-                .department(Department.builder()
-                        .id(1L)
-                        .name("TestDepartment")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("TestSystem")
-                        .build())
-                .status(PositionStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
-
-    private static Position getPosition2() {
-
-        return Position.builder()
-                .id(8L)
-                .name("TestPosition")
-                .department(Department.builder()
-                        .id(5L)
-                        .name("Test")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("TestSystem")
-                        .build())
-                .status(PositionStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
-
-    private static Employee getSupervisor() {
-
-        return Employee.builder()
-                .id(201L)
-                .firstName("Jane")
-                .lastName("Smith")
-                .identityNumber("987654321478")
-                .email("jane.smith@example.com")
-                .phoneNumber("05053213232")
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .build();
-    }
-
-    private static Employee getSupervisor2() {
-
-        return Employee.builder()
-                .id(205L)
-                .firstName("Joe")
-                .lastName("Smith")
-                .identityNumber("111654321478")
-                .email("joe.smith@example.com")
-                .phoneNumber("05323213232")
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .build();
     }
 
     private static EmployeeOld getEmployeeOld() {

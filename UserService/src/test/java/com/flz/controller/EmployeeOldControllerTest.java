@@ -35,49 +35,6 @@ class EmployeeOldControllerTest extends BaseTest {
 
     private static final String BASE_PATH = "/api/v1";
 
-    //Initialize
-    private static List<EmployeeOld> getEmployeeOlds() {
-        return List.of(
-                EmployeeOld.builder()
-                        .id(1L)
-                        .firstName("test first name 1")
-                        .lastName("test last name 1")
-                        .address("test address 1")
-                        .birthDate(LocalDate.parse("2000-01-01"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test1@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321456")
-                        .build(),
-                EmployeeOld.builder()
-                        .id(2L)
-                        .firstName("test first name 2")
-                        .lastName("test last name 2 ")
-                        .address("test address 2")
-                        .birthDate(LocalDate.parse("2000-02-02"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test2@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321465")
-                        .build(),
-                EmployeeOld.builder()
-                        .id(3L)
-                        .firstName("test first name 3")
-                        .lastName("test last name 3")
-                        .address("test address 3")
-                        .birthDate(LocalDate.parse("2000-03-03"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test3@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321499")
-                        .build());
-    }
 
     /**
      * {@link EmployeeOldController#findById(Long)} ()}
@@ -139,8 +96,6 @@ class EmployeeOldControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].id")
                         .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].positionName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].supervisorName")
                         .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
@@ -341,6 +296,50 @@ class EmployeeOldControllerTest extends BaseTest {
 
     }
 
+    //Initialize
+    private static List<EmployeeOld> getEmployeeOlds() {
+        return List.of(
+                EmployeeOld.builder()
+                        .id(1L)
+                        .firstName("test first name 1")
+                        .lastName("test last name 1")
+                        .address("test address 1")
+                        .birthDate(LocalDate.parse("2000-01-01"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test1@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321456")
+                        .build(),
+                EmployeeOld.builder()
+                        .id(2L)
+                        .firstName("test first name 2")
+                        .lastName("test last name 2 ")
+                        .address("test address 2")
+                        .birthDate(LocalDate.parse("2000-02-02"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test2@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321465")
+                        .build(),
+                EmployeeOld.builder()
+                        .id(3L)
+                        .firstName("test first name 3")
+                        .lastName("test last name 3")
+                        .address("test address 3")
+                        .birthDate(LocalDate.parse("2000-03-03"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test3@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321499")
+                        .build());
+    }
+
     private static EmployeeOld getEmployeeOld() {
         return EmployeeOld.builder()
                 .id(1L)
@@ -368,7 +367,7 @@ class EmployeeOldControllerTest extends BaseTest {
                         .plusMonths(6))
                 .positionName("Test position")
                 .departmentName("Test department")
-                .supervisorName("Supervisor name")
+                .managerName("Test Manager")
                 .build();
     }
 
