@@ -44,6 +44,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
     EmployeeToEmployeeSummaryResponseMapper
             employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
 
+
     //Initialize
     private static List<Employee> getEmployees() {
         return List.of(
@@ -86,6 +87,28 @@ class EmployeeReadServiceImplTest extends BaseTest {
                         .nationality("TC")
                         .phoneNumber("05465321499")
                         .build());
+    }
+
+    @Test
+    void givenInvalidEmployeeId_whenFindByIdEmployee_thenThrowEmployeeNotFoundException() {
+
+        //Given
+        Long invalidEmployeeId = 999L;
+
+        //When
+        Mockito.when(employeeReadPort.findById(invalidEmployeeId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(EmployeeNotFoundException.class,
+                () -> employeeReadServiceImpl.findById(invalidEmployeeId));
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(invalidEmployeeId);
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
+                .findAllByEmployeeId(invalidEmployeeId);
+
     }
 
     /**
@@ -195,39 +218,25 @@ class EmployeeReadServiceImplTest extends BaseTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(mockEmployee, response.getEmployee());
-        Assertions.assertEquals(2, response.getExperiences()
-                .size());
-        Assertions.assertEquals("Kat Sorumlusu", response.getExperiences()
-                .get(0)
-                .getPositionName());
+        Assertions.assertEquals(2, response.getExperiences().size());
+        Assertions.assertEquals(empExp1.getPosition().getName(), response.getExperiences().get(0).getPositionName());
+        Assertions.assertEquals(empExp2.getPosition().getName(), response.getExperiences().get(1).getPositionName());
+        Assertions.assertEquals(empExp1.getPosition().getDepartment().getName(), response.getExperiences().get(0).getDepartmentName());
+        Assertions.assertEquals(empExp2.getPosition().getDepartment().getName(), response.getExperiences().get(1).getDepartmentName());
+        Assertions.assertNotNull(empExp1.getPosition().getDepartment().getManager().getFirstName());
+        Assertions.assertNotNull(empExp1.getPosition().getDepartment().getManager().getLastName());
+        Assertions.assertNotNull(empExp2.getPosition().getDepartment().getManager().getFirstName());
+        Assertions.assertNotNull(empExp2.getPosition().getDepartment().getManager().getLastName());
+        Assertions.assertNotNull(response.getExperiences().get(0).getSalary());
+        Assertions.assertNotNull(response.getExperiences().get(1).getSalary());
+        Assertions.assertNotNull(response.getExperiences().get(0).getStartDate());
+        Assertions.assertNotNull(response.getExperiences().get(1).getStartDate());
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(mockId);
         Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
                 .findAllByEmployeeId(mockId);
-
-    }
-
-    @Test
-    void givenInvalidEmployeeId_whenFindByIdEmployee_thenThrowEmployeeNotFoundException() {
-
-        //Given
-        Long invalidEmployeeId = 999L;
-
-        //When
-        Mockito.when(employeeReadPort.findById(invalidEmployeeId))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Assertions.assertThrows(EmployeeNotFoundException.class,
-                () -> employeeReadServiceImpl.findById(invalidEmployeeId));
-
-        //Verify
-        Mockito.verify(employeeReadPort, Mockito.times(1))
-                .findById(invalidEmployeeId);
-        Mockito.verify(employeeExperienceReadPort, Mockito.never())
-                .findAllByEmployeeId(invalidEmployeeId);
 
     }
 
@@ -352,7 +361,15 @@ class EmployeeReadServiceImplTest extends BaseTest {
         //Then
         List<Employee> result = employeeReadServiceImpl
                 .findAll(mockPage, mockPageSize);
+
+        Assertions.assertNotNull(result);
         Assertions.assertEquals(mockEmployees.size(), result.size());
+        Assertions.assertEquals(mockEmployees.get(0).getId(), result.get(0).getId());
+        Assertions.assertEquals(mockEmployees.get(0).getFirstName(), result.get(0).getFirstName());
+        Assertions.assertEquals(mockEmployees.get(0).getLastName(), result.get(0).getLastName());
+        Assertions.assertEquals(mockEmployees.get(0).getGender(), result.get(0).getGender());
+        Assertions.assertEquals(mockEmployees.get(0).getNationality(), result.get(0).getNationality());
+        Assertions.assertEquals(mockEmployees.get(0).getAddress(), result.get(0).getAddress());
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
