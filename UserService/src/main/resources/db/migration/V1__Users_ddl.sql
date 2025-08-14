@@ -1,15 +1,3 @@
-create table if not exists ru_department
-    (
-        id         bigint generated always as identity primary key,
-        name       varchar(100) not null unique,
-        status     varchar(25)  not null default 'ACTIVE',
-        manager_id bigint       not null references ru_employee (id),
-        created_at timestamp(0) not null default current_timestamp,
-        created_by varchar(120) not null,
-        updated_at timestamp(0),
-        updated_by varchar(120)
-    );
-
 create table if not exists ru_employee
     (
         id              bigint generated always as identity primary key,
@@ -45,6 +33,18 @@ create table if not exists ru_employee_old
         updated_at      timestamp(0),
         updated_by      varchar(120)
     );
+
+create table if not exists ru_department
+(
+    id         bigint generated always as identity primary key,
+    name       varchar(100) not null unique,
+    status     varchar(25)  not null default 'ACTIVE',
+    manager_id bigint       not null references ru_employee (id),
+    created_at timestamp(0) not null default current_timestamp,
+    created_by varchar(120) not null,
+    updated_at timestamp(0),
+    updated_by varchar(120)
+);
 
 create table if not exists ru_position
     (

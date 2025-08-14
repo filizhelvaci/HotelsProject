@@ -1,34 +1,3 @@
--- --------------------------------------------------------------------
--- DML for Department Data
--- --------------------------------------------------------------------
-insert into ru_department (name, status, manager_id, created_by)
-values ('On Buro', 'ACTIVE', 1, 'Admin');
-
-insert into ru_department (name, status, manager_id, created_by)
-values ('Kat Hizmetleri', 'ACTIVE', 2, 'Admin');
-
-insert into ru_department (name, status, manager_id, created_by)
-values ('Yiyecek ve Icecek', 'ACTIVE', 3, 'Admin');
-
-insert into ru_department (name, status, manager_id, created_by)
-values ('Satis ve Pazarlama', 'ACTIVE', 4, 'Admin');
-
-insert into ru_department (name, status, manager_id, created_by)
-values ('Muhasebe', 'ACTIVE', 5, 'Admin');
-
-insert into ru_department (name, status, manager_id, created_by)
-values ('Insan Kaynaklari', 'ACTIVE', 6, 'Admin');
-
-insert into ru_department (name, status, manager_id, created_by)
-values ('Guvenlik', 'ACTIVE', 7, 'Admin');
-
-insert into ru_department (name, status, manager_id, created_by)
-values ('Teknik Servis', 'ACTIVE', 8, 'Admin');
-
-insert into ru_department (name, status, manager_id, created_by)
-values ('Yonetim', 'ACTIVE', 9, 'Admin');
-
-
 -- ----------------------------------------------------------------------
 -- DML for Employee Data
 -- ----------------------------------------------------------------------
@@ -215,6 +184,37 @@ insert into ru_employee_old (first_name, last_name, identity_number, email, phon
 values ('Murat', 'Şen', '17181920212', 'murat.sen@gmail.com',
         '5351718192', '5455 Kış Cd., Van', '1976-12-14', 'MALE',
         'Turkish', 'admin');
+
+
+-- --------------------------------------------------------------------
+-- DML for Department Data
+-- --------------------------------------------------------------------
+insert into ru_department (name, status, manager_id, created_by)
+values ('On Buro', 'ACTIVE', 15, 'Admin');
+
+insert into ru_department (name, status, manager_id, created_by)
+values ('Kat Hizmetleri', 'ACTIVE', 2, 'Admin');
+
+insert into ru_department (name, status, manager_id, created_by)
+values ('Yiyecek ve Icecek', 'ACTIVE', 3, 'Admin');
+
+insert into ru_department (name, status, manager_id, created_by)
+values ('Satis ve Pazarlama', 'ACTIVE', 4, 'Admin');
+
+insert into ru_department (name, status, manager_id, created_by)
+values ('Muhasebe', 'ACTIVE', 5, 'Admin');
+
+insert into ru_department (name, status, manager_id, created_by)
+values ('Insan Kaynaklari', 'ACTIVE', 6, 'Admin');
+
+insert into ru_department (name, status, manager_id, created_by)
+values ('Guvenlik', 'ACTIVE', 7, 'Admin');
+
+insert into ru_department (name, status, manager_id, created_by)
+values ('Teknik Servis', 'ACTIVE', 8, 'Admin');
+
+insert into ru_department (name, status, manager_id, created_by)
+values ('Yonetim', 'ACTIVE', 9, 'Admin');
 
 
 -- --------------------------------------------------------------------
