@@ -3,6 +3,7 @@ package com.flz.service.impl;
 import com.flz.exception.EmployeeAlreadyExistsException;
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.exception.PositionNotFoundException;
+import com.flz.model.Department;
 import com.flz.model.Employee;
 import com.flz.model.EmployeeExperience;
 import com.flz.model.EmployeeOld;
@@ -13,6 +14,8 @@ import com.flz.model.mapper.EmployeeExperienceToEmployeeOldExperienceMapper;
 import com.flz.model.mapper.EmployeeToEmployeeOldMapper;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
+import com.flz.port.DepartmentReadPort;
+import com.flz.port.DepartmentSavePort;
 import com.flz.port.EmployeeDeletePort;
 import com.flz.port.EmployeeExperienceDeletePort;
 import com.flz.port.EmployeeExperienceReadPort;
@@ -40,6 +43,8 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
     private final EmployeeSavePort employeeSavePort;
     private final EmployeeDeletePort employeeDeletePort;
     private final PositionReadPort positionReadPort;
+    private final DepartmentReadPort departmentReadPort;
+    private final DepartmentSavePort departmentSavePort;
     private final EmployeeExperienceSavePort employeeExperienceSavePort;
     private final EmployeeExperienceReadPort employeeExperienceReadPort;
     private final EmployeeExperienceDeletePort employeeExperienceDeletePort;
@@ -145,6 +150,11 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
 
         EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee));
 
+        boolean isManager = departmentReadPort.existsByManagerId(id);
+        if (isManager) {
+            changeManager(id);
+        }
+
         List<EmployeeExperience> experiences = Optional.ofNullable(
                         employeeExperienceReadPort.findAllByEmployeeId(id))
                 .orElse(Collections.emptyList());
@@ -170,6 +180,16 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         employeeOldExperienceSavePort.saveAll(oldExperiences);
         employeeExperienceDeletePort.deleteAllByEmployeeId(id);
         employeeDeletePort.delete(id);
+    }
+
+    private void changeManager(Long id) {
+
+        Department department = departmentReadPort.findByManagerId(id);
+        Long newManagerId = 9L;
+        Optional<Employee> newManager = employeeReadPort.findById(newManagerId);
+        department.setManager(newManager.orElseThrow(
+                () -> new EmployeeNotFoundException(newManagerId)));
+        departmentSavePort.save(department);
     }
 
 }
