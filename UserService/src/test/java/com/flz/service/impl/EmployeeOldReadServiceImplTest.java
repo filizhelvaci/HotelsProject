@@ -41,8 +41,6 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
     @InjectMocks
     EmployeeOldReadServiceImpl employeeOldReadServiceImpl;
 
-
-    //Initialize
     private static List<EmployeeOld> getEmployeeOlds() {
         return List.of(
                 EmployeeOld.builder()
@@ -235,29 +233,48 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
 
     }
 
-
     @Test
-    void givenValidPagePageSize_whenCalledAllEmployeeOldIfAllEmployeeOldIsEmpty_thenReturnEmptyList() {
+    void givenValidEmployeeId_whenFindByIdEmployeeOldWithEmptyEmployeeExperienceList_thenReturnSuccessfully() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        Long mockId = 1L;
+
+        //Initialize
+        EmployeeOld mockEmployeeOld = EmployeeOld.builder()
+                .id(mockId)
+                .firstName("Filiz")
+                .lastName("Helvaci")
+                .identityNumber("12345678901")
+                .phoneNumber("05551231212")
+                .address("Ankara")
+                .email("filiz@example.com")
+                .gender(Gender.FEMALE)
+                .birthDate(LocalDate.of(1995, 1, 1))
+                .nationality("TR")
+                .build();
+
+        List<EmployeeOldExperience> mockExperienceList = Collections.emptyList();
 
         //When
-        Mockito.when(employeeOldReadPort.findAll(mockPage, mockPageSize))
-                .thenReturn(Collections.emptyList());
+        Mockito.when(employeeOldReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockEmployeeOld));
+
+        Mockito.when(employeeOldExperienceReadPort.findAllByEmployeeOldId(mockId))
+                .thenReturn(mockExperienceList);
 
         //Then
-        List<EmployeeOld> result = employeeOldReadServiceImpl
-                .findAll(mockPage, mockPageSize);
+        EmployeeOldDetailsResponse response = employeeOldReadServiceImpl.findById(mockId);
 
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(0, result.size());
-        Assertions.assertTrue(result.isEmpty());
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(mockEmployeeOld, response.getEmployeeOld());
+        Assertions.assertEquals(0, response.getExperiences()
+                .size());
 
         //Verify
         Mockito.verify(employeeOldReadPort, Mockito.times(1))
-                .findAll(mockPage, mockPageSize);
+                .findById(mockId);
+        Mockito.verify(employeeOldExperienceReadPort, Mockito.times(1))
+                .findAllByEmployeeOldId(mockId);
 
     }
 
@@ -285,6 +302,31 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldReadPort, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
+    }
+
+    @Test
+    void givenValidPagePageSize_whenCalledAllEmployeeOldIfAllEmployeeOldIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        Mockito.when(employeeOldReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<EmployeeOld> result = employeeOldReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.size());
+        Assertions.assertTrue(result.isEmpty());
+
+        //Verify
+        Mockito.verify(employeeOldReadPort, Mockito.times(1))
+                .findAll(mockPage, mockPageSize);
 
     }
 
