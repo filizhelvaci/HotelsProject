@@ -45,72 +45,6 @@ class EmployeeReadServiceImplTest extends BaseTest {
             employeeToEmployeeSummaryResponseMapper = EmployeeToEmployeeSummaryResponseMapper.INSTANCE;
 
 
-    //Initialize
-    private static List<Employee> getEmployees() {
-        return List.of(
-                Employee.builder()
-                        .id(1L)
-                        .firstName("test first name 1")
-                        .lastName("test last name 1")
-                        .address("test address 1")
-                        .birthDate(LocalDate.parse("2000-01-01"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test1@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321456")
-                        .build(),
-                Employee.builder()
-                        .id(2L)
-                        .firstName("test first name 2")
-                        .lastName("test last name 2 ")
-                        .address("test address 2")
-                        .birthDate(LocalDate.parse("2000-02-02"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test2@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321465")
-                        .build(),
-                Employee.builder()
-                        .id(3L)
-                        .firstName("test first name 3")
-                        .lastName("test last name 3")
-                        .address("test address 3")
-                        .birthDate(LocalDate.parse("2000-03-03"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test3@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321499")
-                        .build());
-    }
-
-    @Test
-    void givenInvalidEmployeeId_whenFindByIdEmployee_thenThrowEmployeeNotFoundException() {
-
-        //Given
-        Long invalidEmployeeId = 999L;
-
-        //When
-        Mockito.when(employeeReadPort.findById(invalidEmployeeId))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Assertions.assertThrows(EmployeeNotFoundException.class,
-                () -> employeeReadServiceImpl.findById(invalidEmployeeId));
-
-        //Verify
-        Mockito.verify(employeeReadPort, Mockito.times(1))
-                .findById(invalidEmployeeId);
-        Mockito.verify(employeeExperienceReadPort, Mockito.never())
-                .findAllByEmployeeId(invalidEmployeeId);
-
-    }
-
     /**
      * {@link EmployeeReadServiceImpl#findById(Long)}
      */
@@ -241,26 +175,72 @@ class EmployeeReadServiceImplTest extends BaseTest {
     }
 
 
+    //Initialize
+    private static List<Employee> getEmployees() {
+        return List.of(
+                Employee.builder()
+                        .id(1L)
+                        .firstName("test first name 1")
+                        .lastName("test last name 1")
+                        .address("test address 1")
+                        .birthDate(LocalDate.parse("2000-01-01"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test1@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321456")
+                        .build(),
+                Employee.builder()
+                        .id(2L)
+                        .firstName("test first name 2")
+                        .lastName("test last name 2 ")
+                        .address("test address 2")
+                        .birthDate(LocalDate.parse("2000-02-02"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test2@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321465")
+                        .build(),
+                Employee.builder()
+                        .id(3L)
+                        .firstName("test first name 3")
+                        .lastName("test last name 3")
+                        .address("test address 3")
+                        .birthDate(LocalDate.parse("2000-03-03"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test3@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321499")
+                        .build());
+    }
+
     @Test
-    void whenCalledAllSummaryEmployeeIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
+    void givenInvalidEmployeeId_whenFindByIdEmployee_thenThrowEmployeeNotFoundException() {
+
+        //Given
+        Long invalidEmployeeId = 999L;
 
         //When
-        Mockito.when(employeeReadPort.findSummaryAll())
-                .thenReturn(Collections.emptyList());
+        Mockito.when(employeeReadPort.findById(invalidEmployeeId))
+                .thenReturn(Optional.empty());
 
         //Then
-        List<EmployeeSummaryResponse> employeeSummaryResponses =
-                employeeReadServiceImpl.findSummaryAll();
-
-        Assertions.assertNotNull(employeeReadPort);
-        Assertions.assertEquals(0, employeeSummaryResponses.size());
-        Assertions.assertTrue(employeeSummaryResponses.isEmpty());
+        Assertions.assertThrows(EmployeeNotFoundException.class,
+                () -> employeeReadServiceImpl.findById(invalidEmployeeId));
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
-                .findSummaryAll();
+                .findById(invalidEmployeeId);
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
+                .findAllByEmployeeId(invalidEmployeeId);
 
     }
+
 
     /**
      * {@link EmployeeReadServiceImpl#findSummaryAll()}
@@ -316,29 +296,47 @@ class EmployeeReadServiceImplTest extends BaseTest {
 
     }
 
-
     @Test
-    void givenValidPagePageSize_whenCalledAllEmployeeIfAllEmployeeIsEmpty_thenReturnEmptyList() {
+    void givenValidEmployeeId_whenFindByIdEmployeeWithEmptyEmployeeExperienceList_thenReturnEmployeeDetailsResponseSuccessfully() {
 
         //Given
-        Integer mockPage = 1;
-        Integer mockPageSize = 10;
+        Long mockId = 1L;
+
+        //Initialize
+        Employee mockEmployee = Employee.builder()
+                .id(mockId)
+                .firstName("Filiz")
+                .lastName("Helvaci")
+                .identityNumber("12345678901")
+                .phoneNumber("05551231212")
+                .address("Ankara")
+                .email("filiz@example.com")
+                .gender(Gender.FEMALE)
+                .birthDate(LocalDate.of(1995, 1, 1))
+                .nationality("TR")
+                .build();
+
+        List<EmployeeExperience> mockExperienceList = Collections.emptyList();
 
         //When
-        Mockito.when(employeeReadPort.findAll(mockPage, mockPageSize))
-                .thenReturn(Collections.emptyList());
+        Mockito.when(employeeReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockEmployee));
+
+        Mockito.when(employeeExperienceReadPort.findAllByEmployeeId(mockId))
+                .thenReturn(mockExperienceList);
 
         //Then
-        List<Employee> result = employeeReadServiceImpl
-                .findAll(mockPage, mockPageSize);
+        EmployeeDetailsResponse response = employeeReadServiceImpl.findById(mockId);
 
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(0, result.size());
-        Assertions.assertTrue(result.isEmpty());
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(mockEmployee, response.getEmployee());
+        Assertions.assertEquals(0, response.getExperiences().size());
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
-                .findAll(mockPage, mockPageSize);
+                .findById(mockId);
+        Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
+                .findAllByEmployeeId(mockId);
 
     }
 
@@ -374,6 +372,52 @@ class EmployeeReadServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
+
+    }
+
+    @Test
+    void whenCalledAllSummaryEmployeeIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
+
+        //When
+        Mockito.when(employeeReadPort.findSummaryAll())
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<EmployeeSummaryResponse> employeeSummaryResponses =
+                employeeReadServiceImpl.findSummaryAll();
+
+        Assertions.assertNotNull(employeeReadPort);
+        Assertions.assertEquals(0, employeeSummaryResponses.size());
+        Assertions.assertTrue(employeeSummaryResponses.isEmpty());
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findSummaryAll();
+
+    }
+
+    @Test
+    void givenValidPagePageSize_whenCalledAllEmployeeIfAllEmployeeIsEmpty_thenReturnEmptyList() {
+
+        //Given
+        Integer mockPage = 1;
+        Integer mockPageSize = 10;
+
+        //When
+        Mockito.when(employeeReadPort.findAll(mockPage, mockPageSize))
+                .thenReturn(Collections.emptyList());
+
+        //Then
+        List<Employee> result = employeeReadServiceImpl
+                .findAll(mockPage, mockPageSize);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.size());
+        Assertions.assertTrue(result.isEmpty());
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findAll(mockPage, mockPageSize);
 
     }
 
