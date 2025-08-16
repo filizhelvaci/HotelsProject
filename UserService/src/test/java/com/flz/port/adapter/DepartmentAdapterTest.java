@@ -36,81 +36,6 @@ class DepartmentAdapterTest extends BaseTest {
     private final DepartmentEntityToDomainMapper
             departmentEntityToDomainMapper = DepartmentEntityToDomainMapper.INSTANCE;
 
-    private static DepartmentEntity getDepartment(Long mockId) {
-        EmployeeEntity manager = getManager1();
-
-        return DepartmentEntity.builder()
-                .id(mockId)
-                .name("Test")
-                .manager(manager)
-                .status(DepartmentStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
-
-    private static EmployeeEntity getManager1() {
-        return EmployeeEntity.builder()
-                .id(1L)
-                .firstName("test first name 1")
-                .lastName("test last name 1")
-                .address("test address 1")
-                .birthDate(LocalDate.parse("2000-01-01"))
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .email("test1@gmail.com")
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .phoneNumber("05465321456")
-                .build();
-    }
-
-    private static EmployeeEntity getManager2() {
-        return EmployeeEntity.builder()
-                .id(2L)
-                .firstName("test first name 2")
-                .lastName("test last name 2 ")
-                .address("test address 2")
-                .birthDate(LocalDate.parse("2000-02-02"))
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .email("test2@gmail.com")
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .phoneNumber("05465321465")
-                .build();
-    }
-
-    private static EmployeeEntity getManager3() {
-        return EmployeeEntity.builder()
-                .id(3L)
-                .firstName("test first name 3")
-                .lastName("test last name 3")
-                .address("test address 3")
-                .birthDate(LocalDate.parse("2000-03-03"))
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .email("test3@gmail.com")
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .phoneNumber("05465321499")
-                .build();
-    }
-
-    private static List<DepartmentEntity> getDepartmentEntities() {
-        EmployeeEntity manager1 = getManager1();
-        EmployeeEntity manager2 = getManager2();
-        EmployeeEntity manager3 = getManager3();
-
-        return List.of(
-                DepartmentEntity.builder().id(11L).name("TEST1").manager(manager1).status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now()).createdBy("testAdmin").build(),
-                DepartmentEntity.builder().id(12L).name("TEST2").manager(manager2).status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now()).createdBy("testAdmin").build(),
-                DepartmentEntity.builder().id(13L).name("TEST3").manager(manager3).status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now()).createdBy("testAdmin").build()
-        );
-    }
 
     /**
      * {@link DepartmentAdapter#findAll(Integer, Integer)}
@@ -450,6 +375,82 @@ class DepartmentAdapterTest extends BaseTest {
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .save(Mockito.any());
 
+    }
+
+    private static DepartmentEntity getDepartment(Long mockId) {
+        EmployeeEntity manager = getManager1();
+
+        return DepartmentEntity.builder()
+                .id(mockId)
+                .name("Test")
+                .manager(manager)
+                .status(DepartmentStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static EmployeeEntity getManager1() {
+        return EmployeeEntity.builder()
+                .id(1L)
+                .firstName("test first name 1")
+                .lastName("test last name 1")
+                .address("test address 1")
+                .birthDate(LocalDate.parse("2000-01-01"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test1@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321456")
+                .build();
+    }
+
+    private static EmployeeEntity getManager2() {
+        return EmployeeEntity.builder()
+                .id(2L)
+                .firstName("test first name 2")
+                .lastName("test last name 2 ")
+                .address("test address 2")
+                .birthDate(LocalDate.parse("2000-02-02"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test2@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321465")
+                .build();
+    }
+
+    private static EmployeeEntity getManager3() {
+        return EmployeeEntity.builder()
+                .id(3L)
+                .firstName("test first name 3")
+                .lastName("test last name 3")
+                .address("test address 3")
+                .birthDate(LocalDate.parse("2000-03-03"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test3@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321499")
+                .build();
+    }
+
+    private static List<DepartmentEntity> getDepartmentEntities() {
+        EmployeeEntity manager1 = getManager1();
+        EmployeeEntity manager2 = getManager2();
+        EmployeeEntity manager3 = getManager3();
+
+        return List.of(
+                DepartmentEntity.builder().id(11L).name("TEST1").manager(manager1).status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now()).createdBy("testAdmin").build(),
+                DepartmentEntity.builder().id(12L).name("TEST2").manager(manager2).status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now()).createdBy("testAdmin").build(),
+                DepartmentEntity.builder().id(13L).name("TEST3").manager(manager3).status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now()).createdBy("testAdmin").build()
+        );
     }
 
 }
