@@ -35,7 +35,7 @@ class EmployeeOldAdapterTest extends BaseTest {
     private final EmployeeOldToEntityMapper
             employeeOldToEntityMapper = EmployeeOldToEntityMapper.INSTANCE;
 
-    //Initialize
+
     private static EmployeeOld getEmployeeOld() {
         return EmployeeOld.builder()
                 .address("test address")
@@ -49,28 +49,6 @@ class EmployeeOldAdapterTest extends BaseTest {
                 .nationality("TC")
                 .phoneNumber("05465321456")
                 .build();
-    }
-
-
-    @Test
-    void givenValidId_whenEmployeeOldEntityNotFoundById_returnOptionalEmpty() {
-
-        //Given
-        Long mockId = 10L;
-
-        //When
-        Mockito.when(employeeOldRepository.findById(mockId))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Optional<EmployeeOld> result = employeeOldAdapter.findById(mockId);
-
-        Assertions.assertFalse(result.isPresent());
-
-        //Verify
-        Mockito.verify(employeeOldRepository, Mockito.times(1))
-                .findById(mockId);
-
     }
 
     /**
@@ -96,24 +74,16 @@ class EmployeeOldAdapterTest extends BaseTest {
 
         Assertions.assertNotNull(result);
         Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(mockId, result.get()
-                .getId());
-        Assertions.assertEquals(mockEmployeeOld.getId(),
-                result.get().getId());
+        Assertions.assertEquals(mockId, result.get().getId());
+        Assertions.assertEquals(mockEmployeeOld.getId(), result.get().getId());
         Assertions.assertEquals(mockEmployeeOld.getIdentityNumber(),
                 result.get().getIdentityNumber());
-        Assertions.assertEquals(mockEmployeeOld.getLastName(),
-                result.get().getLastName());
-        Assertions.assertNotNull(result.get()
-                .getId());
-        Assertions.assertNotNull(result.get()
-                .getFirstName());
-        Assertions.assertNotNull(result.get()
-                .getLastName());
-        Assertions.assertNotNull(result.get()
-                .getGender());
-        Assertions.assertNotNull(result.get()
-                .getBirthDate());
+        Assertions.assertEquals(mockEmployeeOld.getLastName(), result.get().getLastName());
+        Assertions.assertNotNull(result.get().getId());
+        Assertions.assertNotNull(result.get().getFirstName());
+        Assertions.assertNotNull(result.get().getLastName());
+        Assertions.assertNotNull(result.get().getGender());
+        Assertions.assertNotNull(result.get().getBirthDate());
 
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))
@@ -225,6 +195,27 @@ class EmployeeOldAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeOldRepository, Mockito.times(1))
                 .save(Mockito.any());
+
+    }
+
+    @Test
+    void givenValidId_whenEmployeeOldEntityNotFoundById_returnOptionalEmpty() {
+
+        //Given
+        Long mockId = 10L;
+
+        //When
+        Mockito.when(employeeOldRepository.findById(mockId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Optional<EmployeeOld> result = employeeOldAdapter.findById(mockId);
+
+        Assertions.assertFalse(result.isPresent());
+
+        //Verify
+        Mockito.verify(employeeOldRepository, Mockito.times(1))
+                .findById(mockId);
 
     }
 
