@@ -42,7 +42,7 @@ class EmployeeExperienceAdapterTest extends BaseTest {
     private final EmployeeExperienceToEntityMapper
             employeeExperienceToEntityMapper = EmployeeExperienceToEntityMapper.INSTANCE;
 
-    //Initialize
+
     private static EmployeeExperience getEmployeeExperience() {
         Long mockId = 101L;
 
@@ -314,6 +314,18 @@ class EmployeeExperienceAdapterTest extends BaseTest {
                         .id(1L)
                         .name("TestDepartment")
                         .status(DepartmentStatus.ACTIVE)
+                        .manager(EmployeeEntity.builder()
+                                .id(11L)
+                                .firstName("Jonny")
+                                .lastName("Deep")
+                                .identityNumber("999896314785")
+                                .email("jonnyd@example.com")
+                                .phoneNumber("05059966565")
+                                .address("Malatya")
+                                .birthDate(LocalDate.of(1985, 1, 15))
+                                .gender(Gender.MALE)
+                                .nationality("USA")
+                                .build())
                         .createdAt(LocalDateTime.now())
                         .createdBy("TestSystem")
                         .build())
@@ -363,26 +375,20 @@ class EmployeeExperienceAdapterTest extends BaseTest {
 
         Assertions.assertNotNull(result);
         Assertions.assertNotNull(mockEmployeeExperiences);
-        Assertions.assertNotNull(mockEmployeeExperiences.get(0)
-                .getEmployee());
-        Assertions.assertNotNull(mockEmployeeExperiences.get(0)
-                .getPosition());
-        Assertions.assertNotNull(mockEmployeeExperiences.get(0)
-                .getPosition().getId());
-        Assertions.assertNotNull(mockEmployeeExperiences.get(0)
-                .getPosition().getDepartment());
-        Assertions.assertNotNull(mockEmployeeExperiences.get(0)
-                .getPosition().getStatus());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getName());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getStatus());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getDepartment());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getDepartment().getName());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getDepartment().getStatus());
+        Assertions.assertNotNull(mockEmployeeExperiences.get(0).getEmployee());
+        Assertions.assertNotNull(mockEmployeeExperiences.get(0).getPosition());
+        Assertions.assertNotNull(mockEmployeeExperiences.get(0).getPosition().getId());
+        Assertions.assertNotNull(mockEmployeeExperiences.get(0).getPosition().getDepartment());
+        Assertions.assertNotNull(mockEmployeeExperiences.get(0).getPosition().getStatus());
+        Assertions.assertNotNull(result.get(0).getPosition().getName());
+        Assertions.assertNotNull(result.get(0).getPosition().getStatus());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment().getName());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment().getStatus());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment().getManager().getFirstName());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment().getManager().getLastName());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment().getManager().getIdentityNumber());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment().getManager().getPhoneNumber());
 
         //Verify
         Mockito.verify(employeeExperienceRepository, Mockito.times(1))
