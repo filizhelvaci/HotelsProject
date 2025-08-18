@@ -43,6 +43,101 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
     private final EmployeeOldExperienceToEntityMapper
             employeeOldExperienceToEntityMapper = EmployeeOldExperienceToEntityMapper.INSTANCE;
 
+    /**
+     * {@link EmployeeOldExperienceAdapter#findAllByEmployeeOldId(Long)}
+     */
+    @Test
+    void givenValidId_whenEmployeeOldExperienceListFoundAccordingById_thenReturnEmployeeOldExperienceList() {
+
+        //Given
+        Long mockId = 101L;
+
+        //Initialize
+        EmployeeEntity manager = EmployeeEntity.builder()
+                .id(217L)
+                .firstName("Daniel")
+                .lastName("Doe")
+                .identityNumber("98888821478")
+                .email("danieldd@example.com")
+                .phoneNumber("05463221232")
+                .gender(Gender.MALE)
+                .nationality("Brazil")
+                .build();
+
+        PositionEntity position = PositionEntity.builder()
+                .id(mockId)
+                .name("Test")
+                .department(DepartmentEntity.builder()
+                        .id(1L)
+                        .name("TestDepartment")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        EmployeeOldEntity employee = EmployeeOldEntity.builder()
+                .id(101L)
+                .firstName("John")
+                .lastName("Doe")
+                .identityNumber("25896314785")
+                .email("john.doe@example.com")
+                .phoneNumber("05456566565")
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .build();
+
+        List<EmployeeOldExperienceEntity> mockEmployeeOldExperienceEntities = List.of(
+                EmployeeOldExperienceEntity.builder()
+                        .id(1L)
+                        .salary(BigDecimal.valueOf(65000))
+                        .startDate(LocalDate.of(2020, 1, 15))
+                        .endDate(LocalDate.of(2023, 12, 31))
+                        .position(position)
+                        .employeeOld(employee)
+                        .build(),
+                EmployeeOldExperienceEntity.builder()
+                        .id(1L)
+                        .salary(BigDecimal.valueOf(85000))
+                        .startDate(LocalDate.of(2024, 1, 1))
+                        .endDate(LocalDate.of(2025, 1, 31))
+                        .position(position)
+                        .employeeOld(employee)
+                        .build());
+
+        //When
+        Mockito.when(employeeOldExperienceRepository.findAllByEmployeeOld_Id(mockId))
+                .thenReturn(mockEmployeeOldExperienceEntities);
+
+        List<EmployeeOldExperience> mockEmployeeOldExperiences =
+                employeeOldExperienceEntityToDomainMapper.map(mockEmployeeOldExperienceEntities);
+
+        //Then
+        List<EmployeeOldExperience> result = employeeOldExperienceAdapter.findAllByEmployeeOldId(mockId);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(mockEmployeeOldExperiences);
+        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0).getEmployeeOld());
+        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0).getPosition());
+        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0).getPosition().getId());
+        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0).getPosition().getDepartment());
+        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0).getPosition().getStatus());
+        Assertions.assertNotNull(result.get(0).getPosition().getName());
+        Assertions.assertNotNull(result.get(0).getPosition().getStatus());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment().getName());
+        Assertions.assertNotNull(result.get(0).getPosition().getDepartment().getStatus());
+
+        //Verify
+        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
+                .findAllByEmployeeOld_Id(Mockito.anyLong());
+
+    }
+
 
     @Test
     void givenValidId_whenEmployeeOldExperienceEntityNotFoundById_returnEmptyList() {
@@ -127,7 +222,7 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
 
     }
 
-    //Initialize
+
     private static EmployeeOldExperience getEmployeeOldExperience2() {
 
         Position position = getPosition2();
@@ -226,110 +321,7 @@ class EmployeeOldExperienceAdapterTest extends BaseTest {
                 .build();
     }
 
-    /**
-     * {@link EmployeeOldExperienceAdapter#findAllByEmployeeOldId(Long)}
-     */
-    @Test
-    void givenValidId_whenEmployeeOldExperienceListFoundAccordingById_thenReturnEmployeeOldExperienceList() {
 
-        //Given
-        Long mockId = 101L;
-
-        //Initialize
-        EmployeeEntity manager = EmployeeEntity.builder()
-                .id(217L)
-                .firstName("Daniel")
-                .lastName("Doe")
-                .identityNumber("98888821478")
-                .email("danieldd@example.com")
-                .phoneNumber("05463221232")
-                .gender(Gender.MALE)
-                .nationality("Brazil")
-                .build();
-
-        PositionEntity position = PositionEntity.builder()
-                .id(mockId)
-                .name("Test")
-                .department(DepartmentEntity.builder()
-                        .id(1L)
-                        .name("TestDepartment")
-                        .manager(manager)
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("TestSystem")
-                        .build())
-                .status(PositionStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        EmployeeOldEntity employee = EmployeeOldEntity.builder()
-                .id(101L)
-                .firstName("John")
-                .lastName("Doe")
-                .identityNumber("25896314785")
-                .email("john.doe@example.com")
-                .phoneNumber("05456566565")
-                .gender(Gender.MALE)
-                .nationality("USA")
-                .build();
-
-        List<EmployeeOldExperienceEntity> mockEmployeeOldExperienceEntities = List.of(
-                EmployeeOldExperienceEntity.builder()
-                        .id(1L)
-                        .salary(BigDecimal.valueOf(65000))
-                        .startDate(LocalDate.of(2020, 1, 15))
-                        .endDate(LocalDate.of(2023, 12, 31))
-                        .position(position)
-                        .employeeOld(employee)
-                        .build(),
-                EmployeeOldExperienceEntity.builder()
-                        .id(1L)
-                        .salary(BigDecimal.valueOf(85000))
-                        .startDate(LocalDate.of(2024, 1, 1))
-                        .endDate(LocalDate.of(2025, 1, 31))
-                        .position(position)
-                        .employeeOld(employee)
-                        .build());
-
-        //When
-        Mockito.when(employeeOldExperienceRepository.findAllByEmployeeOld_Id(mockId))
-                .thenReturn(mockEmployeeOldExperienceEntities);
-
-        List<EmployeeOldExperience> mockEmployeeOldExperiences =
-                employeeOldExperienceEntityToDomainMapper.map(mockEmployeeOldExperienceEntities);
-
-        //Then
-        List<EmployeeOldExperience> result = employeeOldExperienceAdapter.findAllByEmployeeOldId(mockId);
-
-        Assertions.assertNotNull(result);
-        Assertions.assertNotNull(mockEmployeeOldExperiences);
-        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
-                .getEmployeeOld());
-        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
-                .getPosition());
-        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
-                .getPosition().getId());
-        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
-                .getPosition().getDepartment());
-        Assertions.assertNotNull(mockEmployeeOldExperiences.get(0)
-                .getPosition().getStatus());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getName());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getStatus());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getDepartment());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getDepartment().getName());
-        Assertions.assertNotNull(result.get(0).getPosition()
-                .getDepartment().getStatus());
-
-        //Verify
-        Mockito.verify(employeeOldExperienceRepository, Mockito.times(1))
-                .findAllByEmployeeOld_Id(Mockito.anyLong());
-
-    }
 
     private static EmployeeOld getEmployeeOld() {
 
