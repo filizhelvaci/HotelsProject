@@ -1,17 +1,23 @@
 package com.flz.controller;
 
 import com.flz.BaseEndToEndTest;
+import com.flz.model.Department;
 import com.flz.model.Employee;
 import com.flz.model.EmployeeOld;
 import com.flz.model.EmployeeOldExperience;
 import com.flz.model.Position;
+import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.enums.Gender;
+import com.flz.model.enums.PositionStatus;
 import com.flz.model.mapper.EmployeeOldExperienceToResponseMapper;
 import com.flz.model.response.EmployeeOldDetailsResponse;
+import com.flz.port.DepartmentTestPort;
 import com.flz.port.EmployeeOldExperienceReadPort;
 import com.flz.port.EmployeeOldExperienceSavePort;
 import com.flz.port.EmployeeOldReadPort;
 import com.flz.port.EmployeeOldSavePort;
+import com.flz.port.EmployeeSavePort;
+import com.flz.port.PositionTestPort;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +40,15 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
     private EmployeeOldSavePort employeeOldSavePort;
 
     @Autowired
+    private DepartmentTestPort departmentTestPort;
+
+    @Autowired
+    private PositionTestPort positionTestPort;
+
+    @Autowired
+    private EmployeeSavePort employeeSavePort;
+
+    @Autowired
     private EmployeeOldExperienceSavePort employeeOldExperienceSavePort;
 
     @Autowired
@@ -48,40 +63,46 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
     void whenFindByIdEmployeeOld_thenReturnEmployeeOldVerifyContent() throws Exception {
 
         //Initialize
-        EmployeeOld employee = EmployeeOld.builder()
+        EmployeeOld savedEmployee = employeeOldSavePort.save(EmployeeOld.builder()
                 .firstName("Atilla")
                 .lastName("Ilhan")
                 .identityNumber("5228529674")
                 .email("atillaIlhan@test.com")
                 .phoneNumber("05324111415")
                 .address("Aksaray")
-                .birthDate(LocalDate.parse("1956-10-01"))
+                .birthDate(LocalDate.parse("1978-10-01"))
                 .gender(Gender.MALE)
                 .nationality("TR")
-                .build();
+                .build());
 
-        EmployeeOld savedEmployee = employeeOldSavePort.save(employee);
-
-        Position position = Position.builder()
-                .id(15L)
-                .name("Grafic Designer")
-                .build();
-
-        Position position2 = Position.builder()
-                .id(16L)
-                .name("Design Team Leader")
-                .build();
-
-        Employee supervisor = Employee.builder()
-                .id(8L)
-                .identityNumber("5465465485465")
+        Employee manager = employeeSavePort.save(Employee.builder()
                 .firstName("Emma")
                 .lastName("Corner")
+                .identityNumber("5465465485465")
+                .phoneNumber("4285098529674")
+                .address("Paris")
+                .birthDate(LocalDate.parse("1976-10-01"))
                 .gender(Gender.FEMALE)
                 .nationality("France")
-                .address("Paris")
-                .phoneNumber("4285098529674")
-                .build();
+                .build());
+
+        Department department = departmentTestPort.save(Department.builder()
+                .name("Siber Suçlar")
+                .manager(manager)
+                .status(DepartmentStatus.ACTIVE)
+                .build());
+
+        Position position = positionTestPort.save(Position.builder()
+                .status(PositionStatus.ACTIVE)
+                .name("DevOps Engineer")
+                .department(department)
+                .build());
+
+        Position position2 = positionTestPort.save(Position.builder()
+                .status(PositionStatus.ACTIVE)
+                .name("DevOps Team Leader")
+                .department(department)
+                .build());
 
         EmployeeOldExperience employeeOldExperience1 = EmployeeOldExperience.builder()
                 .salary(BigDecimal.valueOf(10000))
@@ -130,7 +151,7 @@ class EmployeeOldEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employeeOld.address")
                         .value("Aksaray"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employeeOld.birthDate")
-                        .value("1956-10-01"))
+                        .value("1978-10-01"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employeeOld.gender")
                         .value("MALE"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employeeOld.nationality")
