@@ -46,7 +46,7 @@ public class DepartmentEntity extends BaseEntity {
      * 1                     1
      */
     @OneToOne
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "manager_id")
     private EmployeeEntity manager;
 
 }
