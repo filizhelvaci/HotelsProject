@@ -316,7 +316,7 @@ class DepartmentAdapterTest extends BaseTest {
 
         //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
-                .findById(mockId);
+                .findByManagerId(Mockito.anyLong());
 
     }
 
