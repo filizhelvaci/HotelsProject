@@ -97,26 +97,29 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .gender(Gender.MALE)
                 .nationality("USA")
                 .address("New York")
+                .birthDate(LocalDate.parse("1997-10-01"))
                 .phoneNumber("05328529674")
                 .build());
 
-        Department department = Department.builder()
+        Department department = departmentTestPort.save(Department.builder()
                 .status(DepartmentStatus.ACTIVE)
                 .name("Department 1")
                 .manager(manager)
-                .build();
+                .build());
 
-        Position position = Position.builder()
+        Position position = positionTestPort.save(Position.builder()
                 .id(10L)
                 .name("Developer")
+                .status(PositionStatus.ACTIVE)
                 .department(department)
-                .build();
+                .build());
 
-        Position position2 = Position.builder()
+        Position position2 = positionTestPort.save(Position.builder()
                 .id(11L)
                 .name("Team Leader")
+                .status(PositionStatus.ACTIVE)
                 .department(department)
-                .build();
+                .build());
 
         EmployeeExperience employeeExperience = EmployeeExperience.builder()
                 .salary(BigDecimal.valueOf(10000))
@@ -181,20 +184,24 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                         .value("2000-10-01"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].endDate")
                         .value("2001-10-31"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].positionId")
-                        .value(10))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].positionName")
-                        .value("Konsiyerj"))
+                        .value("Developer"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].departmentName")
+                        .value("Department 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].managerName")
+                        .value("Eric Smith"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].salary")
                         .value(20000.00))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].startDate")
                         .value("2002-10-01"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].endDate")
                         .doesNotExist())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].positionId")
-                        .value(11))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].positionName")
-                        .value("Kat Görevlisi"));
+                        .value("Team Leader"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].departmentName")
+                        .value("Department 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[1].managerName")
+                        .value("Eric Smith"));
 
         //Verify
         Employee employeeFromDatabase = employeeReadPort.findById(employeeId)
@@ -455,6 +462,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .gender(Gender.FEMALE)
                 .nationality("USA")
                 .address("New York")
+                .birthDate(LocalDate.parse("2000-07-01"))
                 .phoneNumber("05328521174")
                 .build());
 
@@ -512,7 +520,11 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         //Verify
         EmployeeOld employeeOldSaved = employeeOldTestPort.findByIdentityNumber("99988877111");
         List<EmployeeOldExperience> employeeOldExperiences = employeeOldExperienceReadPort.findAllByEmployeeOldId(employeeOldSaved.getId());
+        Optional<Employee> deletedEmployee = employeeReadPort.findById(employeeId);
+        List<EmployeeExperience> employeeExperiences = employeeExperienceReadPort.findAllByEmployeeId(employeeId);
 
+        Assertions.assertTrue(deletedEmployee.isEmpty());
+        Assertions.assertTrue(employeeExperiences.isEmpty());
         Assertions.assertNotNull(employeeOldSaved);
         Assertions.assertNotNull(employeeOldSaved.getId());
         Assertions.assertEquals(employee.getFirstName(), employeeOldSaved.getFirstName());
