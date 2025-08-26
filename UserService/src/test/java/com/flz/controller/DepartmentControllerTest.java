@@ -88,48 +88,6 @@ class DepartmentControllerTest extends BaseTest {
 
     }
 
-    private static List<Department> getDepartments() {
-
-        Employee manager = Employee.builder()
-                .id(12L)
-                .firstName("Jackson")
-                .lastName("Dennis")
-                .identityNumber("25555714785")
-                .email("jackson@example.com")
-                .phoneNumber("053588888565")
-                .address("Bursa")
-                .birthDate(LocalDate.of(1998, 1, 15))
-                .gender(Gender.MALE)
-                .nationality("USA")
-                .build();
-
-        return List.of(
-                Department.builder()
-                        .id(11L)
-                        .name("TEST1")
-                        .manager(manager)
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Department.builder()
-                        .id(12L)
-                        .name("TEST2")
-                        .manager(manager)
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Department.builder()
-                        .id(13L)
-                        .name("TEST3")
-                        .manager(manager)
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build());
-    }
-
     @ParameterizedTest
     @ValueSource(ints = {
             0,
@@ -726,6 +684,48 @@ class DepartmentControllerTest extends BaseTest {
         Mockito.verify(departmentWriteService, Mockito.never())
                 .delete(Mockito.anyLong());
 
+    }
+
+    private static List<Department> getDepartments() {
+
+        Employee manager = Employee.builder()
+                .id(12L)
+                .firstName("Jackson")
+                .lastName("Dennis")
+                .identityNumber("25555714785")
+                .email("jackson@example.com")
+                .phoneNumber("053588888565")
+                .address("Bursa")
+                .birthDate(LocalDate.of(1998, 1, 15))
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .build();
+
+        return List.of(
+                Department.builder()
+                        .id(11L)
+                        .name("TEST1")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Department.builder()
+                        .id(12L)
+                        .name("TEST2")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Department.builder()
+                        .id(13L)
+                        .name("TEST3")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build());
     }
 
 }
