@@ -42,31 +42,6 @@ class PositionControllerTest extends BaseTest {
 
     private static final String BASE_PATH = "/api/v1";
 
-    private static List<Position> getPositions() {
-        return List.of(
-                Position.builder()
-                        .id(11L)
-                        .name("TEST1")
-                        .status(PositionStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Position.builder()
-                        .id(12L)
-                        .name("TEST2")
-                        .status(PositionStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Position.builder()
-                        .id(13L)
-                        .name("TEST3")
-                        .status(PositionStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build());
-    }
-
     /**
      * {@link PositionController#findAll(com.flz.model.request.PageRequest)}
      */
@@ -187,6 +162,31 @@ class PositionControllerTest extends BaseTest {
         Mockito.verify(positionReadService, Mockito.never())
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
 
+    }
+
+    private static List<Position> getPositions() {
+        return List.of(
+                Position.builder()
+                        .id(11L)
+                        .name("TEST1")
+                        .status(PositionStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Position.builder()
+                        .id(12L)
+                        .name("TEST2")
+                        .status(PositionStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Position.builder()
+                        .id(13L)
+                        .name("TEST3")
+                        .status(PositionStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build());
     }
 
     @Test
@@ -332,37 +332,6 @@ class PositionControllerTest extends BaseTest {
 
     }
 
-    @Test
-    void whenNotFoundPositionsSummaryAll_thenReturnEmptyList() throws Exception {
-
-        //Initialize
-        List<PositionSummaryResponse> emptyList = Collections.emptyList();
-
-        //When
-        Mockito.when(positionReadService.findSummaryAll())
-                .thenReturn(emptyList);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/positions/summary")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isEmpty());
-
-        //Verify
-        Mockito.verify(positionReadService, Mockito.times(1))
-                .findSummaryAll();
-
-    }
-
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {
@@ -396,6 +365,38 @@ class PositionControllerTest extends BaseTest {
                 .create(Mockito.any(PositionCreateRequest.class));
 
     }
+
+    @Test
+    void whenNotFoundPositionsSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //Initialize
+        List<PositionSummaryResponse> emptyList = Collections.emptyList();
+
+        //When
+        Mockito.when(positionReadService.findSummaryAll())
+                .thenReturn(emptyList);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/positions/summary")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isEmpty());
+
+        //Verify
+        Mockito.verify(positionReadService, Mockito.times(1))
+                .findSummaryAll();
+
+    }
+
 
     /**
      * {@link PositionController#update(Long, PositionUpdateRequest)}
@@ -470,37 +471,6 @@ class PositionControllerTest extends BaseTest {
         Mockito.verify(positionWriteService, Mockito.never())
                 .update(Mockito.any(), Mockito.any(PositionUpdateRequest.class));
 
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @ValueSource(longs = {
-            0L,
-            -1L,
-            -50L
-    })
-    void givenInvalidDepartmentId_whenCreatePosition_thenReturnBadRequest(Long invalidDepartmentId) throws Exception {
-
-        //Given
-        PositionCreateRequest invalidRequest = PositionCreateRequest.builder()
-                .name("ValidName")
-                .departmentId(invalidDepartmentId)
-                .build();
-
-        //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/position")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(invalidRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-
-        //Verify
-        Mockito.verify(positionWriteService, Mockito.never())
-                .create(Mockito.any(PositionCreateRequest.class));
     }
 
     @Test
@@ -602,6 +572,37 @@ class PositionControllerTest extends BaseTest {
 
     }
 
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = {
+            0L,
+            -1L,
+            -50L
+    })
+    void givenInvalidDepartmentId_whenCreatePosition_thenReturnBadRequest(Long invalidDepartmentId) throws Exception {
+
+        //Given
+        PositionCreateRequest invalidRequest = PositionCreateRequest.builder()
+                .name("ValidName")
+                .departmentId(invalidDepartmentId)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/position")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verify(positionWriteService, Mockito.never())
+                .create(Mockito.any(PositionCreateRequest.class));
+    }
+
 
     /**
      * {@link PositionController#delete(Long)}
@@ -634,32 +635,6 @@ class PositionControllerTest extends BaseTest {
 
     }
 
-    @Test
-    void givenNullDepartmentId_whenUpdatePosition_thenReturnInternalServerError() throws Exception {
-
-        //Given
-        PositionUpdateRequest mockRequest = PositionUpdateRequest.builder()
-                .name("ValidTestName")
-                .build();
-
-        //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(BASE_PATH + "/position/{id}", 5L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(mockRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(false));
-
-        //Verify
-        Mockito.verify(positionWriteService, Mockito.never())
-                .update(Mockito.any(), Mockito.any(PositionUpdateRequest.class));
-
-    }
-
     @ParameterizedTest
     @ValueSource(longs = {
             0L,
@@ -687,5 +662,32 @@ class PositionControllerTest extends BaseTest {
                 .delete(Mockito.anyLong());
 
     }
+
+    @Test
+    void givenNullDepartmentId_whenUpdatePosition_thenReturnInternalServerError() throws Exception {
+
+        //Given
+        PositionUpdateRequest mockRequest = PositionUpdateRequest.builder()
+                .name("ValidTestName")
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/position/{id}", 5L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(positionWriteService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(PositionUpdateRequest.class));
+
+    }
+
 
 }
