@@ -18,7 +18,7 @@ import lombok.Setter;
 public class DepartmentUpdateRequest {
 
     @NotBlank
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 100)
     private String name;
 
     @NotNull

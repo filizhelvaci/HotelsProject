@@ -2,13 +2,13 @@ package com.flz.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
 
 @Getter
 @Setter
@@ -18,11 +18,11 @@ import org.hibernate.validator.constraints.Range;
 public class PositionUpdateRequest {
 
     @NotBlank
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 100)
     private String name;
 
     @NotNull
-    @Range(min = 0, max = 500)
+    @Positive
     private Long departmentId;
 
 }
