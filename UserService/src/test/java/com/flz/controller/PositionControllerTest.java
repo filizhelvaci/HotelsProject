@@ -398,6 +398,7 @@ class PositionControllerTest extends BaseTest {
     }
 
 
+
     /**
      * {@link PositionController#update(Long, PositionUpdateRequest)}
      */
@@ -603,7 +604,6 @@ class PositionControllerTest extends BaseTest {
                 .create(Mockito.any(PositionCreateRequest.class));
     }
 
-
     /**
      * {@link PositionController#delete(Long)}
      */
@@ -688,6 +688,5 @@ class PositionControllerTest extends BaseTest {
                 .update(Mockito.any(), Mockito.any(PositionUpdateRequest.class));
 
     }
-
 
 }
