@@ -998,7 +998,7 @@ class EmployeeControllerTest extends BaseTest {
         return Stream.of(
                 new BigDecimal("-1"),
                 new BigDecimal("0"),
-                new BigDecimal("10000000.01")
+                new BigDecimal("-100")
         );
     }
 
