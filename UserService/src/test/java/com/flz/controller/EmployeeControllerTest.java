@@ -1960,14 +1960,13 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
-
     @ParameterizedTest
     @ValueSource(longs = {
             0,
             -1,
             -100
     })
-    void givenInvalidtId_whenCalledDeleteEmployee_thenReturnBadRequest(Long invalidId) throws Exception {
+    void givenInvalidId_whenCalledDeleteEmployee_thenReturnBadRequest(Long invalidId) throws Exception {
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
