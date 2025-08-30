@@ -86,24 +86,6 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     EmployeeExperienceToEmployeeOldExperienceMapper
             employeeExperienceToEmployeeOldExperienceMapper = EmployeeExperienceToEmployeeOldExperienceMapper.INSTANCE;
 
-    private static Position getPosition2() {
-
-        return Position.builder()
-                .id(12L)
-                .name("TestPosition2")
-                .department(Department.builder()
-                        .id(1L)
-                        .name("TestDepartment2")
-                        .manager(getManager())
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("TestSystem")
-                        .build())
-                .status(PositionStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
 
     /**
      * {@link EmployeeWriteServiceImpl#create(EmployeeCreateRequest)}
@@ -220,36 +202,6 @@ class EmployeeWriteServiceImplTest extends BaseTest {
 
     }
 
-    @Test
-    void givenInvalidEmployeeId_whenUpdateEmployee_thenThrowEmployeeNotFoundException() {
-
-        //Given
-        Long mockEmployeeId = 999L;
-        EmployeeUpdateRequest request = EmployeeUpdateRequest.builder()
-                .identityNumber("12345678901")
-                .phoneNumber("05551231212")
-                .build();
-
-        //When
-        Mockito.when(employeeReadPort.findById(mockEmployeeId))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Assertions.assertThrows(EmployeeNotFoundException.class,
-                () -> employeeWriteServiceImpl.update(mockEmployeeId, request));
-
-        //Verify
-        Mockito.verify(employeeReadPort, Mockito.times(1))
-                .findById(mockEmployeeId);
-        Mockito.verify(employeeReadPort, Mockito.never())
-                .existsByIdentity(Mockito.anyString());
-        Mockito.verify(employeeReadPort, Mockito.never())
-                .existsByPhoneNumber(Mockito.anyString());
-        Mockito.verify(employeeSavePort, Mockito.never())
-                .save(Mockito.any(Employee.class));
-
-    }
-
     /**
      * {@link EmployeeWriteServiceImpl#update(Long, EmployeeUpdateRequest)}
      */
@@ -329,6 +281,36 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .existsByPhoneNumber(Mockito.anyString());
         Mockito.verify(employeeSavePort, Mockito.times(1))
                 .save(mockEmployee);
+
+    }
+
+    @Test
+    void givenInvalidEmployeeId_whenUpdateEmployee_thenThrowEmployeeNotFoundException() {
+
+        //Given
+        Long mockEmployeeId = 999L;
+        EmployeeUpdateRequest request = EmployeeUpdateRequest.builder()
+                .identityNumber("12345678901")
+                .phoneNumber("05551231212")
+                .build();
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockEmployeeId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(EmployeeNotFoundException.class,
+                () -> employeeWriteServiceImpl.update(mockEmployeeId, request));
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(mockEmployeeId);
+        Mockito.verify(employeeReadPort, Mockito.never())
+                .existsByIdentity(Mockito.anyString());
+        Mockito.verify(employeeReadPort, Mockito.never())
+                .existsByPhoneNumber(Mockito.anyString());
+        Mockito.verify(employeeSavePort, Mockito.never())
+                .save(Mockito.any(Employee.class));
 
     }
 
@@ -740,7 +722,61 @@ class EmployeeWriteServiceImplTest extends BaseTest {
 
     }
 
-    //Initialize
+    @Test
+    void givenEmployeeId_whenEmployeeIsManagerButNewManagerNotFound_thenThrowsNotFoundException() {
+
+        //Given
+        Long mockId = 101L;
+        Long mockManagerId = 999L;
+
+        Employee employee = getEmployee();
+        EmployeeOld employeeOldSaved = getSavedEmployeeOld();
+
+        Department department = Department.builder()
+                .id(21L)
+                .name("Güvenlik")
+                .status(DepartmentStatus.ACTIVE)
+                .manager(employee)
+                .build();
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockId))
+                .thenReturn(Optional.of(employee));
+        Mockito.when(employeeOldSavePort.save(Mockito.any(EmployeeOld.class)))
+                .thenReturn(employeeOldSaved);
+        Mockito.when(departmentReadPort.existsByManagerId(mockId))
+                .thenReturn(true);
+        Mockito.when(departmentReadPort.findByManagerId(mockId))
+                .thenReturn(department);
+        Mockito.when(employeeReadPort.findById(mockManagerId))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(EmployeeNotFoundException.class,
+                () -> employeeWriteServiceImpl.delete(mockId));
+
+        // Verify
+        Mockito.verify(employeeReadPort, Mockito.times(2))
+                .findById(Mockito.anyLong());
+        Mockito.verify(employeeOldSavePort, Mockito.times(1))
+                .save(Mockito.any(EmployeeOld.class));
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .existsByManagerId(Mockito.anyLong());
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findByManagerId(Mockito.anyLong());
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any(Department.class));
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
+                .findAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeOldExperienceSavePort, Mockito.never())
+                .saveAll(Mockito.anyList());
+        Mockito.verify(employeeExperienceDeletePort, Mockito.never())
+                .deleteAllByEmployeeId(Mockito.anyLong());
+        Mockito.verify(employeeDeletePort, Mockito.never())
+                .delete(Mockito.anyLong());
+
+    }
+
     private static EmployeeCreateRequest getEmployeeCreateRequest() {
         return EmployeeCreateRequest.builder()
                 .firstName("John")
@@ -913,59 +949,23 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .build();
     }
 
-    @Test
-    void givenEmployeeId_whenEmployeeIsManagerButNewManagerNotFound_thenThrowsNotFoundException() {
+    private static Position getPosition2() {
 
-        //Given
-        Long mockId = 101L;
-        Long mockManagerId = 999L;
-
-        Employee employee = getEmployee();
-        EmployeeOld employeeOldSaved = getSavedEmployeeOld();
-
-        Department department = Department.builder()
-                .id(21L)
-                .name("Güvenlik")
-                .status(DepartmentStatus.ACTIVE)
-                .manager(employee)
+        return Position.builder()
+                .id(12L)
+                .name("TestPosition2")
+                .department(Department.builder()
+                        .id(1L)
+                        .name("TestDepartment2")
+                        .manager(getManager())
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
                 .build();
-
-        //When
-        Mockito.when(employeeReadPort.findById(mockId))
-                .thenReturn(Optional.of(employee));
-        Mockito.when(employeeOldSavePort.save(Mockito.any(EmployeeOld.class)))
-                .thenReturn(employeeOldSaved);
-        Mockito.when(departmentReadPort.existsByManagerId(mockId))
-                .thenReturn(true);
-        Mockito.when(departmentReadPort.findByManagerId(mockId))
-                .thenReturn(department);
-        Mockito.when(employeeReadPort.findById(mockManagerId))
-                .thenReturn(Optional.empty());
-
-        //Then
-        Assertions.assertThrows(EmployeeNotFoundException.class,
-                () -> employeeWriteServiceImpl.delete(mockId));
-
-        // Verify
-        Mockito.verify(employeeReadPort, Mockito.times(2))
-                .findById(Mockito.anyLong());
-        Mockito.verify(employeeOldSavePort, Mockito.times(1))
-                .save(Mockito.any(EmployeeOld.class));
-        Mockito.verify(departmentReadPort, Mockito.times(1))
-                .existsByManagerId(Mockito.anyLong());
-        Mockito.verify(departmentReadPort, Mockito.times(1))
-                .findByManagerId(Mockito.anyLong());
-        Mockito.verify(departmentSavePort, Mockito.never())
-                .save(Mockito.any(Department.class));
-        Mockito.verify(employeeExperienceReadPort, Mockito.never())
-                .findAllByEmployeeId(Mockito.anyLong());
-        Mockito.verify(employeeOldExperienceSavePort, Mockito.never())
-                .saveAll(Mockito.anyList());
-        Mockito.verify(employeeExperienceDeletePort, Mockito.never())
-                .deleteAllByEmployeeId(Mockito.anyLong());
-        Mockito.verify(employeeDeletePort, Mockito.never())
-                .delete(Mockito.anyLong());
-
     }
 
 }

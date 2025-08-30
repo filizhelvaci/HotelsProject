@@ -144,23 +144,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
     }
 
-    //Initialize
-    private static Employee getEmployee() {
-
-        return Employee.builder()
-                .id(119L)
-                .firstName("John")
-                .lastName("Doe")
-                .identityNumber("25896314785")
-                .email("john.doe@example.com")
-                .phoneNumber("05456566565")
-                .address("Ankara")
-                .birthDate(LocalDate.of(2020, 1, 15))
-                .gender(Gender.MALE)
-                .nationality("USA")
-                .build();
-    }
-
     @Test
     void givenDepartmentCreateRequest_whenCreateRequestManagerFoundInDepartments_thenThrowEmployeeAlreadyExistsException() {
 
@@ -462,7 +445,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
     }
 
-
     /**
      * {@link DepartmentWriteServiceImpl#delete(Long)}
      */
@@ -509,7 +491,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
     }
 
-
     @Test
     void givenValidId_whenDepartmentEntityNotFoundById_thenThrowsDepartmentNotFoundException() {
 
@@ -531,7 +512,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .save(Mockito.any());
 
     }
-
 
     @Test
     void givenDeletedDepartment_whenDeleteCalled_thenThrowDepartmentAlreadyDeletedException() {
@@ -652,6 +632,22 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.verify(departmentSavePort, Mockito.never())
                 .save(Mockito.any(Department.class));
 
+    }
+
+    private static Employee getEmployee() {
+
+        return Employee.builder()
+                .id(119L)
+                .firstName("John")
+                .lastName("Doe")
+                .identityNumber("25896314785")
+                .email("john.doe@example.com")
+                .phoneNumber("05456566565")
+                .address("Ankara")
+                .birthDate(LocalDate.of(2020, 1, 15))
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .build();
     }
 
 }

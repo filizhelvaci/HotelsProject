@@ -41,23 +41,6 @@ class PositionWriteServiceImplTest extends BaseTest {
     @InjectMocks
     PositionWriteServiceImpl positionWriteServiceImpl;
 
-
-    private static Employee getManager() {
-
-        return Employee.builder()
-                .id(101L)
-                .firstName("Cahit")
-                .lastName("Zarif")
-                .identityNumber("25111314785")
-                .email("cahitzrf@example.com")
-                .phoneNumber("05455551555")
-                .address("Kırıkkale")
-                .birthDate(LocalDate.of(1999, 1, 15))
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .build();
-    }
-
     /**
      * {@link PositionWriteServiceImpl#create(PositionCreateRequest)}
      */
@@ -379,7 +362,6 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     }
 
-
     @Test
     void givenDeletedPosition_whenDeleteCalled_thenThrowPositionAlreadyDeletedException() {
 
@@ -473,4 +455,19 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     }
 
+    private static Employee getManager() {
+
+        return Employee.builder()
+                .id(101L)
+                .firstName("Cahit")
+                .lastName("Zarif")
+                .identityNumber("25111314785")
+                .email("cahitzrf@example.com")
+                .phoneNumber("05455551555")
+                .address("Kırıkkale")
+                .birthDate(LocalDate.of(1999, 1, 15))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+    }
 }

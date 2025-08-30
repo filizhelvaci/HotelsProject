@@ -197,6 +197,49 @@ class EmployeeReadServiceImplTest extends BaseTest {
 
     }
 
+    @Test
+    void givenValidEmployeeId_whenFindByIdEmployeeWithEmptyEmployeeExperienceList_thenReturnEmployeeDetailsResponseSuccessfully() {
+
+        //Given
+        Long mockId = 1L;
+
+        //Initialize
+        Employee mockEmployee = Employee.builder()
+                .id(mockId)
+                .firstName("Filiz")
+                .lastName("Helvaci")
+                .identityNumber("12345678901")
+                .phoneNumber("05551231212")
+                .address("Ankara")
+                .email("filiz@example.com")
+                .gender(Gender.FEMALE)
+                .birthDate(LocalDate.of(1995, 1, 1))
+                .nationality("TR")
+                .build();
+
+        List<EmployeeExperience> mockExperienceList = Collections.emptyList();
+
+        //When
+        Mockito.when(employeeReadPort.findById(mockId))
+                .thenReturn(Optional.of(mockEmployee));
+
+        Mockito.when(employeeExperienceReadPort.findAllByEmployeeId(mockId))
+                .thenReturn(mockExperienceList);
+
+        //Then
+        EmployeeDetailsResponse response = employeeReadServiceImpl.findById(mockId);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(mockEmployee, response.getEmployee());
+        Assertions.assertEquals(0, response.getExperiences().size());
+
+        //Verify
+        Mockito.verify(employeeReadPort, Mockito.times(1))
+                .findById(mockId);
+        Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
+                .findAllByEmployeeId(mockId);
+
+    }
 
     /**
      * {@link EmployeeReadServiceImpl#findSummaryAll()}
@@ -253,46 +296,23 @@ class EmployeeReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidEmployeeId_whenFindByIdEmployeeWithEmptyEmployeeExperienceList_thenReturnEmployeeDetailsResponseSuccessfully() {
-
-        //Given
-        Long mockId = 1L;
-
-        //Initialize
-        Employee mockEmployee = Employee.builder()
-                .id(mockId)
-                .firstName("Filiz")
-                .lastName("Helvaci")
-                .identityNumber("12345678901")
-                .phoneNumber("05551231212")
-                .address("Ankara")
-                .email("filiz@example.com")
-                .gender(Gender.FEMALE)
-                .birthDate(LocalDate.of(1995, 1, 1))
-                .nationality("TR")
-                .build();
-
-        List<EmployeeExperience> mockExperienceList = Collections.emptyList();
+    void whenCalledAllSummaryEmployeeIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
 
         //When
-        Mockito.when(employeeReadPort.findById(mockId))
-                .thenReturn(Optional.of(mockEmployee));
-
-        Mockito.when(employeeExperienceReadPort.findAllByEmployeeId(mockId))
-                .thenReturn(mockExperienceList);
+        Mockito.when(employeeReadPort.findSummaryAll())
+                .thenReturn(Collections.emptyList());
 
         //Then
-        EmployeeDetailsResponse response = employeeReadServiceImpl.findById(mockId);
+        List<EmployeeSummaryResponse> employeeSummaryResponses =
+                employeeReadServiceImpl.findSummaryAll();
 
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(mockEmployee, response.getEmployee());
-        Assertions.assertEquals(0, response.getExperiences().size());
+        Assertions.assertNotNull(employeeReadPort);
+        Assertions.assertEquals(0, employeeSummaryResponses.size());
+        Assertions.assertTrue(employeeSummaryResponses.isEmpty());
 
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
-                .findById(mockId);
-        Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
-                .findAllByEmployeeId(mockId);
+                .findSummaryAll();
 
     }
 
@@ -328,27 +348,6 @@ class EmployeeReadServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findAll(Mockito.anyInt(), Mockito.anyInt());
-
-    }
-
-    @Test
-    void whenCalledAllSummaryEmployeeIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
-
-        //When
-        Mockito.when(employeeReadPort.findSummaryAll())
-                .thenReturn(Collections.emptyList());
-
-        //Then
-        List<EmployeeSummaryResponse> employeeSummaryResponses =
-                employeeReadServiceImpl.findSummaryAll();
-
-        Assertions.assertNotNull(employeeReadPort);
-        Assertions.assertEquals(0, employeeSummaryResponses.size());
-        Assertions.assertTrue(employeeSummaryResponses.isEmpty());
-
-        //Verify
-        Mockito.verify(employeeReadPort, Mockito.times(1))
-                .findSummaryAll();
 
     }
 
