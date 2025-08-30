@@ -12,6 +12,7 @@ import com.flz.model.mapper.PositionCreateRequestToPositionDomainMapper;
 import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
 import com.flz.port.DepartmentReadPort;
+import com.flz.port.DepartmentSavePort;
 import com.flz.port.PositionReadPort;
 import com.flz.port.PositionSavePort;
 import com.flz.service.PositionWriteService;
@@ -27,6 +28,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
     private final PositionSavePort positionSavePort;
     private final PositionReadPort positionReadPort;
     private final DepartmentReadPort departmentReadPort;
+    private final DepartmentSavePort departmentSavePort;
 
     private static final PositionCreateRequestToPositionDomainMapper
             positionCreateRequestToPositionDomainMapper = PositionCreateRequestToPositionDomainMapper.INSTANCE;
@@ -37,15 +39,16 @@ class PositionWriteServiceImpl implements PositionWriteService {
 
         checkIfPositionNameExists(createRequest.getName());
 
-        Position position = positionCreateRequestToPositionDomainMapper.map(createRequest);
-
         Long departmentId = createRequest.getDepartmentId();
         Department department = departmentReadPort.findById(departmentId)
                 .orElseThrow(() -> new DepartmentNotFoundException(departmentId));
 
-        if (department.getStatus() == DepartmentStatus.DELETED) {
+        if (department.isDeleted()) {
             department.setStatus(DepartmentStatus.ACTIVE);
+            departmentSavePort.save(department);
         }
+
+        Position position = positionCreateRequestToPositionDomainMapper.map(createRequest);
 
         position.setDepartment(department);
         position.setStatus(PositionStatus.ACTIVE);
