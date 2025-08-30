@@ -31,4 +31,9 @@ public class Department extends BaseDomainModel {
         return this.status == DepartmentStatus.DELETED;
     }
 
+    public void doActive() {
+
+        this.status = DepartmentStatus.ACTIVE;
+    }
+
 }

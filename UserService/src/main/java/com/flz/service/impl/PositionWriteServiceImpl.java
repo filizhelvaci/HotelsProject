@@ -6,7 +6,6 @@ import com.flz.exception.PositionAlreadyExistsException;
 import com.flz.exception.PositionNotFoundException;
 import com.flz.model.Department;
 import com.flz.model.Position;
-import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.enums.PositionStatus;
 import com.flz.model.mapper.PositionCreateRequestToPositionDomainMapper;
 import com.flz.model.request.PositionCreateRequest;
@@ -44,7 +43,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
                 .orElseThrow(() -> new DepartmentNotFoundException(departmentId));
 
         if (department.isDeleted()) {
-            department.setStatus(DepartmentStatus.ACTIVE);
+            department.doActive();
             departmentSavePort.save(department);
         }
 
