@@ -6,6 +6,7 @@ import com.flz.service.EmployeeExperienceWriteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -75,23 +76,19 @@ class EmployeeExperienceControllerTest extends BaseTest {
 
     }
 
-
     @Test
-    void givenInvalidStartDateCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
+    void givenNullIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
 
         //Given
-        Long mockId = 1L;
-        LocalDate mockStartDate = LocalDate.of(2010, 10, 2);
-
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(10000))
                 .positionId(10L)
-                .startDate(mockStartDate)
+                .startDate(LocalDate.now())
                 .build();
 
         //When
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/employee/{id}/experience", mockId)
+                .post(BASE_PATH + "/employee/null/experience")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(mockCreateRequest));
 
@@ -107,6 +104,47 @@ class EmployeeExperienceControllerTest extends BaseTest {
 
     }
 
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest(Long invalidId) throws Exception {
+
+        //Given
+        EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
+                .salary(BigDecimal.valueOf(10000))
+                .positionId(invalidId)
+                .startDate(LocalDate.now())
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee/{id}/experience", invalidId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mockCreateRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeExperienceWriteService, Mockito.never())
+                .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
+    }
+
+    private static Stream<BigDecimal> provideInvalidSalaries() {
+        return Stream.of(
+                new BigDecimal("0"),
+                new BigDecimal("-1"),
+                new BigDecimal("-100000000")
+        );
+    }
 
     @ParameterizedTest
     @MethodSource("provideInvalidSalaries")
@@ -138,14 +176,6 @@ class EmployeeExperienceControllerTest extends BaseTest {
                 .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
 
     }
-
-    private static Stream<BigDecimal> provideInvalidSalaries() {
-        return Stream.of(
-                new BigDecimal("-1"),
-                new BigDecimal("100000000")
-        );
-    }
-
 
     @Test
     void givenNullSalaryCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
@@ -209,15 +239,20 @@ class EmployeeExperienceControllerTest extends BaseTest {
     }
 
 
-    @Test
-    void givenInvalidPositionIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidPositionIdCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest(Long invalidId) throws Exception {
 
         //Given
         Long mockId = 1L;
 
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(10000))
-                .positionId(-10L)
+                .positionId(invalidId)
                 .startDate(LocalDate.now())
                 .build();
 
@@ -239,6 +274,36 @@ class EmployeeExperienceControllerTest extends BaseTest {
 
     }
 
+    @Test
+    void givenInvalidStartDateCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
+
+        //Given
+        Long mockId = 1L;
+        LocalDate mockStartDate = LocalDate.of(2010, 10, 2);
+
+        EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
+                .salary(BigDecimal.valueOf(10000))
+                .positionId(10L)
+                .startDate(mockStartDate)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee/{id}/experience", mockId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mockCreateRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeExperienceWriteService, Mockito.never())
+                .create(Mockito.anyLong(), Mockito.any(EmployeeExperienceCreateRequest.class));
+
+    }
 
     @Test
     void givenNullStartDateCreateRequest_whenCreateEmployeeExperience_thenReturnBadRequest() throws Exception {
