@@ -49,6 +49,108 @@ class EmployeeControllerTest extends BaseTest {
     private static final String BASE_PATH = "/api/v1";
 
 
+    /**
+     * {@link EmployeeController#findById(Long)} ()}
+     */
+    @Test
+    void givenValidId_whenCalledFindByIdEmployee_thenReturnEmployeeDetailResponseSuccessful() throws Exception {
+
+        //Given
+        Long mockId = 1L;
+
+        EmployeeDetailsResponse mockEmployeeDetailsResponse = EmployeeDetailsResponse.builder()
+                .employee(getEmployee())
+                .experiences(List.of(getEmployeeExperienceResponse()))
+                .build();
+
+        //When
+        Mockito.when(employeeReadService.findById(mockId))
+                .thenReturn(mockEmployeeDetailsResponse);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employee/{id}", mockId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isMap())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
+                        .exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.firstName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.lastName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.phoneNumber")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.address")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.birthDate")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.gender")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].salary")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].startDate")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].positionName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].departmentName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].managerName")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.times(1))
+                .findById(Mockito.anyLong());
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidId_whenCalledFindByIdEmployee_thenReturnBadRequest(Long invalidId) throws Exception {
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employee/{id}", invalidId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .doesNotExist());
+
+        // Verify
+        Mockito.verify(employeeReadService, Mockito.never())
+                .findById(Mockito.anyLong());
+
+    }
+
     @Test
     void givenNonEmployeeId_whenCalledFindByIdEmployee_thenReturnNotFoundStatusAndErrorMessage() throws Exception {
 
@@ -76,32 +178,6 @@ class EmployeeControllerTest extends BaseTest {
 
         //Verify
         Mockito.verify(employeeReadService, Mockito.times(1))
-                .findById(Mockito.anyLong());
-
-    }
-
-    @Test
-    void givenInvalidId_whenCalledFindByIdEmployee_thenReturnBadRequest() throws Exception {
-
-        //Given
-        String invalidId = "abc";
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/employee/{id}", invalidId)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(false))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .doesNotExist());
-
-        // Verify
-        Mockito.verify(employeeReadService, Mockito.never())
                 .findById(Mockito.anyLong());
 
     }
@@ -153,30 +229,6 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
-    private static Stream<BigDecimal> provideValidSalaries() {
-        return Stream.of(
-                new BigDecimal("1"),
-                new BigDecimal("5000"),
-                new BigDecimal("10000000"),
-                new BigDecimal("0.01")
-        );
-    }
-
-    private static EmployeeExperienceResponse getEmployeeExperienceResponse() {
-
-        return EmployeeExperienceResponse.builder()
-                .id(1L)
-                .salary(BigDecimal.valueOf(100000))
-                .startDate(LocalDate.now()
-                        .plusDays(2))
-                .endDate(LocalDate.now()
-                        .plusMonths(6))
-                .positionName("Test position")
-                .departmentName("Test department")
-                .managerName("Test Manager")
-                .build();
-    }
-
     @ParameterizedTest
     @ValueSource(ints = {
             0,
@@ -214,6 +266,57 @@ class EmployeeControllerTest extends BaseTest {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .get(BASE_PATH + "/employees")
                 .param("page", "1")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.never())
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidPage_whenFindAllEmployees_thenReturnBadRequestError(Integer invalidPage) throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employees")
+                .param("page", invalidPage.toString())
+                .param("pageSize", "10")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(employeeReadService, Mockito.never())
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+
+    }
+
+    @Test
+    void givenNullPage_whenFindAllEmployees_thenReturnBadRequest() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employees")
+                .param("pageSize", "10")
                 .contentType(MediaType.APPLICATION_JSON);
 
         //Then
@@ -321,32 +424,35 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {
-            0,
-            -1,
-            -100
-    })
-    void givenInvalidPage_whenFindAllEmployees_thenReturnBadRequestError(Integer invalidPage) throws Exception {
+    @Test
+    void whenNotFoundEmployeesSummaryAll_thenReturnEmptyList() throws Exception {
+
+        //Initialize
+        List<EmployeeSummaryResponse> emptyList = Collections.emptyList();
 
         //When
+        Mockito.when(employeeReadService.findSummaryAll())
+                .thenReturn(emptyList);
+
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/employees")
-                .param("page", invalidPage.toString())
-                .param("pageSize", "10")
+                .get(BASE_PATH + "/employees/summary")
                 .contentType(MediaType.APPLICATION_JSON);
 
         //Then
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest())
+                        .isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(false));
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isEmpty());
 
         //Verify
-        Mockito.verify(employeeReadService, Mockito.never())
-                .findAll(Mockito.anyInt(), Mockito.anyInt());
+        Mockito.verify(employeeReadService, Mockito.times(1))
+                .findSummaryAll();
 
     }
 
@@ -395,107 +501,6 @@ class EmployeeControllerTest extends BaseTest {
 
         //Verify
         Mockito.verify(employeeWriteService, Mockito.times(1))
-                .create(Mockito.any(EmployeeCreateRequest.class));
-
-    }
-
-    @Test
-    void givenNullPage_whenFindAllEmployees_thenReturnBadRequest() throws Exception {
-
-        //When
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/employees")
-                .param("pageSize", "10")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(false));
-
-        //Verify
-        Mockito.verify(employeeReadService, Mockito.never())
-                .findAll(Mockito.anyInt(), Mockito.anyInt());
-    }
-
-    @Test
-    void whenNotFoundEmployeesSummaryAll_thenReturnEmptyList() throws Exception {
-
-        //Initialize
-        List<EmployeeSummaryResponse> emptyList = Collections.emptyList();
-
-        //When
-        Mockito.when(employeeReadService.findSummaryAll())
-                .thenReturn(emptyList);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/employees/summary")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isEmpty());
-
-        //Verify
-        Mockito.verify(employeeReadService, Mockito.times(1))
-                .findSummaryAll();
-
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @ValueSource(strings = {
-            "",
-            " ",
-            "1234567890",
-            "01234567890",
-            "111111111111",
-            "abcdefg1234"
-    })
-    void givenInvalidIdentityNumberCreateRequest_whenCreateEmployee_thenReturnBadRequest(String invalidName) throws Exception {
-
-        //Given
-        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
-                .identityNumber(invalidName)
-                .firstName("Ali")
-                .lastName("Semih")
-                .phoneNumber("05332221133")
-                .email("alisemih@gmail.com")
-                .address("Bursa")
-                .birthDate(LocalDate.of(1990, 1, 1))
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .salary(BigDecimal.valueOf(20000))
-                .positionId(1L)
-                .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
-                .build();
-
-        //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/employee")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest());
-
-        //Verify
-        Mockito.verify(employeeWriteService, Mockito.never())
                 .create(Mockito.any(EmployeeCreateRequest.class));
 
     }
@@ -591,17 +596,64 @@ class EmployeeControllerTest extends BaseTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {
             "",
             " ",
+            "1234567890",
+            "01234567890",
+            "111111111111",
+            "abcdefg1234"
+    })
+    void givenInvalidIdentityNumberCreateRequest_whenCreateEmployee_thenReturnBadRequest(String invalidName) throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber(invalidName)
+                .firstName("Ali")
+                .lastName("Semih")
+                .phoneNumber("05332221133")
+                .email("alisemih@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(1990, 1, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(20000))
+                .positionId(1L)
+                .departmentId(3L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
             "abc",
             "abc@",
-            "abc@com",
             "abc@example.",
             "abc@.com",
             "abc@exa mple.com",
-            "abc@exam_ple.com",
-            "abc@example.toolongtld"
+            "@example.com",
+            "a..bc@example.com",
+            "abc@example..com",
+            ".abc@example.com",
+            "abc.@example.com"
     })
     void givenInvalidEmailCreateRequest_whenCreateEmployee_thenReturnBadRequest(String invalidName) throws Exception {
 
@@ -643,8 +695,6 @@ class EmployeeControllerTest extends BaseTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {
-            "",
-            " ",
             "532221133",
             "+905322211",
             "abc5322211",
@@ -859,14 +909,6 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
-    private static Stream<BigDecimal> provideInvalidSalaries() {
-        return Stream.of(
-                new BigDecimal("-1"),
-                new BigDecimal("0"),
-                new BigDecimal("10000000.01")
-        );
-    }
-
     @Test
     void givenNullGenderCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
 
@@ -952,6 +994,14 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
+    private static Stream<BigDecimal> provideInvalidSalaries() {
+        return Stream.of(
+                new BigDecimal("-1"),
+                new BigDecimal("0"),
+                new BigDecimal("10000000.01")
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("provideInvalidSalaries")
     void givenInvalidSalaryCreateRequest_whenCreateEmployee_thenReturnBadRequest(BigDecimal invalidSalary) throws Exception {
@@ -1028,6 +1078,93 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
+    private static Stream<BigDecimal> provideValidSalaries() {
+        return Stream.of(
+                new BigDecimal("1"),
+                new BigDecimal("5000"),
+                new BigDecimal("10000000"),
+                new BigDecimal("0.01")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideValidSalaries")
+    void givenValidSalaryCreateRequest_whenCreateEmployee_thenReturnOk(BigDecimal validSalary) throws Exception {
+
+        EmployeeCreateRequest validRequest = EmployeeCreateRequest.builder()
+                .identityNumber("25111115811")
+                .firstName("Semih")
+                .lastName("Yılmaz")
+                .phoneNumber("05332221133")
+                .email("alisemih@gmail.com")
+                .address("Test Mahallesi")
+                .birthDate(LocalDate.of(1990, 1, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(validSalary)
+                .positionId(1L)
+                .departmentId(3L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(validRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.times(1))
+                .create(Mockito.any(EmployeeCreateRequest.class));
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidPositionId_whenCalledFindByIdEmployee_thenReturnBadRequest(Long invalidId) throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(invalidId)
+                .departmentId(3L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+
+    }
 
     @Test
     void givenNullPositionIdCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
@@ -1046,6 +1183,49 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(null)
                 .departmentId(3L)
+                .startDate(LocalDate.of(2025, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidDepartmentId_whenCalledFindByIdEmployee_thenReturnBadRequest(Long invalidId) throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(5L)
+                .departmentId(invalidId)
                 .startDate(LocalDate.of(2025, 9, 1))
                 .build();
 
@@ -1105,6 +1285,43 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
+    @Test
+    void givenInvalidStartDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+
+        //Given
+        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
+                .identityNumber("1111111111111")
+                .firstName("Semih")
+                .lastName("Ay")
+                .phoneNumber("05332221133")
+                .email("semihh@gmail.com")
+                .address("Bursa")
+                .birthDate(LocalDate.of(2000, 9, 1))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .salary(BigDecimal.valueOf(25000))
+                .positionId(1L)
+                .departmentId(3L)
+                .startDate(LocalDate.of(2020, 9, 1))
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest());
+
+        //Verify
+        Mockito.verify(employeeWriteService, Mockito.never())
+                .create(Mockito.any(EmployeeCreateRequest.class));
+
+    }
 
     @Test
     void givenNullStartDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
@@ -1144,115 +1361,49 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
+
+    /**
+     * {@link EmployeeController#update(Long, EmployeeUpdateRequest)}
+     */
     @Test
-    void givenInvalidStartDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
+    void givenValidIdAndEmployeeUpdateRequest_whenFindEmployeeById_thenUpdateEmployeeSuccessfully() throws Exception {
 
         //Given
-        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
-                .identityNumber("1111111111111")
+        Long mockId = 10L;
+
+        EmployeeUpdateRequest mockEmployeeUpdateRequest = EmployeeUpdateRequest.builder()
                 .firstName("Semih")
                 .lastName("Ay")
+                .identityNumber("98712365456")
                 .phoneNumber("05332221133")
                 .email("semihh@gmail.com")
                 .address("Bursa")
                 .birthDate(LocalDate.of(2000, 9, 1))
                 .gender(Gender.MALE)
                 .nationality("TC")
-                .salary(BigDecimal.valueOf(25000))
-                .positionId(1L)
-                .departmentId(3L)
-                .startDate(LocalDate.of(2020, 9, 1))
                 .build();
 
         //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/employee")
+        Mockito.doNothing()
+                .when(employeeWriteService)
+                .update(mockId, mockEmployeeUpdateRequest);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/employee/{id}", mockId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest));
+                .content(objectMapper.writeValueAsString(mockEmployeeUpdateRequest));
 
         //Then
-        mockMvc.perform(request)
+        mockMvc.perform(mockHttpServletRequestBuilder)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest());
-
-        //Verify
-        Mockito.verify(employeeWriteService, Mockito.never())
-                .create(Mockito.any(EmployeeCreateRequest.class));
-
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideValidSalaries")
-    void givenValidSalaryCreateRequest_whenCreateEmployee_thenReturnOk(BigDecimal validSalary) throws Exception {
-
-        EmployeeCreateRequest validRequest = EmployeeCreateRequest.builder()
-                .identityNumber("25111115811")
-                .firstName("Semih")
-                .lastName("Yılmaz")
-                .phoneNumber("05332221133")
-                .email("alisemih@gmail.com")
-                .address("Test Mahallesi")
-                .birthDate(LocalDate.of(1990, 1, 1))
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .salary(validSalary)
-                .positionId(1L)
-                .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
-                .build();
-
-        //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/employee")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
 
         //Verify
         Mockito.verify(employeeWriteService, Mockito.times(1))
-                .create(Mockito.any(EmployeeCreateRequest.class));
-    }
-
-    @Test
-    void givenInvalidNowStartDateCreateRequest_whenCreateEmployee_thenReturnBadRequest() throws Exception {
-
-        //Given
-        EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
-                .identityNumber("1111111111111")
-                .firstName("Semih")
-                .lastName("Ay")
-                .phoneNumber("05332221133")
-                .email("semihh@gmail.com")
-                .address("Bursa")
-                .birthDate(LocalDate.of(2000, 9, 1))
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .salary(BigDecimal.valueOf(25000))
-                .positionId(1L)
-                .departmentId(3L)
-                .startDate(LocalDate.now())
-                .build();
-
-        //When
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/employee")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isBadRequest());
-
-        //Verify
-        Mockito.verify(employeeWriteService, Mockito.never())
-                .create(Mockito.any(EmployeeCreateRequest.class));
+                .update(Mockito.any(), Mockito.any(EmployeeUpdateRequest.class));
 
     }
 
@@ -1444,123 +1595,18 @@ class EmployeeControllerTest extends BaseTest {
                         .build());
     }
 
-    /**
-     * {@link EmployeeController#findById(Long)} ()}
-     */
-    @Test
-    void givenValidId_whenCalledFindByIdEmployee_thenReturnEmployeeDetailResponseSuccessful() throws Exception {
+    private static EmployeeExperienceResponse getEmployeeExperienceResponse() {
 
-        //Given
-        Long mockId = 1L;
-
-        EmployeeDetailsResponse mockEmployeeDetailsResponse = EmployeeDetailsResponse.builder()
-                .employee(getEmployee())
-                .experiences(List.of(getEmployeeExperienceResponse()))
+        return EmployeeExperienceResponse.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(100000))
+                .startDate(LocalDate.now()
+                        .plusDays(2))
+                .endDate(LocalDate.now()
+                        .plusMonths(6))
+                .positionName("Test position")
+                .departmentName("Test department")
+                .managerName("Test Manager")
                 .build();
-
-        //When
-        Mockito.when(employeeReadService.findById(mockId))
-                .thenReturn(mockEmployeeDetailsResponse);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .get(BASE_PATH + "/employee/{id}", mockId)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .isMap())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
-                        .exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.firstName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.lastName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.phoneNumber")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.address")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.birthDate")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.gender")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
-                        .isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].salary")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].startDate")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].id")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].positionName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].departmentName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].managerName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true));
-
-        //Verify
-        Mockito.verify(employeeReadService, Mockito.times(1))
-                .findById(Mockito.anyLong());
-
     }
-
-    /**
-     * {@link EmployeeController#update(Long, EmployeeUpdateRequest)}
-     */
-    @Test
-    void givenValidIdAndEmployeeUpdateRequest_whenFindEmployeeById_thenUpdateEmployeeSuccessfully() throws Exception {
-
-        //Given
-        Long mockId = 10L;
-
-        EmployeeUpdateRequest mockEmployeeUpdateRequest = EmployeeUpdateRequest.builder()
-                .firstName("Semih")
-                .lastName("Ay")
-                .identityNumber("98712365456")
-                .phoneNumber("05332221133")
-                .email("semihh@gmail.com")
-                .address("Bursa")
-                .birthDate(LocalDate.of(2000, 9, 1))
-                .gender(Gender.MALE)
-                .nationality("TC")
-                .build();
-
-        //When
-        Mockito.doNothing()
-                .when(employeeWriteService)
-                .update(mockId, mockEmployeeUpdateRequest);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .put(BASE_PATH + "/employee/{id}", mockId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mockEmployeeUpdateRequest));
-
-        //Then
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true));
-
-        //Verify
-        Mockito.verify(employeeWriteService, Mockito.times(1))
-                .update(Mockito.any(), Mockito.any(EmployeeUpdateRequest.class));
-
-    }
-
 }
