@@ -66,9 +66,11 @@ public class EmployeeCreateRequest {
     private BigDecimal salary;
 
     @NotNull
+    @Positive
     private Long positionId;
 
     @NotNull
+    @Positive
     private Long departmentId;
 
     @NotNull
