@@ -35,7 +35,7 @@ public class EmployeeUpdateRequest {
     private String identityNumber;
 
     @Email
-    @Size(min = 2, max = 255)
+    @Size(max = 255)
     private String email;
 
     @NotBlank
