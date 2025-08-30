@@ -21,14 +21,14 @@ public class Position extends BaseDomainModel {
     private Department department;
 
     public void delete() {
-        this.setStatus(PositionStatus.DELETED);
-        this.setUpdatedAt(LocalDateTime.now());
-        this.setUpdatedBy("ADMIN");
+        this.status = PositionStatus.DELETED;
+        this.updatedAt = LocalDateTime.now();
+        this.updatedBy = "ADMIN";
     }
 
     public boolean isDeleted() {
 
-        return this.getStatus() == PositionStatus.DELETED;
+        return this.status == PositionStatus.DELETED;
     }
 
 }
