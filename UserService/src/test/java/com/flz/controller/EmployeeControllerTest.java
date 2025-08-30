@@ -1960,12 +1960,18 @@ class EmployeeControllerTest extends BaseTest {
 
     }
 
-    @Test
-    void whenCalledDeleteEmployeeWithInvalidId_thenReturnBadRequest() throws Exception {
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidtId_whenCalledDeleteEmployee_thenReturnBadRequest(Long invalidId) throws Exception {
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .delete(BASE_PATH + "/employee/{id}", "lkjhg");
+                .delete(BASE_PATH + "/employee/{id}", invalidId);
 
         //Then
         mockMvc.perform(mockHttpServletRequestBuilder)
