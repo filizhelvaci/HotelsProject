@@ -14,7 +14,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -61,7 +60,6 @@ public class EmployeeCreateRequest {
     private String nationality;
 
     @NotNull
-    @Range(min = 0, max = 10_000_000)
     @Positive
     private BigDecimal salary;
 
