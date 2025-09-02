@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,9 +27,20 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
         log.error(exception.getMessage(), exception);
+        String fieldName = null;
+        String errorMessage = "Validation failed.";
+
+        if (exception.getBindingResult().hasFieldErrors()) {
+            FieldError fieldError = exception.getBindingResult().getFieldError();
+            if (fieldError != null) {
+                fieldName = fieldError.getField();
+                errorMessage = fieldError.getDefaultMessage();
+            }
+        }
+
         return ErrorResponse.builder()
-                .message("This field cannot contain null values.")
-                .field(exception.getObjectName())
+                .message(errorMessage)
+                .field(fieldName)
                 .build();
     }
 
