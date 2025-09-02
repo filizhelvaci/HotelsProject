@@ -156,28 +156,27 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.id")
                         .value(employeeId))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.firstName")
-                        .value("Cemal"))
+                        .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.lastName")
-                        .value("Sureyya"))
+                        .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.identityNumber")
-                        .value("55591119999"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.email")
-                        .value("cemil@test.com"))
+                        .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.phoneNumber")
-                        .value("055531234567"))
+                        .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.address")
-                        .value("Ankara"))
+                        .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.birthDate")
-                        .value("2000-10-01"))
+                        .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.gender")
-                        .value("MALE"))
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.gender")
+                        .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.employee.nationality")
                         .value("TR"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences")
                         .isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences.length()")
                         .value(2))
-
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].salary")
                         .value(10000.00))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[0].startDate")
@@ -214,21 +213,34 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
         Assertions.assertNotNull(employeeDetailsResponse);
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences());
-        Assertions.assertNotNull(employeeDetailsResponse.getEmployee().getFirstName());
-        Assertions.assertNotNull(employeeDetailsResponse.getEmployee().getLastName());
-        Assertions.assertNotNull(employeeDetailsResponse.getEmployee().getIdentityNumber());
-        Assertions.assertNotNull(employeeDetailsResponse.getEmployee().getPhoneNumber());
-        Assertions.assertNotNull(employeeDetailsResponse.getEmployee().getBirthDate());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getId());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getStartDate());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getEndDate());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getStartDate());
-        Assertions.assertNull(employeeDetailsResponse.getExperiences().get(1).getEndDate());
-        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getPositionName());
-        Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeFromDatabase.getIdentityNumber());
-        Assertions.assertEquals(savedEmployee.getEmail(), employeeFromDatabase.getEmail());
-        Assertions.assertEquals(savedEmployee.getPhoneNumber(), employeeFromDatabase.getPhoneNumber());
-        Assertions.assertEquals(savedEmployee.getBirthDate(), employeeFromDatabase.getBirthDate());
+        Assertions.assertEquals(savedEmployee.getFirstName(), employeeDetailsResponse.getEmployee().getFirstName());
+        Assertions.assertEquals(savedEmployee.getLastName(), employeeDetailsResponse.getEmployee().getLastName());
+        Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeDetailsResponse.getEmployee().getIdentityNumber());
+        Assertions.assertEquals(savedEmployee.getPhoneNumber(), employeeDetailsResponse.getEmployee().getPhoneNumber());
+        Assertions.assertEquals(savedEmployee.getAddress(), employeeDetailsResponse.getEmployee().getAddress());
+        Assertions.assertEquals(savedEmployee.getBirthDate(), employeeDetailsResponse.getEmployee().getBirthDate());
+        Assertions.assertEquals(savedEmployee.getGender(), employeeDetailsResponse.getEmployee().getGender());
+        Assertions.assertEquals(savedEmployee.getNationality(), employeeDetailsResponse.getEmployee().getNationality());
+
+        Assertions.assertEquals(employeeExperience.getPosition().getName(),
+                employeeDetailsResponse.getExperiences().get(0).getPositionName());
+        Assertions.assertEquals(employeeExperience.getPosition().getDepartment().getName(),
+                employeeDetailsResponse.getExperiences().get(0).getDepartmentName());
+        Assertions.assertEquals(employeeExperience.getStartDate(),
+                employeeDetailsResponse.getExperiences().get(0).getStartDate());
+        Assertions.assertEquals(employeeExperience.getEndDate(),
+                employeeDetailsResponse.getExperiences().get(0).getEndDate());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(0).getManagerName());
+
+        Assertions.assertEquals(employeeExperience2.getPosition().getName(),
+                employeeDetailsResponse.getExperiences().get(1).getPositionName());
+        Assertions.assertEquals(employeeExperience2.getPosition().getDepartment().getName(),
+                employeeDetailsResponse.getExperiences().get(0).getDepartmentName());
+        Assertions.assertEquals(employeeExperience2.getStartDate(),
+                employeeDetailsResponse.getExperiences().get(1).getStartDate());
+        Assertions.assertEquals(employeeExperience2.getEndDate(),
+                employeeDetailsResponse.getExperiences().get(1).getEndDate());
+        Assertions.assertNotNull(employeeDetailsResponse.getExperiences().get(1).getManagerName());
 
     }
 
@@ -249,35 +261,46 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                         .isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].firstName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].firstName")
-                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
-                        .isNotEmpty())
+                        .isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].firstName")
+                        .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].lastName")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].identityNumber")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].phoneNumber")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].address")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].birthDate")
                         .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].lastName")
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].gender")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].nationality")
                         .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdAt")
                         .exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdBy")
-                        .exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdBy")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdAt")
-                        .isNotEmpty());
+                        .exists());
 
         //Then
         List<Employee> employeeList = employeeReadPort.findAll(1, 10);
 
         Assertions.assertNotNull(employeeList);
         Assertions.assertFalse(employeeList.isEmpty());
+        Assertions.assertNotNull(employeeList.get(0).getId());
         Assertions.assertNotNull(employeeList.get(0).getFirstName());
         Assertions.assertNotNull(employeeList.get(0).getLastName());
+        Assertions.assertNotNull(employeeList.get(0).getIdentityNumber());
+        Assertions.assertNotNull(employeeList.get(0).getPhoneNumber());
+        Assertions.assertNotNull(employeeList.get(0).getAddress());
+        Assertions.assertNotNull(employeeList.get(0).getBirthDate());
+        Assertions.assertNotNull(employeeList.get(0).getGender());
+        Assertions.assertNotNull(employeeList.get(0).getNationality());
         Assertions.assertNotNull(employeeList.get(0).getCreatedAt());
         Assertions.assertNotNull(employeeList.get(0).getCreatedBy());
-        Assertions.assertNotNull(employeeList.get(0).getId());
 
     }
 
@@ -296,16 +319,13 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                         .isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].firstName")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].lastName")
-                        .isString())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].firstName")
-                        .isString())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].lastName")
-                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
-                        .isNumber());
+                        .isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].firstName")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].lastName")
+                        .isString());
 
         //Then
         List<Employee> employees = employeeReadPort.findSummaryAll();
@@ -322,6 +342,30 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
     @Test
     void givenCreateRequest_whenCreateEmployee_thenReturnSuccess() throws Exception {
 
+        //Initialize
+        Employee manager = employeeSavePort.save(Employee.builder()
+                .firstName("Emma")
+                .lastName("Sweet")
+                .identityNumber("98712132109")
+                .phoneNumber("05558525574")
+                .address("New York")
+                .birthDate(LocalDate.parse("1995-10-01"))
+                .gender(Gender.FEMALE)
+                .nationality("UK")
+                .build());
+
+        Department department = departmentTestPort.save(Department.builder()
+                .status(DepartmentStatus.ACTIVE)
+                .name("DepartmentIT")
+                .manager(manager)
+                .build());
+
+        Position position = positionTestPort.save(Position.builder()
+                .name("Go Developer")
+                .status(PositionStatus.ACTIVE)
+                .department(department)
+                .build());
+
         //Given
         EmployeeCreateRequest createRequest = EmployeeCreateRequest.builder()
                 .identityNumber("25996700777")
@@ -334,8 +378,8 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .gender(Gender.MALE)
                 .nationality("TC")
                 .salary(BigDecimal.valueOf(20000))
-                .positionId(1L)
-                .departmentId(3L)
+                .positionId(position.getId())
+                .departmentId(department.getId())
                 .startDate(LocalDate.parse("2025-10-01"))
                 .build();
 
@@ -354,22 +398,37 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                         .value(true));
 
         //Verify
-        Employee employee = employeeTestPort.findByIdentityNumber("25996700777");
+        Employee actualEmployee = employeeTestPort.findByIdentityNumber("25996700777");
+        Position actualPosition = positionTestPort.findByName("Go Developer");
+        List<EmployeeExperience> employeeExperiences = employeeExperienceReadPort.findAllByEmployeeId(actualEmployee.getId());
 
-        Assertions.assertNotNull(employee);
-        Assertions.assertNotNull(employee.getFirstName());
-        Assertions.assertNotNull(employee.getLastName());
-        Assertions.assertNotNull(employee.getId());
-        Assertions.assertNotNull(employee.getPhoneNumber());
-        Assertions.assertNotNull(employee.getEmail());
-        Assertions.assertNotNull(employee.getAddress());
-        Assertions.assertNotNull(employee.getBirthDate());
-        Assertions.assertNotNull(employee.getGender());
-        Assertions.assertNotNull(employee.getNationality());
-        Assertions.assertEquals(createRequest.getFirstName(), employee.getFirstName());
-        Assertions.assertEquals(createRequest.getLastName(), employee.getLastName());
-        Assertions.assertEquals(createRequest.getPhoneNumber(), employee.getPhoneNumber());
-        Assertions.assertEquals(createRequest.getEmail(), employee.getEmail());
+        Assertions.assertNotNull(actualEmployee);
+        Assertions.assertNotNull(actualEmployee.getFirstName());
+        Assertions.assertNotNull(actualEmployee.getLastName());
+        Assertions.assertNotNull(actualEmployee.getId());
+        Assertions.assertNotNull(actualEmployee.getPhoneNumber());
+        Assertions.assertNotNull(actualEmployee.getEmail());
+        Assertions.assertNotNull(actualEmployee.getAddress());
+        Assertions.assertNotNull(actualEmployee.getBirthDate());
+        Assertions.assertEquals(createRequest.getFirstName(), actualEmployee.getFirstName());
+        Assertions.assertEquals(createRequest.getLastName(), actualEmployee.getLastName());
+        Assertions.assertEquals(createRequest.getIdentityNumber(), actualEmployee.getIdentityNumber());
+        Assertions.assertEquals(createRequest.getEmail(), actualEmployee.getEmail());
+        Assertions.assertEquals(createRequest.getPhoneNumber(), actualEmployee.getPhoneNumber());
+        Assertions.assertEquals(createRequest.getAddress(), actualEmployee.getAddress());
+        Assertions.assertEquals(createRequest.getBirthDate(), actualEmployee.getBirthDate());
+        Assertions.assertEquals(createRequest.getGender(), actualEmployee.getGender());
+        Assertions.assertEquals(createRequest.getNationality(), actualEmployee.getNationality());
+        Assertions.assertEquals(employeeExperiences.get(0).getEmployee(), actualEmployee);
+        Assertions.assertEquals(createRequest.getPositionId(), actualPosition.getId());
+        Assertions.assertEquals(position.getName(), actualPosition.getName());
+        Assertions.assertEquals(position.getDepartment().getName(),
+                actualPosition.getDepartment().getName());
+        Assertions.assertEquals(position.getDepartment().getManager().getPhoneNumber(),
+                actualPosition.getDepartment().getManager().getPhoneNumber());
+        Assertions.assertEquals(position.getStatus(), actualPosition.getStatus());
+        Assertions.assertEquals(position.getDepartment().getStatus(),
+                actualPosition.getDepartment().getStatus());
 
     }
 
@@ -394,13 +453,13 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         EmployeeUpdateRequest updateRequest = EmployeeUpdateRequest.builder()
                 .firstName("Mahmut")
                 .lastName("Korur")
+                .identityNumber("12345543219")
                 .email("mahmut@gmail.com")
                 .phoneNumber("05327776543")
                 .address("Adana")
-                .nationality("Almanya")
-                .identityNumber("1234554321")
                 .birthDate(LocalDate.parse("2000-10-01"))
                 .gender(Gender.MALE)
+                .nationality("Almanya")
                 .build();
 
         //Given
@@ -424,16 +483,25 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
         Assertions.assertNotNull(updatedEmployee);
         Assertions.assertTrue(updatedEmployee.isPresent());
-        Assertions.assertEquals(updatedEmployee.get().getIdentityNumber(),
-                updateRequest.getIdentityNumber());
-        Assertions.assertEquals(updatedEmployee.get().getFirstName(),
-                updateRequest.getFirstName());
-        Assertions.assertEquals(updatedEmployee.get().getLastName(),
-                updateRequest.getLastName());
-        Assertions.assertEquals(updatedEmployee.get().getAddress(),
-                updateRequest.getAddress());
-        Assertions.assertEquals(updatedEmployee.get().getEmail(),
-                updateRequest.getEmail());
+        Assertions.assertEquals(updateRequest.getFirstName(), updatedEmployee.get().getFirstName());
+        Assertions.assertEquals(updateRequest.getLastName(), updatedEmployee.get().getLastName());
+        Assertions.assertEquals(updateRequest.getIdentityNumber(), updatedEmployee.get().getIdentityNumber());
+        Assertions.assertEquals(updateRequest.getEmail(), updatedEmployee.get().getEmail());
+        Assertions.assertEquals(updateRequest.getPhoneNumber(), updatedEmployee.get().getPhoneNumber());
+        Assertions.assertEquals(updateRequest.getAddress(), updatedEmployee.get().getAddress());
+        Assertions.assertEquals(updateRequest.getBirthDate(), updatedEmployee.get().getBirthDate());
+        Assertions.assertEquals(updateRequest.getGender(), updatedEmployee.get().getGender());
+        Assertions.assertEquals(updateRequest.getNationality(), updatedEmployee.get().getNationality());
+
+        Assertions.assertNotEquals(savedEmployee.getFirstName(), updatedEmployee.get().getFirstName());
+        Assertions.assertNotEquals(savedEmployee.getLastName(), updatedEmployee.get().getLastName());
+        Assertions.assertNotEquals(savedEmployee.getIdentityNumber(), updatedEmployee.get().getIdentityNumber());
+        Assertions.assertNotEquals(savedEmployee.getEmail(), updatedEmployee.get().getEmail());
+        Assertions.assertNotEquals(savedEmployee.getPhoneNumber(), updatedEmployee.get().getPhoneNumber());
+        Assertions.assertNotEquals(savedEmployee.getAddress(), updatedEmployee.get().getAddress());
+        Assertions.assertEquals(savedEmployee.getBirthDate(), updatedEmployee.get().getBirthDate());
+        Assertions.assertEquals(savedEmployee.getGender(), updatedEmployee.get().getGender());
+        Assertions.assertNotEquals(savedEmployee.getNationality(), updatedEmployee.get().getNationality());
 
     }
 
@@ -525,15 +593,36 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
         Assertions.assertTrue(deletedEmployee.isEmpty());
         Assertions.assertTrue(employeeExperiences.isEmpty());
-        Assertions.assertNotNull(employeeOldSaved);
-        Assertions.assertNotNull(employeeOldSaved.getId());
-        Assertions.assertEquals(employee.getFirstName(), employeeOldSaved.getFirstName());
-        Assertions.assertEquals(employee.getLastName(), employeeOldSaved.getLastName());
-        Assertions.assertNotNull(employeeOldExperiences.get(0).getId());
-        Assertions.assertNotNull(employeeOldExperiences.get(1).getId());
-        Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeOldExperiences.get(0).getEmployeeOld().getIdentityNumber());
-        Assertions.assertEquals(position.getName(), employeeOldExperiences.get(0).getPosition().getName());
 
+        Assertions.assertNotNull(employeeOldSaved);
+        Assertions.assertEquals(savedEmployee.getFirstName(), employeeOldSaved.getFirstName());
+        Assertions.assertEquals(savedEmployee.getLastName(), employeeOldSaved.getLastName());
+        Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeOldSaved.getIdentityNumber());
+        Assertions.assertEquals(savedEmployee.getPhoneNumber(), employeeOldSaved.getPhoneNumber());
+        Assertions.assertEquals(savedEmployee.getAddress(), employeeOldSaved.getAddress());
+        Assertions.assertEquals(savedEmployee.getBirthDate(), employeeOldSaved.getBirthDate());
+
+        Assertions.assertEquals(employeeExperience.getPosition().getName(), employeeOldExperiences.get(0)
+                .getPosition().getName());
+        Assertions.assertEquals(employeeExperience.getPosition().getDepartment().getName(),
+                employeeOldExperiences.get(0).getPosition().getDepartment().getName());
+        Assertions.assertEquals(employeeExperience.getPosition().getStatus(),
+                employeeOldExperiences.get(0).getPosition().getStatus());
+        Assertions.assertEquals(employeeExperience.getPosition().getDepartment().getManager().getIdentityNumber(),
+                employeeOldExperiences.get(0).getPosition().getDepartment().getManager().getIdentityNumber());
+        Assertions.assertEquals(employeeExperience.getPosition().getDepartment().getManager().getPhoneNumber(),
+                employeeOldExperiences.get(0).getPosition().getDepartment().getManager().getPhoneNumber());
+
+        Assertions.assertEquals(employeeExperience2.getPosition().getName(),
+                employeeOldExperiences.get(1).getPosition().getName());
+        Assertions.assertEquals(employeeExperience2.getPosition().getDepartment().getName(),
+                employeeOldExperiences.get(1).getPosition().getDepartment().getName());
+        Assertions.assertEquals(employeeExperience2.getPosition().getStatus(),
+                employeeOldExperiences.get(1).getPosition().getStatus());
+        Assertions.assertEquals(employeeExperience2.getPosition().getDepartment().getManager().getIdentityNumber(),
+                employeeOldExperiences.get(1).getPosition().getDepartment().getManager().getIdentityNumber());
+        Assertions.assertEquals(employeeExperience2.getPosition().getDepartment().getManager().getPhoneNumber(),
+                employeeOldExperiences.get(1).getPosition().getDepartment().getManager().getPhoneNumber());
 
     }
 
