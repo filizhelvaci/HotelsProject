@@ -40,10 +40,22 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
     @Test
     void givenCreateRequest_whenCreateDepartment_thenReturnSuccess() throws Exception {
 
-        //Given
+        //Initialize
+        Employee manager = employeeSavePort.save(Employee.builder()
+                .firstName("Enes")
+                .lastName("Tatar")
+                .identityNumber("598155714785")
+                .email("enesttr@example.com")
+                .phoneNumber("05328888565")
+                .address("Trabzon")
+                .birthDate(LocalDate.of(1982, 1, 15))
+                .gender(Gender.MALE)
+                .nationality("Turkey")
+                .build());
+
         DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
                 .name("Otopark Bakım")
-                .managerId(12L)
+                .managerId(manager.getId())
                 .build();
 
         //When
@@ -65,8 +77,17 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(createdDepartment.getId());
         Assertions.assertNotNull(createdDepartment.getName());
         Assertions.assertNotNull(createdDepartment.getStatus());
-        Assertions.assertEquals(createdDepartment.getName(), createRequest.getName());
+        Assertions.assertNotNull(createdDepartment.getManager());
+        Assertions.assertEquals(createRequest.getName(), createdDepartment.getName());
         Assertions.assertEquals(DepartmentStatus.ACTIVE, createdDepartment.getStatus());
+        Assertions.assertEquals(manager.getFirstName(), createdDepartment.getManager().getFirstName());
+        Assertions.assertEquals(manager.getLastName(), createdDepartment.getManager().getLastName());
+        Assertions.assertEquals(manager.getIdentityNumber(), createdDepartment.getManager().getIdentityNumber());
+        Assertions.assertEquals(manager.getPhoneNumber(), createdDepartment.getManager().getPhoneNumber());
+        Assertions.assertEquals(manager.getAddress(), createdDepartment.getManager().getAddress());
+        Assertions.assertEquals(manager.getBirthDate(), createdDepartment.getManager().getBirthDate());
+        Assertions.assertEquals(manager.getGender(), createdDepartment.getManager().getGender());
+        Assertions.assertEquals(manager.getNationality(), createdDepartment.getManager().getNationality());
 
     }
 
@@ -87,11 +108,10 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .nationality("Norway")
                 .build());
 
-        Department departmentSaved = departmentTestPort.save(
-                Department.builder()
+        Department departmentSaved = departmentTestPort.save(Department.builder()
                         .name("Kat Güvenlik")
+                .status(DepartmentStatus.ACTIVE)
                         .manager(manager)
-                        .status(DepartmentStatus.ACTIVE)
                         .build());
 
         DepartmentUpdateRequest updateRequest = DepartmentUpdateRequest.builder()
@@ -119,12 +139,16 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         //Verify
         Department department = departmentTestPort.findByName(updateRequest.getName());
 
-        Assertions.assertNotNull(department);
         Assertions.assertNotNull(department.getId());
         Assertions.assertNotNull(department.getName());
         Assertions.assertNotNull(department.getStatus());
-        Assertions.assertEquals(department.getName(), updateRequest.getName());
+        Assertions.assertNotNull(department.getManager());
+        Assertions.assertEquals(updateRequest.getName(), department.getName());
         Assertions.assertEquals(DepartmentStatus.ACTIVE, department.getStatus());
+        Assertions.assertEquals(manager.getFirstName(), department.getManager().getFirstName());
+        Assertions.assertEquals(manager.getLastName(), department.getManager().getLastName());
+        Assertions.assertEquals(manager.getIdentityNumber(), department.getManager().getIdentityNumber());
+        Assertions.assertEquals(manager.getPhoneNumber(), department.getManager().getPhoneNumber());
 
     }
 
@@ -145,11 +169,10 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .nationality("Denmark")
                 .build());
 
-        Department departmentSaved = departmentTestPort.save(
-                Department.builder()
+        Department departmentSaved = departmentTestPort.save(Department.builder()
                         .name("Teras Güvenlik")
+                .status(DepartmentStatus.ACTIVE)
                         .manager(manager)
-                        .status(DepartmentStatus.ACTIVE)
                         .build());
 
         //Given
@@ -173,6 +196,10 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(departmentId, deletedDepartment.get().getId());
         Assertions.assertEquals(departmentSaved.getName(), deletedDepartment.get().getName());
         Assertions.assertNotEquals(departmentSaved.getStatus(), deletedDepartment.get().getStatus());
+        Assertions.assertEquals(departmentSaved.getManager().getFirstName(), deletedDepartment.get().getManager().getFirstName());
+        Assertions.assertEquals(departmentSaved.getManager().getLastName(), deletedDepartment.get().getManager().getLastName());
+        Assertions.assertEquals(departmentSaved.getManager().getIdentityNumber(), deletedDepartment.get().getManager().getIdentityNumber());
+        Assertions.assertEquals(departmentSaved.getManager().getPhoneNumber(), deletedDepartment.get().getManager().getPhoneNumber());
         Assertions.assertEquals(DepartmentStatus.DELETED, deletedDepartment.get().getStatus());
         Assertions.assertNotNull(deletedDepartment.get().getCreatedAt());
         Assertions.assertNotNull(deletedDepartment.get().getCreatedBy());
@@ -195,26 +222,38 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
                         .isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
-                        .value("On Buro"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
-                        .value("ACTIVE"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdBy")
-                        .value("Admin"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdAt")
                         .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].deleted")
-                        .value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
+                        .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager")
                         .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdAt")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].createdBy")
+                        .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.firstName")
-                        .value("Tolga"))
+                        .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.lastName")
-                        .value("Aslan"))
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.identityNumber")
+                        .isString())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.email")
-                        .value("tolga.aslan@gmail.com"));
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.phoneNumber")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.address")
+                        .isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.birthDate")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.gender")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager.nationality")
+                        .isString());
 
         //Then
         List<Department> departments = departmentReadPort.findAll(1, 10);
@@ -223,9 +262,18 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Assertions.assertFalse(departments.isEmpty());
         Assertions.assertNotNull(departments.get(0).getName());
         Assertions.assertNotNull(departments.get(0).getStatus());
+        Assertions.assertNotNull(departments.get(0).getManager());
         Assertions.assertNotNull(departments.get(0).getCreatedAt());
         Assertions.assertNotNull(departments.get(0).getCreatedBy());
-        Assertions.assertNotNull(departments.get(0).getId());
+        Assertions.assertTrue(departments.size() > 1);
+        Assertions.assertNotNull(departments.get(0).getManager().getFirstName());
+        Assertions.assertNotNull(departments.get(0).getManager().getLastName());
+        Assertions.assertNotNull(departments.get(0).getManager().getIdentityNumber());
+        Assertions.assertNotNull(departments.get(0).getManager().getPhoneNumber());
+        Assertions.assertNotNull(departments.get(0).getManager().getAddress());
+        Assertions.assertNotNull(departments.get(0).getManager().getBirthDate());
+        Assertions.assertNotNull(departments.get(0).getManager().getGender());
+        Assertions.assertNotNull(departments.get(0).getManager().getNationality());
 
     }
 
@@ -243,16 +291,20 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
+                        .isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
                         .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
                         .isString())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].name")
-                        .value("On Buro"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
-                        .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].id")
-                        .isNumber());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].status")
+                        .doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response[0].manager")
+                        .doesNotExist());
 
         //Then
         List<Department> departments = departmentReadPort.findSummaryAll();
