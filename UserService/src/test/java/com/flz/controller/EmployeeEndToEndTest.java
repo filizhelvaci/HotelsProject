@@ -483,6 +483,10 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
         Assertions.assertNotNull(updatedEmployee);
         Assertions.assertTrue(updatedEmployee.isPresent());
+
+        Assertions.assertNotNull(updatedEmployee.get().getUpdatedAt());
+        Assertions.assertNotNull(updatedEmployee.get().getUpdatedBy());
+
         Assertions.assertEquals(updateRequest.getFirstName(), updatedEmployee.get().getFirstName());
         Assertions.assertEquals(updateRequest.getLastName(), updatedEmployee.get().getLastName());
         Assertions.assertEquals(updateRequest.getIdentityNumber(), updatedEmployee.get().getIdentityNumber());
