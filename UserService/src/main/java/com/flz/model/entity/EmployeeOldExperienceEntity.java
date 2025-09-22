@@ -59,13 +59,4 @@ public class EmployeeOldExperienceEntity extends BaseEntity {
     @JoinColumn(name = "employee_old_id", referencedColumnName = "id", nullable = false)
     private EmployeeOldEntity employeeOld;
 
-    /**
-     * ----------------------------------------------------------------
-     * EmployeeOldExperienceEntity      EmployeeEntity
-     * M                       1
-     */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "supervisor_id", referencedColumnName = "id", nullable = false)
-    private EmployeeEntity supervisor;
-
 }

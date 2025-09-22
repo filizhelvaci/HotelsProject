@@ -3,7 +3,9 @@ package com.flz.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseTest;
 import com.flz.model.Department;
+import com.flz.model.Employee;
 import com.flz.model.enums.DepartmentStatus;
+import com.flz.model.enums.Gender;
 import com.flz.model.request.DepartmentCreateRequest;
 import com.flz.model.request.DepartmentUpdateRequest;
 import com.flz.model.response.DepartmentSummaryResponse;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -42,31 +45,6 @@ class DepartmentControllerTest extends BaseTest {
 
     private static final String BASE_PATH = "/api/v1";
 
-    //Initialize
-    private static List<Department> getDepartments() {
-        return List.of(
-                Department.builder()
-                        .id(11L)
-                        .name("TEST1")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Department.builder()
-                        .id(12L)
-                        .name("TEST2")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build(),
-                Department.builder()
-                        .id(13L)
-                        .name("TEST3")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("testAdmin")
-                        .build());
-    }
 
     /**
      * {@link DepartmentController#findAll(com.flz.model.request.PageRequest)}
@@ -110,14 +88,20 @@ class DepartmentControllerTest extends BaseTest {
 
     }
 
-    @Test
-    void whenPageSizeDifferentThanValidValueInFindAll_thenReturnBadRequestError() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {
+            0,
+            16,
+            -1,
+            100
+    })
+    void givenInvalidPageSize_whenFindAllDepartments_thenReturnBadRequest(Integer invalidPageSize) throws Exception {
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .get(BASE_PATH + "/departments")
                 .param("page", "1")
-                .param("pageSize", "-10")
+                .param("pageSize", invalidPageSize.toString())
                 .contentType(MediaType.APPLICATION_JSON);
 
         //Then
@@ -135,12 +119,63 @@ class DepartmentControllerTest extends BaseTest {
     }
 
     @Test
-    void whenPageDifferentThanValidValueInFindAll_thenReturnBadRequestError() throws Exception {
+    void givenNullPageSize_whenFindAllDepartments_thenReturnBadRequest() throws Exception {
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .get(BASE_PATH + "/departments")
-                .param("page", "-1")
+                .param("page", "1")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(departmentReadService, Mockito.never())
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidPage_whenFindAllDepartments_thenReturnBadRequest(Integer invalidPage) throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments")
+                .param("page", invalidPage.toString())
+                .param("pageSize", "10")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(departmentReadService, Mockito.never())
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+
+    }
+
+    @Test
+    void givenNullPage_whenFindAllDepartments_thenReturnBadRequest() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/departments")
                 .param("pageSize", "10")
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -243,43 +278,6 @@ class DepartmentControllerTest extends BaseTest {
 
     }
 
-
-    /**
-     * {@link DepartmentController#create(DepartmentCreateRequest)}
-     */
-    @Test
-    void givenValidDepartmentCreateRequest_whenDepartmentCreated_thenReturnSuccess() throws Exception {
-
-        //Given
-        DepartmentCreateRequest mockCreateRequest = DepartmentCreateRequest.builder()
-                .name("TestName")
-                .build();
-
-        //When
-        Mockito.doNothing()
-                .when(departmentWriteService)
-                .create(Mockito.any(DepartmentCreateRequest.class));
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post(BASE_PATH + "/department")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(mockCreateRequest));
-
-        //Then
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
-                        .value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
-                        .doesNotExist());
-
-        //Verify
-        Mockito.verify(departmentWriteService, Mockito.times(1))
-                .create(Mockito.any(DepartmentCreateRequest.class));
-
-    }
-
     @Test
     void whenNotFoundDepartmentsSummaryAll_thenReturnEmptyList() throws Exception {
 
@@ -311,19 +309,59 @@ class DepartmentControllerTest extends BaseTest {
 
     }
 
+
+    /**
+     * {@link DepartmentController#create(DepartmentCreateRequest)}
+     */
+    @Test
+    void givenValidDepartmentCreateRequest_whenDepartmentCreated_thenReturnSuccess() throws Exception {
+
+        //Given
+        DepartmentCreateRequest mockCreateRequest = DepartmentCreateRequest.builder()
+                .name("TestName")
+                .managerId(5L)
+                .build();
+
+        //When
+        Mockito.doNothing()
+                .when(departmentWriteService)
+                .create(Mockito.any(DepartmentCreateRequest.class));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/department")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockCreateRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response")
+                        .doesNotExist());
+
+        //Verify
+        Mockito.verify(departmentWriteService, Mockito.times(1))
+                .create(Mockito.any(DepartmentCreateRequest.class));
+
+    }
+
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {
             "",
             " ",
             "a",
-            "One morning, when Gregor Samsa woke from troubled dre"
+            "One morning, when Gregor Samsa woke from troubled dreams, " +
+                    "he found himself transformed in his bed int"
     })
-    void givenInvalidCreateRequest_whenCreateDepartment_thenReturnBadRequest(String invalidName) throws Exception {
+    void givenInvalidName_whenCreateDepartment_thenReturnBadRequest(String invalidName) throws Exception {
 
         //Given
         DepartmentCreateRequest invalidRequest = DepartmentCreateRequest.builder()
                 .name(invalidName)
+                .managerId(11L)
                 .build();
 
         //When
@@ -338,7 +376,64 @@ class DepartmentControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         //Verify
-        Mockito.verifyNoInteractions(departmentWriteService);
+        Mockito.verify(departmentWriteService, Mockito.never())
+                .create(Mockito.any(DepartmentCreateRequest.class));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0L,
+            -1L,
+            -100L
+    })
+    void givenInvalidManagerId_whenCreateDepartment_thenReturnBadRequest(Long invalidManagerId) throws Exception {
+
+        //Given
+        DepartmentCreateRequest invalidRequest = DepartmentCreateRequest.builder()
+                .name("TestName")
+                .managerId(invalidManagerId)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/department")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verify(departmentWriteService, Mockito.never())
+                .create(Mockito.any(DepartmentCreateRequest.class));
+
+    }
+
+    @Test
+    void givenNullManagerIdCreateRequest_whenCreateDepartment_thenReturnBadRequest() throws Exception {
+
+        //Given
+        DepartmentCreateRequest invalidRequest = DepartmentCreateRequest.builder()
+                .name("TestName")
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BASE_PATH + "/department")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verify(departmentWriteService, Mockito.never())
+                .create(Mockito.any(DepartmentCreateRequest.class));
 
     }
 
@@ -353,6 +448,7 @@ class DepartmentControllerTest extends BaseTest {
 
         DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
                 .name("TestName")
+                .managerId(11L)
                 .build();
 
         //When
@@ -387,6 +483,7 @@ class DepartmentControllerTest extends BaseTest {
         //Given
         DepartmentUpdateRequest mockRequest = DepartmentUpdateRequest.builder()
                 .name("ValidTestName")
+                .managerId(5L)
                 .build();
 
         //When
@@ -412,11 +509,12 @@ class DepartmentControllerTest extends BaseTest {
     }
 
     @Test
-    void givenNullId_whenUpdateDepartment_thenReturnInternalServerError() throws Exception {
+    void givenNullId_whenUpdateDepartment_thenReturnBadRequest() throws Exception {
 
         //Given
         DepartmentUpdateRequest mockRequest = DepartmentUpdateRequest.builder()
                 .name("ValidTestName")
+                .managerId(5L)
                 .build();
 
         //When
@@ -428,8 +526,107 @@ class DepartmentControllerTest extends BaseTest {
         //Then
         mockMvc.perform(request)
                 .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(false));
+
+
+        //Verify
+        Mockito.verify(departmentWriteService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
+
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {
+            "",
+            " ",
+            "a",
+            "One morning, when Gregor Samsa woke from troubled dreams, " +
+                    "he found himself transformed in his bed int"
+    })
+    void givenInvalidName_whenUpdateDepartment_thenReturnBadRequest(String invalidName) throws Exception {
+
+        //Given
+        DepartmentUpdateRequest mockRequest = DepartmentUpdateRequest.builder()
+                .name(invalidName)
+                .managerId(5L)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/department/{id}", 10L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(mockRequest));
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verify(departmentWriteService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
+
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0L,
+            -1L,
+            -100L
+    })
+    void givenInvalidManagerId_whenUpdateDepartment_thenReturnBadRequest(Long invalidManagerId) throws Exception {
+
+        //Given
+        DepartmentUpdateRequest invalidRequest = DepartmentUpdateRequest.builder()
+                .name("testUpdateName")
+                .managerId(invalidManagerId)
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/department/{id}", 10L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verify(departmentWriteService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
+
+
+    }
+
+    @Test
+    void givenNullManagerIdUpdateRequest_whenUpdateDepartment_thenReturnBadRequest() throws Exception {
+
+        //Given
+        DepartmentCreateRequest invalidRequest = DepartmentCreateRequest.builder()
+                .name("TestName")
+                .build();
+
+        //When
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(BASE_PATH + "/department/{id}", 10L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidRequest));
+
+        //Then
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //Verify
+        Mockito.verify(departmentWriteService, Mockito.never())
+                .update(Mockito.any(), Mockito.any(DepartmentUpdateRequest.class));
 
     }
 
@@ -461,12 +658,17 @@ class DepartmentControllerTest extends BaseTest {
 
     }
 
-    @Test
-    void givenInValidId_whenCalledDeleteForDepartment_thenReturnBadRequest() throws Exception {
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0L,
+            -1L,
+            -100L
+    })
+    void givenInValidId_whenCalledDeleteForDepartment_thenReturnBadRequest(Long invalidId) throws Exception {
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .delete(BASE_PATH + "/department/{id}", "lkjhg");
+                .delete(BASE_PATH + "/department/{id}", invalidId);
 
         //Then
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -478,8 +680,51 @@ class DepartmentControllerTest extends BaseTest {
                         .value(false));
 
         //Verify
-        Mockito.verify(departmentWriteService, Mockito.never()).delete(Mockito.anyLong());
+        Mockito.verify(departmentWriteService, Mockito.never())
+                .delete(Mockito.anyLong());
 
+    }
+
+    private static List<Department> getDepartments() {
+
+        Employee manager = Employee.builder()
+                .id(12L)
+                .firstName("Jackson")
+                .lastName("Dennis")
+                .identityNumber("25555714785")
+                .email("jackson@example.com")
+                .phoneNumber("053588888565")
+                .address("Bursa")
+                .birthDate(LocalDate.of(1998, 1, 15))
+                .gender(Gender.MALE)
+                .nationality("USA")
+                .build();
+
+        return List.of(
+                Department.builder()
+                        .id(11L)
+                        .name("TEST1")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Department.builder()
+                        .id(12L)
+                        .name("TEST2")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build(),
+                Department.builder()
+                        .id(13L)
+                        .name("TEST3")
+                        .manager(manager)
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("testAdmin")
+                        .build());
     }
 
 }

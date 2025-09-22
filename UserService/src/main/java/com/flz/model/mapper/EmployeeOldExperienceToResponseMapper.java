@@ -13,7 +13,7 @@ public interface EmployeeOldExperienceToResponseMapper extends BaseMapper<Employ
 
     @Mapping(target = "positionName", source = "position.name")
     @Mapping(target = "departmentName", source = "position.department.name")
-    @Mapping(target = "supervisorName", expression = "java(source.getSupervisor().getFirstName() + \" \" + source.getSupervisor().getLastName())")
+    @Mapping(target = "managerName", expression = "java(source.getPosition().getDepartment().getManager().getFirstName() + \" \" + source.getPosition().getDepartment().getManager().getLastName())")
     EmployeeOldExperienceResponse map(EmployeeOldExperience source);
 
 }

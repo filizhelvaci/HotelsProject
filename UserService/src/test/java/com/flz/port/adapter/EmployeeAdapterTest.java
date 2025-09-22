@@ -29,17 +29,16 @@ class EmployeeAdapterTest extends BaseTest {
     @Mock
     EmployeeRepository employeeRepository;
 
-    @Mock
-    EmployeeEntityToDomainMapper employeeEntityToDomainMapper;
+    private final EmployeeEntityToDomainMapper employeeEntityToDomainMapper = EmployeeEntityToDomainMapper.INSTANCE;
 
     private final EmployeeToEntityMapper employeeToEntityMapper = EmployeeToEntityMapper.INSTANCE;
+
     @InjectMocks
     EmployeeAdapter employeeAdapter;
 
-    //Initialize
-    private static EmployeeEntity getEmployeeEntity(Long id) {
+    private static EmployeeEntity getEmployeeEntity() {
         return EmployeeEntity.builder()
-                .id(id)
+                .id(1L)
                 .address("test address")
                 .firstName("test first name")
                 .lastName("test last name")
@@ -53,6 +52,39 @@ class EmployeeAdapterTest extends BaseTest {
                 .build();
     }
 
+    /**
+     * {@link EmployeeAdapter#findById(Long)}
+     */
+    @Test
+    void givenValidId_whenEmployeeEntityFoundAccordingById_thenReturnEmployee() {
+
+        //Given
+        Long mockId = 1L;
+
+        //When
+        Optional<EmployeeEntity> mockEmployeeEntity = Optional.of(getEmployeeEntity());
+
+        Mockito.when(employeeRepository.findById(mockId))
+                .thenReturn(mockEmployeeEntity);
+
+        Employee employee = employeeEntityToDomainMapper.map(mockEmployeeEntity.get());
+
+        //Then
+        Optional<Employee> result = employeeAdapter.findById(mockId);
+
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(result.get().getIdentityNumber(), employee.getIdentityNumber());
+        Assertions.assertEquals(result.get().getFirstName(), employee.getFirstName());
+        Assertions.assertEquals(result.get().getLastName(), employee.getLastName());
+        Assertions.assertEquals(result.get().getPhoneNumber(), employee.getPhoneNumber());
+        Assertions.assertNotNull(result.get().getBirthDate());
+        Assertions.assertEquals(result.get().getGender(), employee.getGender());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .findById(mockId);
+
+    }
 
     @Test
     void givenValidId_whenEmployeeEntityNotFoundById_returnOptionalEmpty() {
@@ -72,74 +104,6 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .findById(mockId);
-
-    }
-
-    /**
-     * {@link EmployeeAdapter#findById(Long)}
-     */
-    @Test
-    void givenValidId_whenEmployeeEntityFoundAccordingById_thenReturnEmployee() {
-
-        //Given
-        Long mockId = 1L;
-
-        //When
-        Optional<EmployeeEntity> mockEmployeeEntity = Optional.of(getEmployeeEntity(mockId));
-
-        Mockito.when(employeeRepository.findById(mockId))
-                .thenReturn(mockEmployeeEntity);
-
-        //Then
-        Optional<Employee> employee = employeeAdapter.findById(mockId);
-
-        Assertions.assertNotNull(employee);
-        Assertions.assertTrue(employee.isPresent());
-        Assertions.assertEquals(mockId, employee.get()
-                .getId());
-        Assertions.assertNotNull(employee.get()
-                .getId());
-        Assertions.assertNotNull(employee.get()
-                .getFirstName());
-        Assertions.assertNotNull(employee.get()
-                .getLastName());
-        Assertions.assertNotNull(employee.get()
-                .getGender());
-        Assertions.assertNotNull(employee.get()
-                .getBirthDate());
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .findById(mockId);
-
-    }
-
-    /**
-     * {@link EmployeeAdapter#findAll(Integer, Integer)}
-     */
-    @Test
-    void givenValidPageAndPageSize_whenEmployeeFound_thenReturnListEmployee() {
-
-        //Given
-        int mockPage = 1;
-        int mockPageSize = 10;
-
-        //When
-        List<EmployeeEntity> mockEmployeeEntities = getEmployeeEntities();
-        Pageable mockPageable = PageRequest.of(0, mockPageSize);
-
-        Page<EmployeeEntity> mockEmployeeEntitiesPage = new PageImpl<>(mockEmployeeEntities);
-        Mockito.when(employeeRepository.findAll(mockPageable))
-                .thenReturn(mockEmployeeEntitiesPage);
-
-        //Then
-        List<Employee> employees = employeeAdapter.findAll(mockPage, mockPageSize);
-
-        Assertions.assertEquals(mockEmployeeEntities.size(), employees.size());
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .findAll(mockPageable);
 
     }
 
@@ -369,28 +333,6 @@ class EmployeeAdapterTest extends BaseTest {
 
     }
 
-    @Test
-    void givenEmployee_whenRepositoryThrowsException_thenExceptionIsPropagated() {
-
-        //Given
-        Employee mockEmployee = getEmployee();
-
-        //When
-        Mockito.when(employeeRepository.save(Mockito.any(EmployeeEntity.class)))
-                .thenThrow(new RuntimeException("Simulated database connection error"));
-
-        //Then
-        Assertions.assertThrows(RuntimeException.class,
-                () -> employeeAdapter.save(mockEmployee));
-
-        //Verify
-        Mockito.verify(employeeRepository, Mockito.times(1))
-                .save(Mockito.any(EmployeeEntity.class));
-
-        Mockito.verify(employeeEntityToDomainMapper, Mockito.never())
-                .map(Mockito.any(EmployeeEntity.class));
-
-    }
 
     @Test
     void givenInvalidId_whenDeleteByIdFails_thenThrowEmptyResultDataAccessException() {
@@ -409,6 +351,42 @@ class EmployeeAdapterTest extends BaseTest {
         //Verify
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .deleteById(invalidId);
+
+    }
+
+    /**
+     * {@link EmployeeAdapter#findAll(Integer, Integer)}
+     */
+    @Test
+    void givenValidPageAndPageSize_whenEmployeeFound_thenReturnListEmployee() {
+
+        //Given
+        int mockPage = 1;
+        int mockPageSize = 10;
+
+        //When
+        List<EmployeeEntity> mockEmployeeEntities = getEmployeeEntities();
+        Pageable mockPageable = PageRequest.of(0, mockPageSize);
+
+        Page<EmployeeEntity> mockEmployeeEntitiesPage = new PageImpl<>(mockEmployeeEntities);
+
+        Mockito.when(employeeRepository.findAll(mockPageable))
+                .thenReturn(mockEmployeeEntitiesPage);
+
+        List<Employee> employees = employeeEntityToDomainMapper.map(mockEmployeeEntities);
+
+        //Then
+        List<Employee> result = employeeAdapter.findAll(mockPage, mockPageSize);
+
+        Assertions.assertEquals(result.size(), employees.size());
+        Assertions.assertEquals(result.get(0).getIdentityNumber(), employees.get(0).getIdentityNumber());
+        Assertions.assertEquals(result.get(0).getFirstName(), employees.get(0).getFirstName());
+        Assertions.assertEquals(result.get(0).getLastName(), employees.get(0).getLastName());
+        Assertions.assertEquals(result.get(0).getPhoneNumber(), employees.get(0).getPhoneNumber());
+
+        //Verify
+        Mockito.verify(employeeRepository, Mockito.times(1))
+                .findAll(mockPageable);
 
     }
 

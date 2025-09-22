@@ -2,10 +2,13 @@ package com.flz.port.adapter;
 
 import com.flz.BaseTest;
 import com.flz.model.Department;
+import com.flz.model.Employee;
 import com.flz.model.Position;
 import com.flz.model.entity.DepartmentEntity;
+import com.flz.model.entity.EmployeeEntity;
 import com.flz.model.entity.PositionEntity;
 import com.flz.model.enums.DepartmentStatus;
+import com.flz.model.enums.Gender;
 import com.flz.model.enums.PositionStatus;
 import com.flz.model.mapper.PositionEntityToDomainMapper;
 import com.flz.model.mapper.PositionToEntityMapper;
@@ -20,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -36,22 +40,6 @@ class PositionAdapterTest extends BaseTest {
     private final PositionToEntityMapper positionToEntityMapper = PositionToEntityMapper.INSTANCE;
     private final PositionEntityToDomainMapper positionEntityToDomainMapper = PositionEntityToDomainMapper.INSTANCE;
 
-    //Initialize
-    private static Position getPosition() {
-        return Position.builder()
-                .name("Test")
-                .department(Department.builder()
-                        .id(1L)
-                        .name("TestDepartment")
-                        .status(DepartmentStatus.ACTIVE)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy("TestSystem")
-                        .build())
-                .status(PositionStatus.ACTIVE)
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
 
     /**
      * {@link PositionAdapter#findAll(Integer, Integer)}
@@ -292,6 +280,34 @@ class PositionAdapterTest extends BaseTest {
 
     }
 
+    private static Position getPosition() {
+        return Position.builder()
+                .name("Test")
+                .department(Department.builder()
+                        .id(1L)
+                        .name("TestDepartment")
+                        .manager(Employee.builder()
+                                .id(127L)
+                                .firstName("Jessica")
+                                .lastName("Dua")
+                                .identityNumber("25896311181")
+                                .email("jessica@example.com")
+                                .phoneNumber("05456511165")
+                                .address("Aksaray")
+                                .birthDate(LocalDate.of(1998, 1, 15))
+                                .gender(Gender.FEMALE)
+                                .nationality("British")
+                                .build())
+                        .status(DepartmentStatus.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("TestSystem")
+                        .build())
+                .status(PositionStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
     private static PositionEntity getPositionEntity(Long mockId) {
         return PositionEntity.builder()
                 .id(mockId)
@@ -299,6 +315,18 @@ class PositionAdapterTest extends BaseTest {
                 .department(DepartmentEntity.builder()
                         .id(1L)
                         .name("TestDepartment")
+                        .manager(EmployeeEntity.builder()
+                                .id(128L)
+                                .firstName("Jessi")
+                                .lastName("Dual")
+                                .identityNumber("25116311181")
+                                .email("jessi@example.com")
+                                .phoneNumber("05452321165")
+                                .address("Malatya")
+                                .birthDate(LocalDate.of(1997, 1, 15))
+                                .gender(Gender.FEMALE)
+                                .nationality("British")
+                                .build())
                         .status(DepartmentStatus.ACTIVE)
                         .createdAt(LocalDateTime.now())
                         .createdBy("TestSystem")
@@ -317,6 +345,18 @@ class PositionAdapterTest extends BaseTest {
                         .department(DepartmentEntity.builder()
                                 .id(1L)
                                 .name("Test1Department")
+                                .manager(EmployeeEntity.builder()
+                                        .id(129L)
+                                        .firstName("Jeffry")
+                                        .lastName("Dido")
+                                        .identityNumber("85116545481")
+                                        .email("jeffry@example.com")
+                                        .phoneNumber("05852321165")
+                                        .address("Konya")
+                                        .birthDate(LocalDate.of(1997, 1, 15))
+                                        .gender(Gender.MALE)
+                                        .nationality("British")
+                                        .build())
                                 .status(DepartmentStatus.ACTIVE)
                                 .createdAt(LocalDateTime.now())
                                 .createdBy("TestSystem")
@@ -331,6 +371,18 @@ class PositionAdapterTest extends BaseTest {
                         .department(DepartmentEntity.builder()
                                 .id(1L)
                                 .name("Test2Department")
+                                .manager(EmployeeEntity.builder()
+                                        .id(130L)
+                                        .firstName("Dany")
+                                        .lastName("Did")
+                                        .identityNumber("85226545481")
+                                        .email("danydid@example.com")
+                                        .phoneNumber("05987321165")
+                                        .address("Paris")
+                                        .birthDate(LocalDate.of(1995, 4, 15))
+                                        .gender(Gender.MALE)
+                                        .nationality("British")
+                                        .build())
                                 .status(DepartmentStatus.ACTIVE)
                                 .createdAt(LocalDateTime.now())
                                 .createdBy("TestSystem")
@@ -345,6 +397,18 @@ class PositionAdapterTest extends BaseTest {
                         .department(DepartmentEntity.builder()
                                 .id(2L)
                                 .name("Test3Department")
+                                .manager(EmployeeEntity.builder()
+                                        .id(131L)
+                                        .firstName("Sindy")
+                                        .lastName("Diddy")
+                                        .identityNumber("851122222481")
+                                        .email("sindydd@example.com")
+                                        .phoneNumber("06547821165")
+                                        .address("Pekin")
+                                        .birthDate(LocalDate.of(1997, 1, 15))
+                                        .gender(Gender.FEMALE)
+                                        .nationality("German")
+                                        .build())
                                 .status(DepartmentStatus.ACTIVE)
                                 .createdAt(LocalDateTime.now())
                                 .createdBy("TestSystem")

@@ -21,6 +21,5 @@ public class EmployeeExperience extends BaseDomainModel {
 
     private Position position;
     private Employee employee;
-    private Employee supervisor;
 
 }

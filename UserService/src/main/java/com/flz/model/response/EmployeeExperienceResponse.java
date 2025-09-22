@@ -17,10 +17,8 @@ public class EmployeeExperienceResponse {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private Long positionId;
     private String positionName;
-
-    private Long supervisorId;
-    private String supervisorName;
+    private String departmentName;
+    private String managerName;
 
 }

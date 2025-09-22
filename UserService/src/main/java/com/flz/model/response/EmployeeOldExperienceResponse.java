@@ -19,6 +19,6 @@ public class EmployeeOldExperienceResponse {
 
     private String positionName;
     private String departmentName;
-    private String supervisorName;
+    private String managerName;
 
 }

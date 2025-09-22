@@ -8,6 +8,8 @@ import com.flz.model.response.EmployeeOldDetailsResponse;
 import com.flz.model.response.EmployeeOldExperienceResponse;
 import com.flz.service.EmployeeOldReadService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,49 +37,6 @@ class EmployeeOldControllerTest extends BaseTest {
 
     private static final String BASE_PATH = "/api/v1";
 
-    //Initialize
-    private static List<EmployeeOld> getEmployeeOlds() {
-        return List.of(
-                EmployeeOld.builder()
-                        .id(1L)
-                        .firstName("test first name 1")
-                        .lastName("test last name 1")
-                        .address("test address 1")
-                        .birthDate(LocalDate.parse("2000-01-01"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test1@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321456")
-                        .build(),
-                EmployeeOld.builder()
-                        .id(2L)
-                        .firstName("test first name 2")
-                        .lastName("test last name 2 ")
-                        .address("test address 2")
-                        .birthDate(LocalDate.parse("2000-02-02"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test2@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321465")
-                        .build(),
-                EmployeeOld.builder()
-                        .id(3L)
-                        .firstName("test first name 3")
-                        .lastName("test last name 3")
-                        .address("test address 3")
-                        .birthDate(LocalDate.parse("2000-03-03"))
-                        .createdBy("SYSTEM")
-                        .createdAt(LocalDateTime.now())
-                        .email("test3@gmail.com")
-                        .gender(Gender.FEMALE)
-                        .nationality("TC")
-                        .phoneNumber("05465321499")
-                        .build());
-    }
 
     /**
      * {@link EmployeeOldController#findById(Long)} ()}
@@ -140,8 +99,6 @@ class EmployeeOldControllerTest extends BaseTest {
                         .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].positionName")
                         .isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.experiences[*].supervisorName")
-                        .isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
                         .value(true));
 
@@ -182,11 +139,13 @@ class EmployeeOldControllerTest extends BaseTest {
 
     }
 
-    @Test
-    void givenInvalidId_whenCalledFindByIdEmployeeOld_thenReturnBadRequest() throws Exception {
-
-        //Given
-        String invalidId = "abc";
+    @ParameterizedTest
+    @ValueSource(longs = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidId_whenCalledFindByIdEmployeeOld_thenReturnBadRequest(Long invalidId) throws Exception {
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
@@ -256,14 +215,20 @@ class EmployeeOldControllerTest extends BaseTest {
 
     }
 
-    @Test
-    void whenPageSizeDifferentThanValidValueInEmployeeOldFindAll_thenReturnBadRequestError() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {
+            0,
+            16,
+            -1,
+            100
+    })
+    void givenInvalidPageSize_whenFindAllEmployees_thenReturnBadRequestError(Integer invalidPageSize) throws Exception {
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .get(BASE_PATH + "/employees-old")
                 .param("page", "1")
-                .param("pageSize", "-10")
+                .param("pageSize", invalidPageSize.toString())
                 .contentType(MediaType.APPLICATION_JSON);
 
         //Then
@@ -281,12 +246,62 @@ class EmployeeOldControllerTest extends BaseTest {
     }
 
     @Test
-    void whenPageDifferentThanValidValueInEmployeeOldFindAll_thenReturnBadRequestError() throws Exception {
+    void givenNullPageSize_whenFindAllEmployeeOlds_thenReturnBadRequest() throws Exception {
 
         //When
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
                 .get(BASE_PATH + "/employees-old")
-                .param("page", "-1")
+                .param("page", "1")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(employeeOldReadService, Mockito.never())
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {
+            0,
+            -1,
+            -100
+    })
+    void givenInvalidPage_whenFindAllEmployees_thenReturnBadRequestError(Integer invalidPage) throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employees-old")
+                .param("page", invalidPage.toString())
+                .param("pageSize", "10")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //Then
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(false));
+
+        //Verify
+        Mockito.verify(employeeOldReadService, Mockito.never())
+                .findAll(Mockito.anyInt(), Mockito.anyInt());
+
+    }
+
+    @Test
+    void givenNullPage_whenFindAllEmployees_thenReturnBadRequestError() throws Exception {
+
+        //When
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+                .get(BASE_PATH + "/employees-old")
                 .param("pageSize", "10")
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -341,6 +356,50 @@ class EmployeeOldControllerTest extends BaseTest {
 
     }
 
+    //Initialize
+    private static List<EmployeeOld> getEmployeeOlds() {
+        return List.of(
+                EmployeeOld.builder()
+                        .id(1L)
+                        .firstName("test first name 1")
+                        .lastName("test last name 1")
+                        .address("test address 1")
+                        .birthDate(LocalDate.parse("2000-01-01"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test1@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321456")
+                        .build(),
+                EmployeeOld.builder()
+                        .id(2L)
+                        .firstName("test first name 2")
+                        .lastName("test last name 2 ")
+                        .address("test address 2")
+                        .birthDate(LocalDate.parse("2000-02-02"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test2@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321465")
+                        .build(),
+                EmployeeOld.builder()
+                        .id(3L)
+                        .firstName("test first name 3")
+                        .lastName("test last name 3")
+                        .address("test address 3")
+                        .birthDate(LocalDate.parse("2000-03-03"))
+                        .createdBy("SYSTEM")
+                        .createdAt(LocalDateTime.now())
+                        .email("test3@gmail.com")
+                        .gender(Gender.FEMALE)
+                        .nationality("TC")
+                        .phoneNumber("05465321499")
+                        .build());
+    }
+
     private static EmployeeOld getEmployeeOld() {
         return EmployeeOld.builder()
                 .id(1L)
@@ -368,7 +427,7 @@ class EmployeeOldControllerTest extends BaseTest {
                         .plusMonths(6))
                 .positionName("Test position")
                 .departmentName("Test department")
-                .supervisorName("Supervisor name")
+                .managerName("Test Manager")
                 .build();
     }
 

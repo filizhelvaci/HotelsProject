@@ -1,9 +1,11 @@
 package com.flz.model.request;
 
 import com.flz.model.enums.Gender;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,14 +31,15 @@ public class EmployeeUpdateRequest {
     private String lastName;
 
     @NotBlank
-    @Size(min = 9, max = 15)
+    @Pattern(regexp = "^[1-9]\\d{10}$", message = "Invalid identity number")
     private String identityNumber;
 
-    @Size(min = 2, max = 255)
+    @Email
+    @Size(max = 255)
     private String email;
 
     @NotBlank
-    @Size(min = 2, max = 13)
+    @Pattern(regexp = "^\\+?\\d{10,13}$", message = "Phone number must be 10 to 13 digits, optionally starting with '+'")
     private String phoneNumber;
 
     @NotBlank

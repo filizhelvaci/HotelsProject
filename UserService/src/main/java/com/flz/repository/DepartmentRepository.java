@@ -9,6 +9,10 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
 
     boolean existsByName(String name);
 
+    boolean existsByManagerId(Long id);
+
     DepartmentEntity findByName(String name);
+
+    DepartmentEntity findByManagerId(Long id);
 
 }

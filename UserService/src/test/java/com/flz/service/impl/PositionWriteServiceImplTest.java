@@ -6,13 +6,16 @@ import com.flz.exception.PositionAlreadyDeletedException;
 import com.flz.exception.PositionAlreadyExistsException;
 import com.flz.exception.PositionNotFoundException;
 import com.flz.model.Department;
+import com.flz.model.Employee;
 import com.flz.model.Position;
 import com.flz.model.enums.DepartmentStatus;
+import com.flz.model.enums.Gender;
 import com.flz.model.enums.PositionStatus;
 import com.flz.model.mapper.PositionCreateRequestToPositionDomainMapper;
 import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
 import com.flz.port.DepartmentReadPort;
+import com.flz.port.DepartmentSavePort;
 import com.flz.port.PositionReadPort;
 import com.flz.port.PositionSavePort;
 import org.junit.jupiter.api.Assertions;
@@ -21,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -34,6 +38,9 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     @Mock
     DepartmentReadPort departmentReadPort;
+
+    @Mock
+    DepartmentSavePort departmentSavePort;
 
     @InjectMocks
     PositionWriteServiceImpl positionWriteServiceImpl;
@@ -55,12 +62,13 @@ class PositionWriteServiceImplTest extends BaseTest {
                         .id(1L)
                         .name("test")
                         .status(DepartmentStatus.ACTIVE)
+                        .manager(getManager())
                         .createdAt(LocalDateTime.now())
                         .createdBy("admin")
                         .build());
 
         //When
-        Mockito.when(positionReadPort.existsByName(mockPositionCreateRequest.getName()))
+        Mockito.when(positionReadPort.existsByName(Mockito.anyString()))
                 .thenReturn(false);
 
         Position mockPosition = PositionCreateRequestToPositionDomainMapper.INSTANCE
@@ -82,11 +90,12 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .existsByName(Mockito.anyString());
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .findById(Mockito.anyLong());
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any());
         Mockito.verify(positionSavePort, Mockito.times(1))
                 .save(Mockito.any(Position.class));
 
     }
-
 
     @Test
     void givenPositionCreateRequest_whenCreateRequestNameAlreadyExists_thenThrowPositionAlreadyExists() {
@@ -97,7 +106,7 @@ class PositionWriteServiceImplTest extends BaseTest {
         mockPositionCreateRequest.setDepartmentId(1L);
 
         //When
-        Mockito.when(positionReadPort.existsByName(mockPositionCreateRequest.getName()))
+        Mockito.when(positionReadPort.existsByName(Mockito.anyString()))
                 .thenReturn(true);
 
         //Then
@@ -107,11 +116,95 @@ class PositionWriteServiceImplTest extends BaseTest {
         //Verify
         Mockito.verify(positionReadPort, Mockito.times(1))
                 .existsByName(mockPositionCreateRequest.getName());
+        Mockito.verify(departmentReadPort, Mockito.never())
+                .findById(Mockito.anyLong());
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any());
         Mockito.verify(positionSavePort, Mockito.never())
                 .save(Mockito.any(Position.class));
 
     }
 
+    @Test
+    void givenPositionCreateRequest_whenCreateRequestDepartmentNotFound_thenThrowDepartmentNotFoundException() {
+
+        //Given
+        PositionCreateRequest mockPositionCreateRequest = new PositionCreateRequest();
+        mockPositionCreateRequest.setName("test");
+        mockPositionCreateRequest.setDepartmentId(1L);
+
+        //When
+        Mockito.when(positionReadPort.existsByName(mockPositionCreateRequest.getName()))
+                .thenReturn(false);
+
+        Mockito.when(departmentReadPort.findById(Mockito.anyLong()))
+                .thenReturn(Optional.empty());
+
+        //Then
+        Assertions.assertThrows(DepartmentNotFoundException.class,
+                () -> positionWriteServiceImpl.create(mockPositionCreateRequest));
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .existsByName(mockPositionCreateRequest.getName());
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(departmentSavePort, Mockito.never())
+                .save(Mockito.any());
+        Mockito.verify(positionSavePort, Mockito.never())
+                .save(Mockito.any(Position.class));
+
+    }
+
+    @Test
+    void givenPositionCreateRequest_whenCreatePositionIfDepartmentStatusIsDeleted_thenCreatePosition() {
+
+        //Given
+        PositionCreateRequest mockPositionCreateRequest = new PositionCreateRequest();
+        mockPositionCreateRequest.setName("test");
+        mockPositionCreateRequest.setDepartmentId(1L);
+
+        Optional<Department> mockDepartment = Optional.ofNullable(
+                Department.builder()
+                        .id(1L)
+                        .name("test")
+                        .status(DepartmentStatus.DELETED)
+                        .manager(getManager())
+                        .createdAt(LocalDateTime.now())
+                        .createdBy("admin")
+                        .build());
+
+        //When
+        Mockito.when(positionReadPort.existsByName(Mockito.anyString()))
+                .thenReturn(false);
+
+        Position mockPosition = PositionCreateRequestToPositionDomainMapper.INSTANCE
+                .map(mockPositionCreateRequest);
+
+        Long departmentId = mockPositionCreateRequest.getDepartmentId();
+        Mockito.when(departmentReadPort.findById(departmentId))
+                .thenReturn(mockDepartment);
+
+        Mockito.doNothing().when(departmentSavePort)
+                .save(Mockito.any(Department.class));
+
+        Mockito.doNothing()
+                .when(positionSavePort)
+                .save(mockPosition);
+
+        //Then
+        positionWriteServiceImpl.create(mockPositionCreateRequest);
+
+        //Verify
+        Mockito.verify(positionReadPort, Mockito.times(1))
+                .existsByName(Mockito.anyString());
+        Mockito.verify(departmentReadPort, Mockito.times(1))
+                .findById(Mockito.anyLong());
+        Mockito.verify(departmentSavePort, Mockito.times(1))
+                .save(Mockito.any());
+        Mockito.verify(positionSavePort, Mockito.times(1))
+                .save(Mockito.any(Position.class));
+    }
 
     /**
      * {@link PositionWriteServiceImpl#update(Long, PositionUpdateRequest)}
@@ -132,6 +225,7 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .id(departmentId)
                 .name("Department")
                 .status(DepartmentStatus.ACTIVE)
+                .manager(getManager())
                 .createdAt(LocalDateTime.now())
                 .createdBy("createdUser")
                 .build();
@@ -150,6 +244,8 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .thenReturn(Optional.of(mockPosition));
         Mockito.when(departmentReadPort.findById(departmentId))
                 .thenReturn(Optional.of(mockDepartment));
+        Mockito.doNothing().when(positionSavePort)
+                .save(Mockito.any(Position.class));
 
         //Then
         positionWriteServiceImpl.update(positionId, request);
@@ -167,7 +263,6 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .save(mockPosition);
 
     }
-
 
     @Test
     void givenInvalidId_whenUpdatePosition_thenThrowPositionNotFoundException() {
@@ -196,7 +291,6 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     }
 
-
     @Test
     void givenValidIdAndInValidDepartmentId_whenUpdatePosition_thenThrowDepartmentNotFoundException() {
 
@@ -214,6 +308,7 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .id(11L)
                 .name("Department")
                 .status(DepartmentStatus.ACTIVE)
+                .manager(getManager())
                 .createdAt(LocalDateTime.now())
                 .createdBy("createdUser")
                 .build();
@@ -247,7 +342,6 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     }
 
-
     @Test
     void givenSameNameAndSameDepartmentId_whenUpdatePosition_thenThrowPositionAlreadyExistsException() {
 
@@ -265,6 +359,7 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .id(departmentId)
                 .name("SameDepartmentName")
                 .status(DepartmentStatus.ACTIVE)
+                .manager(getManager())
                 .createdAt(LocalDateTime.now())
                 .createdBy("createdUser")
                 .build();
@@ -297,7 +392,6 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .save(Mockito.any());
 
     }
-
 
     /**
      * {@link PositionWriteServiceImpl#delete(Long)}
@@ -357,7 +451,7 @@ class PositionWriteServiceImplTest extends BaseTest {
 
 
     @Test
-    void givenValidId_whenPositionEntityNotFoundById_thenThrowsPositionNotFoundException() {
+    void givenValidId_whenCalledDeletePositionEntityNotFoundById_thenThrowsPositionNotFoundException() {
 
         //Given
         Long mockId = 1L;
@@ -377,7 +471,6 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .save(Mockito.any());
 
     }
-
 
     @Test
     void givenDeletedPosition_whenDeleteCalled_thenThrowPositionAlreadyDeletedException() {
@@ -421,4 +514,19 @@ class PositionWriteServiceImplTest extends BaseTest {
 
     }
 
+    private static Employee getManager() {
+
+        return Employee.builder()
+                .id(101L)
+                .firstName("Cahit")
+                .lastName("Zarif")
+                .identityNumber("25111314785")
+                .email("cahitzrf@example.com")
+                .phoneNumber("05455551555")
+                .address("Kırıkkale")
+                .birthDate(LocalDate.of(1999, 1, 15))
+                .gender(Gender.MALE)
+                .nationality("TC")
+                .build();
+    }
 }
