@@ -476,7 +476,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.parse("2025-10-01"))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -529,7 +529,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -574,7 +574,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -621,7 +621,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -671,7 +671,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -726,7 +726,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -774,7 +774,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -812,7 +812,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -850,7 +850,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -888,7 +888,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -926,7 +926,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(2))
                 .build();
 
         //When
@@ -973,7 +973,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(2))
                 .build();
 
         //When
@@ -1019,7 +1019,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(invalidSalary)
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -1051,13 +1051,13 @@ class EmployeeControllerTest extends BaseTest {
                 .phoneNumber("05332221133")
                 .email("semihh@gmail.com")
                 .address("Bursa")
-                .birthDate(LocalDate.of(2000, 9, 1))
+                .birthDate(LocalDate.now().plusDays(2))
                 .gender(Gender.MALE)
                 .nationality("TC")
                 .salary(null)
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(2))
                 .build();
 
         //When
@@ -1104,7 +1104,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(validSalary)
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(2))
                 .build();
 
         //When
@@ -1145,7 +1145,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(invalidId)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(2))
                 .build();
 
         //When
@@ -1183,7 +1183,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(null)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(1))
                 .build();
 
         //When
@@ -1226,7 +1226,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(5L)
                 .departmentId(invalidId)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(2))
                 .build();
 
         //When
@@ -1264,7 +1264,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(1L)
                 .departmentId(null)
-                .startDate(LocalDate.of(2025, 9, 1))
+                .startDate(LocalDate.now().plusDays(2))
                 .build();
 
         //When
@@ -1302,7 +1302,7 @@ class EmployeeControllerTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(1L)
                 .departmentId(3L)
-                .startDate(LocalDate.of(2020, 9, 1))
+                .startDate(LocalDate.now().plusDays(2))
                 .build();
 
         //When
@@ -1328,7 +1328,7 @@ class EmployeeControllerTest extends BaseTest {
 
         //Given
         EmployeeCreateRequest invalidRequest = EmployeeCreateRequest.builder()
-                .identityNumber("1111111111111")
+                .identityNumber("11111111555")
                 .firstName("Semih")
                 .lastName("Ay")
                 .phoneNumber("05332221133")
@@ -2004,7 +2004,6 @@ class EmployeeControllerTest extends BaseTest {
                 .build();
     }
 
-    //Initialize
     private static List<Employee> getEmployees() {
         return List.of(
                 Employee.builder()
@@ -2062,4 +2061,5 @@ class EmployeeControllerTest extends BaseTest {
                 .managerName("Test Manager")
                 .build();
     }
+
 }

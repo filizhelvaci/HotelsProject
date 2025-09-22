@@ -432,7 +432,7 @@ class DepartmentControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         //Verify
-        Mockito.verify(departmentWriteService, Mockito.times(1))
+        Mockito.verify(departmentWriteService, Mockito.never())
                 .create(Mockito.any(DepartmentCreateRequest.class));
 
     }
