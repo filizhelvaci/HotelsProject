@@ -9,6 +9,11 @@ services:
       service: user-service-db
       file: ./UserService/docker-compose.yml
 
+  reservation-service-db:
+     extends:
+        service: reservation-service-db
+        file: ./ReservationsService/docker-compose.yml
+
   room-service:
     extends:
       service: room-service
@@ -18,6 +23,11 @@ services:
     extends:
       service: user-service
       file: ./UserService/docker-compose.yml
+
+  reservation-service:
+    extends:
+      service: reservation-service
+      file: ./ReservationsService/docker-compose.yml
 
 networks:
   hotel_network:
