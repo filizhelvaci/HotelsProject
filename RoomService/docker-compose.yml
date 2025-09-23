@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 654321
     volumes:
-      - ./docker/database_data:/var/lib/postgresql/data
+      - ./docker/room_database_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
@@ -33,5 +33,5 @@ networks:
     driver: bridge
 
 volumes:
-  database_data:
+  room_database_data:
     driver: local
