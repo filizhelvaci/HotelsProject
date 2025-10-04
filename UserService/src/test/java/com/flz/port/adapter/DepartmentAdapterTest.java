@@ -2,6 +2,7 @@ package com.flz.port.adapter;
 
 import com.flz.BaseTest;
 import com.flz.model.Department;
+import com.flz.model.Employee;
 import com.flz.model.entity.DepartmentEntity;
 import com.flz.model.entity.EmployeeEntity;
 import com.flz.model.enums.DepartmentStatus;
@@ -303,20 +304,49 @@ class DepartmentAdapterTest extends BaseTest {
         Optional<DepartmentEntity> mockDepartmentEntity = Optional.of(getDepartment(mockId));
 
         Mockito.when(departmentRepository.findByManagerId(mockId))
-                .thenReturn(mockDepartmentEntity.get());
+                .thenReturn(mockDepartmentEntity);
+
+        Department department = getDepartmentDomain(mockId);
+
+        Mockito.when(departmentEntityToDomainMapper.map(mockDepartmentEntity.get()))
+                .thenReturn(department);
 
         //Then
-        Department result = departmentAdapter.findByManagerId(mockId);
+        Optional<Department> result = departmentAdapter.findByManagerId(mockId);
 
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.getName(), mockDepartmentEntity.get().getName());
-        Assertions.assertEquals(result.getManager().getFirstName(), mockDepartmentEntity.get().getManager().getFirstName());
-        Assertions.assertEquals(result.getManager().getLastName(), mockDepartmentEntity.get().getManager().getLastName());
-        Assertions.assertEquals(result.getManager().getPhoneNumber(), mockDepartmentEntity.get().getManager().getPhoneNumber());
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(department.getName(),result.get().getName());
+        Assertions.assertEquals(department.getManager().getId(),result.get().getManager().getId());
+
+        Assertions.assertEquals(department.getName(), mockDepartmentEntity.get().getName());
+        Assertions.assertEquals(department.getManager().getPhoneNumber(),result.get().getManager().getPhoneNumber());
 
         //Verify
         Mockito.verify(departmentRepository, Mockito.times(1))
                 .findByManagerId(Mockito.anyLong());
+
+    }
+
+    @Test
+    void givenInvalidManagerId_whenNoDepartmentFound_thenReturnEmptyOptional() {
+
+        //Given
+        Long mockId = 999L;
+
+        Mockito.when(departmentRepository.findByManagerId(mockId))
+                .thenReturn(Optional.empty());
+
+        //When
+        Optional<Department> result = departmentAdapter.findByManagerId(mockId);
+
+        //Then
+        Assertions.assertTrue(result.isEmpty());
+
+        //Verify
+        Mockito.verify(departmentRepository, Mockito.times(1))
+                .findByManagerId(mockId);
+        Mockito.verifyNoInteractions(departmentEntityToDomainMapper);
 
     }
 
@@ -387,6 +417,35 @@ class DepartmentAdapterTest extends BaseTest {
                 .status(DepartmentStatus.ACTIVE)
                 .createdBy("SYSTEM")
                 .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Department getDepartmentDomain(Long mockId) {
+        Employee manager = getManager();
+
+        return Department.builder()
+                .id(mockId)
+                .name("Test")
+                .manager(manager)
+                .status(DepartmentStatus.ACTIVE)
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Employee getManager() {
+        return Employee.builder()
+                .id(1L)
+                .firstName("test first name 1")
+                .lastName("test last name 1")
+                .address("test address 1")
+                .birthDate(LocalDate.parse("2000-01-01"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test1@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321456")
                 .build();
     }
 
