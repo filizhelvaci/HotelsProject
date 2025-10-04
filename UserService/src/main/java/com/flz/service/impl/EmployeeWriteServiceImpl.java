@@ -1,9 +1,9 @@
 package com.flz.service.impl;
 
 import com.flz.exception.EmployeeAlreadyExistsException;
+import com.flz.exception.EmployeeAlreadyManagerException;
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.exception.PositionNotFoundException;
-import com.flz.model.Department;
 import com.flz.model.Employee;
 import com.flz.model.EmployeeExperience;
 import com.flz.model.EmployeeOld;
@@ -15,7 +15,6 @@ import com.flz.model.mapper.EmployeeToEmployeeOldMapper;
 import com.flz.model.request.EmployeeCreateRequest;
 import com.flz.model.request.EmployeeUpdateRequest;
 import com.flz.port.DepartmentReadPort;
-import com.flz.port.DepartmentSavePort;
 import com.flz.port.EmployeeDeletePort;
 import com.flz.port.EmployeeExperienceDeletePort;
 import com.flz.port.EmployeeExperienceReadPort;
@@ -44,7 +43,6 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
     private final EmployeeDeletePort employeeDeletePort;
     private final PositionReadPort positionReadPort;
     private final DepartmentReadPort departmentReadPort;
-    private final DepartmentSavePort departmentSavePort;
     private final EmployeeExperienceSavePort employeeExperienceSavePort;
     private final EmployeeExperienceReadPort employeeExperienceReadPort;
     private final EmployeeExperienceDeletePort employeeExperienceDeletePort;
@@ -89,34 +87,34 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
 
 
     @Override
-    public void update(Long id, EmployeeUpdateRequest employeeUpdateRequest) {
+    public void update(Long id, EmployeeUpdateRequest request) {
 
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        String identityNumber = employeeUpdateRequest.getIdentityNumber();
+        String identityNumber = request.getIdentityNumber();
         boolean identityNumberChanged = !employee.getIdentityNumber().equals(identityNumber);
 
         if (identityNumberChanged) {
-            checkIfExistsByIdentity(employeeUpdateRequest);
+            checkIfExistsByIdentity(request);
         }
 
-        String phoneNumber = employeeUpdateRequest.getPhoneNumber();
+        String phoneNumber = request.getPhoneNumber();
         boolean phoneNumberChanged = !employee.getPhoneNumber().equals(phoneNumber);
 
         if (phoneNumberChanged) {
-            checkIfExistsByPhoneNumber(employeeUpdateRequest);
+            checkIfExistsByPhoneNumber(request);
         }
 
-        employee.update(employeeUpdateRequest.getFirstName(),
-                employeeUpdateRequest.getLastName(),
-                employeeUpdateRequest.getIdentityNumber(),
-                employeeUpdateRequest.getEmail(),
-                employeeUpdateRequest.getPhoneNumber(),
-                employeeUpdateRequest.getAddress(),
-                employeeUpdateRequest.getBirthDate(),
-                employeeUpdateRequest.getGender(),
-                employeeUpdateRequest.getNationality());
+        employee.update(request.getFirstName(),
+                request.getLastName(),
+                request.getIdentityNumber(),
+                request.getEmail(),
+                request.getPhoneNumber(),
+                request.getAddress(),
+                request.getBirthDate(),
+                request.getGender(),
+                request.getNationality());
         employeeSavePort.save(employee);
     }
 
@@ -148,16 +146,16 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee));
-
-        boolean isManager = departmentReadPort.existsByManagerId(id);
-        if (isManager) {
-            changeManager(id);
-        }
+        departmentReadPort.findByManagerId(id)
+                .ifPresent(department -> {
+                    throw new EmployeeAlreadyManagerException(department.getName());
+                });
 
         List<EmployeeExperience> experiences = Optional.ofNullable(
                         employeeExperienceReadPort.findAllByEmployeeId(id))
                 .orElse(Collections.emptyList());
+
+        EmployeeOld employeeOld = employeeOldSavePort.save(employeeToEmployeeOldMapper.map(employee));
 
         if (experiences.isEmpty()) {
             employeeDeletePort.delete(id);
@@ -180,16 +178,6 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         employeeOldExperienceSavePort.saveAll(oldExperiences);
         employeeExperienceDeletePort.deleteAllByEmployeeId(id);
         employeeDeletePort.delete(id);
-    }
-
-    private void changeManager(Long id) {
-
-        Department department = departmentReadPort.findByManagerId(id);
-        Long newManagerId = 9L;
-        Optional<Employee> newManager = employeeReadPort.findById(newManagerId);
-        department.setManager(newManager.orElseThrow(
-                () -> new EmployeeNotFoundException(newManagerId)));
-        departmentSavePort.save(department);
     }
 
 }
