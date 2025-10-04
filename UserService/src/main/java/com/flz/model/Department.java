@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @SuperBuilder
@@ -20,10 +18,22 @@ public class Department extends BaseDomainModel {
 
     private Employee manager;
 
+    public void create(Employee manager) {
+
+        this.manager = manager;
+        this.status = DepartmentStatus.ACTIVE;
+    }
+
+    public void update(String name, Employee manager) {
+
+        this.name = name;
+        this.manager = manager;
+        this.status = DepartmentStatus.ACTIVE;
+    }
+
     public void delete() {
+
         this.status = DepartmentStatus.DELETED;
-        this.updatedAt = LocalDateTime.now();
-        this.updatedBy = "ADMIN";
     }
 
     public boolean isDeleted() {
@@ -31,7 +41,7 @@ public class Department extends BaseDomainModel {
         return this.status == DepartmentStatus.DELETED;
     }
 
-    public void doActive() {
+    public void active() {
 
         this.status = DepartmentStatus.ACTIVE;
     }
