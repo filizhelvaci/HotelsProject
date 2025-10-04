@@ -1,6 +1,7 @@
 package com.flz.port;
 
 import com.flz.model.Department;
+import com.flz.model.enums.DepartmentStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +14,12 @@ public interface DepartmentReadPort {
 
     Optional<Department> findById(Long id);
 
-    Department findByManagerId(Long managerId);
+    Optional<Department> findByManagerId(Long managerId);
 
     boolean existsByName(String name);
 
     boolean existsByManagerId(Long id);
+
+    boolean existsByManagerIdAndStatus(Long managerId, DepartmentStatus status);
 
 }
