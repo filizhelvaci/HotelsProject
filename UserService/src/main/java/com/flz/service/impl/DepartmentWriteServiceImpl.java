@@ -3,7 +3,7 @@ package com.flz.service.impl;
 import com.flz.exception.DepartmentAlreadyDeletedException;
 import com.flz.exception.DepartmentAlreadyExistsException;
 import com.flz.exception.DepartmentNotFoundException;
-import com.flz.exception.EmployeeAlreadyExistsException;
+import com.flz.exception.EmployeeAlreadyManagerException;
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.model.Department;
 import com.flz.model.Employee;
@@ -17,8 +17,6 @@ import com.flz.port.EmployeeReadPort;
 import com.flz.service.DepartmentWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -45,15 +43,15 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         Employee manager = employeeReadPort.findById(managerId)
                 .orElseThrow(() -> new EmployeeNotFoundException(managerId));
 
-        boolean existsByManagerId = departmentReadPort.existsByManagerId(managerId);
-        if (existsByManagerId) {
-            throw new EmployeeAlreadyExistsException("As manager " + manager.getFirstName() + manager.getLastName());
+        boolean existsActive = departmentReadPort.existsByManagerIdAndStatus(managerId, DepartmentStatus.ACTIVE);
+        if (existsActive) {
+            throw new EmployeeAlreadyManagerException(
+                    "As manager " + manager.getFirstName() + " " + manager.getLastName()
+            );
         }
 
         Department department = departmentCreateRequestToDomainMapper.map(createRequest);
-        department.setManager(manager);
-        department.setStatus(DepartmentStatus.ACTIVE);
-
+        department.create(manager);
         departmentSavePort.save(department);
     }
 
@@ -78,10 +76,7 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
             checkIfDepartmentNameExists(departmentUpdateRequest);
         }
 
-        department.setName(departmentUpdateRequest.getName());
-        department.setManager(manager);
-        department.setUpdatedAt(LocalDateTime.now());
-        department.setUpdatedBy("SYSTEM");
+        department.update(departmentUpdateRequest.getName(), manager);
         departmentSavePort.save(department);
     }
 
@@ -96,9 +91,10 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
 
     private void checkIfManagerExists(DepartmentUpdateRequest departmentUpdateRequest) {
 
-        boolean existsByManager = departmentReadPort.existsByManagerId(departmentUpdateRequest.getManagerId());
+        boolean existsByManager = departmentReadPort
+                .existsByManagerIdAndStatus(departmentUpdateRequest.getManagerId(), DepartmentStatus.ACTIVE);
         if (existsByManager) {
-            throw new EmployeeAlreadyExistsException(departmentUpdateRequest.getManagerId().toString());
+            throw new EmployeeAlreadyManagerException("As manager " + departmentUpdateRequest.getManagerId());
         }
     }
 
