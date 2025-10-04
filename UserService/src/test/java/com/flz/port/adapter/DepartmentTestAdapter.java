@@ -8,6 +8,8 @@ import com.flz.port.DepartmentTestPort;
 import com.flz.repository.DepartmentRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class DepartmentTestAdapter implements DepartmentTestPort {
 
@@ -27,7 +29,9 @@ public class DepartmentTestAdapter implements DepartmentTestPort {
         return departmentEntityToDomainMapper.map(departmentEntity);
     }
 
-    public Department findByName(String name) {
-        return departmentEntityToDomainMapper.map(departmentRepository.findByName(name));
+    public Optional<Department> findByName(String name) {
+
+        return departmentRepository.findByName(name)
+                .map(departmentEntityToDomainMapper::map);
     }
 }
