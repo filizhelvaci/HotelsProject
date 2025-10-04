@@ -2,6 +2,7 @@ package com.flz.port.adapter;
 
 import com.flz.model.Department;
 import com.flz.model.entity.DepartmentEntity;
+import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.mapper.DepartmentEntityToDomainMapper;
 import com.flz.model.mapper.DepartmentToEntityMapper;
 import com.flz.port.DepartmentReadPort;
@@ -47,8 +48,8 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
     @Override
     public Optional<Department> findById(Long id) {
 
-        Optional<DepartmentEntity> departmentEntity = departmentRepository.findById(id);
-        return departmentEntity.map(departmentEntityToDomainMapper::map);
+        return departmentRepository.findById(id)
+                .map(departmentEntityToDomainMapper::map);
     }
 
 
@@ -65,12 +66,17 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
         return departmentRepository.existsByManagerId(id);
     }
 
+    public boolean existsByManagerIdAndStatus(Long id, DepartmentStatus status) {
+
+        return departmentRepository.existsByManagerIdAndStatus(id,status);
+    }
+
 
     @Override
-    public Department findByManagerId(Long managerId) {
+    public Optional<Department> findByManagerId(Long managerId) {
 
-        DepartmentEntity departmentEntity = departmentRepository.findByManagerId(managerId);
-        return departmentEntityToDomainMapper.map(departmentEntity);
+     return departmentRepository.findByManagerId(managerId)
+             .map(departmentEntityToDomainMapper::map);
     }
 
 
