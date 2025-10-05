@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @SuperBuilder
@@ -20,15 +18,32 @@ public class Position extends BaseDomainModel {
 
     private Department department;
 
+    public void create(Department department) {
+
+        this.department = department;
+        this.status = PositionStatus.ACTIVE;
+    }
+
+    public void update(String name, Department department) {
+
+        this.name = name;
+        this.department = department;
+        this.status = PositionStatus.ACTIVE;
+    }
+
     public void delete() {
+
         this.status = PositionStatus.DELETED;
-        this.updatedAt = LocalDateTime.now();
-        this.updatedBy = "ADMIN";
     }
 
     public boolean isDeleted() {
 
         return this.status == PositionStatus.DELETED;
+    }
+
+    public void active() {
+
+        this.status = PositionStatus.ACTIVE;
     }
 
 }

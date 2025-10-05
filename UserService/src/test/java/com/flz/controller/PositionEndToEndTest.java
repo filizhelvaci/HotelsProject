@@ -83,7 +83,8 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                         .isOk());
 
         //Then
-        Position createdPosition = positionTestPort.findByName(createRequest.getName());
+        Position createdPosition = positionTestPort.findByName(createRequest.getName())
+                .orElseThrow(() -> new AssertionError("Position not found"));
 
         Assertions.assertNotNull(createdPosition.getId());
         Assertions.assertNotNull(createdPosition.getName());

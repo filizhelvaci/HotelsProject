@@ -6,7 +6,6 @@ import com.flz.exception.PositionAlreadyExistsException;
 import com.flz.exception.PositionNotFoundException;
 import com.flz.model.Department;
 import com.flz.model.Position;
-import com.flz.model.enums.PositionStatus;
 import com.flz.model.mapper.PositionCreateRequestToPositionDomainMapper;
 import com.flz.model.request.PositionCreateRequest;
 import com.flz.model.request.PositionUpdateRequest;
@@ -17,8 +16,6 @@ import com.flz.port.PositionSavePort;
 import com.flz.service.PositionWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -43,14 +40,13 @@ class PositionWriteServiceImpl implements PositionWriteService {
                 .orElseThrow(() -> new DepartmentNotFoundException(departmentId));
 
         if (department.isDeleted()) {
-            department.doActive();
+            department.active();
             departmentSavePort.save(department);
         }
 
         Position position = positionCreateRequestToPositionDomainMapper.map(createRequest);
 
-        position.setDepartment(department);
-        position.setStatus(PositionStatus.ACTIVE);
+        position.create(department);
         positionSavePort.save(position);
     }
 
@@ -76,12 +72,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
             throw new PositionAlreadyExistsException(requestName);
         }
 
-        position.setName(requestName);
-        position.setDepartment(department);
-        position.setStatus(PositionStatus.ACTIVE);
-        position.setUpdatedAt(LocalDateTime.now());
-        position.setUpdatedBy("SYSTEM");
-
+        position.update(requestName, department);
         positionSavePort.save(position);
     }
 

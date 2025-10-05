@@ -35,7 +35,7 @@ public abstract class BaseEntity {
     @PrePersist
     public void onCreate() {
         createdAt = LocalDateTime.now();
-        createdBy = "Admin";
+        createdBy = "System";
     }
 
     @PreUpdate

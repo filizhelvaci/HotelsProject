@@ -31,8 +31,8 @@ class EmployeeAdapter implements EmployeeReadPort, EmployeeSavePort, EmployeeDel
     @Override
     public Optional<Employee> findById(Long id) {
 
-        Optional<EmployeeEntity> employeeEntity = employeeRepository.findById(id);
-        return employeeEntity.map(employeeEntityToDomainMapper::map);
+        return employeeRepository.findById(id)
+                .map(employeeEntityToDomainMapper::map);
     }
 
 

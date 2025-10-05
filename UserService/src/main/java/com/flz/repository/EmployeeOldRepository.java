@@ -4,9 +4,11 @@ import com.flz.model.entity.EmployeeOldEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface EmployeeOldRepository extends JpaRepository<EmployeeOldEntity, Long> {
 
-    EmployeeOldEntity findByIdentityNumber(String identityNumber);
+    Optional<EmployeeOldEntity> findByIdentityNumber(String identityNumber);
 
 }

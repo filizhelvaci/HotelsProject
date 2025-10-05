@@ -655,47 +655,25 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenEmployeeId_whenDeleteCalledIfEmployeeIsManager_thenManagerChangedAndSucceed() {
+    void givenEmployeeId_whenDeleteCalledIfEmployeeIsManager_thenThrowException() {
 
         //Given
         Long mockId = 101L;
 
         Employee employee = getEmployee();
-        EmployeeOld employeeOldSaved = getSavedEmployeeOld();
-        Employee newManager = getManager();
         Department department = Department.builder()
                 .id(21L)
                 .name("Güvenlik")
                 .status(DepartmentStatus.ACTIVE)
                 .manager(employee)
                 .build();
-        List<EmployeeExperience> experiences = List.of(getEmployeeExperience(), getEmployeeExperience2());
 
         //When
         Mockito.when(employeeReadPort.findById(mockId))
                 .thenReturn(Optional.of(employee));
-        Mockito.when(employeeOldSavePort.save(Mockito.any(EmployeeOld.class)))
-                .thenReturn(employeeOldSaved);
-        Mockito.when(departmentReadPort.existsByManagerId(mockId))
-                .thenReturn(true);
         Mockito.when(departmentReadPort.findByManagerId(mockId))
-                .thenReturn(department);
-        Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
-                .thenReturn(Optional.of(newManager));
-        Mockito.doNothing().when(departmentSavePort)
-                .save(Mockito.any(Department.class));
-        Mockito.when(employeeExperienceReadPort.findAllByEmployeeId(mockId))
-                .thenReturn(experiences);
+                .thenReturn(Optional.of(department));
 
-        List<EmployeeOldExperience>
-                employeeOldExperiences = employeeExperienceToEmployeeOldExperienceMapper
-                .map(experiences);
-
-        Mockito.when(employeeOldExperienceSavePort.saveAll(employeeOldExperiences))
-                .thenReturn(employeeOldExperiences);
-        Mockito.doNothing().when(employeeExperienceDeletePort)
-                .deleteAllByEmployeeId(mockId);
-        Mockito.doNothing().when(employeeDeletePort).delete(mockId);
 
         //Then
         employeeWriteServiceImpl.delete(mockId);
@@ -703,21 +681,21 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         // Verify
         Mockito.verify(employeeReadPort, Mockito.times(2))
                 .findById(Mockito.anyLong());
-        Mockito.verify(employeeOldSavePort, Mockito.times(1))
-                .save(Mockito.any(EmployeeOld.class));
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .existsByManagerId(Mockito.anyLong());
-        Mockito.verify(departmentReadPort, Mockito.times(1))
+        Mockito.verify(employeeOldSavePort, Mockito.never())
+                .save(Mockito.any(EmployeeOld.class));
+        Mockito.verify(departmentReadPort, Mockito.never())
                 .findByManagerId(Mockito.anyLong());
-        Mockito.verify(departmentSavePort, Mockito.times(1))
+        Mockito.verify(departmentSavePort, Mockito.never())
                 .save(Mockito.any(Department.class));
-        Mockito.verify(employeeExperienceReadPort, Mockito.times(1))
+        Mockito.verify(employeeExperienceReadPort, Mockito.never())
                 .findAllByEmployeeId(Mockito.anyLong());
-        Mockito.verify(employeeOldExperienceSavePort, Mockito.times(1))
+        Mockito.verify(employeeOldExperienceSavePort, Mockito.never())
                 .saveAll(Mockito.anyList());
-        Mockito.verify(employeeExperienceDeletePort, Mockito.times(1))
+        Mockito.verify(employeeExperienceDeletePort, Mockito.never())
                 .deleteAllByEmployeeId(Mockito.anyLong());
-        Mockito.verify(employeeDeletePort, Mockito.times(1))
+        Mockito.verify(employeeDeletePort, Mockito.never())
                 .delete(Mockito.anyLong());
 
     }
@@ -742,12 +720,12 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         //When
         Mockito.when(employeeReadPort.findById(mockId))
                 .thenReturn(Optional.of(employee));
+        Mockito.when(departmentReadPort.findByManagerId(mockId))
+                .thenReturn(Optional.of(department));
         Mockito.when(employeeOldSavePort.save(Mockito.any(EmployeeOld.class)))
                 .thenReturn(employeeOldSaved);
-        Mockito.when(departmentReadPort.existsByManagerId(mockId))
-                .thenReturn(true);
-        Mockito.when(departmentReadPort.findByManagerId(mockId))
-                .thenReturn(department);
+
+
         Mockito.when(employeeReadPort.findById(mockManagerId))
                 .thenReturn(Optional.empty());
 

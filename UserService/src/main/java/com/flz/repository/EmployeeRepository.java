@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
@@ -15,7 +16,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 
     boolean existsByPhoneNumber(String phoneNumber);
 
-    EmployeeEntity findByIdentityNumber(String identityNumber);
+    Optional<EmployeeEntity> findByIdentityNumber(String identityNumber);
 
     @Query("SELECT new com.flz.model.Employee(e.id, e.firstName, e.lastName) FROM EmployeeEntity e")
     List<Employee> findEmployeeSummaries();
