@@ -2,8 +2,10 @@ package com.flz.port;
 
 import com.flz.model.EmployeeOld;
 
+import java.util.Optional;
+
 public interface EmployeeOldTestPort {
 
-    EmployeeOld findByIdentityNumber(String identity);
+    Optional<EmployeeOld> findByIdentityNumber(String identity);
 
 }
