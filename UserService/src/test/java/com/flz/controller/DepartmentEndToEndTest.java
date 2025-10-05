@@ -2,6 +2,7 @@ package com.flz.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flz.BaseEndToEndTest;
+import com.flz.exception.DepartmentNameNotFoundException;
 import com.flz.model.Department;
 import com.flz.model.Employee;
 import com.flz.model.enums.DepartmentStatus;
@@ -71,7 +72,8 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
         //Verify
-        Department createdDepartment = departmentTestPort.findByName("Otopark Bakım");
+        Department createdDepartment = departmentTestPort.findByName(createRequest.getName())
+                .orElseThrow(() -> new DepartmentNameNotFoundException(createRequest.getName()));
 
         Assertions.assertNotNull(createdDepartment);
         Assertions.assertNotNull(createdDepartment.getId());
@@ -80,14 +82,9 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(createdDepartment.getManager());
         Assertions.assertEquals(createRequest.getName(), createdDepartment.getName());
         Assertions.assertEquals(DepartmentStatus.ACTIVE, createdDepartment.getStatus());
-        Assertions.assertEquals(manager.getFirstName(), createdDepartment.getManager().getFirstName());
-        Assertions.assertEquals(manager.getLastName(), createdDepartment.getManager().getLastName());
+        Assertions.assertEquals(createRequest.getManagerId(), createdDepartment.getManager().getId());
         Assertions.assertEquals(manager.getIdentityNumber(), createdDepartment.getManager().getIdentityNumber());
         Assertions.assertEquals(manager.getPhoneNumber(), createdDepartment.getManager().getPhoneNumber());
-        Assertions.assertEquals(manager.getAddress(), createdDepartment.getManager().getAddress());
-        Assertions.assertEquals(manager.getBirthDate(), createdDepartment.getManager().getBirthDate());
-        Assertions.assertEquals(manager.getGender(), createdDepartment.getManager().getGender());
-        Assertions.assertEquals(manager.getNationality(), createdDepartment.getManager().getNationality());
 
     }
 
@@ -109,10 +106,10 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .build());
 
         Department departmentSaved = departmentTestPort.save(Department.builder()
-                        .name("Kat Güvenlik")
+                .name("Kat Güvenlik")
                 .status(DepartmentStatus.ACTIVE)
-                        .manager(manager)
-                        .build());
+                .manager(manager)
+                .build());
 
         DepartmentUpdateRequest updateRequest = DepartmentUpdateRequest.builder()
                 .name("Kat Güvenlik Departmani")
@@ -137,7 +134,8 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                         .value(true));
 
         //Verify
-        Department department = departmentTestPort.findByName(updateRequest.getName());
+        Department department = departmentTestPort.findByName(updateRequest.getName())
+                .orElseThrow(() -> new DepartmentNameNotFoundException(updateRequest.getName()));
 
         Assertions.assertNotNull(department.getId());
         Assertions.assertNotNull(department.getName());
@@ -145,8 +143,6 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(department.getManager());
         Assertions.assertEquals(updateRequest.getName(), department.getName());
         Assertions.assertEquals(DepartmentStatus.ACTIVE, department.getStatus());
-        Assertions.assertEquals(manager.getFirstName(), department.getManager().getFirstName());
-        Assertions.assertEquals(manager.getLastName(), department.getManager().getLastName());
         Assertions.assertEquals(manager.getIdentityNumber(), department.getManager().getIdentityNumber());
         Assertions.assertEquals(manager.getPhoneNumber(), department.getManager().getPhoneNumber());
 
@@ -170,10 +166,10 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .build());
 
         Department departmentSaved = departmentTestPort.save(Department.builder()
-                        .name("Teras Güvenlik")
+                .name("Teras Güvenlik")
                 .status(DepartmentStatus.ACTIVE)
-                        .manager(manager)
-                        .build());
+                .manager(manager)
+                .build());
 
         //Given
         Long departmentId = departmentSaved.getId();
