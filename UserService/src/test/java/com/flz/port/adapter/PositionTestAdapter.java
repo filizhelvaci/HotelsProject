@@ -10,6 +10,8 @@ import com.flz.port.PositionTestPort;
 import com.flz.repository.PositionRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class PositionTestAdapter implements PositionTestPort {
 
@@ -34,9 +36,9 @@ public class PositionTestAdapter implements PositionTestPort {
     }
 
     @Override
-    public Position findByName(final String name) {
-        PositionEntity positionEntity = positionRepository.findByName(name);
-        return positionEntityToDomainMapper.map(positionEntity);
+    public Optional<Position> findByName(final String name) {
+
+        return positionRepository.findByName(name).map(positionEntityToDomainMapper::map);
     }
 
 }
