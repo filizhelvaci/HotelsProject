@@ -398,8 +398,10 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                         .value(true));
 
         //Verify
-        Employee actualEmployee = employeeTestPort.findByIdentityNumber("25996700777");
-        Position actualPosition = positionTestPort.findByName("Go Developer");
+        Employee actualEmployee = employeeTestPort.findByIdentityNumber("25996700777")
+                .orElseThrow(() -> new AssertionError("EmployeeOld not found"));
+        Position actualPosition = positionTestPort.findByName("Go Developer")
+                .orElseThrow(() -> new AssertionError("Position not found"));
         List<EmployeeExperience> employeeExperiences = employeeExperienceReadPort.findAllByEmployeeId(actualEmployee.getId());
 
         Assertions.assertNotNull(actualEmployee);
@@ -590,10 +592,13 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                         .value(true));
 
         //Verify
-        EmployeeOld employeeOldSaved = employeeOldTestPort.findByIdentityNumber("99988877111");
-        List<EmployeeOldExperience> employeeOldExperiences = employeeOldExperienceReadPort.findAllByEmployeeOldId(employeeOldSaved.getId());
+        EmployeeOld employeeOldSaved = employeeOldTestPort.findByIdentityNumber("99988877111")
+                .orElseThrow(() -> new AssertionError("Employee not found"));
+        List<EmployeeOldExperience> employeeOldExperiences = employeeOldExperienceReadPort
+                .findAllByEmployeeOldId(employeeOldSaved.getId());
         Optional<Employee> deletedEmployee = employeeReadPort.findById(employeeId);
-        List<EmployeeExperience> employeeExperiences = employeeExperienceReadPort.findAllByEmployeeId(employeeId);
+        List<EmployeeExperience> employeeExperiences = employeeExperienceReadPort
+                .findAllByEmployeeId(employeeId);
 
         Assertions.assertTrue(deletedEmployee.isEmpty());
         Assertions.assertTrue(employeeExperiences.isEmpty());
