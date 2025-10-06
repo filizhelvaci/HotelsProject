@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 class RoomTypeAvailabilityServiceImpl implements RoomTypeAvailabilityService {
 
-    RoomTypeEntityToAvailabilityResponseMapper roomTypeEntityToAvailabilityResponseMapper = RoomTypeEntityToAvailabilityResponseMapper.INSTANCE;
+    private static final RoomTypeEntityToAvailabilityResponseMapper roomTypeEntityToAvailabilityResponseMapper = RoomTypeEntityToAvailabilityResponseMapper.INSTANCE;
 
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;

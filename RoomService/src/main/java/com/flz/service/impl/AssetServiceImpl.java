@@ -29,10 +29,10 @@ import java.util.List;
 @RequiredArgsConstructor
 class AssetServiceImpl implements AssetService {
 
-    private final AssetEntityToResponseMapper assetEntityToResponseMapper = AssetEntityToResponseMapper.INSTANCE;
-    private final AssetEntityToSummaryResponseMapper assetEntityToSummaryResponseMapper = AssetEntityToSummaryResponseMapper.INSTANCE;
-    private final AssetCreateRequestToEntityMapper assetCreateRequestToEntityMapper = AssetCreateRequestToEntityMapper.INSTANCE;
-    private final AssetEntityToPageResponseMapper assetEntityToPageResponseMapper = AssetEntityToPageResponseMapper.INSTANCE;
+    private static final AssetEntityToResponseMapper assetEntityToResponseMapper = AssetEntityToResponseMapper.INSTANCE;
+    private static final AssetEntityToSummaryResponseMapper assetEntityToSummaryResponseMapper = AssetEntityToSummaryResponseMapper.INSTANCE;
+    private static final AssetCreateRequestToEntityMapper assetCreateRequestToEntityMapper = AssetCreateRequestToEntityMapper.INSTANCE;
+    private static final AssetEntityToPageResponseMapper assetEntityToPageResponseMapper = AssetEntityToPageResponseMapper.INSTANCE;
 
     private final AssetRepository assetRepository;
 

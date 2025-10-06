@@ -31,10 +31,10 @@ import java.util.List;
 @RequiredArgsConstructor
 class RoomTypeServiceImpl implements RoomTypeService {
 
-    private final RoomTypeEntityToSummaryResponseMapper roomTypeEntityToSummaryResponseMapper = RoomTypeEntityToSummaryResponseMapper.INSTANCE;
-    private final RoomTypeEntityToPageResponseMapper roomTypeEntityToPageResponseMapper = RoomTypeEntityToPageResponseMapper.INSTANCE;
-    private final RoomTypeCreateRequestToEntityMapper roomTypeCreateRequestToEntityMapper = RoomTypeCreateRequestToEntityMapper.INSTANCE;
-    private final RoomTypeEntityToResponseMapper roomTypeEntityToResponseMapper = RoomTypeEntityToResponseMapper.INSTANCE;
+    private static final RoomTypeEntityToSummaryResponseMapper roomTypeEntityToSummaryResponseMapper = RoomTypeEntityToSummaryResponseMapper.INSTANCE;
+    private static final RoomTypeEntityToPageResponseMapper roomTypeEntityToPageResponseMapper = RoomTypeEntityToPageResponseMapper.INSTANCE;
+    private static final RoomTypeCreateRequestToEntityMapper roomTypeCreateRequestToEntityMapper = RoomTypeCreateRequestToEntityMapper.INSTANCE;
+    private static final RoomTypeEntityToResponseMapper roomTypeEntityToResponseMapper = RoomTypeEntityToResponseMapper.INSTANCE;
 
     private final RoomTypeRepository roomTypeRepository;
     private final AssetRepository assetRepository;
