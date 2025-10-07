@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,5 +22,15 @@ public class EmployeeExperience extends BaseDomainModel {
 
     private Position position;
     private Employee employee;
+
+
+    public void closeExperience(LocalDate nextExperienceStartDate) {
+
+        LocalDate newEndDate = nextExperienceStartDate.minusDays(1);
+
+        this.setEndDate(newEndDate);
+        this.setUpdatedAt(LocalDateTime.now());
+        this.setUpdatedBy("System");
+    }
 
 }
