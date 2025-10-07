@@ -1,7 +1,6 @@
 package com.flz.service.impl;
 
 import com.flz.exception.DepartmentNotFoundException;
-import com.flz.exception.PositionAlreadyDeletedException;
 import com.flz.exception.PositionAlreadyExistsException;
 import com.flz.exception.PositionNotFoundException;
 import com.flz.model.Department;
@@ -46,7 +45,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
 
         Position position = positionCreateRequestToPositionDomainMapper.map(createRequest);
 
-        position.create(department);
+        position.setDepartment(department);
         positionSavePort.save(position);
     }
 
@@ -92,11 +91,7 @@ class PositionWriteServiceImpl implements PositionWriteService {
         Position position = positionReadPort.findById(id)
                 .orElseThrow(() -> new PositionNotFoundException(id));
 
-        if (position.isDeleted()) {
-            throw new PositionAlreadyDeletedException(position.getId());
-        }
-
-        position.delete();
+        position.delete(id);
         positionSavePort.save(position);
     }
 
