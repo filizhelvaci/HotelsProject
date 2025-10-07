@@ -1,14 +1,17 @@
 package com.flz.service.impl;
 
+import com.flz.exception.DepartmentNotFoundException;
 import com.flz.exception.EmployeeAlreadyExistsException;
 import com.flz.exception.EmployeeAlreadyManagerException;
 import com.flz.exception.EmployeeNotFoundException;
 import com.flz.exception.PositionNotFoundException;
+import com.flz.model.Department;
 import com.flz.model.Employee;
 import com.flz.model.EmployeeExperience;
 import com.flz.model.EmployeeOld;
 import com.flz.model.EmployeeOldExperience;
 import com.flz.model.Position;
+import com.flz.model.enums.DepartmentStatus;
 import com.flz.model.mapper.EmployeeCreateRequestToDomainMapper;
 import com.flz.model.mapper.EmployeeExperienceToEmployeeOldExperienceMapper;
 import com.flz.model.mapper.EmployeeToEmployeeOldMapper;
@@ -146,10 +149,11 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        departmentReadPort.findByManagerId(id)
-                .ifPresent(department -> {
-                    throw new EmployeeAlreadyManagerException(department.getName());
-                });
+        Optional<Department> departmentOfManager = departmentReadPort.findByManagerIdAndStatus(id,DepartmentStatus.ACTIVE);
+
+        if (departmentOfManager.isPresent()) {
+            throw new EmployeeAlreadyManagerException(departmentOfManager.get().getName());
+        }
 
         List<EmployeeExperience> experiences = Optional.ofNullable(
                         employeeExperienceReadPort.findAllByEmployeeId(id))

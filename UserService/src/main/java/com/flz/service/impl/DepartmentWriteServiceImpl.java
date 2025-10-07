@@ -17,6 +17,8 @@ import com.flz.service.DepartmentWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 class DepartmentWriteServiceImpl implements DepartmentWriteService {
@@ -42,11 +44,11 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         Employee manager = employeeReadPort.findById(managerId)
                 .orElseThrow(() -> new EmployeeNotFoundException(managerId));
 
-        boolean existsActive = departmentReadPort.existsByManagerIdAndStatus(managerId, DepartmentStatus.ACTIVE);
-        if (existsActive) {
-            throw new EmployeeAlreadyManagerException(
-                    "As manager " + manager.getFirstName() + " " + manager.getLastName()
-            );
+        Optional<Department> departmentOfManager= departmentReadPort
+                .findByManagerIdAndStatus(managerId, DepartmentStatus.ACTIVE);
+        if (departmentOfManager.isPresent()) {
+
+            throw new EmployeeAlreadyManagerException(departmentOfManager.get().getName());
         }
 
         Department department = departmentCreateRequestToDomainMapper.map(createRequest);
@@ -90,10 +92,10 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
 
     private void checkIfManagerExists(DepartmentUpdateRequest departmentUpdateRequest) {
 
-        boolean existsByManager = departmentReadPort
-                .existsByManagerIdAndStatus(departmentUpdateRequest.getManagerId(), DepartmentStatus.ACTIVE);
-        if (existsByManager) {
-            throw new EmployeeAlreadyManagerException("As manager " + departmentUpdateRequest.getManagerId());
+        Optional<Department> departmentOfManager= departmentReadPort
+                .findByManagerIdAndStatus(departmentUpdateRequest.getManagerId(), DepartmentStatus.ACTIVE);
+        if (departmentOfManager.isPresent()) {
+            throw new EmployeeAlreadyManagerException(departmentOfManager.get().getName());
         }
     }
 
