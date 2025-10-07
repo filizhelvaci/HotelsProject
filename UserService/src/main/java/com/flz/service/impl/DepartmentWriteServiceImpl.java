@@ -1,6 +1,5 @@
 package com.flz.service.impl;
 
-import com.flz.exception.DepartmentAlreadyDeletedException;
 import com.flz.exception.DepartmentAlreadyExistsException;
 import com.flz.exception.DepartmentNotFoundException;
 import com.flz.exception.EmployeeAlreadyManagerException;
@@ -51,7 +50,7 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         }
 
         Department department = departmentCreateRequestToDomainMapper.map(createRequest);
-        department.create(manager);
+        department.setManager(manager);
         departmentSavePort.save(department);
     }
 
@@ -105,11 +104,7 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
         Department department = departmentReadPort.findById(id)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
 
-        if (department.isDeleted()) {
-            throw new DepartmentAlreadyDeletedException(department.getId());
-        }
-
-        department.delete();
+        department.delete(id);
         departmentSavePort.save(department);
     }
 

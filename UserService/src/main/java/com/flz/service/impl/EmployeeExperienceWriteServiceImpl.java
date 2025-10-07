@@ -16,7 +16,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -53,8 +52,7 @@ class EmployeeExperienceWriteServiceImpl implements EmployeeExperienceWriteServi
                 .findTopByEmployeeIdOrderByStartDateDesc(employeeId);
         if (lastExperience.isPresent()) {
             EmployeeExperience lastEmployeeExperience = lastExperience.get();
-            LocalDate newEndDate = createRequest.getStartDate().minusDays(1);
-            lastEmployeeExperience.setEndDate(newEndDate);
+            lastEmployeeExperience.closeExperience(createRequest.getStartDate());
             employeeExperienceSavePort.save(lastEmployeeExperience);
         }
 

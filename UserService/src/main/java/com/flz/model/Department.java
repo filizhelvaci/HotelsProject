@@ -1,5 +1,6 @@
 package com.flz.model;
 
+import com.flz.exception.DepartmentAlreadyDeletedException;
 import com.flz.model.enums.DepartmentStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,11 +19,6 @@ public class Department extends BaseDomainModel {
 
     private Employee manager;
 
-    public void create(Employee manager) {
-
-        this.manager = manager;
-        this.status = DepartmentStatus.ACTIVE;
-    }
 
     public void update(String name, Employee manager) {
 
@@ -31,7 +27,11 @@ public class Department extends BaseDomainModel {
         this.status = DepartmentStatus.ACTIVE;
     }
 
-    public void delete() {
+    public void delete(Long id) {
+
+        if (this.isDeleted()) {
+            throw new DepartmentAlreadyDeletedException(id);
+        }
 
         this.status = DepartmentStatus.DELETED;
     }
