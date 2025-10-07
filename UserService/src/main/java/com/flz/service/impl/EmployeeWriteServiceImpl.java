@@ -1,6 +1,5 @@
 package com.flz.service.impl;
 
-import com.flz.exception.DepartmentNotFoundException;
 import com.flz.exception.EmployeeAlreadyExistsException;
 import com.flz.exception.EmployeeAlreadyManagerException;
 import com.flz.exception.EmployeeNotFoundException;
@@ -149,7 +148,7 @@ class EmployeeWriteServiceImpl implements EmployeeWriteService {
         Employee employee = employeeReadPort.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        Optional<Department> departmentOfManager = departmentReadPort.findByManagerIdAndStatus(id,DepartmentStatus.ACTIVE);
+        Optional<Department> departmentOfManager = departmentReadPort.findByManagerIdAndStatus(id, DepartmentStatus.ACTIVE);
 
         if (departmentOfManager.isPresent()) {
             throw new EmployeeAlreadyManagerException(departmentOfManager.get().getName());
