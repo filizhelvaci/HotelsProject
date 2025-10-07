@@ -16,6 +16,8 @@ public interface DepartmentReadPort {
 
     Optional<Department> findByManagerId(Long managerId);
 
+    Optional<Department> findByManagerIdAndStatus(Long managerId, DepartmentStatus status);
+
     boolean existsByName(String name);
 
     boolean existsByManagerId(Long id);

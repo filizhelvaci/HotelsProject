@@ -66,9 +66,17 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
         return departmentRepository.existsByManagerId(id);
     }
 
+    @Override
     public boolean existsByManagerIdAndStatus(Long id, DepartmentStatus status) {
 
         return departmentRepository.existsByManagerIdAndStatus(id,status);
+    }
+
+    @Override
+    public Optional<Department> findByManagerIdAndStatus(Long managerId, DepartmentStatus status){
+
+        return departmentRepository.findByManagerIdAndStatus(managerId,status)
+                .map(departmentEntityToDomainMapper::map);
     }
 
 
