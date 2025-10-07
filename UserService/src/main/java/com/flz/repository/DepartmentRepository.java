@@ -14,8 +14,6 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
 
     boolean existsByManagerId(Long id);
 
-    boolean existsByManagerIdAndStatus(Long managerId, DepartmentStatus status);
-
     Optional<DepartmentEntity> findByManagerIdAndStatus(Long managerId, DepartmentStatus status);
 
     Optional<DepartmentEntity> findByName(String name);
