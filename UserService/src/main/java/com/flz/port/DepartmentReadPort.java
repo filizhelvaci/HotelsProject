@@ -22,6 +22,4 @@ public interface DepartmentReadPort {
 
     boolean existsByManagerId(Long id);
 
-    boolean existsByManagerIdAndStatus(Long managerId, DepartmentStatus status);
-
 }
