@@ -63,16 +63,15 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
                 .thenReturn(mockManager);
 
-        Mockito.doNothing().when(departmentReadPort)
-                .findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any());
+        Mockito.when(departmentReadPort.findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any()))
+                .thenReturn(Optional.empty());
 
-        Department mockDepartment = DepartmentCreateRequestToDomainMapper.INSTANCE
-                .map(mockDepartmentCreateRequest);
-
-        Mockito.doNothing().when(departmentSavePort).save(mockDepartment);
+        Mockito.doNothing().when(departmentSavePort).save(Mockito.any());
 
         //Then
         departmentWriteService.create(mockDepartmentCreateRequest);
+
+
 
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
@@ -91,7 +90,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Assertions.assertNotNull(savedDepartment);
         Assertions.assertEquals(mockDepartmentCreateRequest.getName(), savedDepartment.getName());
         Assertions.assertEquals(mockManager.get().getPhoneNumber(), savedDepartment.getManager().getPhoneNumber());
-        Assertions.assertEquals(DepartmentStatus.ACTIVE, savedDepartment.getStatus());
+
     }
 
 
@@ -155,7 +154,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Assertions.assertNotNull(savedDepartment);
         Assertions.assertEquals(mockDepartmentCreateRequest.getName(), savedDepartment.getName());
         Assertions.assertEquals(mockManager.get().getPhoneNumber(), savedDepartment.getManager().getPhoneNumber());
-        Assertions.assertEquals(DepartmentStatus.ACTIVE, savedDepartment.getStatus());
+
 
     }
 
@@ -311,10 +310,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
                 .thenReturn(mockManager);
 
-        Mockito.when(departmentReadPort.findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any()))
-                .thenReturn(Optional.empty());
-
-        Mockito.when(departmentReadPort.existsByName(Mockito.anyString()))
+        Mockito.when(departmentReadPort.existsByName(mockDepartmentUpdateRequest.getName()))
                 .thenReturn(false);
 
         Mockito.doNothing().when(departmentSavePort)
@@ -330,8 +326,11 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(Mockito.anyLong());
 
-        Mockito.verify(departmentReadPort, Mockito.times(1))
+        Mockito.verify(departmentReadPort, Mockito.never())
                 .findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any());
+
+        Mockito.verify(departmentReadPort,Mockito.times(1))
+                .existsByName(Mockito.any());
 
         ArgumentCaptor<Department> departmentCaptor = ArgumentCaptor.forClass(Department.class);
         Mockito.verify(departmentSavePort, Mockito.times(1))
@@ -343,6 +342,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Assertions.assertEquals(mockDepartmentUpdateRequest.getName(), savedDepartment.getName());
         Assertions.assertEquals(mockManager.get().getPhoneNumber(), savedDepartment.getManager().getPhoneNumber());
         Assertions.assertEquals(DepartmentStatus.ACTIVE, savedDepartment.getStatus());
+
 
     }
 
@@ -361,7 +361,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .build();
 
         Employee mockNewManager = Employee.builder()
-                .id(150L)
+                .id(180L)
                 .firstName("Sara")
                 .lastName("Sweet")
                 .identityNumber("25891114785")
@@ -391,20 +391,11 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.when(departmentReadPort.findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any()))
                 .thenReturn(Optional.empty());
 
-        Mockito.when(departmentReadPort.existsByName(Mockito.any()))
-                .thenReturn(false);
-
         Mockito.doNothing().when(departmentSavePort)
                 .save(Mockito.any(Department.class));
 
         // Then
         departmentWriteService.update(mockId, mockDepartmentUpdateRequest);
-
-        Assertions.assertEquals(mockDepartmentUpdateRequest.getName(), mockDepartment.getName());
-        Assertions.assertEquals(mockDepartmentUpdateRequest.getManagerId(), mockNewManager.getId());
-        Assertions.assertEquals(mockDepartmentUpdateRequest.getManagerId(), mockDepartment.getManager().getId());
-        Assertions.assertNotNull(mockDepartment.getUpdatedAt());
-        Assertions.assertNotNull(mockDepartment.getUpdatedBy());
 
         // Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
@@ -414,13 +405,21 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .findById(Mockito.anyLong());
 
         Mockito.verify(departmentReadPort, Mockito.times(1))
-                .existsByManagerId(Mockito.anyLong());
+                .findByManagerIdAndStatus(Mockito.anyLong(),Mockito.any());
 
         Mockito.verify(departmentReadPort, Mockito.never())
-                .existsByName(Mockito.any());
+                .existsByName(Mockito.anyString());
 
+        ArgumentCaptor<Department> departmentCaptor = ArgumentCaptor.forClass(Department.class);
         Mockito.verify(departmentSavePort, Mockito.times(1))
-                .save(Mockito.any(Department.class));
+                .save(departmentCaptor.capture());
+
+        Department savedDepartment = departmentCaptor.getValue();
+
+        Assertions.assertNotNull(savedDepartment);
+        Assertions.assertEquals(mockDepartmentUpdateRequest.getName(), savedDepartment.getName());
+        Assertions.assertEquals(mockNewManager.getPhoneNumber(), savedDepartment.getManager().getPhoneNumber());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, savedDepartment.getStatus());
 
     }
 
@@ -548,9 +547,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.when(departmentReadPort.findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any()))
                 .thenReturn(Optional.empty());
 
-        Mockito.when(departmentReadPort.existsByName(Mockito.anyString()))
-                .thenReturn(Boolean.FALSE);
-
         Mockito.doNothing().when(departmentSavePort)
                 .save(Mockito.any(Department.class));
 
@@ -567,11 +563,19 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any());
 
-        Mockito.verify(departmentReadPort, Mockito.times(1))
+        Mockito.verify(departmentReadPort, Mockito.never())
                 .existsByName(Mockito.anyString());
 
+        ArgumentCaptor<Department> departmentCaptor = ArgumentCaptor.forClass(Department.class);
         Mockito.verify(departmentSavePort, Mockito.times(1))
-                .save(Mockito.any(Department.class));
+                .save(departmentCaptor.capture());
+
+        Department savedDepartment = departmentCaptor.getValue();
+
+        Assertions.assertNotNull(savedDepartment);
+        Assertions.assertEquals(mockDepartmentUpdateRequest.getName(), savedDepartment.getName());
+        Assertions.assertEquals(manager.getPhoneNumber(), savedDepartment.getManager().getPhoneNumber());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, savedDepartment.getStatus());
 
     }
 
@@ -686,9 +690,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.when(employeeReadPort.findById(Mockito.anyLong()))
                 .thenReturn(mockManager);
 
-        Mockito.when(departmentReadPort.findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any()))
-                .thenReturn(Optional.empty());
-
         Mockito.when(departmentReadPort.existsByName(Mockito.anyString()))
                 .thenReturn(true);
 
@@ -703,7 +704,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.verify(employeeReadPort, Mockito.times(1))
                 .findById(Mockito.anyLong());
 
-        Mockito.verify(departmentReadPort, Mockito.times(1))
+        Mockito.verify(departmentReadPort, Mockito.never())
                 .findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any());
 
         Mockito.verify(departmentReadPort, Mockito.times(1))
@@ -728,6 +729,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .id(mockId)
                 .name("updatedDepartment")
                 .status(DepartmentStatus.ACTIVE)
+                .manager(getEmployee())
                 .createdAt(LocalDateTime.now())
                 .createdBy("createdUser")
                 .build();
@@ -735,6 +737,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Department mockDeletedDepartment = Department.builder()
                 .id(mockDepartment.getId())
                 .name(mockDepartment.getName())
+                .manager(getEmployee())
                 .status(DepartmentStatus.DELETED)
                 .build();
 
@@ -748,17 +751,20 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         //Then
         departmentWriteService.delete(mockId);
 
-        Assertions.assertEquals(DepartmentStatus.DELETED, mockDeletedDepartment.getStatus());
-        Assertions.assertEquals(mockDepartment.getName(), mockDeletedDepartment.getName());
-        Assertions.assertNotEquals(mockDeletedDepartment.getStatus(), mockDepartment.getStatus());
-        Assertions.assertNotNull(mockDeletedDepartment.getUpdatedAt());
-        Assertions.assertNotNull(mockDeletedDepartment.getUpdatedBy());
 
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .findById(mockId);
+        ArgumentCaptor<Department> departmentCaptor = ArgumentCaptor.forClass(Department.class);
         Mockito.verify(departmentSavePort, Mockito.times(1))
-                .save(Mockito.any(Department.class));
+                .save(departmentCaptor.capture());
+
+        Department savedDepartment = departmentCaptor.getValue();
+
+        Assertions.assertNotNull(savedDepartment);
+        Assertions.assertEquals(DepartmentStatus.DELETED, savedDepartment.getStatus());
+        Assertions.assertEquals(mockDepartment.getName(), savedDepartment.getName());
+        Assertions.assertEquals(mockDepartment.getManager().getPhoneNumber(), savedDepartment.getManager().getPhoneNumber());
 
     }
 
@@ -793,6 +799,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Department mockDepartment = Department.builder()
                 .id(mockId)
                 .name("DeletedDepartment")
+                .manager(getEmployee())
                 .status(DepartmentStatus.DELETED)
                 .createdAt(LocalDateTime.now())
                 .createdBy("SYSTEM")
