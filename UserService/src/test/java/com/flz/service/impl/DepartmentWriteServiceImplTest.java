@@ -651,7 +651,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .findById(Mockito.anyLong());
 
         Mockito.verify(departmentReadPort, Mockito.never())
-                .findByManagerId(Mockito.anyLong());
+                .findByManagerIdAndStatus(Mockito.anyLong(),Mockito.any());
 
         Mockito.verify(departmentReadPort, Mockito.never())
                 .existsByName(Mockito.anyString());

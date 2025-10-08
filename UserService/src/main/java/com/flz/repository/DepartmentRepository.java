@@ -18,6 +18,4 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
 
     Optional<DepartmentEntity> findByName(String name);
 
-    Optional<DepartmentEntity> findByManagerId(Long id);
-
 }

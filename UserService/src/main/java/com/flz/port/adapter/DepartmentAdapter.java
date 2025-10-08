@@ -76,14 +76,6 @@ class DepartmentAdapter implements DepartmentReadPort, DepartmentSavePort {
 
 
     @Override
-    public Optional<Department> findByManagerId(Long managerId) {
-
-     return departmentRepository.findByManagerId(managerId)
-             .map(departmentEntityToDomainMapper::map);
-    }
-
-
-    @Override
     public void save(final Department department) {
 
         final DepartmentEntity departmentEntity = departmentToEntityMapper.map(department);
