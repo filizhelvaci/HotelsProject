@@ -47,7 +47,7 @@ class EmployeeExperienceControllerTest extends BaseTest {
         EmployeeExperienceCreateRequest mockCreateRequest = EmployeeExperienceCreateRequest.builder()
                 .salary(BigDecimal.valueOf(10000))
                 .positionId(10L)
-                .startDate(LocalDate.of(2025, 10, 2))
+                .startDate(LocalDate.now().plusDays(5))
                 .build();
 
         //When
