@@ -148,7 +148,7 @@ class EmployeeExperienceEndToEndTest extends BaseEndToEndTest {
                 employeeExperiences.get(0).getEmployee().getLastName());
 
         Assertions.assertNotNull(employeeExperiences.get(0).getCreatedAt());
-        Assertions.assertNotNull(employeeExperiences.get(0).getCreatedBy());
+        Assertions.assertEquals("System",employeeExperiences.get(0).getCreatedBy());
 
         Assertions.assertNotNull(employeeExperiences.get(1).getSalary());
         Assertions.assertEquals(employeeExperience.getStartDate(),
@@ -170,8 +170,8 @@ class EmployeeExperienceEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(employeeExperience.getEmployee().getLastName(),
                 employeeExperiences.get(1).getEmployee().getLastName());
 
+        Assertions.assertEquals("System",employeeExperiences.get(1).getCreatedBy());
         Assertions.assertNotNull(employeeExperiences.get(1).getCreatedAt());
-        Assertions.assertNotNull(employeeExperiences.get(1).getCreatedBy());
 
     }
 

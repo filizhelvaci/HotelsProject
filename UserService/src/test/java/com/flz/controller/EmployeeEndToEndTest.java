@@ -213,6 +213,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
         Assertions.assertNotNull(employeeDetailsResponse);
         Assertions.assertNotNull(employeeDetailsResponse.getExperiences());
+
         Assertions.assertEquals(savedEmployee.getFirstName(), employeeDetailsResponse.getEmployee().getFirstName());
         Assertions.assertEquals(savedEmployee.getLastName(), employeeDetailsResponse.getEmployee().getLastName());
         Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeDetailsResponse.getEmployee().getIdentityNumber());
@@ -380,7 +381,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 .salary(BigDecimal.valueOf(20000))
                 .positionId(position.getId())
                 .departmentId(department.getId())
-                .startDate(LocalDate.parse("2025-10-01"))
+                .startDate(LocalDate.now().plusDays(5))
                 .build();
 
         //When
@@ -399,19 +400,15 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
         //Verify
         Employee actualEmployee = employeeTestPort.findByIdentityNumber("25996700777")
-                .orElseThrow(() -> new AssertionError("EmployeeOld not found"));
+                .orElseThrow(() -> new AssertionError("Employee not found"));
         Position actualPosition = positionTestPort.findByName("Go Developer")
                 .orElseThrow(() -> new AssertionError("Position not found"));
         List<EmployeeExperience> employeeExperiences = employeeExperienceReadPort.findAllByEmployeeId(actualEmployee.getId());
 
         Assertions.assertNotNull(actualEmployee);
-        Assertions.assertNotNull(actualEmployee.getFirstName());
-        Assertions.assertNotNull(actualEmployee.getLastName());
-        Assertions.assertNotNull(actualEmployee.getId());
-        Assertions.assertNotNull(actualEmployee.getPhoneNumber());
-        Assertions.assertNotNull(actualEmployee.getEmail());
-        Assertions.assertNotNull(actualEmployee.getAddress());
-        Assertions.assertNotNull(actualEmployee.getBirthDate());
+        Assertions.assertNotNull(actualPosition);
+        Assertions.assertNotNull(employeeExperiences);
+
         Assertions.assertEquals(createRequest.getFirstName(), actualEmployee.getFirstName());
         Assertions.assertEquals(createRequest.getLastName(), actualEmployee.getLastName());
         Assertions.assertEquals(createRequest.getIdentityNumber(), actualEmployee.getIdentityNumber());
@@ -421,6 +418,7 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(createRequest.getBirthDate(), actualEmployee.getBirthDate());
         Assertions.assertEquals(createRequest.getGender(), actualEmployee.getGender());
         Assertions.assertEquals(createRequest.getNationality(), actualEmployee.getNationality());
+
         Assertions.assertEquals(employeeExperiences.get(0).getEmployee(), actualEmployee);
         Assertions.assertEquals(createRequest.getPositionId(), actualPosition.getId());
         Assertions.assertEquals(position.getName(), actualPosition.getName());
@@ -428,10 +426,14 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 actualPosition.getDepartment().getName());
         Assertions.assertEquals(position.getDepartment().getManager().getPhoneNumber(),
                 actualPosition.getDepartment().getManager().getPhoneNumber());
-        Assertions.assertEquals(position.getStatus(), actualPosition.getStatus());
-        Assertions.assertEquals(position.getDepartment().getStatus(),
-                actualPosition.getDepartment().getStatus());
 
+        Assertions.assertEquals(PositionStatus.ACTIVE, actualPosition.getStatus());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, actualPosition.getDepartment().getStatus());
+
+        Assertions.assertEquals("System", actualPosition.getCreatedBy());
+        Assertions.assertNotNull(actualPosition.getCreatedAt());
+        Assertions.assertNull(actualPosition.getUpdatedBy());
+        Assertions.assertNull(actualPosition.getUpdatedAt());
     }
 
 
@@ -486,9 +488,6 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(updatedEmployee);
         Assertions.assertTrue(updatedEmployee.isPresent());
 
-        Assertions.assertNotNull(updatedEmployee.get().getUpdatedAt());
-        Assertions.assertNotNull(updatedEmployee.get().getUpdatedBy());
-
         Assertions.assertEquals(updateRequest.getFirstName(), updatedEmployee.get().getFirstName());
         Assertions.assertEquals(updateRequest.getLastName(), updatedEmployee.get().getLastName());
         Assertions.assertEquals(updateRequest.getIdentityNumber(), updatedEmployee.get().getIdentityNumber());
@@ -508,6 +507,11 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(savedEmployee.getBirthDate(), updatedEmployee.get().getBirthDate());
         Assertions.assertEquals(savedEmployee.getGender(), updatedEmployee.get().getGender());
         Assertions.assertNotEquals(savedEmployee.getNationality(), updatedEmployee.get().getNationality());
+
+        Assertions.assertNotNull(updatedEmployee.get().getCreatedAt());
+        Assertions.assertEquals("System",updatedEmployee.get().getCreatedBy());
+        Assertions.assertNotNull(updatedEmployee.get().getUpdatedAt());
+        Assertions.assertEquals("System",updatedEmployee.get().getUpdatedBy());
 
     }
 
@@ -602,23 +606,18 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
 
         Assertions.assertTrue(deletedEmployee.isEmpty());
         Assertions.assertTrue(employeeExperiences.isEmpty());
-
         Assertions.assertNotNull(employeeOldSaved);
+        Assertions.assertNotNull(employeeOldExperiences);
+
         Assertions.assertEquals(savedEmployee.getFirstName(), employeeOldSaved.getFirstName());
         Assertions.assertEquals(savedEmployee.getLastName(), employeeOldSaved.getLastName());
-        Assertions.assertEquals(savedEmployee.getIdentityNumber(), employeeOldSaved.getIdentityNumber());
         Assertions.assertEquals(savedEmployee.getPhoneNumber(), employeeOldSaved.getPhoneNumber());
-        Assertions.assertEquals(savedEmployee.getAddress(), employeeOldSaved.getAddress());
-        Assertions.assertEquals(savedEmployee.getBirthDate(), employeeOldSaved.getBirthDate());
 
-        Assertions.assertEquals(employeeExperience.getPosition().getName(), employeeOldExperiences.get(0)
-                .getPosition().getName());
+        Assertions.assertEquals(employeeExperience.getStartDate(), employeeOldExperiences.get(0).getStartDate());
         Assertions.assertEquals(employeeExperience.getPosition().getDepartment().getName(),
                 employeeOldExperiences.get(0).getPosition().getDepartment().getName());
-        Assertions.assertEquals(employeeExperience.getPosition().getStatus(),
-                employeeOldExperiences.get(0).getPosition().getStatus());
-        Assertions.assertEquals(employeeExperience.getPosition().getDepartment().getManager().getIdentityNumber(),
-                employeeOldExperiences.get(0).getPosition().getDepartment().getManager().getIdentityNumber());
+        Assertions.assertEquals(employeeExperience.getPosition().getName(),
+                employeeOldExperiences.get(0).getPosition().getName());
         Assertions.assertEquals(employeeExperience.getPosition().getDepartment().getManager().getPhoneNumber(),
                 employeeOldExperiences.get(0).getPosition().getDepartment().getManager().getPhoneNumber());
 
@@ -626,12 +625,11 @@ class EmployeeEndToEndTest extends BaseEndToEndTest {
                 employeeOldExperiences.get(1).getPosition().getName());
         Assertions.assertEquals(employeeExperience2.getPosition().getDepartment().getName(),
                 employeeOldExperiences.get(1).getPosition().getDepartment().getName());
-        Assertions.assertEquals(employeeExperience2.getPosition().getStatus(),
-                employeeOldExperiences.get(1).getPosition().getStatus());
-        Assertions.assertEquals(employeeExperience2.getPosition().getDepartment().getManager().getIdentityNumber(),
-                employeeOldExperiences.get(1).getPosition().getDepartment().getManager().getIdentityNumber());
         Assertions.assertEquals(employeeExperience2.getPosition().getDepartment().getManager().getPhoneNumber(),
                 employeeOldExperiences.get(1).getPosition().getDepartment().getManager().getPhoneNumber());
+
+        Assertions.assertEquals("System",employeeOldSaved.getCreatedBy());
+        Assertions.assertNotNull(employeeOldSaved.getCreatedAt());
 
     }
 

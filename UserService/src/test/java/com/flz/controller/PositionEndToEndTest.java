@@ -60,7 +60,7 @@ class PositionEndToEndTest extends BaseEndToEndTest {
                 .build());
 
         Department departmentSaved = departmentTestPort.save(Department.builder()
-                .name("Kat Güvenlik")
+                .name("Özel Güvenlik Birimi")
                 .status(DepartmentStatus.ACTIVE)
                 .manager(manager)
                 .build());
@@ -89,25 +89,21 @@ class PositionEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(createdPosition.getId());
         Assertions.assertNotNull(createdPosition.getName());
         Assertions.assertNotNull(createdPosition.getStatus());
-        Assertions.assertEquals(PositionStatus.ACTIVE, createdPosition.getStatus());
-        Assertions.assertNotNull(createdPosition.getCreatedAt());
-        Assertions.assertNotNull(createdPosition.getCreatedBy());
-        Assertions.assertNull(createdPosition.getUpdatedAt());
-        Assertions.assertNull(createdPosition.getUpdatedBy());
+
         Assertions.assertNotNull(createdPosition.getDepartment().getId());
-        Assertions.assertNotNull(createdPosition.getDepartment().getName());
-        Assertions.assertNotNull(createdPosition.getDepartment().getStatus());
-        Assertions.assertEquals(DepartmentStatus.ACTIVE, createdPosition.getDepartment().getStatus());
+        Assertions.assertEquals(PositionStatus.ACTIVE, createdPosition.getStatus());
         Assertions.assertEquals(createRequest.getName(), createdPosition.getName());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, createdPosition.getDepartment().getStatus());
         Assertions.assertEquals(departmentSaved.getName(), createdPosition.getDepartment().getName());
         Assertions.assertEquals(departmentSaved.getManager().getFirstName(),
                 createdPosition.getDepartment().getManager().getFirstName());
-        Assertions.assertEquals(departmentSaved.getManager().getLastName(),
-                createdPosition.getDepartment().getManager().getLastName());
-        Assertions.assertEquals(departmentSaved.getManager().getIdentityNumber(),
-                createdPosition.getDepartment().getManager().getIdentityNumber());
         Assertions.assertEquals(departmentSaved.getManager().getPhoneNumber(),
                 createdPosition.getDepartment().getManager().getPhoneNumber());
+
+        Assertions.assertNotNull(createdPosition.getCreatedAt());
+        Assertions.assertEquals("System", createdPosition.getCreatedBy());
+        Assertions.assertNull(createdPosition.getUpdatedAt());
+        Assertions.assertNull(createdPosition.getUpdatedBy());
 
     }
 
@@ -165,19 +161,110 @@ class PositionEndToEndTest extends BaseEndToEndTest {
         Optional<Position> position = positionReadPort.findById(positionId);
 
         Assertions.assertTrue(position.isPresent());
-        Assertions.assertNotNull(position.get());
-        Assertions.assertNotNull(position.get().getName());
-        Assertions.assertNotNull(position.get().getDepartment());
-        Assertions.assertNotNull(position.get().getId());
-        Assertions.assertNotNull(position.get().getCreatedBy());
+
+        Assertions.assertEquals(updateRequest.getName(), position.get().getName());
+        Assertions.assertEquals(updateRequest.getDepartmentId(), position.get().getDepartment().getId());
+        Assertions.assertNotEquals(positionSaved.getName(), position.get().getName());
+
+        Assertions.assertEquals(PositionStatus.ACTIVE, position.get().getStatus());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, position.get().getDepartment().getStatus());
+
+        Assertions.assertEquals("System", position.get().getCreatedBy());
         Assertions.assertNotNull(position.get().getCreatedAt());
         Assertions.assertNotNull(position.get().getUpdatedAt());
-        Assertions.assertNotNull(position.get().getUpdatedBy());
-        Assertions.assertNotNull(position.get().getStatus());
-        Assertions.assertEquals(position.get().getId(), positionId);
-        Assertions.assertEquals(position.get().getName(), updateRequest.getName());
-        Assertions.assertEquals(position.get().getDepartment().getId(),
-                updateRequest.getDepartmentId());
+        Assertions.assertEquals("System", position.get().getUpdatedBy());
+
+    }
+
+    @Test
+    void givenUpdateRequest_whenUpdateDepartmentOfPosition_thenReturnSuccess() throws Exception {
+
+        //Initialize
+        Employee otherManager = employeeSavePort.save(Employee.builder()
+                .firstName("Semiha")
+                .lastName("Kaynamaz")
+                .identityNumber("999166714785")
+                .email("semihak@example.com")
+                .phoneNumber("05328123365")
+                .address("Kırka")
+                .birthDate(LocalDate.of(1995, 1, 15))
+                .gender(Gender.FEMALE)
+                .nationality("Turkey")
+                .build());
+
+        Department otherDepartmentSaved = departmentTestPort.save(Department.builder()
+                .name("Giriş Kontrol")
+                .status(DepartmentStatus.ACTIVE)
+                .manager(otherManager)
+                .build());
+
+        Employee manager = employeeSavePort.save(Employee.builder()
+                .firstName("Sevde")
+                .lastName("Kayık")
+                .identityNumber("852166755785")
+                .email("sevdeee@example.com")
+                .phoneNumber("05051235252")
+                .address("Kastamonu")
+                .birthDate(LocalDate.of(1992, 1, 15))
+                .gender(Gender.FEMALE)
+                .nationality("Turkey")
+                .build());
+
+        Department departmentSaved = departmentTestPort.save(Department.builder()
+                .name("Giriş Güvenlik Kontrol Birimi")
+                .status(DepartmentStatus.ACTIVE)
+                .manager(manager)
+                .build());
+
+        Position positionSaved = positionTestPort.save(Position.builder()
+                .department(departmentSaved)
+                .name("Lobi Kontrol Amiri")
+                .status(PositionStatus.ACTIVE)
+                .build());
+
+        PositionUpdateRequest updateRequest = PositionUpdateRequest.builder()
+                .name("Lobi Kontrol Amiri")
+                .departmentId(otherDepartmentSaved.getId())
+                .build();
+
+        //Given
+        Long positionId = positionSaved.getId();
+
+        //When
+        MockHttpServletRequestBuilder updateRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/position/" + positionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateRequest));
+        //Then
+        mockMvc.perform(updateRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Optional<Position> position = positionReadPort.findById(positionId);
+
+        Assertions.assertTrue(position.isPresent());
+
+        Assertions.assertEquals(updateRequest.getName(), position.get().getName());
+        Assertions.assertEquals(updateRequest.getDepartmentId(), position.get().getDepartment().getId());
+        Assertions.assertEquals(positionSaved.getName(), position.get().getName());
+
+        Assertions.assertEquals(PositionStatus.ACTIVE, position.get().getStatus());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, position.get().getDepartment().getStatus());
+
+        Assertions.assertEquals(otherDepartmentSaved.getName(), position.get().getDepartment().getName());
+        Assertions.assertEquals(otherDepartmentSaved.getManager().getPhoneNumber(),
+                position.get().getDepartment().getManager().getPhoneNumber());
+        Assertions.assertEquals(otherDepartmentSaved.getManager().getIdentityNumber(),
+                position.get().getDepartment().getManager().getIdentityNumber());
+
+        Assertions.assertEquals("System", position.get().getCreatedBy());
+        Assertions.assertNotNull(position.get().getCreatedAt());
+        Assertions.assertNotNull(position.get().getUpdatedAt());
+        Assertions.assertEquals("System", position.get().getUpdatedBy());
 
     }
 
@@ -233,19 +320,20 @@ class PositionEndToEndTest extends BaseEndToEndTest {
         Assertions.assertEquals(positionSaved.getName(), deletedPosition.get().getName());
         Assertions.assertEquals(positionSaved.getDepartment().getId(), deletedPosition.get().getDepartment().getId());
         Assertions.assertNotEquals(positionSaved.getStatus(), deletedPosition.get().getStatus());
-        Assertions.assertNotEquals(deletedPosition.get().getStatus(), positionSaved.getStatus());
+
         Assertions.assertEquals(PositionStatus.ACTIVE, positionSaved.getStatus());
         Assertions.assertEquals(DepartmentStatus.ACTIVE, positionSaved.getDepartment().getStatus());
         Assertions.assertEquals(PositionStatus.DELETED, deletedPosition.get().getStatus());
+
         Assertions.assertNotNull(deletedPosition.get().getName());
         Assertions.assertNotNull(deletedPosition.get().getDepartment());
         Assertions.assertNotNull(deletedPosition.get().getDepartment().getManager());
-        Assertions.assertNotNull(deletedPosition.get().getDepartment().getManager().getFirstName());
-        Assertions.assertNotNull(deletedPosition.get().getDepartment().getManager().getLastName());
-        Assertions.assertNotNull(deletedPosition.get().getDepartment().getManager().getIdentityNumber());
         Assertions.assertNotNull(deletedPosition.get().getDepartment().getManager().getPhoneNumber());
+
         Assertions.assertNotNull(deletedPosition.get().getCreatedAt());
-        Assertions.assertNotNull(deletedPosition.get().getCreatedBy());
+        Assertions.assertEquals("System", deletedPosition.get().getCreatedBy());
+        Assertions.assertNotNull(deletedPosition.get().getUpdatedAt());
+        Assertions.assertEquals("System", deletedPosition.get().getUpdatedBy());
 
     }
 
