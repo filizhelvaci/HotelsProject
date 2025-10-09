@@ -43,11 +43,11 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
 
         //Initialize
         Employee manager = employeeSavePort.save(Employee.builder()
-                .firstName("Enes")
-                .lastName("Tatar")
-                .identityNumber("598155714785")
-                .email("enesttr@example.com")
-                .phoneNumber("05328888565")
+                .firstName("Eylem")
+                .lastName("Tor")
+                .identityNumber("598188814785")
+                .email("eylemtr@example.com")
+                .phoneNumber("05368888865")
                 .address("Trabzon")
                 .birthDate(LocalDate.of(1982, 1, 15))
                 .gender(Gender.MALE)
@@ -55,7 +55,7 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
                 .build());
 
         DepartmentCreateRequest createRequest = DepartmentCreateRequest.builder()
-                .name("Otopark Bakım")
+                .name("Personel Alım")
                 .managerId(manager.getId())
                 .build();
 
@@ -77,14 +77,17 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
 
         Assertions.assertNotNull(createdDepartment);
         Assertions.assertNotNull(createdDepartment.getId());
-        Assertions.assertNotNull(createdDepartment.getName());
-        Assertions.assertNotNull(createdDepartment.getStatus());
-        Assertions.assertNotNull(createdDepartment.getManager());
+
         Assertions.assertEquals(createRequest.getName(), createdDepartment.getName());
         Assertions.assertEquals(DepartmentStatus.ACTIVE, createdDepartment.getStatus());
         Assertions.assertEquals(createRequest.getManagerId(), createdDepartment.getManager().getId());
         Assertions.assertEquals(manager.getIdentityNumber(), createdDepartment.getManager().getIdentityNumber());
         Assertions.assertEquals(manager.getPhoneNumber(), createdDepartment.getManager().getPhoneNumber());
+
+        Assertions.assertEquals("System",createdDepartment.getCreatedBy());
+        Assertions.assertNotNull(createdDepartment.getCreatedBy());
+        Assertions.assertNull(createdDepartment.getUpdatedBy());
+        Assertions.assertNull(createdDepartment.getUpdatedAt());
 
     }
 
@@ -141,10 +144,90 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Assertions.assertNotNull(department.getName());
         Assertions.assertNotNull(department.getStatus());
         Assertions.assertNotNull(department.getManager());
+
         Assertions.assertEquals(updateRequest.getName(), department.getName());
         Assertions.assertEquals(DepartmentStatus.ACTIVE, department.getStatus());
         Assertions.assertEquals(manager.getIdentityNumber(), department.getManager().getIdentityNumber());
         Assertions.assertEquals(manager.getPhoneNumber(), department.getManager().getPhoneNumber());
+
+        Assertions.assertEquals("System",department.getUpdatedBy());
+        Assertions.assertNotNull(department.getUpdatedBy());
+
+    }
+
+    @Test
+    void givenUpdateRequest_whenUpdateManagerOfDepartment_thenReturnSuccess() throws Exception {
+
+        //Initialize
+        Employee oldManager = employeeSavePort.save(Employee.builder()
+                .firstName("Aysel")
+                .lastName("Kızmaz")
+                .identityNumber("515155733785")
+                .email("ayselkz@example.com")
+                .phoneNumber("05451118565")
+                .address("Aksaray")
+                .birthDate(LocalDate.of(1982, 3, 15))
+                .gender(Gender.FEMALE)
+                .nationality("Türkiye")
+                .build());
+
+        Employee newManager = employeeSavePort.save(Employee.builder()
+                .firstName("Fatma")
+                .lastName("Deniz")
+                .identityNumber("778755714785")
+                .email("denizftm@example.com")
+                .phoneNumber("05328888121")
+                .address("Çorum")
+                .birthDate(LocalDate.of(1987, 1, 15))
+                .gender(Gender.FEMALE)
+                .nationality("Türkiye")
+                .build());
+
+        Department departmentSaved = departmentTestPort.save(Department.builder()
+                .name("Kat Güvenlik")
+                .status(DepartmentStatus.ACTIVE)
+                .manager(oldManager)
+                .build());
+
+        DepartmentUpdateRequest updateRequest = DepartmentUpdateRequest.builder()
+                .name("Kat Güvenlik")
+                .managerId(newManager.getId())
+                .build();
+
+        //Given
+        Long departmentId = departmentSaved.getId();
+
+        //When
+        MockHttpServletRequestBuilder updateRequestBuilder = MockMvcRequestBuilders
+                .put(BASE_PATH + "/department/" + departmentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateRequest));
+
+        //Then
+        mockMvc.perform(updateRequestBuilder)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess")
+                        .value(true));
+
+        //Verify
+        Department department = departmentTestPort.findByName(updateRequest.getName())
+                .orElseThrow(() -> new DepartmentNameNotFoundException(updateRequest.getName()));
+
+        Assertions.assertNotNull(department.getId());
+        Assertions.assertNotNull(department.getName());
+        Assertions.assertNotNull(department.getStatus());
+        Assertions.assertNotNull(department.getManager());
+
+        Assertions.assertEquals(updateRequest.getName(), department.getName());
+        Assertions.assertEquals(DepartmentStatus.ACTIVE, department.getStatus());
+        Assertions.assertNotEquals(oldManager.getIdentityNumber(), department.getManager().getIdentityNumber());
+        Assertions.assertEquals(newManager.getPhoneNumber(), department.getManager().getPhoneNumber());
+        Assertions.assertEquals(newManager.getIdentityNumber(), department.getManager().getIdentityNumber());
+
+        Assertions.assertEquals("System",department.getUpdatedBy());
+        Assertions.assertNotNull(department.getUpdatedAt());
 
     }
 
@@ -189,15 +272,16 @@ class DepartmentEndToEndTest extends BaseEndToEndTest {
         Optional<Department> deletedDepartment = departmentReadPort.findById(departmentId);
 
         Assertions.assertTrue(deletedDepartment.isPresent());
+
         Assertions.assertEquals(departmentId, deletedDepartment.get().getId());
         Assertions.assertEquals(departmentSaved.getName(), deletedDepartment.get().getName());
         Assertions.assertNotEquals(departmentSaved.getStatus(), deletedDepartment.get().getStatus());
-        Assertions.assertEquals(departmentSaved.getManager().getFirstName(), deletedDepartment.get().getManager().getFirstName());
-        Assertions.assertEquals(departmentSaved.getManager().getLastName(), deletedDepartment.get().getManager().getLastName());
-        Assertions.assertEquals(departmentSaved.getManager().getIdentityNumber(), deletedDepartment.get().getManager().getIdentityNumber());
         Assertions.assertEquals(departmentSaved.getManager().getPhoneNumber(), deletedDepartment.get().getManager().getPhoneNumber());
         Assertions.assertEquals(DepartmentStatus.DELETED, deletedDepartment.get().getStatus());
-        Assertions.assertNotNull(deletedDepartment.get().getCreatedAt());
+
+        Assertions.assertEquals("System",deletedDepartment.get().getUpdatedBy());
+        Assertions.assertNotNull(deletedDepartment.get().getUpdatedAt());
+        Assertions.assertEquals("System",deletedDepartment.get().getCreatedBy());
         Assertions.assertNotNull(deletedDepartment.get().getCreatedBy());
 
     }
