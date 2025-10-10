@@ -72,7 +72,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         departmentWriteService.create(mockDepartmentCreateRequest);
 
 
-
         //Verify
         Mockito.verify(departmentReadPort, Mockito.times(1))
                 .existsByName(Mockito.any());
@@ -329,7 +328,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         Mockito.verify(departmentReadPort, Mockito.never())
                 .findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any());
 
-        Mockito.verify(departmentReadPort,Mockito.times(1))
+        Mockito.verify(departmentReadPort, Mockito.times(1))
                 .existsByName(Mockito.any());
 
         ArgumentCaptor<Department> departmentCaptor = ArgumentCaptor.forClass(Department.class);
@@ -405,7 +404,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .findById(Mockito.anyLong());
 
         Mockito.verify(departmentReadPort, Mockito.times(1))
-                .findByManagerIdAndStatus(Mockito.anyLong(),Mockito.any());
+                .findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any());
 
         Mockito.verify(departmentReadPort, Mockito.never())
                 .existsByName(Mockito.anyString());
@@ -651,7 +650,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .findById(Mockito.anyLong());
 
         Mockito.verify(departmentReadPort, Mockito.never())
-                .findByManagerIdAndStatus(Mockito.anyLong(),Mockito.any());
+                .findByManagerIdAndStatus(Mockito.anyLong(), Mockito.any());
 
         Mockito.verify(departmentReadPort, Mockito.never())
                 .existsByName(Mockito.anyString());
