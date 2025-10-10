@@ -41,7 +41,7 @@ public class Department extends BaseDomainModel {
         return this.status == DepartmentStatus.DELETED;
     }
 
-    public void active() {
+    public void activate() {
 
         this.status = DepartmentStatus.ACTIVE;
     }
