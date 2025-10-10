@@ -425,7 +425,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
 
 
     @Test
-    void givenValidDepartmentIdAndDepartmentUpdateRequest_whenManagerIsAnotherActiveDepartmentExists_thenEmployeeAlreadyManagerExistsException() {
+    void givenValidIdAndRequest_whenManagerIsAnotherActiveDepartmentExists_thenEmployeeAlreadyManagerExistsException() {
 
         //Initialize
         Employee manager = Employee.builder()
