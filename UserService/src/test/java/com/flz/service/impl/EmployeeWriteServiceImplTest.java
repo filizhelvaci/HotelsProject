@@ -654,7 +654,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenEmployeeId_whenDeleteCalledIfEmployeeIsManagerInActiveDepartment_thenThrowException() {
+    void givenId_whenManagerInActiveDepartmentDelete_thenThrowEmployeeAlreadyManagerException() {
 
         //Given
         Long mockId = 101L;

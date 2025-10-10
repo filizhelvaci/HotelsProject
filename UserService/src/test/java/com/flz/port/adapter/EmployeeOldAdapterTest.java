@@ -35,22 +35,6 @@ class EmployeeOldAdapterTest extends BaseTest {
     private final EmployeeOldToEntityMapper
             employeeOldToEntityMapper = EmployeeOldToEntityMapper.INSTANCE;
 
-
-    private static EmployeeOld getEmployeeOld() {
-        return EmployeeOld.builder()
-                .address("test address")
-                .firstName("test first name")
-                .lastName("test last name")
-                .birthDate(LocalDate.parse("2000-01-01"))
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .email("test@gmail.com")
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .phoneNumber("05465321456")
-                .build();
-    }
-
     /**
      * {@link EmployeeOldAdapter#findById(Long)}
      */
@@ -217,6 +201,21 @@ class EmployeeOldAdapterTest extends BaseTest {
         Mockito.verify(employeeOldRepository, Mockito.times(1))
                 .findById(mockId);
 
+    }
+
+    private static EmployeeOld getEmployeeOld() {
+        return EmployeeOld.builder()
+                .address("test address")
+                .firstName("test first name")
+                .lastName("test last name")
+                .birthDate(LocalDate.parse("2000-01-01"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321456")
+                .build();
     }
 
     private static EmployeeOldEntity getEmployeeOldEntity(Long id) {

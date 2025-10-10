@@ -109,7 +109,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidEmployeeId_whenEmployeeNotFound_thenThrowException() {
+    void givenValidEmployeeId_whenEmployeeNotFound_thenThrowEmployeeNotFoundException() {
 
         //Given
         Long mockEmployeeId = 1L;
@@ -142,7 +142,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidEmployeeIdAndCreateRequest_whenEmployeeExperienceCreateCalledButPositionNotFound_thenThrowException() {
+    void givenValidEmployeeIdAndCreateRequest_whenEmployeeExperienceCreateCalledButPositionNotFound_thenThrowPositionNotFoundException() {
 
         //Given
         Long mockEmployeeId = 101L;
@@ -222,7 +222,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidEmployeeIdAndRequest_whenNoPreviousExperience_thenCreateWithoutUpdatingPrevious() {
+    void givenValidEmployeeIdAndRequest_whenNoPreviousExperience_thenThrowEmployeeExperienceAlreadyExists() {
 
         //Initialize
         Long positionId = 12L;
