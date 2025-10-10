@@ -53,7 +53,7 @@ class DepartmentWriteServiceImpl implements DepartmentWriteService {
 
         Department department = departmentCreateRequestToDomainMapper.map(createRequest);
         department.setManager(manager);
-        department.setStatus(DepartmentStatus.ACTIVE);
+        department.activate();
         departmentSavePort.save(department);
     }
 

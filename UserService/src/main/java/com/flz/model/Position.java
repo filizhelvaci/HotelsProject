@@ -39,7 +39,7 @@ public class Position extends BaseDomainModel {
         return this.status == PositionStatus.DELETED;
     }
 
-    public void active() {
+    public void activate() {
 
         this.status = PositionStatus.ACTIVE;
     }
