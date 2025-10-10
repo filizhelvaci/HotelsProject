@@ -2,6 +2,7 @@ package com.flz.model;
 
 import com.flz.exception.PositionAlreadyDeletedException;
 import com.flz.model.enums.PositionStatus;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,8 @@ public class Position extends BaseDomainModel {
 
     private Long id;
     private String name;
-    private PositionStatus status;
+    @Builder.Default
+    private PositionStatus status = PositionStatus.ACTIVE;
 
     private Department department;
 

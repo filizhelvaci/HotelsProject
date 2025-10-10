@@ -2,6 +2,7 @@ package com.flz.model;
 
 import com.flz.exception.DepartmentAlreadyDeletedException;
 import com.flz.model.enums.DepartmentStatus;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,10 +16,10 @@ public class Department extends BaseDomainModel {
 
     private Long id;
     private String name;
-    private DepartmentStatus status;
+    @Builder.Default
+    private DepartmentStatus status = DepartmentStatus.ACTIVE;
 
     private Employee manager;
-
 
     public void update(String name, Employee manager) {
 
