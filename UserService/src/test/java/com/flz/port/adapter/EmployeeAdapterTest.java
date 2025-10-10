@@ -36,22 +36,6 @@ class EmployeeAdapterTest extends BaseTest {
     @InjectMocks
     EmployeeAdapter employeeAdapter;
 
-    private static EmployeeEntity getEmployeeEntity() {
-        return EmployeeEntity.builder()
-                .id(1L)
-                .address("test address")
-                .firstName("test first name")
-                .lastName("test last name")
-                .birthDate(LocalDate.parse("2000-01-01"))
-                .createdBy("SYSTEM")
-                .createdAt(LocalDateTime.now())
-                .email("test@gmail.com")
-                .gender(Gender.FEMALE)
-                .nationality("TC")
-                .phoneNumber("05465321456")
-                .build();
-    }
-
     /**
      * {@link EmployeeAdapter#findById(Long)}
      */
@@ -388,6 +372,22 @@ class EmployeeAdapterTest extends BaseTest {
         Mockito.verify(employeeRepository, Mockito.times(1))
                 .findAll(mockPageable);
 
+    }
+
+    private static EmployeeEntity getEmployeeEntity() {
+        return EmployeeEntity.builder()
+                .id(1L)
+                .address("test address")
+                .firstName("test first name")
+                .lastName("test last name")
+                .birthDate(LocalDate.parse("2000-01-01"))
+                .createdBy("SYSTEM")
+                .createdAt(LocalDateTime.now())
+                .email("test@gmail.com")
+                .gender(Gender.FEMALE)
+                .nationality("TC")
+                .phoneNumber("05465321456")
+                .build();
     }
 
     private static Employee getEmployee() {
