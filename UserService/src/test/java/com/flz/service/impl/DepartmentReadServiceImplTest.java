@@ -99,7 +99,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
 
     @Test
-    void whenCalledAllSummaryDepartmentIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
+    void whenCalledAllSummaryOfDepartment_thenReturnEmptyList() {
 
         //When
         Mockito.when(departmentReadPort.findSummaryAll())
@@ -124,7 +124,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
      * {@link DepartmentReadServiceImpl#findAll(Integer, Integer)}
      */
     @Test
-    void givenValidPagePageSize_whenCalledAllDepartment_thenReturnListAllOfDepartments() {
+    void givenValidPageAndPageSize_whenCalledAllDepartment_thenReturnAllOfDepartments() {
 
         //Initialize
         Employee manager = Employee.builder()
@@ -196,7 +196,7 @@ class DepartmentReadServiceImplTest extends BaseTest {
 
 
     @Test
-    void givenValidPagePageSize_whenCalledAllDepartmentIfAllDepartmentEntitiesIsEmpty_thenReturnEmptyList() {
+    void givenValidPageAndPageSize_whenCalledAllDepartment_thenReturnEmptyList() {
 
         //Given
         Integer mockPage = 1;

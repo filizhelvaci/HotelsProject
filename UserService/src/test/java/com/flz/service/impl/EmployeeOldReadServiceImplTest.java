@@ -46,7 +46,7 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
      * {@link EmployeeOldReadServiceImpl#findById(Long)}
      */
     @Test
-    void givenValidEmployeeId_whenFindByIdEmployeeOld_thenReturnEmployeeOldDetailsResponseSuccessfully() {
+    void givenValidId_whenFindByIdEmployeeOld_thenReturnEmployeeOldDetailsResponseSuccessfully() {
 
         //Given
         Long mockId = 1L;

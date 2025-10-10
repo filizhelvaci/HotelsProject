@@ -50,7 +50,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
      * {@link EmployeeExperienceWriteServiceImpl#create(Long, EmployeeExperienceCreateRequest)}
      */
     @Test
-    void givenValidEmployeeIdAndValidCreateRequest_whenEmployeeExperienceCreateCalled_thenCreateSuccessfully() {
+    void givenValidEmployeeIdAndCreateRequest_whenSameEmployeeExperienceFoundNot_thenCreateSuccessfully() {
 
         //Initialize
         Long positionId = 12L;
@@ -142,7 +142,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidEmployeeIdAndCreateRequest_whenEmployeeExperienceCreateCalledButPositionNotFound_thenThrowPositionNotFoundException() {
+    void givenValidEmployeeIdAndCreateRequest_whenPositionNotFound_thenThrowPositionNotFoundException() {
 
         //Given
         Long mockEmployeeId = 101L;
@@ -179,7 +179,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenStartDateBeforeLastExperienceStartDate_whenCreate_thenAllowOrThrowDependingOnRule() {
+    void givenValidCreateRequest_whenStartDateBeforeLastExperienceStartDate_thenAllowOrThrowDependingOnRule() {
 
         //Given
         Long employeeId = 101L;
@@ -222,7 +222,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidEmployeeIdAndRequest_whenNoPreviousExperience_thenThrowEmployeeExperienceAlreadyExists() {
+    void givenValidEmployeeIdAndCreateRequest_whenSameExperienceThereIs_thenThrowEmployeeExperienceAlreadyExists() {
 
         //Initialize
         Long positionId = 12L;
