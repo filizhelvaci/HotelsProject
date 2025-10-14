@@ -118,7 +118,7 @@ class EmployeeAdapterTest extends BaseTest {
 
 
     @Test
-    void whenCalledAllSummaryEmployeeIfEmployeeListIsEmpty_thenReturnEmptyList() {
+    void whenEmployeeListIsEmpty_thenReturnEmptyList() {
 
         //When
         Mockito.when(employeeRepository.findEmployeeSummaries())
@@ -143,14 +143,14 @@ class EmployeeAdapterTest extends BaseTest {
     void givenValidIdentityNumber_whenEmployeeEntityFoundAccordingByIdentity_thenReturnTrue() {
 
         //Given
-        String mockIdentity = "test";
+        String mockIdentity = "123658";
 
         //When
         Mockito.when(employeeRepository.existsByIdentityNumber(mockIdentity))
                 .thenReturn(Boolean.TRUE);
 
         //Then
-        boolean result = employeeAdapter.existsByIdentity("test");
+        boolean result = employeeAdapter.existsByIdentity("123658");
 
         Assertions.assertTrue(result);
 
@@ -233,7 +233,7 @@ class EmployeeAdapterTest extends BaseTest {
      * {@link EmployeeAdapter#findSummaryAll()}
      */
     @Test
-    void whenCalledAllSummaryEmployee_thenReturnListOfEmployeeSummariesResponse() {
+    void whenCalledAllSummaryEmployee_thenReturnEmployeeSummariesResponses() {
 
         //When
         List<Employee> mockEmployees = List.of(

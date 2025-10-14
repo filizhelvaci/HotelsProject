@@ -49,7 +49,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
      * {@link EmployeeReadServiceImpl#findById(Long)}
      */
     @Test
-    void givenValidEmployeeId_whenFindByIdEmployee_thenReturnEmployeeDetailsResponseSuccessfully() {
+    void givenValidEmployeeId_whenEmployeeFoundById_thenReturnEmployeeDetailsResponseSuccessfully() {
 
         //Given
         Long mockId = 1L;
@@ -176,7 +176,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
 
 
     @Test
-    void givenInvalidId_whenEmployeeThereIs_thenThrowEmployeeNotFoundException() {
+    void givenInvalidId_whenEmployeeThereIsNot_thenThrowEmployeeNotFoundException() {
 
         //Given
         Long invalidEmployeeId = 999L;
@@ -296,7 +296,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    void whenEmployeeSummaryListIsEmpty_thenReturnEmptyList() {
+    void whenEmployeeSummaryThereIsNot_thenReturnEmptyList() {
 
         //When
         Mockito.when(employeeReadPort.findSummaryAll())

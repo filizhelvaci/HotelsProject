@@ -43,24 +43,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
             employeeExperienceToEntityMapper = EmployeeExperienceToEntityMapper.INSTANCE;
 
 
-    private static EmployeeExperience getEmployeeExperience() {
-        Long mockId = 101L;
-
-        Position position = getPosition(mockId);
-
-        Employee employee = getEmployee();
-
-        return EmployeeExperience.builder()
-                .id(1L)
-                .salary(BigDecimal.valueOf(65000))
-                .startDate(LocalDate.of(2020, 1, 15))
-                .endDate(LocalDate.of(2023, 12, 31))
-                .position(position)
-                .employee(employee)
-                .build();
-    }
-
-
     @Test
     void givenValidId_whenEmployeeExperienceEntityNotFoundById_returnEmptyList() {
 
@@ -394,6 +376,23 @@ class EmployeeExperienceAdapterTest extends BaseTest {
         Mockito.verify(employeeExperienceRepository, Mockito.times(1))
                 .findAllByEmployee_Id(Mockito.anyLong());
 
+    }
+
+    private static EmployeeExperience getEmployeeExperience() {
+        Long mockId = 101L;
+
+        Position position = getPosition(mockId);
+
+        Employee employee = getEmployee();
+
+        return EmployeeExperience.builder()
+                .id(1L)
+                .salary(BigDecimal.valueOf(65000))
+                .startDate(LocalDate.of(2020, 1, 15))
+                .endDate(LocalDate.of(2023, 12, 31))
+                .position(position)
+                .employee(employee)
+                .build();
     }
 
     private Optional<EmployeeExperienceEntity> getEmployeeExperienceEntity() {
