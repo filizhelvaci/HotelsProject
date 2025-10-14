@@ -116,7 +116,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
 
         EmployeeExperienceCreateRequest request = EmployeeExperienceCreateRequest.builder()
                 .positionId(11L)
-                .startDate(LocalDate.of(2024, 1, 1))
+                .startDate(LocalDate.now().plusDays(5))
                 .build();
 
         //When
@@ -150,7 +150,7 @@ class EmployeeExperienceWriteServiceImplTest extends BaseTest {
 
         EmployeeExperienceCreateRequest mockRequest = EmployeeExperienceCreateRequest.builder()
                 .positionId(mockPositionId)
-                .startDate(LocalDate.of(2024, 1, 1))
+                .startDate(LocalDate.now().plusDays(5))
                 .build();
 
         //When

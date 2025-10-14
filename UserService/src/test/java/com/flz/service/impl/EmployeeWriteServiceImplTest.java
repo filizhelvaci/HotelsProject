@@ -707,7 +707,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .salary(BigDecimal.valueOf(25000))
                 .positionId(1L)
                 .departmentId(5L)
-                .startDate(LocalDate.parse("2025-10-01"))
+                .startDate(LocalDate.now().plusDays(3))
                 .build();
     }
 
