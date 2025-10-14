@@ -41,7 +41,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#findAll(Integer, Integer)}
      */
     @Test
-    void givenValidPageAndPageSize_whenDepartmentFound_thenReturnListDepartments() {
+    void givenValidPageAndPageSize_whenDepartmentThereAre_thenReturnAllOfDepartments() {
 
         //Given
         int mockPage = 1;
@@ -79,7 +79,7 @@ class DepartmentAdapterTest extends BaseTest {
     }
 
     @Test
-    void givenValidPageAndPageSize_whenDepartmentNotFound_thenReturnEmptyDepartment() {
+    void givenValidPageAndPageSize_whenDepartmentThereAreNot_thenReturnEmptyList() {
 
         //Given
         int mockPage = 1;
@@ -107,7 +107,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#findSummaryAll()}
      */
     @Test
-    void whenCalledAllSummaryDepartment_thenReturnListOfDepartmentSummariesResponse() {
+    void whenCalledAllSummaryDepartment_thenReturnDepartmentSummariesResponses() {
 
         //When
         List<DepartmentEntity> mockDepartmentEntities = getDepartmentEntities();
@@ -129,7 +129,7 @@ class DepartmentAdapterTest extends BaseTest {
     }
 
     @Test
-    void whenCalledAllSummaryDepartmentsIfDepartmentListIsEmpty_thenReturnEmptyList() {
+    void whenDepartmentSummaryListIsEmpty_thenReturnEmptyList() {
 
         //When
         Mockito.when(departmentRepository.findAll())
@@ -294,7 +294,7 @@ class DepartmentAdapterTest extends BaseTest {
      * {@link DepartmentAdapter#findByManagerIdAndStatus(Long, DepartmentStatus)}
      */
     @Test
-    void givenValidManagerIdAndDepartmentActiveStatus_whenDepartmentEntityFoundAccordingById_thenReturnDepartment() {
+    void givenValidManagerIdAndDepartmentStatus_whenDepartmentEntityFoundAccordingByIdAndStatus_thenReturnDepartment() {
 
         //Given
         Long mockId = 1L;
@@ -323,7 +323,7 @@ class DepartmentAdapterTest extends BaseTest {
     }
 
     @Test
-    void givenValidManagerIdAndDepartmentActiveStatus_whenDepartmentEntityNotFoundById_returnOptionalEmpty() {
+    void givenValidManagerIdAndDepartmentStatus_whenDepartmentEntityNotFoundById_returnOptionalEmpty() {
 
         //Given
         Long mockId = 10L;

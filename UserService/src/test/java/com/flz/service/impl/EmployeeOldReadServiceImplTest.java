@@ -46,7 +46,7 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
      * {@link EmployeeOldReadServiceImpl#findById(Long)}
      */
     @Test
-    void givenValidEmployeeId_whenFindByIdEmployeeOld_thenReturnEmployeeOldDetailsResponseSuccessfully() {
+    void givenValidId_whenEmployeeOldFoundById_thenReturnEmployeeOldDetailsResponseSuccessfully() {
 
         //Given
         Long mockId = 1L;
@@ -170,7 +170,7 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenInvalidEmployeeOldId_whenFindByIdEmployeeOld_thenThrowEmployeeNotFoundException() {
+    void givenInvalidEmployeeOldId_whenEmployeeOldThereIsNot_thenThrowEmployeeNotFoundException() {
 
         //Given
         Long invalidEmployeeOldId = 999L;
@@ -192,7 +192,7 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidEmployeeId_whenFindByIdEmployeeOldWithEmptyEmployeeExperienceList_thenReturnSuccessfully() {
+    void givenValidEmployeeId_whenEmployeeOldWithEmptyEmployeeExperiencesFoundById_thenReturnSuccessfully() {
 
         //Given
         Long mockId = 1L;
@@ -240,7 +240,7 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
      * {@link EmployeeOldReadServiceImpl#findAll(Integer, Integer)}
      */
     @Test
-    void givenValidPagePageSize_whenCalledAllEmployeeOld_thenReturnListAllOfEmployeesOld() {
+    void givenValidPagePageSize_whenCalledAllEmployeeOld_thenReturnAllOfEmployeesOld() {
 
         //Given
         Integer mockPage = 1;
@@ -264,7 +264,7 @@ class EmployeeOldReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidPagePageSize_whenCalledAllEmployeeOldIfAllEmployeeOldIsEmpty_thenReturnEmptyList() {
+    void givenValidPagePageSize_whenEmployeeOlThereIsNot_thenReturnEmptyList() {
 
         //Given
         Integer mockPage = 1;

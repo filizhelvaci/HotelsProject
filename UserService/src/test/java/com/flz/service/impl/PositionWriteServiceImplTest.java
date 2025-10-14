@@ -50,7 +50,7 @@ class PositionWriteServiceImplTest extends BaseTest {
      * {@link PositionWriteServiceImpl#create(PositionCreateRequest)}
      */
     @Test
-    void givenPositionCreateRequest_whenCreateRequestNameIsNotInDatabase_thenCreatePosition() {
+    void givenCreateRequest_whenNameThereIsNot_thenCreatePosition() {
 
         //Given
         PositionCreateRequest mockPositionCreateRequest = new PositionCreateRequest();
@@ -98,7 +98,7 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenPositionCreateRequest_whenCreateRequestNameAlreadyExists_thenThrowPositionAlreadyExists() {
+    void givenCreateRequest_whenNameThereIs_thenThrowPositionAlreadyExists() {
 
         //Given
         PositionCreateRequest mockPositionCreateRequest = new PositionCreateRequest();
@@ -126,7 +126,7 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenPositionCreateRequest_whenCreateRequestDepartmentNotFound_thenThrowDepartmentNotFoundException() {
+    void givenCreateRequest_whenDepartmentThereIsNot_thenThrowDepartmentNotFoundException() {
 
         //Given
         PositionCreateRequest mockPositionCreateRequest = new PositionCreateRequest();
@@ -157,7 +157,7 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenPositionCreateRequest_whenCreatePositionIfDepartmentStatusIsDeleted_thenCreatePosition() {
+    void givenCreateRequest_whenDepartmentStatusIsDeleted_thenCreatePosition() {
 
         //Given
         PositionCreateRequest mockPositionCreateRequest = new PositionCreateRequest();
@@ -210,7 +210,7 @@ class PositionWriteServiceImplTest extends BaseTest {
      * {@link PositionWriteServiceImpl#update(Long, PositionUpdateRequest)}
      */
     @Test
-    void givenValidIdAndValidRequest_whenUpdatePosition_thenPositionIsUpdated() {
+    void givenValidIdAndUpdateRequest_whenPositionUpdatesDataThereIsNotAnyWhere_thenPositionUpdate() {
 
         //Given
         Long positionId = 1L;
@@ -265,7 +265,7 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenInvalidId_whenUpdatePosition_thenThrowPositionNotFoundException() {
+    void givenValidId_whenPositionThereIsNot_thenThrowPositionNotFoundException() {
 
         //Given
         Long mockId = 999L;
@@ -292,10 +292,10 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidIdAndInValidDepartmentId_whenUpdatePosition_thenThrowDepartmentNotFoundException() {
+    void givenValidIdAndUpdateRequest_whenDepartmentThereIsNot_thenThrowDepartmentNotFoundException() {
 
         //Given
-        Long mockDepartmentId = -9L;
+        Long mockDepartmentId = 10000L;
         Long mockPositionId = 1L;
 
         //Initialize
@@ -343,7 +343,7 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenSameNameAndSameDepartmentId_whenUpdatePosition_thenThrowPositionAlreadyExistsException() {
+    void givenValidIdAndUpdateRequest_whenSameNameAndSameDepartmentIdThereIs_thenThrowPositionAlreadyExistsException() {
 
         //Given
         Long positionId = 1L;
@@ -397,7 +397,7 @@ class PositionWriteServiceImplTest extends BaseTest {
      * {@link PositionWriteServiceImpl#delete(Long)}
      */
     @Test
-    void givenValidId_whenPositionEntityFoundById_thenMakeStatusOfPositionEntityDeleted() {
+    void givenValidId_whenPositionThereIsNot_thenMakeDeletedStatusOfPosition() {
 
         //Given
         Long mockPositionId = 1L;
@@ -451,7 +451,7 @@ class PositionWriteServiceImplTest extends BaseTest {
 
 
     @Test
-    void givenValidId_whenCalledDeletePositionEntityNotFoundById_thenThrowsPositionNotFoundException() {
+    void givenValidId_whenPositionThereIsNot_thenThrowsPositionNotFoundException() {
 
         //Given
         Long mockId = 1L;
@@ -473,7 +473,7 @@ class PositionWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenDeletedPosition_whenDeleteCalled_thenThrowPositionAlreadyDeletedException() {
+    void givenValidId_whenPositionStatusIsDeleted_thenThrowPositionAlreadyDeletedException() {
 
         //Given
         Long mockId = 1L;

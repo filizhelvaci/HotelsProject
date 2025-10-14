@@ -88,7 +88,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
      * {@link EmployeeWriteServiceImpl#create(EmployeeCreateRequest)}
      */
     @Test
-    void givenValidCreateRequest_whenIdentityNumberThereIsNotInDatabase_thenEmployeeIsCreatedSuccessfully() {
+    void givenValidCreateRequest_whenIdentityNumberThereIsNot_thenCreateSuccessfully() {
 
         //Given
         Position mockPosition = Position.builder()
@@ -137,7 +137,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenInvalidPositionId_whenCreateEmployee_thenThrowsPositionNotFoundException() {
+    void givenCreateRequest_whenPositionIdThereIsNot_thenThrowsPositionNotFoundException() {
 
         //Given
         EmployeeCreateRequest request = getEmployeeCreateRequest();
@@ -173,7 +173,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenEmployeeCreateRequest_whenIdentityNumberAlreadyExists_thenThrowsEmployeeAlreadyExistsException() {
+    void givenCreateRequest_whenIdentityNumberThereIs_thenThrowsEmployeeAlreadyExistsException() {
 
         //Given
         EmployeeCreateRequest request = new EmployeeCreateRequest();
@@ -203,7 +203,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
      * {@link EmployeeWriteServiceImpl#update(Long, EmployeeUpdateRequest)}
      */
     @Test
-    void givenValidIdAndValidUpdateRequest_whenUpdateEmployee_thenEmployeeIsUpdatedSuccessful() {
+    void givenValidIdAndUpdateRequest_whenEmployeeThereIsNot_thenUpdateSuccessfully() {
 
         //Given
         Long mockEmployeeId = 1L;
@@ -282,7 +282,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenInvalidEmployeeId_whenUpdateEmployee_thenThrowEmployeeNotFoundException() {
+    void givenValidIdAndUpdateRequest_whenEmployeeThereIsNot_thenThrowEmployeeNotFoundException() {
 
         //Given
         Long mockEmployeeId = 999L;
@@ -312,7 +312,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenSamePhoneNumberExists_whenUpdateEmployee_thenThrowEmployeeAlreadyExistsException() {
+    void givenValidIdAndUpdateRequest_whenPhoneNumberThereIs_thenThrowEmployeeAlreadyExistsException() {
 
         //Given
         Long mockEmployeeId = 1L;
@@ -353,7 +353,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidIdAndIdenticalUpdateRequest_whenUpdateEmployee_thenEmployeeSaved() {
+    void givenValidIdAndUpdateRequest_whenSamePhoneNumberAndIdentityNumberThereIs_thenEmployeeSaved() {
 
         //Given
         Long mockEmployeeId = 1L;
@@ -406,7 +406,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenSameIdentityNumberExists_whenUpdateEmployee_thenThrowEmployeeAlreadyExistsException() {
+    void givenValidIdAndUpdateRequest_whenSameIdentityNumberExists_thenThrowEmployeeAlreadyExistsException() {
 
         //Given
         Long mockEmployeeId = 1L;
@@ -416,7 +416,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
                 .phoneNumber("05551231212")
                 .build();
 
-        Employee existingEmployee = Employee.builder()
+        Employee mockEmployee = Employee.builder()
                 .id(mockEmployeeId)
                 .identityNumber("12345678901")
                 .phoneNumber("05551231212")
@@ -424,7 +424,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
 
         //When
         Mockito.when(employeeReadPort.findById(mockEmployeeId))
-                .thenReturn(Optional.of(existingEmployee));
+                .thenReturn(Optional.of(mockEmployee));
         Mockito.when(employeeReadPort.existsByIdentity(Mockito.anyString()))
                 .thenReturn(true);
 
@@ -448,7 +448,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
      * {@link EmployeeWriteServiceImpl#delete(Long)}
      */
     @Test
-    void givenEmployeeId_whenDeleteEmployeeNotFoundAnotherDepartmentCalled_thenSaveEmployeeAndEmployeeExperiencesToEmployeeOldSuccess() {
+    void givenId_whenEmployeeThereIsNotAnotherWhere_thenDataOfEmployeeCarriedEmployeeOldExperiencesAndEmployeeOldSuccessfullyAndDelete() {
 
         //Initialize
         Employee employee = getEmployee();
@@ -517,7 +517,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenEmployeeId_whenDeleteCalled_thenSucceedDeleteWithEmptyList() {
+    void givenId_whenEmployeeExperiencesThereAreNot_thenDeleteEmployeeWithEmptyExperienceList() {
 
         //Given
         Long mockId = 101L;
@@ -568,7 +568,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenNonExistingEmployeeId_whenDeleteCalled_thenThrowsEmployeeNotFoundException() {
+    void givenId_whenEmployeeThereIsNot_thenThrowsEmployeeNotFoundException() {
 
         //Given
         Long mockId = 999L;
@@ -599,7 +599,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenEmployeeExperienceWithNullEndDate_whenDeleteCalled_thenEndDateIsSetAndSucceeds() {
+    void givenId_whenEmployeeExperiencesEndDateWithNull_thenEndDateIsSetAndDeleteEmployeeSuccessfully() {
 
         //Given
         Long mockId = 101L;
@@ -654,7 +654,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenId_whenManagerInActiveDepartmentDelete_thenThrowEmployeeAlreadyManagerException() {
+    void givenId_whenManagerThereIsInActiveDepartment_thenThrowEmployeeAlreadyManagerException() {
 
         //Given
         Long mockId = 101L;

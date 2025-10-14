@@ -49,7 +49,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
      * {@link EmployeeReadServiceImpl#findById(Long)}
      */
     @Test
-    void givenValidEmployeeId_whenFindByIdEmployee_thenReturnEmployeeDetailsResponseSuccessfully() {
+    void givenValidEmployeeId_whenEmployeeFoundById_thenReturnEmployeeDetailsResponseSuccessfully() {
 
         //Given
         Long mockId = 1L;
@@ -176,7 +176,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
 
 
     @Test
-    void givenInvalidEmployeeId_whenFindByIdEmployee_thenThrowEmployeeNotFoundException() {
+    void givenInvalidId_whenEmployeeThereIsNot_thenThrowEmployeeNotFoundException() {
 
         //Given
         Long invalidEmployeeId = 999L;
@@ -198,7 +198,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidEmployeeId_whenFindByIdEmployeeWithEmptyEmployeeExperienceList_thenReturnEmployeeDetailsResponseSuccessfully() {
+    void givenValidId_whenEmployeeAndExperiencesThereIs_thenReturnEmployeeDetailsResponseSuccessfully() {
 
         //Given
         Long mockId = 1L;
@@ -245,7 +245,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
      * {@link EmployeeReadServiceImpl#findSummaryAll()}
      */
     @Test
-    void whenCalledAllSummaryEmployee_thenReturnListOfEmployeesSummaryResponse() {
+    void whenCalledAllSummaryEmployee_thenReturnEmployeesSummaryResponses() {
 
         //Initialize
         List<Employee> mockEmployees = List.of(
@@ -296,7 +296,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    void whenCalledAllSummaryEmployeeIfAllSummaryEntitiesIsEmpty_thenReturnEmptyList() {
+    void whenEmployeeSummaryThereIsNot_thenReturnEmptyList() {
 
         //When
         Mockito.when(employeeReadPort.findSummaryAll())
@@ -320,7 +320,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
      * {@link EmployeeReadServiceImpl#findAll(Integer, Integer)}
      */
     @Test
-    void givenValidPagePageSize_whenCalledAllEmployee_thenReturnListAllOfEmployees() {
+    void givenValidPageAndPageSize_whenCalledAllEmployee_thenReturnAllOfEmployees() {
 
         //Given
         Integer mockPage = 1;
@@ -352,7 +352,7 @@ class EmployeeReadServiceImplTest extends BaseTest {
     }
 
     @Test
-    void givenValidPagePageSize_whenCalledAllEmployeeIfAllEmployeeIsEmpty_thenReturnEmptyList() {
+    void givenValidPageAndPageSize_whenEmployeeThereIsNot_thenReturnEmptyList() {
 
         //Given
         Integer mockPage = 1;
