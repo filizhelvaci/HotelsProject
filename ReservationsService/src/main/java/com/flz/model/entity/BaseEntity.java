@@ -1,21 +1,47 @@
 package com.flz.model.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
 
-@MappedSuperclass
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class BaseEntity {
+@NoArgsConstructor
+@MappedSuperclass
+public abstract class BaseEntity {
 
-    @CreatedDate()
-    private Long createAt;
+    @Column(name = "created_by", updatable = false)
+    protected String createdBy;
 
-    private boolean state=true;
+    @Column(name = "created_at", updatable = false)
+    protected LocalDateTime createdAt;
+
+    @Column(name = "updated_by")
+    protected String updatedBy;
+
+    @Column(name = "updated_at")
+    protected LocalDateTime updatedAt;
+
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+        createdBy = "System";
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = LocalDateTime.now();
+        updatedBy = "System";
+    }
+
 }
