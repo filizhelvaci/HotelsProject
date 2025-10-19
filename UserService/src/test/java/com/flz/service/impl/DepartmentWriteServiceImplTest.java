@@ -617,6 +617,12 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         //Given
         Long mockId = 1L;
 
+        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
+                .name("UpdatedDepartment")
+                .managerId(180L)
+                .build();
+
+        //Initialize
         Department mockDepartment = Department.builder()
                 .id(mockId)
                 .name("Department")
@@ -624,11 +630,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .status(DepartmentStatus.ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .createdBy("createdUser")
-                .build();
-
-        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
-                .name("UpdatedDepartment")
-                .managerId(180L)
                 .build();
 
         //When
@@ -666,6 +667,12 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         //Given
         Long mockId = 1L;
 
+        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
+                .name("UpdatedDepartment")
+                .managerId(119L)
+                .build();
+
+        //Initialize
         Department mockDepartment = Department.builder()
                 .id(mockId)
                 .name("Department")
@@ -676,11 +683,6 @@ class DepartmentWriteServiceImplTest extends BaseTest {
                 .build();
 
         Optional<Employee> mockManager = Optional.of(getEmployee());
-
-        DepartmentUpdateRequest mockDepartmentUpdateRequest = DepartmentUpdateRequest.builder()
-                .name("UpdatedDepartment")
-                .managerId(119L)
-                .build();
 
         //When
         Mockito.when(departmentReadPort.findById(mockId))
@@ -795,6 +797,7 @@ class DepartmentWriteServiceImplTest extends BaseTest {
         //Given
         Long mockId = 1L;
 
+        //Initialize
         Department mockDepartment = Department.builder()
                 .id(mockId)
                 .name("DeletedDepartment")

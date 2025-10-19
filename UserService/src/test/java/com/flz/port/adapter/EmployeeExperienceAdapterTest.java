@@ -76,6 +76,7 @@ class EmployeeExperienceAdapterTest extends BaseTest {
         //Given
         EmployeeExperience employeeExperience = getEmployeeExperience();
 
+        //When
         EmployeeExperienceEntity employeeExperienceEntity =
                 employeeExperienceToEntityMapper.map(employeeExperience);
 
@@ -181,9 +182,10 @@ class EmployeeExperienceAdapterTest extends BaseTest {
         //Given
         Long mockEmployeeId = 101L;
 
-        //When
+        //Initialize
         Optional<EmployeeExperienceEntity> employeeExperienceEntity = getEmployeeExperienceEntity();
 
+        //When
         Mockito.when(employeeExperienceRepository.findTopByEmployeeIdOrderByStartDateDesc(mockEmployeeId))
                 .thenReturn(employeeExperienceEntity);
 
@@ -194,7 +196,6 @@ class EmployeeExperienceAdapterTest extends BaseTest {
         //Then
         Optional<EmployeeExperience> actual = employeeExperienceAdapter
                 .findTopByEmployeeIdOrderByStartDateDesc(mockEmployeeId);
-
 
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(expected.getEmployee().getId(),

@@ -235,7 +235,7 @@ class EmployeeAdapterTest extends BaseTest {
     @Test
     void whenCalledAllSummaryEmployee_thenReturnEmployeeSummariesResponses() {
 
-        //When
+        //Initialize
         List<Employee> mockEmployees = List.of(
                 Employee.builder()
                         .id(1L)
@@ -253,6 +253,7 @@ class EmployeeAdapterTest extends BaseTest {
                         .lastName("Joe")
                         .build());
 
+        //When
         Mockito.when(employeeRepository.findEmployeeSummaries())
                 .thenReturn(mockEmployees);
 
