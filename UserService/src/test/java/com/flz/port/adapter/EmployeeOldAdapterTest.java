@@ -60,8 +60,7 @@ class EmployeeOldAdapterTest extends BaseTest {
         Assertions.assertTrue(result.isPresent());
         Assertions.assertEquals(mockId, result.get().getId());
         Assertions.assertEquals(mockEmployeeOld.getId(), result.get().getId());
-        Assertions.assertEquals(mockEmployeeOld.getIdentityNumber(),
-                result.get().getIdentityNumber());
+        Assertions.assertEquals(mockEmployeeOld.getIdentityNumber(), result.get().getIdentityNumber());
         Assertions.assertEquals(mockEmployeeOld.getLastName(), result.get().getLastName());
         Assertions.assertNotNull(result.get().getId());
         Assertions.assertNotNull(result.get().getFirstName());
@@ -85,11 +84,13 @@ class EmployeeOldAdapterTest extends BaseTest {
         int mockPage = 1;
         int mockPageSize = 10;
 
-        //When
+        //Initialize
         List<EmployeeOldEntity> mockEmployeeOldEntities = getEmployeeOldEntities();
         Pageable mockPageable = PageRequest.of(0, mockPageSize);
 
         Page<EmployeeOldEntity> mockEmployeeOldEntitiesPage = new PageImpl<>(mockEmployeeOldEntities);
+
+        //When
         Mockito.when(employeeOldRepository.findAll(mockPageable))
                 .thenReturn(mockEmployeeOldEntitiesPage);
 

@@ -604,6 +604,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         //Given
         Long mockId = 101L;
 
+        //Initialize
         Employee employee = getEmployee();
         EmployeeOld employeeOldSaved = getSavedEmployeeOld();
 
@@ -659,6 +660,7 @@ class EmployeeWriteServiceImplTest extends BaseTest {
         //Given
         Long mockId = 101L;
 
+        //Initialize
         Employee employee = getEmployee();
         Department department = Department.builder()
                 .id(21L)

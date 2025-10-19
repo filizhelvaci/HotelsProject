@@ -57,6 +57,7 @@ class PositionWriteServiceImplTest extends BaseTest {
         mockPositionCreateRequest.setName("test");
         mockPositionCreateRequest.setDepartmentId(1L);
 
+        //Initialize
         Optional<Department> mockDepartment = Optional.ofNullable(
                 Department.builder()
                         .id(1L)
@@ -221,6 +222,7 @@ class PositionWriteServiceImplTest extends BaseTest {
                 .departmentId(departmentId)
                 .build();
 
+        //Initialize
         Department mockDepartment = Department.builder()
                 .id(departmentId)
                 .name("Department")
