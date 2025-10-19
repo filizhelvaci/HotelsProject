@@ -1,9 +1,9 @@
 server:
-  port: 8090
+  port: 8086
 
 spring:
   datasource:
-    url: jdbc:postgresql://${DATABASE_IP:localhost}:${DATABASE_PORT:5438}/hotel_rs
+    url: jdbc:postgresql://${DATABASE_IP:localhost}:${DATABASE_PORT:5435}/hotel_rs
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:654321}
     driver-class-name: org.postgresql.Driver
@@ -24,3 +24,14 @@ spring:
 logging:
   level:
     sql: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+      probes:
+        enabled: true

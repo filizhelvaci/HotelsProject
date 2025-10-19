@@ -1,0 +1,37 @@
+services:
+  reservation-service-db:
+    image: postgres:latest
+    container_name: reservation-service-db
+    restart: always
+    environment:
+      POSTGRES_DB: hotel_rs
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 654321
+    volumes:
+      - ./docker/reservation_database_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - hotel_network
+  reservation-service:
+    build:
+      context: ..
+      dockerfile: ReservationsService/Dockerfile
+    container_name: reservation-service
+    restart: on-failure
+    ports:
+      - "8087:8086"
+    environment:
+      - DATABASE_IP=host.docker.internal
+    depends_on:
+      - reservation-service-db
+    networks:
+      - hotel_network
+
+networks:
+  hotel_network:
+    driver: bridge
+
+volumes:
+  reservation_database_data:
+    driver: local
