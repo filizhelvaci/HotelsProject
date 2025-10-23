@@ -1,4 +1,6 @@
 # HOTEL RESERVATION SYSTEM APPLICATION
+You can find the requirements analysis, data model and technical analysis for each of the project-related services on the wiki page.
+
 Tech Stack
 
 _*Framework*_
