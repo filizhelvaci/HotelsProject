@@ -17,7 +17,7 @@ public class RoomTypeAvailabilityController {
 
     private final RoomTypeAvailabilityService roomTypeAvailabilityService;
 
-    @GetMapping("/RoomTypeAvailability")
+    @GetMapping("/room-type-availabilities")
     public HotelResponse<List<RoomTypeAvailabilityResponse>> findRoomTypesAvailability() {
         List<RoomTypeAvailabilityResponse> responses = roomTypeAvailabilityService.findRoomTypesAvailability();
         return HotelResponse.successOf(responses);
